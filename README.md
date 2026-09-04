@@ -14,6 +14,12 @@ Flutter 3.41 · Dart 3.11 · MapLibre · Riverpod · go_router · MIT.
 
 More: [plan form](docs/screenshots/03_plan_form.png) · [route detail](docs/screenshots/07_route_detail.png) · [alerts](docs/screenshots/08_alerts.png) · [dark mode](docs/screenshots/09_home_dark.png)
 
+Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,800 buses):
+
+| Live fleet | Live results | Live itinerary | Live departures |
+|---|---|---|---|
+| ![](docs/screenshots/live_01_home.png) | ![](docs/screenshots/live_02_results.png) | ![](docs/screenshots/live_03_itinerary.png) | ![](docs/screenshots/live_04_stop.png) |
+
 ## What it does (v1)
 
 - **City picker** on first launch, remembered; every screen is scoped to `/{city}`.
@@ -69,7 +75,9 @@ Without `API_URL` the app defaults to `http://localhost:8001` on iOS and
 ```bash
 flutter analyze --fatal-infos
 flutter test
-tool/screenshots.sh            # iOS simulator walkthrough → docs/screenshots/
+tool/screenshots.sh            # iOS simulator walkthrough (mock) → docs/screenshots/
+tool/screenshots.sh "" integration_test/live_api_test.dart \
+  --dart-define=API_URL=http://localhost:8001   # same, against a running API
 ```
 
 ## Mock mode

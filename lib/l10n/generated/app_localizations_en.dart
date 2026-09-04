@@ -384,4 +384,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fromHere => 'From here';
+
+  @override
+  String get accessible => 'Accessible';
 }

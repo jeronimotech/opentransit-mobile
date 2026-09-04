@@ -51,6 +51,12 @@ void main() {
       container: container,
       child: const OpenTransitApp(),
     ));
+    // Debug-only framework assertions (e.g. semantics parent-data checks that
+    // fire while a MapLibre platform view is on screen) must not abort the
+    // walkthrough: log them and keep going, like a release build would.
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = FlutterError.dumpErrorToConsole;
+    addTearDown(() => FlutterError.onError = originalOnError);
     // Screenshots are taken in Spanish regardless of the simulator locale.
     await container.read(settingsProvider.notifier).setLocale(const Locale('es'));
     await settle(tester, 20);

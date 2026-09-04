@@ -751,6 +751,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Desde aquí'**
   String get fromHere;
+
+  /// No description provided for @accessible.
+  ///
+  /// In es, this message translates to:
+  /// **'Accesible'**
+  String get accessible;
 }
 
 class _AppLocalizationsDelegate

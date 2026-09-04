@@ -18,9 +18,21 @@
   "results": "Resultados",
   "noItineraries": "No encontramos itinerarios para este viaje. Prueba otro horario o amplía la distancia a pie.",
   "transfersCount": "{count, plural, =0{Sin transbordos} =1{1 transbordo} other{{count} transbordos}}",
-  "@transfersCount": {"placeholders": {"count": {"type": "int"}}},
+  "@transfersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "walkDistance": "{meters} m a pie",
-  "@walkDistance": {"placeholders": {"meters": {"type": "int"}}},
+  "@walkDistance": {
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
   "itinerary": "Itinerario",
   "departures": "Próximas salidas",
   "noDepartures": "Sin salidas programadas en la próxima hora.",
@@ -28,9 +40,21 @@
   "scheduled": "Programado",
   "canceled": "Cancelado",
   "delayedBy": "Retraso de {minutes} min",
-  "@delayedBy": {"placeholders": {"minutes": {"type": "int"}}},
+  "@delayedBy": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "earlyBy": "Adelantado {minutes} min",
-  "@earlyBy": {"placeholders": {"minutes": {"type": "int"}}},
+  "@earlyBy": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "onTime": "A tiempo",
   "alerts": "Alertas",
   "noAlerts": "No hay alertas activas.",
@@ -59,16 +83,49 @@
   "addFavorite": "Guardar en favoritos",
   "removeFavorite": "Quitar de favoritos",
   "minutesShort": "{minutes} min",
-  "@minutesShort": {"placeholders": {"minutes": {"type": "int"}}},
+  "@minutesShort": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "durationHm": "{hours} h {minutes} min",
-  "@durationHm": {"placeholders": {"hours": {"type": "int"}, "minutes": {"type": "int"}}},
+  "@durationHm": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "walkSteps": "Indicaciones a pie",
   "intermediateStops": "{count, plural, =0{Sin paradas intermedias} =1{1 parada intermedia} other{{count} paradas intermedias}}",
-  "@intermediateStops": {"placeholders": {"count": {"type": "int"}}},
+  "@intermediateStops": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "updatedAgo": "Actualizado hace {seconds} s",
-  "@updatedAgo": {"placeholders": {"seconds": {"type": "int"}}},
+  "@updatedAgo": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "vehiclesCount": "{count} vehículos",
-  "@vehiclesCount": {"placeholders": {"count": {"type": "int"}}},
+  "@vehiclesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "swap": "Intercambiar origen y destino",
   "places": "Lugares",
   "tapToSetPlace": "Toca el mapa para elegir el punto",
@@ -82,23 +139,65 @@
   "mockMode": "Modo demostración (datos de ejemplo)",
   "direction": "Sentido",
   "stopsCount": "{count} paradas",
-  "@stopsCount": {"placeholders": {"count": {"type": "int"}}},
+  "@stopsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "towards": "Hacia {headsign}",
-  "@towards": {"placeholders": {"headsign": {"type": "String"}}},
+  "@towards": {
+    "placeholders": {
+      "headsign": {
+        "type": "String"
+      }
+    }
+  },
   "walkTo": "Camina hasta {place}",
-  "@walkTo": {"placeholders": {"place": {"type": "String"}}},
+  "@walkTo": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
   "rideTo": "Bájate en {place}",
-  "@rideTo": {"placeholders": {"place": {"type": "String"}}},
+  "@rideTo": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
   "boardAt": "Sube en {place}",
-  "@boardAt": {"placeholders": {"place": {"type": "String"}}},
+  "@boardAt": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
   "arriveAt": "Llegas a {place}",
-  "@arriveAt": {"placeholders": {"place": {"type": "String"}}},
+  "@arriveAt": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
   "moreOptions": "Más opciones",
   "walkingDistance": "Distancia máxima a pie",
   "changeCity": "Cambiar de ciudad",
   "loading": "Cargando…",
   "inMinutes": "{minutes} min",
-  "@inMinutes": {"placeholders": {"minutes": {"type": "int"}}},
+  "@inMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "arrivingNow": "Ahora",
   "seeAlerts": "Ver alertas",
   "affectedRoutes": "Rutas afectadas",
@@ -124,5 +223,6 @@
   "openInPlanner": "Abrir en el planeador",
   "goHere": "Ir aquí",
   "leaveFrom": "Salir de aquí",
-  "fromHere": "Desde aquí"
+  "fromHere": "Desde aquí",
+  "accessible": "Accesible"
 }

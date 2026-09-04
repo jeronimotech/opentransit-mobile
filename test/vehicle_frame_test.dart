@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opentransit_mobile/core/api/sse.dart';
@@ -93,6 +94,12 @@ void main() {
     final events = await parseSse(Stream.fromIterable(raw)).toList();
     expect(events.map((e) => e['seq']), [1, 2]);
     expect(VehicleFrame.fromJson(events.first).count, 6000);
+  });
+
+  test('SSE parser accepts Uint8List chunks (what dio emits)', () async {
+    final chunk = Uint8List.fromList(utf8.encode('data: {"type":"full","seq":7,"vehicles":[]}\n\n'));
+    final events = await parseSse(Stream<Uint8List>.fromIterable([chunk])).toList();
+    expect(events.single['seq'], 7);
   });
 
   test('SSE parser copes with chunk boundaries mid-line', () async {

@@ -91,7 +91,7 @@ class StopDetailScreen extends ConsumerWidget {
                     ),
                     if (stop.code != null) Chip(label: Text(stop.code!), visualDensity: VisualDensity.compact),
                     if (stop.wheelchair == WheelchairAccess.accessible)
-                      const Chip(avatar: Icon(Icons.accessible, size: 16), label: Text('♿'), visualDensity: VisualDensity.compact),
+                      Chip(avatar: const Icon(Icons.accessible, size: 16), label: Text(l10n.accessible), visualDensity: VisualDensity.compact),
                   ],
                 ),
               ),

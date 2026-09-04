@@ -423,24 +423,30 @@ IconData _stepIcon(String? dir) => switch (dir) {
       _ => Icons.straight,
     };
 
+/// Dotted connector for walking legs. A CustomPaint (not a LayoutBuilder) so
+/// it can live inside the IntrinsicHeight row: LayoutBuilder has no intrinsic
+/// size and would throw during the timeline's layout.
 class _DottedBar extends StatelessWidget {
   const _DottedBar({required this.color});
   final Color color;
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, c) {
-          final n = (c.maxHeight / 8).floor().clamp(1, 200);
-          return Column(
-            children: [
-              for (var i = 0; i < n; i++)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Container(width: 4, height: 4, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-                ),
-            ],
-          );
-        },
-      );
+  Widget build(BuildContext context) =>
+      SizedBox(width: 6, child: CustomPaint(painter: _DotsPainter(color)));
+}
+
+class _DotsPainter extends CustomPainter {
+  _DotsPainter(this.color);
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color;
+    for (var y = 4.0; y < size.height; y += 8) {
+      canvas.drawCircle(Offset(size.width / 2, y), 2, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DotsPainter old) => old.color != color;
 }
 
 class _EndTile extends StatelessWidget {

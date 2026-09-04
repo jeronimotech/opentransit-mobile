@@ -22,17 +22,32 @@ class AlertsScreen extends ConsumerWidget {
         onRefresh: () => ref.refresh(alertsProvider(cityId).future),
         child: alerts.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => ErrorView(error: e, onRetry: () => ref.invalidate(alertsProvider(cityId))),
+          error: (e, _) => ErrorView(
+            error: e,
+            onRetry: () => ref.invalidate(alertsProvider(cityId)),
+          ),
           data: (list) {
             if (list.isEmpty) {
-              return ListView(children: [SizedBox(height: 300, child: EmptyView(icon: Icons.notifications_none, message: l10n.noAlerts))]);
+              return ListView(
+                children: [
+                  SizedBox(
+                    height: 300,
+                    child: EmptyView(
+                      icon: Icons.notifications_none,
+                      message: l10n.noAlerts,
+                    ),
+                  ),
+                ],
+              );
             }
-            final sorted = [...list]..sort((a, b) => b.severity.index.compareTo(a.severity.index));
+            final sorted = [...list]
+              ..sort((a, b) => b.severity.index.compareTo(a.severity.index));
             return ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
               itemCount: sorted.length,
               separatorBuilder: (_, _) => const SizedBox(height: 10),
-              itemBuilder: (context, i) => _AlertCard(cityId: cityId, alert: sorted[i]),
+              itemBuilder: (context, i) =>
+                  _AlertCard(cityId: cityId, alert: sorted[i]),
             );
           },
         ),
@@ -69,70 +84,99 @@ class _AlertCardState extends State<_AlertCard> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => setState(() => _open = !_open),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(width: 6, color: accent),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        alertIcon(a.severity),
-                        const SizedBox(width: 10),
-                        Expanded(child: Text(a.header, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700))),
-                        Icon(_open ? Icons.expand_less : Icons.expand_more, color: scheme.outline),
-                      ],
-                    ),
-                    if (a.description != null) ...[
-                      const SizedBox(height: 8),
-                      Text(a.description!, maxLines: _open ? null : 2, overflow: _open ? null : TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
-                    ],
-                    if (a.routes.isNotEmpty) ...[
-                      const SizedBox(height: 10),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
+        // IntrinsicHeight: the ListView gives unbounded height, so a stretched
+        // Row needs a measured height for the accent bar to fill.
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(width: 6, color: accent),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          for (final r in a.routes)
-                            InkWell(
-                              borderRadius: BorderRadius.circular(8),
-                              onTap: () => context.push('/${widget.cityId}/routes/${Uri.encodeComponent(r.id)}'),
-                              child: RouteChip(r, dense: true),
+                          alertIcon(a.severity),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              a.header,
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.w700),
                             ),
+                          ),
+                          Icon(
+                            _open ? Icons.expand_less : Icons.expand_more,
+                            color: scheme.outline,
+                          ),
                         ],
                       ),
+                      if (a.description != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          a.description!,
+                          maxLines: _open ? null : 2,
+                          overflow: _open ? null : TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: scheme.onSurfaceVariant),
+                        ),
+                      ],
+                      if (a.routes.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [
+                            for (final r in a.routes)
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () => context.push(
+                                  '/${widget.cityId}/routes/${Uri.encodeComponent(r.id)}',
+                                ),
+                                child: RouteChip(r, dense: true),
+                              ),
+                          ],
+                        ),
+                      ],
+                      if (a.start != null || a.end != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          [
+                            if (a.start != null)
+                              formatDateShort(a.start!, locale),
+                            if (a.end != null) formatDateShort(a.end!, locale),
+                          ].join(' → '),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(color: scheme.outline),
+                        ),
+                      ],
+                      if (_open && a.effect != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Text(
+                            '${a.cause ?? ''} · ${a.effect}',
+                            style: Theme.of(context).textTheme.labelSmall
+                                ?.copyWith(color: scheme.outline),
+                          ),
+                        ),
+                      if (_open && a.routes.isEmpty && a.routeIds.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Text(
+                            '${l10n.affectedRoutes}: ${a.routeIds.join(', ')}',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ),
                     ],
-                    if (a.start != null || a.end != null) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        [
-                          if (a.start != null) formatDateShort(a.start!, locale),
-                          if (a.end != null) formatDateShort(a.end!, locale),
-                        ].join(' → '),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline),
-                      ),
-                    ],
-                    if (_open && a.effect != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: Text('${a.cause ?? ''} · ${a.effect}', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
-                      ),
-                    if (_open && a.routes.isEmpty && a.routeIds.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: Text('${l10n.affectedRoutes}: ${a.routeIds.join(', ')}', style: Theme.of(context).textTheme.labelSmall),
-                      ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -108,5 +108,6 @@
   "openInPlanner": "Open in planner",
   "goHere": "Go here",
   "leaveFrom": "Leave from here",
-  "fromHere": "From here"
+  "fromHere": "From here",
+  "accessible": "Accessible"
 }

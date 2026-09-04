@@ -42,7 +42,11 @@ Stream<Map<String, dynamic>> parseSse(Stream<List<int>> bytes) {
     chain = chain.then((_) => decode(text));
   }
 
+  // `cast`: dio hands out Stream<Uint8List>, and Dart's stream transform is
+  // invariant, so utf8.decoder (a Converter<List<int>, String>) is rejected
+  // at runtime without it.
   sub = bytes
+      .cast<List<int>>()
       .transform(utf8.decoder)
       .transform(const LineSplitter())
       .listen(

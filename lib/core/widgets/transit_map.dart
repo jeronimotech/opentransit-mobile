@@ -1,6 +1,7 @@
 import 'dart:math' show Point;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:maplibre_gl/maplibre_gl.dart' as ml;
 
 import '../config.dart';
@@ -156,9 +157,13 @@ class TransitMapState extends State<TransitMap> {
     final c = _c;
     if (c == null) return;
     final target = ml.LatLng(p.lat, p.lon);
-    await c.animateCamera(zoom == null
-        ? ml.CameraUpdate.newLatLng(target)
-        : ml.CameraUpdate.newLatLngZoom(target, zoom));
+    try {
+      await c.animateCamera(zoom == null
+          ? ml.CameraUpdate.newLatLng(target)
+          : ml.CameraUpdate.newLatLngZoom(target, zoom));
+    } on PlatformException {
+      // map disposed mid-animation
+    }
   }
 
   Future<void> fitBounds(List<LatLng> pts, {EdgeInsets? padding}) async {
@@ -170,23 +175,43 @@ class TransitMapState extends State<TransitMap> {
       await animateTo(pts.first, zoom: 15);
       return;
     }
-    await c.animateCamera(
-      ml.CameraUpdate.newLatLngBounds(
-        ml.LatLngBounds(
-          southwest: ml.LatLng(b[1], b[0]),
-          northeast: ml.LatLng(b[3], b[2]),
+    if (!mounted) return;
+    try {
+      await c.animateCamera(
+        ml.CameraUpdate.newLatLngBounds(
+          ml.LatLngBounds(
+            southwest: ml.LatLng(b[1], b[0]),
+            northeast: ml.LatLng(b[3], b[2]),
+          ),
+          left: pad.left,
+          top: pad.top,
+          right: pad.right,
+          bottom: pad.bottom,
         ),
-        left: pad.left,
-        top: pad.top,
-        right: pad.right,
-        bottom: pad.bottom,
-      ),
-    );
+      );
+    } on PlatformException {
+      // map disposed mid-animation
+    }
   }
 
   Future<void> _onStyleLoaded() async {
     final c = _c;
-    if (c == null) return;
+    if (c == null || !mounted) return;
+    try {
+      await _addLayers(c);
+    } on PlatformException {
+      return; // map disposed mid-setup
+    }
+    c.onFeatureTapped.add(_onFeatureTapped);
+    _ready = true;
+    await _syncAll();
+    if (widget.fitTo != null && widget.fitTo!.isNotEmpty) {
+      await fitBounds(widget.fitTo!);
+    }
+    widget.onMapReady?.call();
+  }
+
+  Future<void> _addLayers(ml.MapLibreMapController c) async {
     await c.addGeoJsonSource(_srcLines, _emptyFc(), promoteId: 'id');
     await c.addLineLayer(
       _srcLines,
@@ -291,14 +316,6 @@ class TransitMapState extends State<TransitMap> {
       ),
       enableInteraction: false,
     );
-
-    c.onFeatureTapped.add(_onFeatureTapped);
-    _ready = true;
-    await _syncAll();
-    if (widget.fitTo != null && widget.fitTo!.isNotEmpty) {
-      await fitBounds(widget.fitTo!);
-    }
-    widget.onMapReady?.call();
   }
 
   void _onFeatureTapped(Point<double> point, ml.LatLng coords, String id,
@@ -307,13 +324,24 @@ class TransitMapState extends State<TransitMap> {
     if (layerId == 'ot-vehicles-layer') widget.onVehicleTap?.call(id);
   }
 
-  Future<void> _syncAll() async {
+  /// Pushes a source update, swallowing the `styleNotFound` PlatformException
+  /// the native side raises when the map was disposed or its style reloaded
+  /// while the call was in flight.
+  Future<void> _setSource(String id, Map<String, dynamic> fc) async {
     final c = _c;
-    if (c == null || !_ready) return;
-    await c.setGeoJsonSource(_srcLines, _lineFc(widget.lines));
-    await c.setGeoJsonSource(_srcStops, _pointFc(widget.stops));
-    await c.setGeoJsonSource(_srcVehicles, _pointFc(widget.vehicles));
-    await c.setGeoJsonSource(_srcMarkers, _pointFc(widget.markers));
+    if (c == null || !_ready || !mounted) return;
+    try {
+      await c.setGeoJsonSource(id, fc);
+    } on PlatformException {
+      // ignore: map gone or style not ready
+    }
+  }
+
+  Future<void> _syncAll() async {
+    await _setSource(_srcLines, _lineFc(widget.lines));
+    await _setSource(_srcStops, _pointFc(widget.stops));
+    await _setSource(_srcVehicles, _pointFc(widget.vehicles));
+    await _setSource(_srcMarkers, _pointFc(widget.markers));
   }
 
   @override
@@ -322,16 +350,16 @@ class TransitMapState extends State<TransitMap> {
     final c = _c;
     if (c == null || !_ready) return;
     if (!identical(oldWidget.lines, widget.lines)) {
-      c.setGeoJsonSource(_srcLines, _lineFc(widget.lines));
+      _setSource(_srcLines, _lineFc(widget.lines));
     }
     if (!identical(oldWidget.stops, widget.stops)) {
-      c.setGeoJsonSource(_srcStops, _pointFc(widget.stops));
+      _setSource(_srcStops, _pointFc(widget.stops));
     }
     if (!identical(oldWidget.vehicles, widget.vehicles)) {
-      c.setGeoJsonSource(_srcVehicles, _pointFc(widget.vehicles));
+      _setSource(_srcVehicles, _pointFc(widget.vehicles));
     }
     if (!identical(oldWidget.markers, widget.markers)) {
-      c.setGeoJsonSource(_srcMarkers, _pointFc(widget.markers));
+      _setSource(_srcMarkers, _pointFc(widget.markers));
     }
     if (!identical(oldWidget.fitTo, widget.fitTo) &&
         widget.fitTo != null &&
@@ -356,6 +384,9 @@ class TransitMapState extends State<TransitMap> {
         zoom: widget.initialZoom,
       ),
       onMapCreated: (c) => _c = c,
+      // No managed annotations: every overlay is a GeoJSON source + layer.
+      // This also avoids the plugin's own source setup racing a dispose.
+      annotationOrder: const [],
       onStyleLoadedCallback: _onStyleLoaded,
       trackCameraPosition: true,
       compassEnabled: false,
