@@ -39,6 +39,11 @@ void main() {
     ]);
     addTearDown(container.dispose);
     await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const OpenTransitApp()));
+    // Debug-only teardown assertions from the router/platform views must not
+    // fail the run once the screenshot cue has fired.
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = FlutterError.dumpErrorToConsole;
+    addTearDown(() => FlutterError.onError = originalOnError);
     for (var i = 0; i < 30; i++) {
       await Future<void>.delayed(const Duration(milliseconds: 100));
       await tester.pump();

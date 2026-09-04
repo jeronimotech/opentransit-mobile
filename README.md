@@ -2,47 +2,82 @@
 
 Open-source, multi-city, multimodal public-transport trip planner for iOS and
 Android. Part of the **opentransit** project together with
-[`opentransit-api`](../opentransit-api) (FastAPI + OpenTripPlanner) and
-[`opentransit-web`](../opentransit-web) (Next.js). First city: **Bogotá**
+[`opentransit-api`](https://github.com/jeronimotech/opentransit-api) (FastAPI + OpenTripPlanner) and
+[`opentransit-web`](https://github.com/jeronimotech/opentransit-web) (Next.js). First city: **Bogotá**
 (TransMilenio / SITP, GTFS + GTFS-Realtime).
 
 Flutter 3.41 · Dart 3.11 · MapLibre · Riverpod · go_router · MIT.
 
-| City picker | Home map + live fleet | Results | Itinerary | Stop |
+| Home hub | Ubica tu bus | Results (sorted) | Itinerary + fare | Stop board |
 |---|---|---|---|---|
-| ![](docs/screenshots/01_city_picker.png) | ![](docs/screenshots/02_home_map.png) | ![](docs/screenshots/04_results.png) | ![](docs/screenshots/05_itinerary_detail.png) | ![](docs/screenshots/06_stop_detail.png) |
+| ![](docs/screenshots/02_home_hub.png) | ![](docs/screenshots/03_locate_bus.png) | ![](docs/screenshots/05_results_sorted.png) | ![](docs/screenshots/06_itinerary_fare.png) | ![](docs/screenshots/07_stop_board.png) |
 
-More: [plan form](docs/screenshots/03_plan_form.png) · [route detail](docs/screenshots/07_route_detail.png) · [alerts](docs/screenshots/08_alerts.png) · [dark mode](docs/screenshots/09_home_dark.png)
+| Favorites | Alerts | Dark mode + POIs | Forced update |
+|---|---|---|---|
+| ![](docs/screenshots/09_favorites.png) | ![](docs/screenshots/10_alerts.png) | ![](docs/screenshots/11_home_dark.png) | ![](docs/screenshots/12_forced_update.png) |
+
+More: [city picker](docs/screenshots/01_city_picker.png) · [plan form](docs/screenshots/04_plan_form.png) · [route detail](docs/screenshots/08_route_detail.png) · [v1 screens](docs/screenshots/v1/)
 
 Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,800 buses):
 
-| Live fleet | Live results | Live itinerary | Live departures |
-|---|---|---|---|
-| ![](docs/screenshots/live_01_home.png) | ![](docs/screenshots/live_02_results.png) | ![](docs/screenshots/live_03_itinerary.png) | ![](docs/screenshots/live_04_stop.png) |
+| Live home hub + fleet | Live results | Live itinerary | Live station board | Live "Ubica tu bus" |
+|---|---|---|---|---|
+| ![](docs/screenshots/live_01_home.png) | ![](docs/screenshots/live_02_results.png) | ![](docs/screenshots/live_03_itinerary.png) | ![](docs/screenshots/live_04_stop_board.png) | ![](docs/screenshots/live_05_next_buses.png) |
 
-## What it does (v1)
+## What it does
 
-- **City picker** on first launch, remembered; every screen is scoped to `/{city}`.
-- **Home map** (OpenFreeMap vector tiles, no API key) with nearby stops that
-  follow the camera, a **live vehicles** layer fed by the API's SSE stream
-  (full frame + deltas), search bar, my-location, long-press to set a point.
-- **Trip planner**: origin/destination with geocode autocomplete (GTFS stops +
-  Photon), "my location", depart-at / arrive-by, mode chips, wheelchair.
-- **Results** as cards (duration, times, transfers, walk, coloured route chips,
-  live badge, alert icon) and an **itinerary detail** with map (coloured legs,
-  dashed walking, boarding/alighting stops) plus a timeline with walking steps,
-  intermediate stops, delays and alerts. Share as an `opentransit://` deep link.
-- **Stop detail** with departures auto-refreshing every 20 s (countdown, live /
-  scheduled / cancelled, delay), routes serving the stop, relevant alerts.
-- **Route detail** with pattern on the map, direction switch, live vehicles on
-  that route, ordered stop list.
-- **Vehicle detail** (tap a bus): route, headsign, next stop + ETA, delay,
-  speed, occupancy, recent trail.
-- **Alerts**, **favorites** (stops, routes, places; stored on device),
-  **settings** (city, language es/en, theme, accessibility, walking distance,
-  live layer toggle).
-- Graceful error/offline states everywhere; the app never crashes when the API
-  is down.
+**v1.1 — the best of TransMi App and Maas, on open data** (see the plan in the
+workspace `ROADMAP-v1.1.md`):
+
+- **Question-led home hub** — "¿Qué quieres consultar?" tiles (Planear viaje ·
+  Ubica tu bus · Paradas cerca · Buscar ruta · Buses en vivo · Alertas ·
+  Favoritos) over a "Estaciones y paradas cerca" card, an alert carousel
+  (severity-sorted, dismissible, max 3 impressions per alert) and the city's
+  partner hand-off tiles (`services[]`: recharge, PQRS…).
+- **Ubica tu bus** — station → route chips → next buses labelled **En vivo /
+  Por programación / Estimado**, stops away and distance, with the route's
+  buses drawn on a map tinted by ETA bucket (≤5 · ≤10 · ≤15 min).
+- **Arrival board** on every stop — grouped by route: "Siguiente en 5 min ·
+  luego 10, 15 y 20", live/scheduled badge per time, auto-refresh from the
+  city's `config.departuresRefreshSeconds`. Works against older APIs too (the
+  client groups the flat departures list itself).
+- **Freshness everywhere** — "En vivo" · "Programado" · "Sin datos en vivo
+  hace N s", from `/health` and per-response `freshness`.
+- **Live buses** coloured by component, culled to the viewport and
+  **interpolated** between SSE frames (10 Hz ticker, eased) so they glide
+  instead of jumping.
+- **Service hours** — "Fuera de horario · próximo 04:30" on routes, boards and
+  favorites, from `RouteRef.serviceWindow`.
+- **Tarifa estimada** — the API's fare, or a client estimate from
+  `city.fares` (base, transfer, window, max transfers) with a breakdown;
+  always marked as estimated.
+- **Sorting chips** — Más rápido · Menos transbordos · Menos caminata · Más
+  económico · Salida más próxima.
+- **Component icons & colours** from `city.components[]` (Troncal, Alimentador,
+  Dual, Zonal, TransMiCable…), no hard-coded palette.
+- **Typed favorites** — Casa / Trabajo / custom icon; stops show their live
+  board and routes their service hours right on the favorites screen; the last
+  10 trips are kept for one-tap replanning.
+- **Remote config** — forced-update and maintenance screens
+  (`config.minAppVersion`, `config.maintenance`), feature flags that hide
+  modules, poll intervals.
+- **Deep links** — custom scheme plus **App Links / Universal Links** for the
+  canonical `https://<web-host>/{city}/...` URLs; sharing emits those URLs.
+- **Iniciar viaje** — follow-along mode: current leg highlighted, progress,
+  and a local "Próxima parada es la tuya" notification when you are within
+  ~300 m of your alighting stop (foreground location only, no backend).
+- **Station services layer** — bike parking, toilets, ATMs, health points and
+  libraries from `/pois` (OSM), toggleable on the map.
+- **Honest accessibility** — the feed's blanket "accessible" flag is shown as
+  *no verificado* with its source; real verification comes from the API.
+- **Nearby-first search**, **Llegar en bici a la estación** (BICYCLE + TRANSIT)
+  and **PQRS hand-off** links (never an in-app reporter).
+
+Plus everything from v1: city picker, map with nearby stops, planner with
+geocode autocomplete and my-location, itinerary detail with coloured legs and
+walking steps, route detail with live buses, vehicle detail, alerts, settings
+(city, es/en, theme, accessibility, walking distance), offline-safe error
+states.
 
 ## Quickstart
 
@@ -67,6 +102,7 @@ Without `API_URL` the app defaults to `http://localhost:8001` on iOS and
 |---|---|---|
 | `MOCK` | `false` | use `assets/fixtures/*.json` instead of the network |
 | `API_URL` | platform default above | base URL of opentransit-api |
+| `WEB_HOST` | `opentransit.example.org` | host of the web app whose `https://` URLs this app claims and shares |
 | `MAP_STYLE` | `https://tiles.openfreemap.org/styles/liberty` | MapLibre style (light) |
 | `MAP_STYLE_DARK` | `https://tiles.openfreemap.org/styles/dark` | MapLibre style (dark) |
 
@@ -74,68 +110,77 @@ Without `API_URL` the app defaults to `http://localhost:8001` on iOS and
 
 ```bash
 flutter analyze --fatal-infos
-flutter test
-tool/screenshots.sh            # iOS simulator walkthrough (mock) → docs/screenshots/
+flutter test                                         # 70 unit + widget tests
+tool/screenshots.sh                                  # iOS simulator walkthrough (mock) → docs/screenshots/
+tool/screenshots.sh "" integration_test/forced_update_test.dart   # forced-update screen
 tool/screenshots.sh "" integration_test/live_api_test.dart \
-  --dart-define=API_URL=http://localhost:8001   # same, against a running API
+  --dart-define=API_URL=http://localhost:8001        # same, against a running API
 ```
 
 ## Mock mode
 
 `MockApiClient` implements the same `ApiClient` interface as the HTTP client and
 serves the JSON under `assets/fixtures/` (Bogotá + a Medellín stub, three
-itineraries Portal Norte → Portal Sur, stops, departures, ~30 vehicles that
-move along their routes every 4 s, alerts, geocode results). Timestamps in the
-fixtures are shifted so they are always "around now". Regenerate the fixtures
-with `python3 tool/gen_fixtures.py` if you change the shapes.
+itineraries Portal Norte → Portal Sur with estimated fares, stops with boards,
+next buses, ~30 vehicles that move along their routes every 4 s, alerts, POIs,
+geocode results, health). Timestamps are shifted so they are always "around
+now". Regenerate with `python3 tool/gen_fixtures.py` if you change the shapes.
 
 ## Project layout
 
 ```
 lib/
-  main.dart, app.dart, router.dart          bootstrap, MaterialApp.router, routes
+  main.dart, app.dart, router.dart          bootstrap, MaterialApp.router (+ ConfigGate), routes
   core/
-    config.dart                             dart-defines
-    api/       api_client.dart (interface) · http_api_client.dart (dio) · mock_api_client.dart · sse.dart
-    models/    city · plan (Place, Leg, Itinerary, PlanRequest, GeocodeResult) · transit (RouteRef, Stop, Departure, RouteDetail, TransitAlert) · vehicle
-    providers.dart                          Riverpod providers (settings, cities, favorites, data, live stream)
-    storage/   preferences.dart · favorites.dart
+    config.dart                             dart-defines (API_URL, MOCK, WEB_HOST, map styles)
+    api/       api_client.dart (interface) · http_api_client.dart (dio, v1.1 fallbacks) · mock_api_client.dart · sse.dart
+    models/    city (components, fares, config, links, services) · plan · transit (serviceWindow, accessibility) · live (board, next, pois, health) · vehicle
+    live/      interpolation.dart            eased vehicle interpolation between frames
+    providers.dart                          Riverpod: settings, cities, health, favorites, recents, alert impressions, boards, next buses, pois, live stream
+    storage/   preferences · favorites (typed favorites, recent trips, alert impressions)
     theme/     app_theme.dart               Material 3 seeded from the city colour
-    utils/     polyline · geo · colors · format · location
-    widgets/   transit_map.dart (MapLibre + GeoJSON overlays) · common.dart (RouteChip, LiveBadge, ErrorView…)
+    utils/     fare · service_window · eta · version · links (canonical https) · notifications · polyline · geo · colors · format · location
+    widgets/   transit_map.dart (MapLibre + GeoJSON overlays incl. POIs) · common.dart (RouteChip, ComponentBadge, FreshnessLabel, ServiceHint, FareText…)
   features/
-    cities/ home/ planner/ stops/ routes/ live/ alerts/ favorites/ settings/
+    home/ (hub tiles, alert carousel) · locate/ (Ubica tu bus) · planner/ (plan, results + sorting, itinerary + fare, follow-along)
+    stops/ (board) · routes/ (list, detail) · live/ · alerts/ · favorites/ (typed, save sheet) · settings/ · config/ (gate) · cities/
   l10n/       app_es.arb (source) · app_en.arb · generated/
 assets/fixtures/                            mock data
-integration_test/screenshots_test.dart      screen walkthrough used by tool/screenshots.sh
+integration_test/                           screenshots_test · forced_update_test · live_api_test (cues for tool/screenshots.sh)
 test/                                       unit + widget tests
 ```
 
 ## API contract
 
-The app consumes `opentransit-api` v1 (`/v1/cities/{city}/…`). Ids for stops,
-routes and trips are opaque, feed-scoped strings (`bogota:1234`). Times are
-ISO-8601 with offset and are displayed in the device's local time. See the
-`docs/api-contract.md` in the API repo for the full schema; the Dart models in
-`lib/core/models/` mirror it field by field.
+The app consumes `opentransit-api` v1/v1.1 (`/v1/cities/{city}/…`). Ids for
+stops, routes and trips are opaque, feed-scoped strings (`bogota:1234`). Times
+are ISO-8601 with offset and are displayed in the device's local time. The
+Dart models in `lib/core/models/` mirror the contract field by field; every
+v1.1 field is optional so the app keeps working against a v1 API (boards are
+grouped client-side, fares estimated from city parameters when present).
 
 ## Adding a city
 
 Nothing changes in this repo. When `opentransit-api` lists a new city in
-`GET /v1/cities`, it shows up in the picker with its own colour, modes, bounding
-box and feature flags (`realtimeVehicles`, `tripUpdates`, `alerts`, `fares`).
-Screens hide what a city does not support (e.g. the live layer toggle).
+`GET /v1/cities`, it shows up in the picker with its own colour, modes,
+bounding box, component palette, fare parameters, feature flags, links and
+partner tiles. Screens hide what a city does not support.
 
 ## Deep links
 
-`opentransit://{city}/plan?fromLat=4.75&fromLon=-74.04&toLat=4.59&toLon=-74.16&fromName=Portal%20Norte&toName=Portal%20Sur[&time=ISO][&arriveBy=true]`
+Custom scheme:
+`opentransit://{city}/plan?fromLat=4.75&fromLon=-74.04&toLat=4.59&toLon=-74.16&fromName=Portal%20Norte&toName=Portal%20Sur[&time=ISO][&arriveBy=true]`,
+`opentransit://{city}/stops/{stopId}`, `.../routes/{routeId}`, `.../locate?stop=&route=`, `.../alerts`.
 
-Also `opentransit://{city}/stops/{stopId}`, `.../routes/{routeId}`, `.../alerts`.
-The scheme is registered in `ios/Runner/Info.plist` and
-`android/app/src/main/AndroidManifest.xml`.
+Canonical web URLs (`https://<WEB_HOST>/{city}/...`) open in the app too. The
+placeholder host `opentransit.example.org` lives in
+`android/app/src/main/AndroidManifest.xml` (App Links intent filter) and
+`ios/Runner/Runner.entitlements` (associated domains); replace it with the
+deployed web host, keep the `WEB_HOST` dart-define in sync, and publish
+`/.well-known/assetlinks.json` and `apple-app-site-association` on that host.
 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Data attribution for Bogotá:
 TRANSMILENIO S.A. (GTFS / GTFS-RT). Map: © OpenMapTiles © OpenStreetMap
-contributors, tiles by OpenFreeMap.
+contributors, tiles by OpenFreeMap. POIs: © OpenStreetMap contributors.

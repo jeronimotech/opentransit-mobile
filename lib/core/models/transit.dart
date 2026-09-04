@@ -145,6 +145,13 @@ class Stop {
         verified: false,
       );
 
+  /// Same stop with an inferred component (parent stations come without one).
+  Stop withComponent(Component? c) => Stop(
+        id: id, code: code, name: name, position: position, locationType: locationType,
+        component: c ?? component, wheelchair: wheelchair, parentStationId: parentStationId,
+        accessibility: accessibility, distanceMeters: distanceMeters,
+      );
+
   Stop copyWith({int? distanceMeters}) => Stop(
         id: id, code: code, name: name, position: position,
         locationType: locationType, component: component, wheelchair: wheelchair,
@@ -167,6 +174,17 @@ class Stop {
                 Map<String, dynamic>.from(j['accessibility'] as Map))
             : null,
       );
+}
+
+/// Most frequent component among [routes] (null when none carry one).
+Component? dominantComponent(Iterable<RouteRef> routes) {
+  final counts = <Component, int>{};
+  for (final r in routes) {
+    final c = r.component;
+    if (c != null && c != Component.other) counts[c] = (counts[c] ?? 0) + 1;
+  }
+  if (counts.isEmpty) return null;
+  return counts.entries.reduce((a, b) => b.value > a.value ? b : a).key;
 }
 
 class StopDetail {

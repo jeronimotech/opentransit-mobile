@@ -37,7 +37,8 @@ class StopDetailScreen extends ConsumerWidget {
         body: ErrorView(error: e, onRetry: () => ref.invalidate(stopDetailProvider(key))),
       ),
       data: (d) {
-        final stop = d.stop;
+        // Parent stations arrive without a component: infer it from their routes.
+        final stop = d.stop.component == null ? d.stop.withComponent(dominantComponent(d.routes)) : d.stop;
         final fav = Favorite.stop(cityId, stop);
         final isFav = ref.watch(favoritesProvider).any((f) => f.key == fav.key);
         final color = componentColor(stop.component, city: city);

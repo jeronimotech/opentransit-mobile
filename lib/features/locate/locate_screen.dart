@@ -212,14 +212,18 @@ class _RouteAndBuses extends ConsumerWidget {
         // short name: group by short name for the chips.
         final seen = <String>{};
         final routes = [for (final r in d.routes) if (seen.add(r.shortName)) r];
-        final selected = routes.where((r) => r.id == routeId).firstOrNull;
+        // Match by id against the full list (dedupe may have kept a sibling
+        // direction's id), then by short name, so deep links always resolve.
+        final byId = d.routes.where((r) => r.id == routeId).firstOrNull;
+        final selected = byId == null ? null : (routes.where((r) => r.shortName == byId.shortName).firstOrNull ?? byId);
+        final stop = d.stop.component == null ? d.stop.withComponent(dominantComponent(d.routes)) : d.stop;
         return ListView(
           padding: const EdgeInsets.only(bottom: 32),
           children: [
             ListTile(
-              leading: ComponentBadge(d.stop.component, isStation: d.stop.isStation),
-              title: Text(d.stop.name, style: const TextStyle(fontWeight: FontWeight.w700)),
-              subtitle: Text(d.stop.isStation ? l10n.station : l10n.stop),
+              leading: ComponentBadge(stop.component, isStation: stop.isStation),
+              title: Text(stop.name, style: const TextStyle(fontWeight: FontWeight.w700)),
+              subtitle: Text(stop.isStation ? l10n.station : l10n.stop),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/$cityId/stops/${Uri.encodeComponent(stopId)}'),
             ),
@@ -248,7 +252,7 @@ class _RouteAndBuses extends ConsumerWidget {
                           padding: const EdgeInsets.all(2),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: r.id == routeId ? scheme.primary : Colors.transparent, width: 2),
+                            border: Border.all(color: r.shortName == selected?.shortName ? scheme.primary : Colors.transparent, width: 2),
                           ),
                           child: RouteChip(r),
                         ),
@@ -262,7 +266,7 @@ class _RouteAndBuses extends ConsumerWidget {
                 child: Text(l10n.selectRoute, style: TextStyle(color: scheme.onSurfaceVariant)),
               )
             else
-              _NextBuses(cityId: cityId, stop: d.stop, route: selected),
+              _NextBuses(cityId: cityId, stop: stop, route: selected),
           ],
         );
       },

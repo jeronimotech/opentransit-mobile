@@ -157,6 +157,16 @@ void main() {
     });
   });
 
+  group('dominant component', () {
+    test('picks the most frequent route component, null when unknown', () {
+      final routes = asList(loadFixture('routes')['routes'], RouteRef.fromJson);
+      expect(dominantComponent(routes), Component.trunk);
+      expect(dominantComponent(const []), isNull);
+      final s = const Stop(id: 'x', name: 'x', position: LatLng(0, 0), locationType: 'station');
+      expect(s.withComponent(Component.zonal).component, Component.zonal);
+    });
+  });
+
   group('accessibility', () {
     test('explicit block is used, legacy field is unverified', () {
       final stops = loadFixture('stops');
@@ -215,8 +225,8 @@ void main() {
       expect(compareVersions('1.2', '1.2.0'), 0);
       expect(compareVersions('0.9.9', '1.0.0'), lessThan(0));
       expect(compareVersions('1.10.0+5', '1.9.9'), greaterThan(0));
-      expect(needsUpdate('0.2.0', '0.3.0'), isTrue);
-      expect(needsUpdate('0.2.0', '0.2.0'), isFalse);
+      expect(needsUpdate('1.0.0', '1.1.0'), isTrue);
+      expect(needsUpdate('1.0.0', '1.0.0'), isFalse);
       expect(needsUpdate('0.2.0', null), isFalse);
       expect(needsUpdate('0.2.0', ''), isFalse);
     });

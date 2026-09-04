@@ -30,7 +30,7 @@ class AppConfig {
     defaultValue: 'https://tiles.openfreemap.org/styles/dark',
   );
 
-  static const String appVersion = '0.2.0';
+  static const String appVersion = '1.0.0';
   static const String deepLinkScheme = 'opentransit';
 
   /// Host of the web app whose `https://<host>/{city}/...` URLs this app
