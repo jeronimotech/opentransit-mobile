@@ -26,7 +26,14 @@
      "textColor": "#FFFFFF",
      "mode": "BUS",
      "agencyId": "1",
-     "component": "trunk"
+     "component": "trunk",
+     "serviceWindow": {
+      "start": "04:00",
+      "end": "23:00",
+      "active": true,
+      "nextStart": null,
+      "source": "gtfs"
+     }
     },
     {
      "id": "bogota:K43",
@@ -36,7 +43,14 @@
      "textColor": "#FFFFFF",
      "mode": "BUS",
      "agencyId": "1",
-     "component": "trunk"
+     "component": "trunk",
+     "serviceWindow": {
+      "start": "04:00",
+      "end": "23:00",
+      "active": true,
+      "nextStart": null,
+      "source": "gtfs"
+     }
     }
    ]
   },
@@ -63,7 +77,14 @@
      "textColor": "#FFFFFF",
      "mode": "CABLE_CAR",
      "agencyId": "7",
-     "component": "cable"
+     "component": "cable",
+     "serviceWindow": {
+      "start": "05:00",
+      "end": "09:00",
+      "active": false,
+      "nextStart": "14:00",
+      "source": "gtfs"
+     }
     }
    ]
   },
@@ -90,7 +111,14 @@
      "textColor": "#FFFFFF",
      "mode": "BUS",
      "agencyId": "4",
-     "component": "zonal"
+     "component": "zonal",
+     "serviceWindow": {
+      "start": "04:00",
+      "end": "23:00",
+      "active": true,
+      "nextStart": null,
+      "source": "gtfs"
+     }
     }
    ]
   }

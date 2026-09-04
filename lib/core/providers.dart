@@ -36,6 +36,8 @@ class AppSettings {
     this.wheelchair = false,
     this.maxWalkDistance = 1500,
     this.liveVehicles = true,
+    this.poiLayer = false,
+    this.bikeToStation = false,
   });
   final String? cityId;
 
@@ -45,6 +47,8 @@ class AppSettings {
   final bool wheelchair;
   final int maxWalkDistance;
   final bool liveVehicles;
+  final bool poiLayer;
+  final bool bikeToStation;
 
   AppSettings copyWith({
     String? cityId,
@@ -55,6 +59,8 @@ class AppSettings {
     bool? wheelchair,
     int? maxWalkDistance,
     bool? liveVehicles,
+    bool? poiLayer,
+    bool? bikeToStation,
   }) =>
       AppSettings(
         cityId: clearCity ? null : (cityId ?? this.cityId),
@@ -63,6 +69,8 @@ class AppSettings {
         wheelchair: wheelchair ?? this.wheelchair,
         maxWalkDistance: maxWalkDistance ?? this.maxWalkDistance,
         liveVehicles: liveVehicles ?? this.liveVehicles,
+        poiLayer: poiLayer ?? this.poiLayer,
+        bikeToStation: bikeToStation ?? this.bikeToStation,
       );
 }
 
@@ -78,6 +86,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
       wheelchair: p.wheelchair,
       maxWalkDistance: p.maxWalkDistance,
       liveVehicles: p.liveVehicles,
+      poiLayer: p.poiLayer,
+      bikeToStation: p.bikeToStation,
     );
   }
 
@@ -112,6 +122,16 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = state.copyWith(liveVehicles: v);
     await _p.setLiveVehicles(v);
   }
+
+  Future<void> setPoiLayer(bool v) async {
+    state = state.copyWith(poiLayer: v);
+    await _p.setPoiLayer(v);
+  }
+
+  Future<void> setBikeToStation(bool v) async {
+    state = state.copyWith(bikeToStation: v);
+    await _p.setBikeToStation(v);
+  }
 }
 
 final settingsProvider =
@@ -133,7 +153,21 @@ final cityProvider = FutureProvider.family<City, String>((ref, id) async {
   return ref.watch(apiClientProvider).city(id);
 });
 
-// ───────────────────────── favorites ─────────────────────────
+/// The selected city once loaded (null before the first load).
+final currentCityProvider = Provider<City?>((ref) {
+  final id = ref.watch(settingsProvider).cityId;
+  if (id == null) return null;
+  return ref.watch(cityProvider(id)).asData?.value;
+});
+
+/// Feed health, refreshed every 30 s while watched; drives freshness labels.
+final healthProvider = FutureProvider.autoDispose.family<CityHealth, String>((ref, cityId) {
+  final timer = Timer(const Duration(seconds: 30), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  return ref.watch(apiClientProvider).health(cityId);
+});
+
+// ───────────────────────── favorites / recents / alerts bookkeeping ─────────────────────────
 
 class FavoritesNotifier extends Notifier<List<Favorite>> {
   @override
@@ -150,14 +184,69 @@ class FavoritesNotifier extends Notifier<List<Favorite>> {
     await FavoritesRepository(ref.read(sharedPrefsProvider)).save(next);
   }
 
+  /// Adds or replaces (same key) — used for Casa/Trabajo which are singletons.
+  Future<void> put(Favorite f) async {
+    state = [...state.where((x) => x.key != f.key), f];
+    await FavoritesRepository(ref.read(sharedPrefsProvider)).save(state);
+  }
+
   Future<void> remove(Favorite f) async {
     state = state.where((x) => x.key != f.key).toList();
     await FavoritesRepository(ref.read(sharedPrefsProvider)).save(state);
   }
+
+  Favorite? ofKind(String cityId, FavoriteKind kind) => state
+      .where((f) => f.cityId == cityId && f.type == FavoriteType.place && f.kind == kind)
+      .firstOrNull;
 }
 
 final favoritesProvider =
     NotifierProvider<FavoritesNotifier, List<Favorite>>(FavoritesNotifier.new);
+
+class RecentTripsNotifier extends Notifier<List<RecentTrip>> {
+  RecentTripsRepository get _repo => RecentTripsRepository(ref.read(sharedPrefsProvider));
+
+  @override
+  List<RecentTrip> build() => RecentTripsRepository(ref.watch(sharedPrefsProvider)).load();
+
+  Future<void> add(RecentTrip t) async {
+    state = _repo.push(state, t);
+    await _repo.save(state);
+  }
+
+  Future<void> clear(String cityId) async {
+    state = state.where((t) => t.cityId != cityId).toList();
+    await _repo.save(state);
+  }
+}
+
+final recentTripsProvider =
+    NotifierProvider<RecentTripsNotifier, List<RecentTrip>>(RecentTripsNotifier.new);
+
+/// Alert ids hidden from the Home carousel (dismissed or over the cap).
+class AlertImpressionsNotifier extends Notifier<Set<String>> {
+  AlertImpressionsRepository get _repo => AlertImpressionsRepository(ref.read(sharedPrefsProvider));
+
+  @override
+  Set<String> build() => {};
+
+  bool shouldShow(String id) => !state.contains(id) && _repo.shouldShow(id);
+
+  Future<void> dismiss(String id) async {
+    state = {...state, id};
+    await _repo.dismiss(id);
+  }
+
+  /// Counts one impression per alert per app session.
+  final Set<String> _counted = {};
+  Future<void> recordImpression(String id) async {
+    if (!_counted.add(id)) return;
+    await _repo.recordImpression(id);
+  }
+}
+
+final alertImpressionsProvider =
+    NotifierProvider<AlertImpressionsNotifier, Set<String>>(AlertImpressionsNotifier.new);
 
 // ───────────────────────── data ─────────────────────────
 
@@ -198,15 +287,46 @@ class CityKey {
   int get hashCode => Object.hash(cityId, id);
 }
 
+class StopRouteKey {
+  const StopRouteKey(this.cityId, this.stopId, this.routeId);
+  final String cityId;
+  final String stopId;
+  final String routeId;
+  @override
+  bool operator ==(Object other) =>
+      other is StopRouteKey && other.cityId == cityId && other.stopId == stopId && other.routeId == routeId;
+  @override
+  int get hashCode => Object.hash(cityId, stopId, routeId);
+}
+
+/// Refresh cadence for departures/boards, from the city's remote config.
+Duration _refreshFor(Ref ref, String cityId) {
+  final c = ref.read(cityProvider(cityId)).asData?.value;
+  return Duration(seconds: (c?.config.departuresRefreshSeconds ?? 20).clamp(5, 300));
+}
+
 final stopDetailProvider = FutureProvider.autoDispose.family<StopDetail, CityKey>(
     (ref, k) => ref.watch(apiClientProvider).stop(k.cityId, k.id));
 
 final departuresProvider =
     FutureProvider.autoDispose.family<DeparturesResponse, CityKey>((ref, k) {
-  // Auto-refresh every 20 s while someone is listening.
-  final timer = Timer(const Duration(seconds: 20), () => ref.invalidateSelf());
+  final timer = Timer(_refreshFor(ref, k.cityId), () => ref.invalidateSelf());
   ref.onDispose(timer.cancel);
   return ref.watch(apiClientProvider).departures(k.cityId, k.id);
+});
+
+final boardProvider =
+    FutureProvider.autoDispose.family<BoardResponse, CityKey>((ref, k) {
+  final timer = Timer(_refreshFor(ref, k.cityId), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  return ref.watch(apiClientProvider).board(k.cityId, k.id);
+});
+
+final nextBusesProvider =
+    FutureProvider.autoDispose.family<NextBusesResponse, StopRouteKey>((ref, k) {
+  final timer = Timer(_refreshFor(ref, k.cityId), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  return ref.watch(apiClientProvider).nextBuses(k.cityId, k.stopId, k.routeId);
 });
 
 final routeDetailProvider = FutureProvider.autoDispose.family<RouteDetail, CityKey>(
@@ -220,6 +340,26 @@ final alertsProvider = FutureProvider.autoDispose.family<List<TransitAlert>, Str
 
 final vehicleDetailProvider = FutureProvider.autoDispose.family<VehicleDetail, CityKey>(
     (ref, k) => ref.watch(apiClientProvider).vehicle(k.cityId, k.id));
+
+class BboxQuery {
+  BboxQuery(this.cityId, List<double> bbox, {this.types})
+      : bbox = bbox.map((v) => (v * 1e3).round() / 1e3).toList(growable: false);
+  final String cityId;
+  final List<double> bbox;
+  final List<String>? types;
+  @override
+  bool operator ==(Object other) =>
+      other is BboxQuery &&
+      other.cityId == cityId &&
+      other.bbox.length == bbox.length &&
+      other.bbox.indexed.every((e) => e.$2 == bbox[e.$1]) &&
+      (other.types?.join(',') ?? '') == (types?.join(',') ?? '');
+  @override
+  int get hashCode => Object.hash(cityId, Object.hashAll(bbox), types?.join(','));
+}
+
+final poisProvider = FutureProvider.autoDispose.family<List<Poi>, BboxQuery>(
+    (ref, q) => ref.watch(apiClientProvider).pois(q.cityId, q.bbox, types: q.types));
 
 /// Live fleet for a city, folded from the SSE stream. Reconnects after 5 s on
 /// error; the last good frame is kept so the map never flickers empty.

@@ -64,6 +64,10 @@ class HttpApiClient implements ApiClient {
   Future<City> city(String cityId) async => City.fromJson(await _get(_c(cityId)));
 
   @override
+  Future<CityHealth> health(String cityId) async =>
+      CityHealth.fromJson(await _get('${_c(cityId)}/health'));
+
+  @override
   Future<PlanResponse> plan(String cityId, PlanRequest request) async =>
       PlanResponse.fromJson(
           await _get('${_c(cityId)}/plan', query: request.toQuery()));
@@ -117,6 +121,69 @@ class HttpApiClient implements ApiClient {
       ));
 
   @override
+  Future<BoardResponse> board(String cityId, String stopId,
+      {int minutes = 60, int perRoute = 3}) async {
+    try {
+      return BoardResponse.fromJson(await _get(
+        '${_c(cityId)}/stops/${Uri.encodeComponent(stopId)}/board',
+        query: {'minutes': minutes, 'perRoute': perRoute},
+      ));
+    } on ApiException catch (e) {
+      // Older API without /board: group the flat departures list ourselves.
+      if (!e.isNotFound || e.code == 'STOP_NOT_FOUND') rethrow;
+      final d = await departures(cityId, stopId, limit: 60, minutes: minutes);
+      return BoardResponse.fromDepartures(d, perRoute: perRoute);
+    }
+  }
+
+  @override
+  Future<NextBusesResponse> nextBuses(String cityId, String stopId, String routeId,
+      {int limit = 3}) async {
+    try {
+      return NextBusesResponse.fromJson(await _get(
+        '${_c(cityId)}/stops/${Uri.encodeComponent(stopId)}/routes/${Uri.encodeComponent(routeId)}/next',
+        query: {'limit': limit},
+      ));
+    } on ApiException catch (e) {
+      // Older API without /next: derive scheduled rows from the board and
+      // attach live buses of that route from the vehicles snapshot.
+      if (!e.isNotFound || e.code == 'STOP_NOT_FOUND' || e.code == 'ROUTE_NOT_FOUND') rethrow;
+      final b = await board(cityId, stopId, perRoute: limit);
+      final rows = b.rows.where((r) => r.route.id == routeId).toList();
+      final route = rows.isNotEmpty
+          ? rows.first.route
+          : (await stop(cityId, stopId)).routes.firstWhere((r) => r.id == routeId,
+              orElse: () => throw ApiException('ROUTE_NOT_FOUND', 'route $routeId not at $stopId', status: 404));
+      final times = [for (final r in rows) ...r.next]..sort((a, b) => a.time.compareTo(b.time));
+      VehicleFrame? frame;
+      try {
+        frame = await vehicles(cityId, routeId: routeId);
+      } catch (_) {}
+      return NextBusesResponse(
+        stop: b.stop,
+        route: route,
+        freshness: b.freshness,
+        next: [
+          for (final t in times.take(limit))
+            NextBus(
+              minutes: t.minutes, time: t.time,
+              source: t.realtime ? 'live' : 'scheduled',
+              vehicle: t.vehicleId == null ? null : frame?.vehicles[t.vehicleId!],
+              tripId: t.tripId,
+            ),
+        ],
+      );
+    }
+  }
+
+  @override
+  Future<List<Poi>> pois(String cityId, List<double> bbox, {List<String>? types}) async =>
+      Poi.fromCollection(await _get('${_c(cityId)}/pois', query: {
+        'bbox': bbox.join(','),
+        if (types != null && types.isNotEmpty) 'type': types.join(','),
+      }));
+
+  @override
   Future<List<RouteRef>> routes(String cityId,
       {Component? component, String? query}) async {
     final j = await _get('${_c(cityId)}/routes', query: {
@@ -145,13 +212,18 @@ class HttpApiClient implements ApiClient {
       }));
 
   @override
-  Stream<Map<String, dynamic>> vehicleEvents(String cityId) async* {
+  Stream<Map<String, dynamic>> vehicleEvents(String cityId,
+      {List<double>? bbox, List<String>? routeIds}) async* {
     final cancel = CancelToken();
     Response<ResponseBody> r;
     try {
       r = await _dio.get<ResponseBody>(
         '${_c(cityId)}/vehicles/stream',
-        queryParameters: const {'deltas': 'true'},
+        queryParameters: {
+          'deltas': 'true',
+          if (bbox != null) 'bbox': bbox.join(','),
+          if (routeIds != null && routeIds.isNotEmpty) 'routeIds': routeIds.join(','),
+        },
         cancelToken: cancel,
         options: Options(
           responseType: ResponseType.stream,

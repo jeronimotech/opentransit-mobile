@@ -190,10 +190,65 @@ geocode=[
 ]
 health={"static":{"feedVersion":"20260904","fetchedAt":t(-3600),"routes":1024,"stops":8309},"realtime":{"lastFetchAt":t(-12),"entityAgeP50Seconds":20,"vehicles":len(vehicles),"pctTripResolved":89.1,"alerts":3},"router":{"up":True,"version":"2.10.0","graphBuiltAt":t(-86400)}}
 
+
+# ───────────── v1.1 additions (components, fares, config, service windows, board, next, pois) ─────────────
+city["components"]=[{"id":"trunk","label":"Troncal","color":"#D32F2F","icon":"brt"},{"id":"feeder","label":"Alimentador","color":"#2E7D32","icon":"bus"},
+  {"id":"dual","label":"Dual","color":"#6A1B9A","icon":"bus"},{"id":"zonal","label":"Zonal","color":"#1565C0","icon":"bus"},{"id":"cable","label":"TransMiCable","color":"#EF6C00","icon":"cable"}]
+city["fares"]={"currency":"COP","base":3200,"transfer":0,"transferWindowMinutes":110,"maxTransfers":2,"note":"Valores configurables; verificar con tarifa vigente","estimated":True}
+city["config"]={"vehiclePollSeconds":15,"departuresRefreshSeconds":20,"features":{"liveVehicles":True,"board":True,"pois":True,"followAlong":True,"bike":True},
+  "minAppVersion":{"ios":"0.1.0","android":"0.1.0"},"maintenance":{"active":False,"message":None}}
+city["links"]={"pqrs":"https://www.transmilenio.gov.co/publicaciones/147212/pqrs/","recharge":"https://www.tullaveplus.gov.co","support":"https://www.transmilenio.gov.co","privacy":None}
+city["services"]=[{"id":"recharge","label":"Recargar tullave","icon":"card","url":"https://www.tullaveplus.gov.co","kind":"external"},
+  {"id":"pqrs","label":"PQRS","icon":"help","url":"https://www.transmilenio.gov.co/publicaciones/147212/pqrs/","kind":"external"}]
+city2["components"]=[{"id":"rail","label":"Metro","color":"#00838F","icon":"rail"}]
+city2["fares"]={"currency":"COP","base":3350,"transfer":0,"transferWindowMinutes":90,"maxTransfers":1,"note":"Tarifa estimada","estimated":True}
+city2["config"]=city["config"]; city2["links"]={"pqrs":None,"recharge":None,"support":"https://www.metrodemedellin.gov.co","privacy":None}; city2["services"]=[]
+
+for r in ROUTES:
+    r["serviceWindow"]={"start":"04:00","end":"23:00","active":True,"nextStart":None,"source":"gtfs"}
+R_L10["serviceWindow"]={"start":"05:00","end":"09:00","active":False,"nextStart":"14:00","source":"gtfs"}
+R_F1["serviceWindow"]={"start":"04:30","end":"22:00","active":True,"nextStart":None,"source":"gtfs"}
+
+for s_ in STOPS:
+    s_["accessibility"]={"wheelchair":s_["wheelchair"],"source":"gtfs" if s_["wheelchair"]!="unknown" else "none","verified":False,
+                         "note":"Dato del feed no verificado" if s_["wheelchair"]!="unknown" else None}
+
+def fare_for(it):
+    n=sum(1 for l in it["legs"] if l["transit"])
+    if n==0: return None
+    transfers=min(n-1, 2)
+    return {"amount":3200+0*transfers,"currency":"COP","estimated":True,"breakdown":[{"label":"Pasaje","amount":3200}]+([{"label":"Transbordo","amount":0}] if transfers else [])}
+for it in (it1,it2,it3): it["fare"]=fare_for(it)
+
+def _mins(off): return int(round(off/60))
+board={"stop":S_PN,"generatedAt":t(0),"freshness":{"realtime":True,"ageSeconds":18,"stale":False},"rows":[
+  {"route":R_B10,"headsign":"Portal Sur","next":[{"time":t(300),"minutes":5,"realtime":True,"delaySeconds":120,"tripId":"bogota:B10-0803","vehicleId":"V4021"},
+                                                {"time":t(780),"minutes":13,"realtime":False,"delaySeconds":None,"tripId":"bogota:B10-0813","vehicleId":None},
+                                                {"time":t(1380),"minutes":23,"realtime":False,"delaySeconds":None,"tripId":"bogota:B10-0823","vehicleId":None}]},
+  {"route":R_K43,"headsign":"Ricaurte","next":[{"time":t(360),"minutes":6,"realtime":True,"delaySeconds":-60,"tripId":"bogota:K43-0807","vehicleId":"V4022"},
+                                             {"time":t(1620),"minutes":27,"realtime":False,"delaySeconds":None,"tripId":"bogota:K43-0827","vehicleId":None}]},
+  {"route":R_B74,"headsign":"Museo Nacional","next":[{"time":t(540),"minutes":9,"realtime":False,"delaySeconds":None,"tripId":"bogota:B74-0809","vehicleId":None},
+                                                    {"time":t(1200),"minutes":20,"realtime":False,"delaySeconds":None,"tripId":"bogota:B74-0820","vehicleId":None}]},
+]}
+vb10=[v for v in vehicles if v["routeId"]==R_B10["id"]]
+nxt={"stop":S_PN,"route":R_B10,"freshness":{"realtime":True,"ageSeconds":18,"stale":False},"next":[
+  {"minutes":4,"time":t(240),"source":"live","vehicle":vb10[0],"stopsAway":2,"distanceMeters":1450,"tripId":vb10[0]["tripId"]},
+  {"minutes":11,"time":t(660),"source":"estimated","vehicle":vb10[1],"stopsAway":5,"distanceMeters":4200,"tripId":vb10[1]["tripId"]},
+  {"minutes":23,"time":t(1380),"source":"scheduled","vehicle":None,"stopsAway":None,"distanceMeters":None,"tripId":"bogota:B10-0823"},
+]}
+def poi(i,typ,name,lat,lon,wc=None): return {"type":"Feature","id":f"osm:{i}","properties":{"id":f"osm:{i}","type":typ,"name":name,"source":"osm","osmId":i,"wheelchair":wc},"geometry":{"type":"Point","coordinates":[lon,lat]}}
+pois={"type":"FeatureCollection","features":[
+  poi(1001,"bike_parking","Cicloparqueadero Portal Norte",4.7552,-74.0465,"yes"),poi(1002,"toilets","Baños Portal Norte",4.7548,-74.0455),
+  poi(1003,"atm","Cajero Portal Norte",4.7543,-74.0462),poi(1004,"library","BiblioEstación Portal Norte",4.7549,-74.0450),
+  poi(1005,"bike_parking","Cicloparqueadero Calle 100",4.6862,-74.0549,"yes"),poi(1006,"health","Punto de salud Av. Jiménez",4.6010,-74.0770),
+  poi(1007,"bike_parking","Cicloparqueadero Portal Sur",4.5982,-74.1620,"yes"),poi(1008,"toilets","Baños Portal Sur",4.5975,-74.1612),
+  poi(1009,"atm","Cajero Ricaurte",4.6120,-74.0925),poi(1010,"library","BiblioEstación Ricaurte",4.6115,-74.0935)]}
+health["realtime"].update({"enabled":True,"stale":False,"staleSeconds":None})
+
 os.makedirs(OUT,exist_ok=True)
 files={"cities":{"cities":[city,city2]},"plan":plan,"stops_nearby":nearby,"stops":stops_detail,"departures":departures,
        "routes":{"routes":ROUTES},"route_detail":route_detail,"network":network,"vehicles":frame,"vehicle_detail":vehicle_detail,
-       "alerts":{"alerts":[ALERT_B10,ALERT_L10,ALERT_INFO]},"geocode":{"results":geocode},"health":health}
+       "alerts":{"alerts":[ALERT_B10,ALERT_L10,ALERT_INFO]},"geocode":{"results":geocode},"health":health,"board":board,"next":nxt,"pois":pois}
 for k,v in files.items():
     json.dump(v,open(f"{OUT}/{k}.json","w"),ensure_ascii=False,indent=1)
 print({k:os.path.getsize(f"{OUT}/{k}.json") for k in files})

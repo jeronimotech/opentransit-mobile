@@ -73,6 +73,10 @@ class ItineraryCard extends StatelessWidget {
                   Icon(Icons.directions_walk, size: 16, color: scheme.onSurfaceVariant),
                   const SizedBox(width: 4),
                   Text(l10n.walkDistance(it.walkDistanceMeters), style: Theme.of(context).textTheme.labelMedium),
+                  const SizedBox(width: 12),
+                  Icon(Icons.payments_outlined, size: 16, color: scheme.onSurfaceVariant),
+                  const SizedBox(width: 4),
+                  FareText(it),
                   const Spacer(),
                   if (alerts.isNotEmpty) ...[
                     alertIcon(alerts.first.severity, size: 16),

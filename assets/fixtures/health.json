@@ -10,7 +10,10 @@
   "entityAgeP50Seconds": 20,
   "vehicles": 34,
   "pctTripResolved": 89.1,
-  "alerts": 3
+  "alerts": 3,
+  "enabled": true,
+  "stale": false,
+  "staleSeconds": null
  },
  "router": {
   "up": true,

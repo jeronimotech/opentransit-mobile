@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/providers.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/colors.dart';
+import 'features/config/config_gate.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'router.dart';
 
@@ -23,6 +24,7 @@ class OpenTransitApp extends ConsumerWidget {
       title: 'OpenTransit',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      builder: (context, child) => ConfigGate(child: child ?? const SizedBox.shrink()),
       theme: buildTheme(seed, Brightness.light),
       darkTheme: buildTheme(seed, Brightness.dark),
       themeMode: settings.themeMode,

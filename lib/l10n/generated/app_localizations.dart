@@ -757,6 +757,654 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Accesible'**
   String get accessible;
+
+  /// No description provided for @hubTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué quieres consultar?'**
+  String get hubTitle;
+
+  /// No description provided for @tilePlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Planear viaje'**
+  String get tilePlan;
+
+  /// No description provided for @tileLocate.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubica tu bus'**
+  String get tileLocate;
+
+  /// No description provided for @tileNearby.
+  ///
+  /// In es, this message translates to:
+  /// **'Paradas cerca'**
+  String get tileNearby;
+
+  /// No description provided for @tileRoutes.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar ruta'**
+  String get tileRoutes;
+
+  /// No description provided for @tileLive.
+  ///
+  /// In es, this message translates to:
+  /// **'Buses en vivo'**
+  String get tileLive;
+
+  /// No description provided for @tileAlerts.
+  ///
+  /// In es, this message translates to:
+  /// **'Alertas'**
+  String get tileAlerts;
+
+  /// No description provided for @tileFavorites.
+  ///
+  /// In es, this message translates to:
+  /// **'Favoritos'**
+  String get tileFavorites;
+
+  /// No description provided for @nearbyCardTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estaciones y paradas cerca'**
+  String get nearbyCardTitle;
+
+  /// No description provided for @services.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicios'**
+  String get services;
+
+  /// No description provided for @messagesOfInterest.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes de interés'**
+  String get messagesOfInterest;
+
+  /// No description provided for @dismiss.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocultar'**
+  String get dismiss;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todas'**
+  String get seeAll;
+
+  /// No description provided for @locateTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubica tu bus'**
+  String get locateTitle;
+
+  /// No description provided for @locateStep1.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige una estación o parada'**
+  String get locateStep1;
+
+  /// No description provided for @locateStep2.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige la ruta'**
+  String get locateStep2;
+
+  /// No description provided for @locateNext.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximos buses'**
+  String get locateNext;
+
+  /// No description provided for @sourceLive.
+  ///
+  /// In es, this message translates to:
+  /// **'En vivo'**
+  String get sourceLive;
+
+  /// No description provided for @sourceScheduled.
+  ///
+  /// In es, this message translates to:
+  /// **'Por programación'**
+  String get sourceScheduled;
+
+  /// No description provided for @sourceEstimated.
+  ///
+  /// In es, this message translates to:
+  /// **'Estimado'**
+  String get sourceEstimated;
+
+  /// No description provided for @stopsAway.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 parada} other{{count} paradas}}'**
+  String stopsAway(int count);
+
+  /// No description provided for @noBuses.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin buses próximos para esta ruta.'**
+  String get noBuses;
+
+  /// No description provided for @searchStopHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar estación o parada'**
+  String get searchStopHint;
+
+  /// No description provided for @changeStop.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar parada'**
+  String get changeStop;
+
+  /// No description provided for @board.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximos buses'**
+  String get board;
+
+  /// No description provided for @nextIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiente en {minutes} min'**
+  String nextIn(int minutes);
+
+  /// No description provided for @thenAt.
+  ///
+  /// In es, this message translates to:
+  /// **'luego {list}'**
+  String thenAt(String list);
+
+  /// No description provided for @noBoard.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin buses en la próxima hora.'**
+  String get noBoard;
+
+  /// No description provided for @freshLive.
+  ///
+  /// In es, this message translates to:
+  /// **'En vivo'**
+  String get freshLive;
+
+  /// No description provided for @freshScheduled.
+  ///
+  /// In es, this message translates to:
+  /// **'Programado'**
+  String get freshScheduled;
+
+  /// No description provided for @freshStale.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin datos en vivo hace {seconds} s'**
+  String freshStale(int seconds);
+
+  /// No description provided for @freshNoRealtime.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin datos en vivo'**
+  String get freshNoRealtime;
+
+  /// No description provided for @outOfHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuera de horario'**
+  String get outOfHours;
+
+  /// No description provided for @nextAt.
+  ///
+  /// In es, this message translates to:
+  /// **'próximo {time}'**
+  String nextAt(String time);
+
+  /// No description provided for @noServiceToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin servicio hoy'**
+  String get noServiceToday;
+
+  /// No description provided for @serviceHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Horario'**
+  String get serviceHours;
+
+  /// No description provided for @estimatedFare.
+  ///
+  /// In es, this message translates to:
+  /// **'Tarifa estimada'**
+  String get estimatedFare;
+
+  /// No description provided for @fareNotPublished.
+  ///
+  /// In es, this message translates to:
+  /// **'Tarifa no publicada'**
+  String get fareNotPublished;
+
+  /// No description provided for @fareBase.
+  ///
+  /// In es, this message translates to:
+  /// **'Pasaje'**
+  String get fareBase;
+
+  /// No description provided for @fareTransfer.
+  ///
+  /// In es, this message translates to:
+  /// **'Transbordo'**
+  String get fareTransfer;
+
+  /// No description provided for @fareEstimatedNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Estimación con la tarifa configurada para la ciudad; puede variar.'**
+  String get fareEstimatedNote;
+
+  /// No description provided for @sortFastest.
+  ///
+  /// In es, this message translates to:
+  /// **'Más rápido'**
+  String get sortFastest;
+
+  /// No description provided for @sortFewerTransfers.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos transbordos'**
+  String get sortFewerTransfers;
+
+  /// No description provided for @sortLessWalking.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos caminata'**
+  String get sortLessWalking;
+
+  /// No description provided for @sortCheapest.
+  ///
+  /// In es, this message translates to:
+  /// **'Más económico'**
+  String get sortCheapest;
+
+  /// No description provided for @sortEarliest.
+  ///
+  /// In es, this message translates to:
+  /// **'Salida más próxima'**
+  String get sortEarliest;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar'**
+  String get sortBy;
+
+  /// No description provided for @favHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Casa'**
+  String get favHome;
+
+  /// No description provided for @favWork.
+  ///
+  /// In es, this message translates to:
+  /// **'Trabajo'**
+  String get favWork;
+
+  /// No description provided for @favCustom.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro'**
+  String get favCustom;
+
+  /// No description provided for @saveAs.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar como'**
+  String get saveAs;
+
+  /// No description provided for @recentTrips.
+  ///
+  /// In es, this message translates to:
+  /// **'Viajes recientes'**
+  String get recentTrips;
+
+  /// No description provided for @clearRecent.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrar'**
+  String get clearRecent;
+
+  /// No description provided for @setHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Fijar Casa'**
+  String get setHome;
+
+  /// No description provided for @setWork.
+  ///
+  /// In es, this message translates to:
+  /// **'Fijar Trabajo'**
+  String get setWork;
+
+  /// No description provided for @chooseIcon.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige un ícono'**
+  String get chooseIcon;
+
+  /// No description provided for @saveFavorite.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar favorito'**
+  String get saveFavorite;
+
+  /// No description provided for @favoriteName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get favoriteName;
+
+  /// No description provided for @updateRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualiza la app'**
+  String get updateRequired;
+
+  /// No description provided for @updateRequiredBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta versión ya no es compatible. Actualiza para seguir usando OpenTransit.'**
+  String get updateRequiredBody;
+
+  /// No description provided for @updateAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get updateAction;
+
+  /// No description provided for @maintenanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'En mantenimiento'**
+  String get maintenanceTitle;
+
+  /// No description provided for @maintenanceBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Estamos haciendo mejoras. Vuelve a intentarlo en unos minutos.'**
+  String get maintenanceBody;
+
+  /// No description provided for @checkAgain.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a intentar'**
+  String get checkAgain;
+
+  /// No description provided for @shareCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace copiado'**
+  String get shareCopied;
+
+  /// No description provided for @shareTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir viaje'**
+  String get shareTrip;
+
+  /// No description provided for @copyLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar enlace'**
+  String get copyLink;
+
+  /// No description provided for @openInWeb.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir en la web'**
+  String get openInWeb;
+
+  /// No description provided for @startTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar viaje'**
+  String get startTrip;
+
+  /// No description provided for @stopTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Terminar'**
+  String get stopTrip;
+
+  /// No description provided for @currentLeg.
+  ///
+  /// In es, this message translates to:
+  /// **'Tramo actual'**
+  String get currentLeg;
+
+  /// No description provided for @nextStopIsYours.
+  ///
+  /// In es, this message translates to:
+  /// **'Próxima parada es la tuya'**
+  String get nextStopIsYours;
+
+  /// No description provided for @getOffAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Bájate en {stop}'**
+  String getOffAt(String stop);
+
+  /// No description provided for @followAlongHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos cuando te acerques a tu parada de bajada.'**
+  String get followAlongHint;
+
+  /// No description provided for @progressLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tramo {done} de {total}'**
+  String progressLabel(int done, int total);
+
+  /// No description provided for @arrived.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Llegaste!'**
+  String get arrived;
+
+  /// No description provided for @distanceToStop.
+  ///
+  /// In es, this message translates to:
+  /// **'{distance} a tu parada'**
+  String distanceToStop(String distance);
+
+  /// No description provided for @followAlongLocationNeeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos tu ubicación para seguir el viaje.'**
+  String get followAlongLocationNeeded;
+
+  /// No description provided for @poiLayer.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicios en estaciones'**
+  String get poiLayer;
+
+  /// No description provided for @poiBikeParking.
+  ///
+  /// In es, this message translates to:
+  /// **'Cicloparqueadero'**
+  String get poiBikeParking;
+
+  /// No description provided for @poiToilets.
+  ///
+  /// In es, this message translates to:
+  /// **'Baños'**
+  String get poiToilets;
+
+  /// No description provided for @poiAtm.
+  ///
+  /// In es, this message translates to:
+  /// **'Cajero'**
+  String get poiAtm;
+
+  /// No description provided for @poiHealth.
+  ///
+  /// In es, this message translates to:
+  /// **'Punto de salud'**
+  String get poiHealth;
+
+  /// No description provided for @poiLibrary.
+  ///
+  /// In es, this message translates to:
+  /// **'Biblioteca'**
+  String get poiLibrary;
+
+  /// No description provided for @poiOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicio'**
+  String get poiOther;
+
+  /// No description provided for @accessibilityUnverified.
+  ///
+  /// In es, this message translates to:
+  /// **'Dato del feed no verificado'**
+  String get accessibilityUnverified;
+
+  /// No description provided for @accessibilityNotAccessible.
+  ///
+  /// In es, this message translates to:
+  /// **'No accesible'**
+  String get accessibilityNotAccessible;
+
+  /// No description provided for @accessibilityUnknown.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin información de accesibilidad'**
+  String get accessibilityUnknown;
+
+  /// No description provided for @accessibilitySource.
+  ///
+  /// In es, this message translates to:
+  /// **'Fuente: {source}'**
+  String accessibilitySource(String source);
+
+  /// No description provided for @accessibilityVerified.
+  ///
+  /// In es, this message translates to:
+  /// **'Verificado'**
+  String get accessibilityVerified;
+
+  /// No description provided for @nearYou.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerca de ti'**
+  String get nearYou;
+
+  /// No description provided for @bikeToStation.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegar en bici a la estación'**
+  String get bikeToStation;
+
+  /// No description provided for @reportProblem.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportar un problema'**
+  String get reportProblem;
+
+  /// No description provided for @pqrs.
+  ///
+  /// In es, this message translates to:
+  /// **'PQRS'**
+  String get pqrs;
+
+  /// No description provided for @openExternal.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir enlace'**
+  String get openExternal;
+
+  /// No description provided for @rechargeCard.
+  ///
+  /// In es, this message translates to:
+  /// **'Recargar tarjeta'**
+  String get rechargeCard;
+
+  /// No description provided for @routesSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar ruta (p. ej. B10)'**
+  String get routesSearchHint;
+
+  /// No description provided for @station.
+  ///
+  /// In es, this message translates to:
+  /// **'Estación'**
+  String get station;
+
+  /// No description provided for @etaLegend.
+  ///
+  /// In es, this message translates to:
+  /// **'≤5 · ≤10 · ≤15 min'**
+  String get etaLegend;
+
+  /// No description provided for @live.
+  ///
+  /// In es, this message translates to:
+  /// **'En vivo'**
+  String get live;
+
+  /// No description provided for @allRoutes.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas las rutas'**
+  String get allRoutes;
+
+  /// No description provided for @noRoutes.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos rutas.'**
+  String get noRoutes;
+
+  /// No description provided for @minutesOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'{minutes} min'**
+  String minutesOnly(int minutes);
+
+  /// No description provided for @now2.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya'**
+  String get now2;
+
+  /// No description provided for @vehicleAgo.
+  ///
+  /// In es, this message translates to:
+  /// **'hace {seconds} s'**
+  String vehicleAgo(int seconds);
+
+  /// No description provided for @goToStop.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a la parada'**
+  String get goToStop;
+
+  /// No description provided for @showOnMap.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver en el mapa'**
+  String get showOnMap;
+
+  /// No description provided for @selectRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona una ruta'**
+  String get selectRoute;
 }
 
 class _AppLocalizationsDelegate

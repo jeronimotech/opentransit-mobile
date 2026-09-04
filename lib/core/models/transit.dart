@@ -1,5 +1,34 @@
 import 'common.dart';
 
+/// Today's service span for a route (v1.1 `RouteRef.serviceWindow`).
+class ServiceWindow {
+  const ServiceWindow({
+    this.start,
+    this.end,
+    required this.active,
+    this.nextStart,
+    this.source,
+  });
+
+  /// `HH:mm` local time.
+  final String? start;
+  final String? end;
+  final bool active;
+
+  /// `HH:mm` of the next start when [active] is false, or null when the
+  /// route does not run again today.
+  final String? nextStart;
+  final String? source;
+
+  factory ServiceWindow.fromJson(Map<String, dynamic> j) => ServiceWindow(
+        start: j['start']?.toString(),
+        end: j['end']?.toString(),
+        active: asBool(j['active'], fallback: true),
+        nextStart: j['nextStart']?.toString(),
+        source: j['source']?.toString(),
+      );
+}
+
 class RouteRef {
   const RouteRef({
     required this.id,
@@ -10,6 +39,7 @@ class RouteRef {
     required this.mode,
     required this.agencyId,
     this.component,
+    this.serviceWindow,
   });
   final String id;
   final String shortName;
@@ -19,6 +49,7 @@ class RouteRef {
   final TravelMode mode;
   final String agencyId;
   final Component? component;
+  final ServiceWindow? serviceWindow;
 
   factory RouteRef.fromJson(Map<String, dynamic> j) => RouteRef(
         id: j['id'].toString(),
@@ -29,6 +60,10 @@ class RouteRef {
         mode: TravelMode.parse(j['mode']),
         agencyId: j['agencyId']?.toString() ?? '',
         component: Component.parse(j['component']),
+        serviceWindow: j['serviceWindow'] is Map
+            ? ServiceWindow.fromJson(
+                Map<String, dynamic>.from(j['serviceWindow'] as Map))
+            : null,
       );
 
   String get displayName => shortName.isNotEmpty ? shortName : longName;
@@ -46,6 +81,30 @@ enum WheelchairAccess {
       };
 }
 
+/// Honest accessibility info (v1.1 `Stop.accessibility`).
+class StopAccessibility {
+  const StopAccessibility({
+    this.wheelchair = WheelchairAccess.unknown,
+    this.source = 'none',
+    this.verified = false,
+    this.note,
+  });
+  final WheelchairAccess wheelchair;
+
+  /// `gtfs | osm | none`
+  final String source;
+  final bool verified;
+  final String? note;
+
+  factory StopAccessibility.fromJson(Map<String, dynamic> j) =>
+      StopAccessibility(
+        wheelchair: WheelchairAccess.parse(j['wheelchair']),
+        source: j['source']?.toString() ?? 'none',
+        verified: asBool(j['verified']),
+        note: j['note']?.toString(),
+      );
+}
+
 class Stop {
   const Stop({
     required this.id,
@@ -57,6 +116,7 @@ class Stop {
     this.wheelchair = WheelchairAccess.unknown,
     this.parentStationId,
     this.distanceMeters,
+    this.accessibility,
   });
   final String id;
   final String? code;
@@ -71,8 +131,26 @@ class Stop {
 
   /// Only set by `/stops/nearby`.
   final int? distanceMeters;
+  final StopAccessibility? accessibility;
 
   bool get isStation => locationType == 'station';
+
+  /// Accessibility block, synthesised from the legacy field when the API
+  /// predates v1.1 (then it is by definition unverified).
+  StopAccessibility get access =>
+      accessibility ??
+      StopAccessibility(
+        wheelchair: wheelchair,
+        source: wheelchair == WheelchairAccess.unknown ? 'none' : 'gtfs',
+        verified: false,
+      );
+
+  Stop copyWith({int? distanceMeters}) => Stop(
+        id: id, code: code, name: name, position: position,
+        locationType: locationType, component: component, wheelchair: wheelchair,
+        parentStationId: parentStationId, accessibility: accessibility,
+        distanceMeters: distanceMeters ?? this.distanceMeters,
+      );
 
   factory Stop.fromJson(Map<String, dynamic> j) => Stop(
         id: j['id'].toString(),
@@ -84,6 +162,10 @@ class Stop {
         wheelchair: WheelchairAccess.parse(j['wheelchair']),
         parentStationId: j['parentStationId']?.toString(),
         distanceMeters: asInt(j['distanceMeters']),
+        accessibility: j['accessibility'] is Map
+            ? StopAccessibility.fromJson(
+                Map<String, dynamic>.from(j['accessibility'] as Map))
+            : null,
       );
 }
 

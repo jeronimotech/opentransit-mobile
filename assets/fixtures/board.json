@@ -1,0 +1,149 @@
+{
+ "stop": {
+  "id": "bogota:PN",
+  "code": null,
+  "name": "Portal Norte",
+  "lat": 4.7546,
+  "lon": -74.0459,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "accessibility": {
+   "wheelchair": "accessible",
+   "source": "gtfs",
+   "verified": false,
+   "note": "Dato del feed no verificado"
+  }
+ },
+ "generatedAt": "2026-09-04T08:00:00-05:00",
+ "freshness": {
+  "realtime": true,
+  "ageSeconds": 18,
+  "stale": false
+ },
+ "rows": [
+  {
+   "route": {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
+   },
+   "headsign": "Portal Sur",
+   "next": [
+    {
+     "time": "2026-09-04T08:05:00-05:00",
+     "minutes": 5,
+     "realtime": true,
+     "delaySeconds": 120,
+     "tripId": "bogota:B10-0803",
+     "vehicleId": "V4021"
+    },
+    {
+     "time": "2026-09-04T08:13:00-05:00",
+     "minutes": 13,
+     "realtime": false,
+     "delaySeconds": null,
+     "tripId": "bogota:B10-0813",
+     "vehicleId": null
+    },
+    {
+     "time": "2026-09-04T08:23:00-05:00",
+     "minutes": 23,
+     "realtime": false,
+     "delaySeconds": null,
+     "tripId": "bogota:B10-0823",
+     "vehicleId": null
+    }
+   ]
+  },
+  {
+   "route": {
+    "id": "bogota:K43",
+    "shortName": "K43",
+    "longName": "Portal Norte - Ricaurte",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
+   },
+   "headsign": "Ricaurte",
+   "next": [
+    {
+     "time": "2026-09-04T08:06:00-05:00",
+     "minutes": 6,
+     "realtime": true,
+     "delaySeconds": -60,
+     "tripId": "bogota:K43-0807",
+     "vehicleId": "V4022"
+    },
+    {
+     "time": "2026-09-04T08:27:00-05:00",
+     "minutes": 27,
+     "realtime": false,
+     "delaySeconds": null,
+     "tripId": "bogota:K43-0827",
+     "vehicleId": null
+    }
+   ]
+  },
+  {
+   "route": {
+    "id": "bogota:B74",
+    "shortName": "B74",
+    "longName": "Portal Norte - Museo Nacional",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
+   },
+   "headsign": "Museo Nacional",
+   "next": [
+    {
+     "time": "2026-09-04T08:09:00-05:00",
+     "minutes": 9,
+     "realtime": false,
+     "delaySeconds": null,
+     "tripId": "bogota:B74-0809",
+     "vehicleId": null
+    },
+    {
+     "time": "2026-09-04T08:20:00-05:00",
+     "minutes": 20,
+     "realtime": false,
+     "delaySeconds": null,
+     "tripId": "bogota:B74-0820",
+     "vehicleId": null
+    }
+   ]
+  }
+ ]
+}

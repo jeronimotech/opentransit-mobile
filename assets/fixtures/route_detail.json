@@ -27,7 +27,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C100",
@@ -38,7 +44,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C76",
@@ -49,7 +61,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C45",
@@ -60,7 +78,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:AVJ",
@@ -71,7 +95,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:RIC",
@@ -82,7 +112,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:NQS30",
@@ -93,7 +129,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:PS",
@@ -104,7 +146,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      }
     ]
    },
@@ -126,7 +174,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:NQS30",
@@ -137,7 +191,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:RIC",
@@ -148,7 +208,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:AVJ",
@@ -159,7 +225,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C45",
@@ -170,7 +242,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C76",
@@ -181,7 +259,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C100",
@@ -192,7 +276,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:PN",
@@ -203,7 +293,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      }
     ]
    }
@@ -235,7 +331,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "1",
-      "component": "trunk"
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      },
      {
       "id": "bogota:K43",
@@ -245,7 +348,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "1",
-      "component": "trunk"
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      }
     ]
    }
@@ -279,7 +389,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C100",
@@ -290,7 +406,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C76",
@@ -301,7 +423,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C45",
@@ -312,7 +440,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:AVJ",
@@ -323,7 +457,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:RIC",
@@ -334,7 +474,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      }
     ]
    }
@@ -366,7 +512,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "1",
-      "component": "trunk"
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      },
      {
       "id": "bogota:K43",
@@ -376,7 +529,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "1",
-      "component": "trunk"
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      }
     ]
    }
@@ -410,7 +570,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:NQS30",
@@ -421,7 +587,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:PS",
@@ -432,7 +604,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      }
     ]
    }
@@ -467,7 +645,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C100",
@@ -478,7 +662,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C76",
@@ -489,7 +679,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:C45",
@@ -500,7 +696,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:MUSEO",
@@ -511,7 +713,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      }
     ]
    }
@@ -546,7 +754,13 @@
       "locationType": "stop",
       "component": "zonal",
       "wheelchair": "unknown",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "unknown",
+       "source": "none",
+       "verified": false,
+       "note": null
+      }
      },
      {
       "id": "bogota:C100",
@@ -557,7 +771,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      }
     ]
    }
@@ -586,7 +806,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "4",
-      "component": "zonal"
+      "component": "zonal",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      }
     ]
    }
@@ -620,7 +847,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:ZUSQ",
@@ -631,7 +864,13 @@
       "locationType": "stop",
       "component": "zonal",
       "wheelchair": "unknown",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "unknown",
+       "source": "none",
+       "verified": false,
+       "note": null
+      }
      }
     ]
    }
@@ -706,7 +945,14 @@
       "textColor": "#FFFFFF",
       "mode": "CABLE_CAR",
       "agencyId": "7",
-      "component": "cable"
+      "component": "cable",
+      "serviceWindow": {
+       "start": "05:00",
+       "end": "09:00",
+       "active": false,
+       "nextStart": "14:00",
+       "source": "gtfs"
+      }
      }
     ]
    }
@@ -740,7 +986,13 @@
       "locationType": "station",
       "component": "trunk",
       "wheelchair": "accessible",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "accessible",
+       "source": "gtfs",
+       "verified": false,
+       "note": "Dato del feed no verificado"
+      }
      },
      {
       "id": "bogota:Z175",
@@ -751,7 +1003,13 @@
       "locationType": "stop",
       "component": "feeder",
       "wheelchair": "unknown",
-      "parentStationId": null
+      "parentStationId": null,
+      "accessibility": {
+       "wheelchair": "unknown",
+       "source": "none",
+       "verified": false,
+       "note": null
+      }
      }
     ]
    }

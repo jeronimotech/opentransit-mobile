@@ -1,0 +1,100 @@
+{
+ "stop": {
+  "id": "bogota:PN",
+  "code": null,
+  "name": "Portal Norte",
+  "lat": 4.7546,
+  "lon": -74.0459,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "accessibility": {
+   "wheelchair": "accessible",
+   "source": "gtfs",
+   "verified": false,
+   "note": "Dato del feed no verificado"
+  }
+ },
+ "route": {
+  "id": "bogota:B10",
+  "shortName": "B10",
+  "longName": "Portal Norte - Portal Sur",
+  "color": "#D32F2F",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "1",
+  "component": "trunk",
+  "serviceWindow": {
+   "start": "04:00",
+   "end": "23:00",
+   "active": true,
+   "nextStart": null,
+   "source": "gtfs"
+  }
+ },
+ "freshness": {
+  "realtime": true,
+  "ageSeconds": 18,
+  "stale": false
+ },
+ "next": [
+  {
+   "minutes": 4,
+   "time": "2026-09-04T08:04:00-05:00",
+   "source": "live",
+   "vehicle": {
+    "id": "V4001",
+    "label": "T4001",
+    "routeId": "bogota:B10",
+    "routeShortName": "B10",
+    "tripId": "bogota:B10-4001",
+    "tripResolved": true,
+    "component": "trunk",
+    "lat": 4.585,
+    "lon": -74.118,
+    "bearing": 285,
+    "timestamp": "2026-09-04T07:59:37-05:00",
+    "stopId": null,
+    "stopSequence": null,
+    "occupancy": null
+   },
+   "stopsAway": 2,
+   "distanceMeters": 1450,
+   "tripId": "bogota:B10-4001"
+  },
+  {
+   "minutes": 11,
+   "time": "2026-09-04T08:11:00-05:00",
+   "source": "estimated",
+   "vehicle": {
+    "id": "V4002",
+    "label": "T4002",
+    "routeId": "bogota:B10",
+    "routeShortName": "B10",
+    "tripId": "bogota:B10-4002",
+    "tripResolved": true,
+    "component": "trunk",
+    "lat": 4.74212,
+    "lon": -74.04795,
+    "bearing": 190,
+    "timestamp": "2026-09-04T07:59:20-05:00",
+    "stopId": null,
+    "stopSequence": null,
+    "occupancy": "FEW_SEATS_AVAILABLE"
+   },
+   "stopsAway": 5,
+   "distanceMeters": 4200,
+   "tripId": "bogota:B10-4002"
+  },
+  {
+   "minutes": 23,
+   "time": "2026-09-04T08:23:00-05:00",
+   "source": "scheduled",
+   "vehicle": null,
+   "stopsAway": null,
+   "distanceMeters": null,
+   "tripId": "bogota:B10-0823"
+  }
+ ]
+}

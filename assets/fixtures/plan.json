@@ -29,7 +29,17 @@
    "walkTimeSeconds": 440,
    "waitingTimeSeconds": 60,
    "transfers": 0,
-   "fare": null,
+   "fare": {
+    "amount": 3200,
+    "currency": "COP",
+    "estimated": true,
+    "breakdown": [
+     {
+      "label": "Pasaje",
+      "amount": 3200
+     }
+    ]
+   },
    "accessible": true,
    "legs": [
     {
@@ -126,7 +136,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "1",
-      "component": "trunk"
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      },
      "headsign": "Portal Sur",
      "agency": {
@@ -231,7 +248,14 @@
          "textColor": "#FFFFFF",
          "mode": "BUS",
          "agencyId": "1",
-         "component": "trunk"
+         "component": "trunk",
+         "serviceWindow": {
+          "start": "04:00",
+          "end": "23:00",
+          "active": true,
+          "nextStart": null,
+          "source": "gtfs"
+         }
         },
         {
          "id": "bogota:K43",
@@ -241,7 +265,14 @@
          "textColor": "#FFFFFF",
          "mode": "BUS",
          "agencyId": "1",
-         "component": "trunk"
+         "component": "trunk",
+         "serviceWindow": {
+          "start": "04:00",
+          "end": "23:00",
+          "active": true,
+          "nextStart": null,
+          "source": "gtfs"
+         }
         }
        ]
       }
@@ -317,7 +348,21 @@
    "walkTimeSeconds": 440,
    "waitingTimeSeconds": 360,
    "transfers": 1,
-   "fare": null,
+   "fare": {
+    "amount": 3200,
+    "currency": "COP",
+    "estimated": true,
+    "breakdown": [
+     {
+      "label": "Pasaje",
+      "amount": 3200
+     },
+     {
+      "label": "Transbordo",
+      "amount": 0
+     }
+    ]
+   },
    "accessible": true,
    "legs": [
     {
@@ -414,7 +459,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "1",
-      "component": "trunk"
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      },
      "headsign": "Ricaurte",
      "agency": {
@@ -509,7 +561,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "1",
-      "component": "trunk"
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      },
      "headsign": "Portal Sur",
      "agency": {
@@ -609,7 +668,21 @@
    "walkTimeSeconds": 500,
    "waitingTimeSeconds": 720,
    "transfers": 1,
-   "fare": null,
+   "fare": {
+    "amount": 3200,
+    "currency": "COP",
+    "estimated": true,
+    "breakdown": [
+     {
+      "label": "Pasaje",
+      "amount": 3200
+     },
+     {
+      "label": "Transbordo",
+      "amount": 0
+     }
+    ]
+   },
    "accessible": null,
    "legs": [
     {
@@ -698,7 +771,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "4",
-      "component": "zonal"
+      "component": "zonal",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      },
      "headsign": "Calle 100",
      "agency": {
@@ -803,7 +883,14 @@
       "textColor": "#FFFFFF",
       "mode": "BUS",
       "agencyId": "1",
-      "component": "trunk"
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
      },
      "headsign": "Portal Sur",
      "agency": {

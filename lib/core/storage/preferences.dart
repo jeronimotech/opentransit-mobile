@@ -12,6 +12,8 @@ class PreferencesRepository {
   static const _kWheelchair = 'wheelchair';
   static const _kMaxWalk = 'maxWalk';
   static const _kLive = 'liveVehicles';
+  static const _kPois = 'poiLayer';
+  static const _kBike = 'bikeToStation';
 
   String? get cityId => _prefs.getString(_kCity);
   Future<void> setCityId(String? id) =>
@@ -36,4 +38,10 @@ class PreferencesRepository {
 
   bool get liveVehicles => _prefs.getBool(_kLive) ?? true;
   Future<void> setLiveVehicles(bool v) => _prefs.setBool(_kLive, v);
+
+  bool get poiLayer => _prefs.getBool(_kPois) ?? false;
+  Future<void> setPoiLayer(bool v) => _prefs.setBool(_kPois, v);
+
+  bool get bikeToStation => _prefs.getBool(_kBike) ?? false;
+  Future<void> setBikeToStation(bool v) => _prefs.setBool(_kBike, v);
 }

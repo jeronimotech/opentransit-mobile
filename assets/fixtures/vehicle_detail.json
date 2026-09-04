@@ -21,7 +21,14 @@
   "textColor": "#FFFFFF",
   "mode": "BUS",
   "agencyId": "1",
-  "component": "trunk"
+  "component": "trunk",
+  "serviceWindow": {
+   "start": "04:00",
+   "end": "23:00",
+   "active": true,
+   "nextStart": null,
+   "source": "gtfs"
+  }
  },
  "trip": {
   "id": "bogota:B10-4001",
@@ -41,7 +48,13 @@
   "locationType": "station",
   "component": "trunk",
   "wheelchair": "accessible",
-  "parentStationId": null
+  "parentStationId": null,
+  "accessibility": {
+   "wheelchair": "accessible",
+   "source": "gtfs",
+   "verified": false,
+   "note": "Dato del feed no verificado"
+  }
  },
  "nextStop": {
   "id": "bogota:C76",
@@ -52,7 +65,13 @@
   "locationType": "station",
   "component": "trunk",
   "wheelchair": "accessible",
-  "parentStationId": null
+  "parentStationId": null,
+  "accessibility": {
+   "wheelchair": "accessible",
+   "source": "gtfs",
+   "verified": false,
+   "note": "Dato del feed no verificado"
+  }
  },
  "etaSeconds": 240,
  "delaySeconds": 120,
@@ -138,7 +157,14 @@
      "textColor": "#FFFFFF",
      "mode": "BUS",
      "agencyId": "1",
-     "component": "trunk"
+     "component": "trunk",
+     "serviceWindow": {
+      "start": "04:00",
+      "end": "23:00",
+      "active": true,
+      "nextStart": null,
+      "source": "gtfs"
+     }
     },
     {
      "id": "bogota:K43",
@@ -148,7 +174,14 @@
      "textColor": "#FFFFFF",
      "mode": "BUS",
      "agencyId": "1",
-     "component": "trunk"
+     "component": "trunk",
+     "serviceWindow": {
+      "start": "04:00",
+      "end": "23:00",
+      "active": true,
+      "nextStart": null,
+      "source": "gtfs"
+     }
     }
    ]
   }

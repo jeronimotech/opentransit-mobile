@@ -74,6 +74,10 @@ class MockApiClient implements ApiClient {
   }
 
   @override
+  Future<CityHealth> health(String cityId) async =>
+      CityHealth.fromJson(await _map('health'));
+
+  @override
   Future<PlanResponse> plan(String cityId, PlanRequest request) async {
     final j = await _map('plan');
     final base = PlanResponse.fromJson(j);
@@ -172,6 +176,85 @@ class MockApiClient implements ApiClient {
   }
 
   @override
+  Future<BoardResponse> board(String cityId, String stopId,
+      {int minutes = 60, int perRoute = 3}) async {
+    // The board fixture describes Portal Norte; every other stop gets a board
+    // grouped from the (re-anchored) departures list so the UI is never empty.
+    final detail = await stop(cityId, stopId);
+    if (stopId == 'bogota:PN') {
+      final j = await _map('board');
+      final base = BoardResponse.fromJson(j);
+      final first = base.rows.first.next.first.time;
+      final shift = now.add(const Duration(minutes: 5)).difference(first);
+      final shifted = BoardResponse.fromJson(
+          Map<String, dynamic>.from(rebaseTimes(j, shift) as Map));
+      return BoardResponse(
+        stop: shifted.stop, generatedAt: now, freshness: shifted.freshness,
+        rows: [
+          for (final r in shifted.rows)
+            BoardRow(route: r.route, headsign: r.headsign, next: [
+              for (final t in r.next.take(perRoute))
+                BoardTime(
+                  time: t.time,
+                  minutes: (t.time.difference(now).inSeconds / 60).round(),
+                  realtime: t.realtime, delaySeconds: t.delaySeconds,
+                  tripId: t.tripId, vehicleId: t.vehicleId,
+                ),
+            ]),
+        ],
+      );
+    }
+    final d = await departures(cityId, stopId, limit: 60, minutes: minutes);
+    final b = BoardResponse.fromDepartures(
+        DeparturesResponse(stop: detail.stop, generatedAt: d.generatedAt, departures: d.departures),
+        perRoute: perRoute, now: now);
+    return b;
+  }
+
+  @override
+  Future<NextBusesResponse> nextBuses(String cityId, String stopId, String routeId,
+      {int limit = 3}) async {
+    final j = await _map('next');
+    final base = NextBusesResponse.fromJson(j);
+    final shift = now.add(const Duration(minutes: 4)).difference(base.next.first.time);
+    final shifted = NextBusesResponse.fromJson(
+        Map<String, dynamic>.from(rebaseTimes(j, shift) as Map));
+    final detail = await stop(cityId, stopId);
+    final route = detail.routes.where((r) => r.id == routeId).firstOrNull ??
+        (await routes(cityId)).where((r) => r.id == routeId).firstOrNull ??
+        shifted.route;
+    final live = await vehicles(cityId, routeId: routeId);
+    final buses = live.vehicles.values.toList();
+    return NextBusesResponse(
+      stop: detail.stop, route: route, freshness: shifted.freshness,
+      next: [
+        for (var i = 0; i < shifted.next.length && i < limit; i++)
+          NextBus(
+            minutes: (shifted.next[i].time.difference(now).inSeconds / 60).round(),
+            time: shifted.next[i].time,
+            source: shifted.next[i].source,
+            vehicle: shifted.next[i].vehicle == null ? null : (i < buses.length ? buses[i] : shifted.next[i].vehicle),
+            stopsAway: shifted.next[i].stopsAway,
+            distanceMeters: shifted.next[i].distanceMeters,
+            tripId: shifted.next[i].tripId,
+          ),
+      ],
+    );
+  }
+
+  @override
+  Future<List<Poi>> pois(String cityId, List<double> bbox, {List<String>? types}) async {
+    final all = Poi.fromCollection(await _map('pois'));
+    return [
+      for (final p in all)
+        if (bbox.length != 4 ||
+            (p.position.lon >= bbox[0] && p.position.lat >= bbox[1] &&
+             p.position.lon <= bbox[2] && p.position.lat <= bbox[3]))
+          if (types == null || types.isEmpty || types.contains(p.type)) p,
+    ];
+  }
+
+  @override
   Future<List<RouteRef>> routes(String cityId, {Component? component, String? query}) async {
     var all = asList((await _map('routes'))['routes'], RouteRef.fromJson);
     if (component != null) all = all.where((r) => r.component == component).toList();
@@ -207,7 +290,8 @@ class MockApiClient implements ApiClient {
   /// Emits the full frame, then a delta every 4 s nudging vehicles along the
   /// route they are on (using the network shapes) so the map visibly moves.
   @override
-  Stream<Map<String, dynamic>> vehicleEvents(String cityId) async* {
+  Stream<Map<String, dynamic>> vehicleEvents(String cityId,
+      {List<double>? bbox, List<String>? routeIds}) async* {
     final full = await _map('vehicles');
     yield full;
     final shapes = {for (final s in await network(cityId)) s.routeId: decodeGeometry(s.geometry)};

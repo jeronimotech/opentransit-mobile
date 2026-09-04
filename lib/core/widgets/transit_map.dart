@@ -111,12 +111,14 @@ class TransitMap extends StatefulWidget {
     this.stops = const [],
     this.vehicles = const [],
     this.markers = const [],
+    this.pois = const [],
     this.fitTo,
     this.fitPadding = const EdgeInsets.fromLTRB(40, 120, 40, 260),
     this.myLocation = false,
     this.onLongPress,
     this.onStopTap,
     this.onVehicleTap,
+    this.onPoiTap,
     this.onCameraIdle,
     this.onMapReady,
     this.attributionBottomInset = 0,
@@ -129,6 +131,9 @@ class TransitMap extends StatefulWidget {
   final List<MapPoint> vehicles;
   final List<MapPoint> markers;
 
+  /// Points of interest (station services); `label` is drawn inside.
+  final List<MapPoint> pois;
+
   /// When this list changes (by identity) the camera fits to it.
   final List<LatLng>? fitTo;
   final EdgeInsets fitPadding;
@@ -136,6 +141,7 @@ class TransitMap extends StatefulWidget {
   final void Function(LatLng)? onLongPress;
   final void Function(String id)? onStopTap;
   final void Function(String id)? onVehicleTap;
+  final void Function(String id)? onPoiTap;
   final void Function(LatLng center, double zoom)? onCameraIdle;
   final VoidCallback? onMapReady;
   final double attributionBottomInset;
@@ -152,6 +158,19 @@ class TransitMapState extends State<TransitMap> {
   static const _srcStops = 'ot-stops';
   static const _srcVehicles = 'ot-vehicles';
   static const _srcMarkers = 'ot-markers';
+  static const _srcPois = 'ot-pois';
+
+  /// Current visible bounds `[minLon, minLat, maxLon, maxLat]`, if known.
+  Future<List<double>?> visibleBounds() async {
+    final c = _c;
+    if (c == null) return null;
+    try {
+      final b = await c.getVisibleRegion();
+      return [b.southwest.longitude, b.southwest.latitude, b.northeast.longitude, b.northeast.latitude];
+    } on PlatformException {
+      return null;
+    }
+  }
 
   Future<void> animateTo(LatLng p, {double? zoom}) async {
     final c = _c;
@@ -304,6 +323,34 @@ class TransitMapState extends State<TransitMap> {
       enableInteraction: false,
     );
 
+    await c.addGeoJsonSource(_srcPois, _emptyFc(), promoteId: 'id');
+    await c.addCircleLayer(
+      _srcPois,
+      'ot-pois-layer',
+      const ml.CircleLayerProperties(
+        circleColor: ['get', 'color'],
+        circleRadius: ['get', 'radius'],
+        circleStrokeColor: ['get', 'stroke'],
+        circleStrokeWidth: ['get', 'strokeWidth'],
+        circleOpacity: 0.95,
+      ),
+      minzoom: 12,
+    );
+    await c.addSymbolLayer(
+      _srcPois,
+      'ot-pois-glyphs',
+      const ml.SymbolLayerProperties(
+        textField: ['get', 'label'],
+        textSize: 9,
+        textFont: ['Noto Sans Bold'],
+        textColor: '#ffffff',
+        textAllowOverlap: true,
+        textIgnorePlacement: true,
+      ),
+      minzoom: 13,
+      enableInteraction: false,
+    );
+
     await c.addGeoJsonSource(_srcMarkers, _emptyFc(), promoteId: 'id');
     await c.addCircleLayer(
       _srcMarkers,
@@ -322,6 +369,7 @@ class TransitMapState extends State<TransitMap> {
       String layerId, ml.Annotation? annotation) {
     if (layerId == 'ot-stops-layer') widget.onStopTap?.call(id);
     if (layerId == 'ot-vehicles-layer') widget.onVehicleTap?.call(id);
+    if (layerId == 'ot-pois-layer') widget.onPoiTap?.call(id);
   }
 
   /// Pushes a source update, swallowing the `styleNotFound` PlatformException
@@ -342,6 +390,7 @@ class TransitMapState extends State<TransitMap> {
     await _setSource(_srcStops, _pointFc(widget.stops));
     await _setSource(_srcVehicles, _pointFc(widget.vehicles));
     await _setSource(_srcMarkers, _pointFc(widget.markers));
+    await _setSource(_srcPois, _pointFc(widget.pois));
   }
 
   @override
@@ -360,6 +409,9 @@ class TransitMapState extends State<TransitMap> {
     }
     if (!identical(oldWidget.markers, widget.markers)) {
       _setSource(_srcMarkers, _pointFc(widget.markers));
+    }
+    if (!identical(oldWidget.pois, widget.pois)) {
+      _setSource(_srcPois, _pointFc(widget.pois));
     }
     if (!identical(oldWidget.fitTo, widget.fitTo) &&
         widget.fitTo != null &&

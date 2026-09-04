@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Universal Links for the canonical web URLs. Replace the placeholder host
+	     with the deployed opentransit-web host (keep in sync with WEB_HOST) and
+	     serve /.well-known/apple-app-site-association there. -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:opentransit.example.org</string>
+	</array>
+</dict>
+</plist>

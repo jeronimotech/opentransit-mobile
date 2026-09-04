@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
@@ -16,44 +17,69 @@ class AlertsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final alerts = ref.watch(alertsProvider(cityId));
+    final pqrs = ref.watch(currentCityProvider)?.links.pqrs;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.alerts)),
-      body: RefreshIndicator(
-        onRefresh: () => ref.refresh(alertsProvider(cityId).future),
-        child: alerts.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => ErrorView(
-            error: e,
-            onRetry: () => ref.invalidate(alertsProvider(cityId)),
+      body: Column(
+        children: [
+          // Hand-off to the agency's official channel; never an in-app reporter.
+          if (pqrs != null)
+            Material(
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              child: ListTile(
+                key: const ValueKey('pqrs-link'),
+                dense: true,
+                leading: const Icon(Icons.report_outlined),
+                title: Text(l10n.reportProblem),
+                subtitle: Text(l10n.pqrs),
+                trailing: const Icon(Icons.open_in_new, size: 18),
+                onTap: () => _launch(pqrs),
+              ),
+            ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () => ref.refresh(alertsProvider(cityId).future),
+              child: alerts.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => ErrorView(
+                  error: e,
+                  onRetry: () => ref.invalidate(alertsProvider(cityId)),
+                ),
+                data: (list) {
+                  if (list.isEmpty) {
+                    return ListView(
+                      children: [
+                        SizedBox(
+                          height: 300,
+                          child: EmptyView(icon: Icons.notifications_none, message: l10n.noAlerts),
+                        ),
+                      ],
+                    );
+                  }
+                  final sorted = [...list]
+                    ..sort((a, b) => b.severity.index.compareTo(a.severity.index));
+                  return ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                    itemCount: sorted.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 10),
+                    itemBuilder: (context, i) => _AlertCard(cityId: cityId, alert: sorted[i]),
+                  );
+                },
+              ),
+            ),
           ),
-          data: (list) {
-            if (list.isEmpty) {
-              return ListView(
-                children: [
-                  SizedBox(
-                    height: 300,
-                    child: EmptyView(
-                      icon: Icons.notifications_none,
-                      message: l10n.noAlerts,
-                    ),
-                  ),
-                ],
-              );
-            }
-            final sorted = [...list]
-              ..sort((a, b) => b.severity.index.compareTo(a.severity.index));
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
-              itemCount: sorted.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 10),
-              itemBuilder: (context, i) =>
-                  _AlertCard(cityId: cityId, alert: sorted[i]),
-            );
-          },
-        ),
+        ],
       ),
     );
   }
+}
+
+Future<void> _launch(String url) async {
+  final uri = Uri.tryParse(url);
+  if (uri == null) return;
+  try {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } catch (_) {}
 }
 
 class _AlertCard extends StatefulWidget {
@@ -105,14 +131,10 @@ class _AlertCardState extends State<_AlertCard> {
                           Expanded(
                             child: Text(
                               a.header,
-                              style: Theme.of(context).textTheme.titleSmall
-                                  ?.copyWith(fontWeight: FontWeight.w700),
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                             ),
                           ),
-                          Icon(
-                            _open ? Icons.expand_less : Icons.expand_more,
-                            color: scheme.outline,
-                          ),
+                          Icon(_open ? Icons.expand_less : Icons.expand_more, color: scheme.outline),
                         ],
                       ),
                       if (a.description != null) ...[
@@ -121,8 +143,7 @@ class _AlertCardState extends State<_AlertCard> {
                           a.description!,
                           maxLines: _open ? null : 2,
                           overflow: _open ? null : TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: scheme.onSurfaceVariant),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
                         ),
                       ],
                       if (a.routes.isNotEmpty) ...[
@@ -134,9 +155,7 @@ class _AlertCardState extends State<_AlertCard> {
                             for (final r in a.routes)
                               InkWell(
                                 borderRadius: BorderRadius.circular(8),
-                                onTap: () => context.push(
-                                  '/${widget.cityId}/routes/${Uri.encodeComponent(r.id)}',
-                                ),
+                                onTap: () => context.push('/${widget.cityId}/routes/${Uri.encodeComponent(r.id)}'),
                                 child: RouteChip(r, dense: true),
                               ),
                           ],
@@ -146,30 +165,32 @@ class _AlertCardState extends State<_AlertCard> {
                         const SizedBox(height: 8),
                         Text(
                           [
-                            if (a.start != null)
-                              formatDateShort(a.start!, locale),
+                            if (a.start != null) formatDateShort(a.start!, locale),
                             if (a.end != null) formatDateShort(a.end!, locale),
                           ].join(' → '),
-                          style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(color: scheme.outline),
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline),
                         ),
                       ],
+                      if (_open && a.url != null && a.url!.isNotEmpty)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
+                            onPressed: () => _launch(a.url!),
+                            icon: const Icon(Icons.open_in_new, size: 16),
+                            label: Text(l10n.openExternal),
+                          ),
+                        ),
                       if (_open && a.effect != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 6),
-                          child: Text(
-                            '${a.cause ?? ''} · ${a.effect}',
-                            style: Theme.of(context).textTheme.labelSmall
-                                ?.copyWith(color: scheme.outline),
-                          ),
+                          child: Text('${a.cause ?? ''} · ${a.effect}',
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
                         ),
                       if (_open && a.routes.isEmpty && a.routeIds.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 6),
-                          child: Text(
-                            '${l10n.affectedRoutes}: ${a.routeIds.join(', ')}',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
+                          child: Text('${l10n.affectedRoutes}: ${a.routeIds.join(', ')}',
+                              style: Theme.of(context).textTheme.labelSmall),
                         ),
                     ],
                   ),

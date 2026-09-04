@@ -109,5 +109,193 @@
   "goHere": "Go here",
   "leaveFrom": "Leave from here",
   "fromHere": "From here",
-  "accessible": "Accessible"
+  "accessible": "Accessible",
+  "hubTitle": "What do you want to check?",
+  "tilePlan": "Plan a trip",
+  "tileLocate": "Find my bus",
+  "tileNearby": "Stops nearby",
+  "tileRoutes": "Find a route",
+  "tileLive": "Live buses",
+  "tileAlerts": "Alerts",
+  "tileFavorites": "Favorites",
+  "nearbyCardTitle": "Stations and stops nearby",
+  "services": "Services",
+  "messagesOfInterest": "Service messages",
+  "dismiss": "Dismiss",
+  "seeAll": "See all",
+  "locateTitle": "Find my bus",
+  "locateStep1": "Pick a station or stop",
+  "locateStep2": "Pick the route",
+  "locateNext": "Next buses",
+  "sourceLive": "Live",
+  "sourceScheduled": "Scheduled",
+  "sourceEstimated": "Estimated",
+  "stopsAway": "{count, plural, =1{1 stop} other{{count} stops}}",
+  "@stopsAway": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noBuses": "No upcoming buses for this route.",
+  "searchStopHint": "Search station or stop",
+  "changeStop": "Change stop",
+  "board": "Next buses",
+  "nextIn": "Next in {minutes} min",
+  "@nextIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "thenAt": "then {list}",
+  "@thenAt": {
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "noBoard": "No buses in the next hour.",
+  "freshLive": "Live",
+  "freshScheduled": "Scheduled",
+  "freshStale": "No live data for {seconds} s",
+  "@freshStale": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "freshNoRealtime": "No live data",
+  "outOfHours": "Out of service hours",
+  "nextAt": "next {time}",
+  "@nextAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "noServiceToday": "No more service today",
+  "serviceHours": "Service hours",
+  "estimatedFare": "Estimated fare",
+  "fareNotPublished": "Fare not published",
+  "fareBase": "Fare",
+  "fareTransfer": "Transfer",
+  "fareEstimatedNote": "Estimate based on the city's configured fare; it may vary.",
+  "sortFastest": "Fastest",
+  "sortFewerTransfers": "Fewer transfers",
+  "sortLessWalking": "Less walking",
+  "sortCheapest": "Cheapest",
+  "sortEarliest": "Earliest departure",
+  "sortBy": "Sort",
+  "favHome": "Home",
+  "favWork": "Work",
+  "favCustom": "Other",
+  "saveAs": "Save as",
+  "recentTrips": "Recent trips",
+  "clearRecent": "Clear",
+  "setHome": "Set Home",
+  "setWork": "Set Work",
+  "chooseIcon": "Choose an icon",
+  "saveFavorite": "Save favorite",
+  "favoriteName": "Name",
+  "updateRequired": "Update the app",
+  "updateRequiredBody": "This version is no longer supported. Update to keep using OpenTransit.",
+  "updateAction": "Update",
+  "maintenanceTitle": "Under maintenance",
+  "maintenanceBody": "We're making improvements. Please try again in a few minutes.",
+  "checkAgain": "Try again",
+  "shareCopied": "Link copied",
+  "shareTrip": "Share trip",
+  "copyLink": "Copy link",
+  "openInWeb": "Open on the web",
+  "startTrip": "Start trip",
+  "stopTrip": "End",
+  "currentLeg": "Current leg",
+  "nextStopIsYours": "Next stop is yours",
+  "getOffAt": "Get off at {stop}",
+  "@getOffAt": {
+    "placeholders": {
+      "stop": {
+        "type": "String"
+      }
+    }
+  },
+  "followAlongHint": "We'll notify you when you approach your alighting stop.",
+  "progressLabel": "Leg {done} of {total}",
+  "@progressLabel": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "arrived": "You've arrived!",
+  "distanceToStop": "{distance} to your stop",
+  "@distanceToStop": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "followAlongLocationNeeded": "We need your location to follow the trip.",
+  "poiLayer": "Station services",
+  "poiBikeParking": "Bike parking",
+  "poiToilets": "Toilets",
+  "poiAtm": "ATM",
+  "poiHealth": "Health point",
+  "poiLibrary": "Library",
+  "poiOther": "Service",
+  "accessibilityUnverified": "Feed data not verified",
+  "accessibilityNotAccessible": "Not accessible",
+  "accessibilityUnknown": "No accessibility information",
+  "accessibilitySource": "Source: {source}",
+  "@accessibilitySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "accessibilityVerified": "Verified",
+  "nearYou": "Near you",
+  "bikeToStation": "Bike to the station",
+  "reportProblem": "Report a problem",
+  "pqrs": "Complaints (PQRS)",
+  "openExternal": "Open link",
+  "rechargeCard": "Top up card",
+  "routesSearchHint": "Search route (e.g. B10)",
+  "station": "Station",
+  "etaLegend": "≤5 · ≤10 · ≤15 min",
+  "live": "Live",
+  "allRoutes": "All routes",
+  "noRoutes": "No routes found.",
+  "minutesOnly": "{minutes} min",
+  "@minutesOnly": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "now2": "Now",
+  "vehicleAgo": "{seconds} s ago",
+  "@vehicleAgo": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "goToStop": "Go to stop",
+  "showOnMap": "Show on map",
+  "selectRoute": "Select a route"
 }

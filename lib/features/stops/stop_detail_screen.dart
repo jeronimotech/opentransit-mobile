@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
+import '../../core/utils/links.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../favorites/save_favorite_sheet.dart';
 import '../planner/planner_state.dart';
+import 'widgets/board_view.dart';
 
 class StopDetailScreen extends ConsumerWidget {
   const StopDetailScreen({super.key, required this.cityId, required this.stopId});
@@ -22,6 +27,7 @@ class StopDetailScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final key = CityKey(cityId, stopId);
     final detail = ref.watch(stopDetailProvider(key));
+    final city = ref.watch(currentCityProvider);
     final scheme = Theme.of(context).colorScheme;
 
     return detail.when(
@@ -34,7 +40,10 @@ class StopDetailScreen extends ConsumerWidget {
         final stop = d.stop;
         final fav = Favorite.stop(cityId, stop);
         final isFav = ref.watch(favoritesProvider).any((f) => f.key == fav.key);
-        final color = componentColor(stop.component);
+        final color = componentColor(stop.component, city: city);
+        final place = Place(name: stop.name, position: stop.position, stopId: stop.id, component: stop.component);
+        final access = stop.access;
+        final boardEnabled = city?.config.isEnabled('board') ?? true;
         return Scaffold(
           appBar: AppBar(
             title: Text(stop.name, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -45,19 +54,35 @@ class StopDetailScreen extends ConsumerWidget {
                 onPressed: () => ref.read(favoritesProvider.notifier).toggle(fav),
               ),
               PopupMenuButton<String>(
-                onSelected: (v) {
+                onSelected: (v) async {
                   final planner = ref.read(plannerProvider.notifier);
-                  final place = Place(name: stop.name, position: stop.position, stopId: stop.id, component: stop.component);
-                  if (v == 'to') {
-                    planner.setTo(place);
-                  } else {
-                    planner.setFrom(place);
+                  switch (v) {
+                    case 'to':
+                      planner.setTo(place);
+                      context.go('/$cityId/plan');
+                    case 'from':
+                      planner.setFrom(place);
+                      context.go('/$cityId/plan');
+                    case 'saveAs':
+                      await showSaveFavoriteSheet(context, ref, cityId, place);
+                    case 'share':
+                      await SharePlus.instance.share(ShareParams(uri: CanonicalLinks.stop(cityId, stop.id)));
+                    case 'pqrs':
+                      final url = city?.links.pqrs;
+                      if (url != null) {
+                        try {
+                          await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                        } catch (_) {}
+                      }
                   }
-                  context.go('/$cityId/plan');
                 },
                 itemBuilder: (_) => [
                   PopupMenuItem(value: 'to', child: ListTile(leading: const Icon(Icons.flag_outlined), title: Text(l10n.goHere))),
                   PopupMenuItem(value: 'from', child: ListTile(leading: const Icon(Icons.trip_origin), title: Text(l10n.leaveFrom))),
+                  PopupMenuItem(value: 'saveAs', child: ListTile(leading: const Icon(Icons.home_outlined), title: Text(l10n.saveAs))),
+                  PopupMenuItem(value: 'share', child: ListTile(leading: const Icon(Icons.share_outlined), title: Text(l10n.share))),
+                  if (city?.links.pqrs != null)
+                    PopupMenuItem(value: 'pqrs', child: ListTile(leading: const Icon(Icons.report_outlined), title: Text(l10n.reportProblem))),
                 ],
               ),
             ],
@@ -85,16 +110,25 @@ class StopDetailScreen extends ConsumerWidget {
                   children: [
                     Chip(
                       backgroundColor: color,
-                      avatar: Icon(stop.isStation ? Icons.subway_outlined : Icons.directions_bus, size: 16, color: onColor(color)),
-                      label: Text(componentLabel(stop.component, l10n), style: TextStyle(color: onColor(color), fontWeight: FontWeight.w700)),
+                      avatar: Icon(stop.isStation ? Icons.subway_outlined : componentIcon(stop.component, city: city), size: 16, color: onColor(color)),
+                      label: Text(componentLabel(stop.component, l10n, city: city), style: TextStyle(color: onColor(color), fontWeight: FontWeight.w700)),
                       visualDensity: VisualDensity.compact,
                     ),
                     if (stop.code != null) Chip(label: Text(stop.code!), visualDensity: VisualDensity.compact),
-                    if (stop.wheelchair == WheelchairAccess.accessible)
-                      Chip(avatar: const Icon(Icons.accessible, size: 16), label: Text(l10n.accessible), visualDensity: VisualDensity.compact),
+                    _AccessibilityChip(access: access),
                   ],
                 ),
               ),
+              if (boardEnabled)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                  child: FilledButton.tonalIcon(
+                    key: const ValueKey('locate-from-stop'),
+                    onPressed: () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(stop.id)}'),
+                    icon: const Icon(Icons.directions_bus_outlined),
+                    label: Text(l10n.locateTitle),
+                  ),
+                ),
               if (d.routes.isNotEmpty) ...[
                 SectionTitle(l10n.routes),
                 Padding(
@@ -103,7 +137,7 @@ class StopDetailScreen extends ConsumerWidget {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      for (final r in d.routes)
+                      for (final r in _dedupe(d.routes))
                         InkWell(
                           borderRadius: BorderRadius.circular(8),
                           onTap: () => context.push('/$cityId/routes/${Uri.encodeComponent(r.id)}'),
@@ -113,8 +147,12 @@ class StopDetailScreen extends ConsumerWidget {
                   ),
                 ),
               ],
-              _Departures(cityId: cityId, stopId: stopId),
+              BoardView(cityId: cityId, stopId: stopId),
               _StopAlerts(cityId: cityId, stopId: stopId, routeIds: d.routes.map((r) => r.id).toSet()),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                child: _AccessibilityBlock(access: access),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
                 child: Text(stop.id, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
@@ -125,81 +163,74 @@ class StopDetailScreen extends ConsumerWidget {
       },
     );
   }
+
+  static List<RouteRef> _dedupe(List<RouteRef> routes) {
+    final seen = <String>{};
+    return [for (final r in routes) if (seen.add(r.shortName)) r];
+  }
 }
 
-class _Departures extends ConsumerWidget {
-  const _Departures({required this.cityId, required this.stopId});
-  final String cityId;
-  final String stopId;
+class _AccessibilityChip extends StatelessWidget {
+  const _AccessibilityChip({required this.access});
+  final StopAccessibility access;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final key = CityKey(cityId, stopId);
-    final deps = ref.watch(departuresProvider(key));
-    final locale = Localizations.localeOf(context).toString();
     final scheme = Theme.of(context).colorScheme;
+    final (icon, text, color) = switch (access.wheelchair) {
+      WheelchairAccess.accessible => (Icons.accessible, access.verified ? l10n.accessible : '${l10n.accessible} · ${l10n.accessibilityUnverified}', access.verified ? Colors.green.shade700 : Colors.orange.shade800),
+      WheelchairAccess.notAccessible => (Icons.not_accessible, l10n.accessibilityNotAccessible, Colors.red.shade700),
+      WheelchairAccess.unknown => (Icons.help_outline, l10n.accessibilityUnknown, scheme.outline),
+    };
+    return Chip(
+      avatar: Icon(icon, size: 16, color: color),
+      label: Text(text, style: TextStyle(color: color, fontSize: 12)),
+      visualDensity: VisualDensity.compact,
+    );
+  }
+}
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionTitle(
-          l10n.departures,
-          trailing: deps.asData == null
-              ? null
-              : Text(l10n.updatedAgo(DateTime.now().difference(deps.asData!.value.generatedAt).inSeconds.clamp(0, 999)),
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
-        ),
-        deps.when(
-          loading: () => const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator())),
-          error: (e, _) => ErrorView(error: e, onRetry: () => ref.invalidate(departuresProvider(key))),
-          data: (r) => r.departures.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(l10n.noDepartures, style: TextStyle(color: scheme.onSurfaceVariant)),
-                )
-              : Column(
-                  children: [
-                    for (final d in r.departures)
-                      ListTile(
-                        leading: RouteChip(d.route),
-                        title: Text(
-                          d.headsign == null ? d.route.longName : l10n.towards(d.headsign!),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(decoration: d.canceled ? TextDecoration.lineThrough : null),
-                        ),
-                        subtitle: Row(
-                          children: [
-                            Text(formatClock(d.effectiveTime, locale)),
-                            if (d.realtime && !d.canceled) ...[
-                              const SizedBox(width: 8),
-                              const LiveBadge(compact: true),
-                              if (formatDelay(d.delaySeconds, l10n) case final s?) ...[
-                                const SizedBox(width: 4),
-                                Text(s, style: TextStyle(fontSize: 11, color: (d.delaySeconds ?? 0) > 60 ? Colors.orange.shade800 : Colors.green.shade700)),
-                              ],
-                            ] else if (!d.canceled) ...[
-                              const SizedBox(width: 8),
-                              Text(l10n.scheduled, style: TextStyle(fontSize: 11, color: scheme.outline)),
-                            ],
-                          ],
-                        ),
-                        trailing: d.canceled
-                            ? Text(l10n.canceled, style: TextStyle(color: scheme.error, fontWeight: FontWeight.w700))
-                            : Text(
-                                formatCountdown(d.effectiveTime, l10n),
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w800,
-                                      color: d.realtime ? Colors.green.shade700 : scheme.onSurface,
-                                    ),
-                              ),
-                        onTap: () => context.push('/$cityId/routes/${Uri.encodeComponent(d.route.id)}'),
-                      ),
-                  ],
+class _AccessibilityBlock extends StatelessWidget {
+  const _AccessibilityBlock({required this.access});
+  final StopAccessibility access;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(color: scheme.surfaceContainerLow, borderRadius: BorderRadius.circular(16)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.accessible_forward, color: scheme.onSurfaceVariant),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.accessibility, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 4),
+                Text(
+                  switch (access.wheelchair) {
+                    WheelchairAccess.accessible => l10n.accessible,
+                    WheelchairAccess.notAccessible => l10n.accessibilityNotAccessible,
+                    WheelchairAccess.unknown => l10n.accessibilityUnknown,
+                  },
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
-        ),
-      ],
+                const SizedBox(height: 2),
+                Text(
+                  '${l10n.accessibilitySource(access.source)} · ${access.verified ? l10n.accessibilityVerified : (access.note ?? l10n.accessibilityUnverified)}',
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: access.verified ? scheme.onSurfaceVariant : Colors.orange.shade800),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -231,3 +262,6 @@ class _StopAlerts extends ConsumerWidget {
     );
   }
 }
+
+/// Kept for callers that still want a flat countdown list.
+String countdownLabel(DateTime t, AppLocalizations l10n) => formatCountdown(t, l10n);

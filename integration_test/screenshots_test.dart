@@ -12,6 +12,7 @@ import 'package:opentransit_mobile/app.dart';
 import 'package:opentransit_mobile/core/api/mock_api_client.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/providers.dart';
+import 'package:opentransit_mobile/core/storage/favorites.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
 import 'package:opentransit_mobile/features/planner/widgets/itinerary_card.dart';
 import 'package:opentransit_mobile/router.dart';
@@ -65,49 +66,74 @@ void main() {
 
     await tester.tap(find.text('Bogotá'));
     await settle(tester, 30);
-    expect(find.text('Paradas cercanas'), findsOneWidget);
+    expect(find.text('¿Qué quieres consultar?'), findsOneWidget);
     // Let tiles and the live stream arrive before the shot.
     await Future<void>.delayed(const Duration(seconds: 6));
-    await shot(tester, '02_home_map');
+    await shot(tester, '02_home_hub');
 
-    await tester.tap(find.text('¿A dónde vas?'));
+    final router = container.read(routerProvider);
+
+    // Ubica tu bus: Portal Norte → B10 → next buses (ETA-tinted map)
+    router.push('/bogota/locate?stop=bogota:PN&route=bogota:B10');
+    await settle(tester, 30);
+    expect(find.text('Próximos buses'), findsOneWidget);
+    await Future<void>.delayed(const Duration(seconds: 4));
+    await shot(tester, '03_locate_bus');
+    router.pop();
+    await settle(tester, 10);
+
+    await tester.tap(find.byKey(const ValueKey('hub-plan')));
     await settle(tester, 20);
     final planner = container.read(plannerProvider.notifier);
     planner.setFrom(const Place(name: 'Portal Norte', position: LatLng(4.7546, -74.0459), stopId: 'bogota:PN'));
     planner.setTo(const Place(name: 'Portal Sur', position: LatLng(4.5978, -74.1616), stopId: 'bogota:PS'));
     await settle(tester);
-    await shot(tester, '03_plan_form');
+    await shot(tester, '04_plan_form');
 
     await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
     await settle(tester, 30);
     expect(find.byType(ItineraryCard), findsWidgets);
-    await shot(tester, '04_results');
+    await tester.tap(find.byKey(const ValueKey('sort-fewerTransfers')));
+    await settle(tester, 10);
+    await shot(tester, '05_results_sorted');
 
     await tester.tap(find.byType(ItineraryCard).first);
     await settle(tester, 30);
     await Future<void>.delayed(const Duration(seconds: 4));
-    await shot(tester, '05_itinerary_detail');
+    expect(find.byKey(const ValueKey('fare-block')), findsOneWidget);
+    await shot(tester, '06_itinerary_fare');
 
-    final router = container.read(routerProvider);
     router.push('/bogota/stops/bogota:PN');
     await settle(tester, 30);
-    expect(find.text('Próximas salidas'), findsOneWidget);
+    expect(find.text('Próximos buses'), findsOneWidget);
     await Future<void>.delayed(const Duration(seconds: 3));
-    await shot(tester, '06_stop_detail');
+    await shot(tester, '07_stop_board');
 
     router.push('/bogota/routes/bogota:B10');
     await settle(tester, 30);
     await Future<void>.delayed(const Duration(seconds: 3));
-    await shot(tester, '07_route_detail');
+    await shot(tester, '08_route_detail');
+
+    // Favorites: Casa + a stop with its live board + a recent trip
+    final favs = container.read(favoritesProvider.notifier);
+    await favs.put(Favorite.place('bogota', const Place(name: 'Cra 45 # 174-20', position: LatLng(4.756, -74.044)), kind: FavoriteKind.home, icon: 'home', name: 'Casa'));
+    await favs.put(Favorite.stop('bogota', const Stop(id: 'bogota:PN', name: 'Portal Norte', position: LatLng(4.7546, -74.0459), locationType: 'station', component: Component.trunk)));
+    await favs.put(Favorite.route('bogota', const RouteRef(id: 'bogota:L10', shortName: 'L10', longName: 'TransMiCable Portal Tunal - Mirador', color: '#EF6C00', textColor: '#FFFFFF', mode: TravelMode.cableCar, agencyId: '7', component: Component.cable)));
+    router.go('/bogota/favorites');
+    await settle(tester, 30);
+    await Future<void>.delayed(const Duration(seconds: 2));
+    await shot(tester, '09_favorites');
 
     router.go('/bogota/alerts');
     await settle(tester, 20);
-    await shot(tester, '08_alerts');
+    await shot(tester, '10_alerts');
 
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.dark);
+    await container.read(settingsProvider.notifier).setPoiLayer(true);
     router.go('/bogota');
     await settle(tester, 30);
     await Future<void>.delayed(const Duration(seconds: 5));
-    await shot(tester, '09_home_dark');
-  }, timeout: const Timeout(Duration(minutes: 5)));
+    await shot(tester, '11_home_dark');
+    await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.light);
+  }, timeout: const Timeout(Duration(minutes: 6)));
 }

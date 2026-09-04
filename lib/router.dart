@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'core/config.dart';
 import 'core/providers.dart';
+import 'core/utils/links.dart';
 import 'features/alerts/alerts_screen.dart';
 import 'features/cities/city_picker_screen.dart';
 import 'features/favorites/favorites_screen.dart';
 import 'features/home/app_shell.dart';
 import 'features/home/home_screen.dart';
 import 'features/live/vehicle_detail_screen.dart';
+import 'features/locate/locate_screen.dart';
+import 'features/planner/follow_along_screen.dart';
 import 'features/planner/itinerary_detail_screen.dart';
 import 'features/planner/place_search_screen.dart';
 import 'features/planner/plan_screen.dart';
 import 'features/planner/results_screen.dart';
 import 'features/routes/route_detail_screen.dart';
+import 'features/routes/routes_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/stops/stop_detail_screen.dart';
 
@@ -29,15 +32,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       final uri = state.uri;
       final cityId = ref.read(settingsProvider).cityId;
 
-      // Deep link `opentransit://bogota/plan?...` → `/bogota/plan?...`
-      if (uri.scheme == AppConfig.deepLinkScheme && uri.host.isNotEmpty) {
-        return Uri(path: '/${uri.host}${uri.path}', queryParameters: uri.queryParameters.isEmpty ? null : uri.queryParameters).toString();
-      }
+      // Deep links: `opentransit://bogota/plan?...` and the canonical
+      // `https://<web-host>/bogota/plan?...` both map to `/bogota/plan?...`.
+      final mapped = CanonicalLinks.toAppLocation(uri);
+      if (mapped != null && mapped != uri.toString()) return mapped;
       final segs = uri.pathSegments;
       if (segs.isEmpty) return cityId == null ? '/cities' : '/$cityId';
       if (segs.first == 'cities') return null;
       // Host-less deep link (`/plan?...`) → prefix with the remembered city.
-      const known = {'plan', 'search', 'results', 'stops', 'routes', 'alerts', 'favorites', 'settings', 'vehicles', 'itinerary'};
+      const known = {'plan', 'search', 'results', 'stops', 'routes', 'alerts', 'favorites', 'settings', 'vehicles', 'itinerary', 'locate', 'live'};
       if (known.contains(segs.first)) {
         if (cityId == null) return '/cities';
         return Uri(path: '/$cityId${uri.path}', queryParameters: uri.queryParameters.isEmpty ? null : uri.queryParameters).toString();
@@ -72,6 +75,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   builder: (_, s) => PlaceSearchScreen(
                     cityId: s.pathParameters['city']!,
                     field: s.uri.queryParameters['field'] ?? 'to',
+                    saveAs: s.uri.queryParameters['saveAs'],
                   ),
                 ),
                 GoRoute(
@@ -84,6 +88,31 @@ final routerProvider = Provider<GoRouter>((ref) {
                     cityId: s.pathParameters['city']!,
                     index: int.tryParse(s.pathParameters['index'] ?? '') ?? 0,
                   ),
+                  routes: [
+                    GoRoute(
+                      path: 'go',
+                      builder: (_, s) => FollowAlongScreen(
+                        cityId: s.pathParameters['city']!,
+                        index: int.tryParse(s.pathParameters['index'] ?? '') ?? 0,
+                      ),
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'locate',
+                  builder: (_, s) => LocateScreen(
+                    cityId: s.pathParameters['city']!,
+                    stopId: s.uri.queryParameters['stop'],
+                    routeId: s.uri.queryParameters['route'],
+                  ),
+                ),
+                GoRoute(
+                  path: 'live',
+                  redirect: (_, s) => '/${s.pathParameters['city']}',
+                ),
+                GoRoute(
+                  path: 'routes',
+                  builder: (_, s) => RoutesScreen(cityId: s.pathParameters['city']!),
                 ),
                 GoRoute(
                   path: 'stops/:stopId',

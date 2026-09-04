@@ -8,6 +8,7 @@ import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
+import '../../core/utils/geo.dart';
 import '../../core/utils/location.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -15,9 +16,13 @@ import 'planner_state.dart';
 
 /// Geocode autocomplete for the origin (`field=from`) or destination (`to`).
 class PlaceSearchScreen extends ConsumerStatefulWidget {
-  const PlaceSearchScreen({super.key, required this.cityId, required this.field});
+  const PlaceSearchScreen({super.key, required this.cityId, required this.field, this.saveAs});
   final String cityId;
   final String field;
+
+  /// When set (`home` | `work`), the picked place is saved as that favorite
+  /// instead of being put into the planner.
+  final String? saveAs;
 
   @override
   ConsumerState<PlaceSearchScreen> createState() => _PlaceSearchScreenState();
@@ -30,6 +35,20 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
   bool _loading = false;
   Object? _error;
   int _seq = 0;
+  LatLng? _here;
+
+  @override
+  void initState() {
+    super.initState();
+    _locate();
+  }
+
+  Future<void> _locate() async {
+    try {
+      final p = await currentPosition();
+      if (mounted) setState(() => _here = p);
+    } catch (_) {}
+  }
 
   @override
   void dispose() {
@@ -59,7 +78,7 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
     });
     try {
       final city = await ref.read(cityProvider(widget.cityId).future);
-      final r = await ref.read(apiClientProvider).geocode(widget.cityId, q, near: city.center);
+      final r = await ref.read(apiClientProvider).geocode(widget.cityId, q, near: _here ?? city.center);
       if (seq != _seq || !mounted) return;
       setState(() {
         _results = r;
@@ -75,6 +94,14 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
   }
 
   void _pick(Place p) {
+    if (widget.saveAs != null) {
+      final kind = FavoriteKind.parse(widget.saveAs);
+      final l10n = AppLocalizations.of(context);
+      ref.read(favoritesProvider.notifier).put(Favorite.place(widget.cityId, p,
+          kind: kind, icon: kind.name, name: kind == FavoriteKind.home ? l10n.favHome : l10n.favWork));
+      context.pop();
+      return;
+    }
     final planner = ref.read(plannerProvider.notifier);
     if (widget.field == 'from') {
       planner.setFrom(p);
@@ -105,6 +132,9 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
     final scheme = Theme.of(context).colorScheme;
     final favs = ref.watch(favoritesProvider).where((f) => f.cityId == widget.cityId && f.type != FavoriteType.route).toList();
     final query = _controller.text.trim();
+    // Nearby-first: with a fix, the closest stops lead the empty-query list.
+    final nearby = _here == null ? null : ref.watch(nearbyStopsProvider(NearbyQuery(widget.cityId, _here!, radius: 800)));
+    final near = nearby?.asData?.value ?? const <Stop>[];
 
     return Scaffold(
       appBar: AppBar(
@@ -140,13 +170,22 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
               title: Text(l10n.myLocation),
               onTap: _useMyLocation,
             ),
-            if (favs.isNotEmpty) SectionTitle(l10n.favorites),
-            for (final f in favs)
+            if (widget.saveAs == null && favs.isNotEmpty) SectionTitle(l10n.favorites),
+            if (widget.saveAs == null)
+              for (final f in favs)
+                ListTile(
+                  leading: Icon(f.type == FavoriteType.stop ? Icons.directions_bus : iconByName(f.icon, fallback: Icons.star), color: componentColor(f.component)),
+                  title: Text(f.name),
+                  subtitle: f.subtitle == null ? null : Text(f.subtitle!),
+                  onTap: () => _pick(f.toPlace()),
+                ),
+            if (near.isNotEmpty) SectionTitle(l10n.nearYou),
+            for (final s in near.take(5))
               ListTile(
-                leading: Icon(f.type == FavoriteType.stop ? Icons.directions_bus : Icons.star, color: componentColor(f.component)),
-                title: Text(f.name),
-                subtitle: f.subtitle == null ? null : Text(f.subtitle!),
-                onTap: () => _pick(f.toPlace()),
+                leading: ComponentBadge(s.component, isStation: s.isStation),
+                title: Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                subtitle: Text(s.distanceMeters == null ? '' : formatDistance(s.distanceMeters!)),
+                onTap: () => _pick(Place(name: s.name, position: s.position, stopId: s.id, component: s.component)),
               ),
           ],
           if (_loading) const LinearProgressIndicator(minHeight: 2),

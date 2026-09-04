@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/live/interpolation.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/utils/colors.dart';
@@ -10,7 +15,10 @@ import '../../core/utils/location.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../favorites/save_favorite_sheet.dart';
 import '../planner/planner_state.dart';
+import 'widgets/alert_carousel.dart';
+import 'widgets/hub_tiles.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key, required this.cityId});
@@ -20,8 +28,9 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProviderStateMixin {
   final _mapKey = GlobalKey<TransitMapState>();
+  final _sheet = DraggableScrollableController();
   LatLng? _center;
   double _zoom = 12;
   bool _locating = false;
@@ -33,11 +42,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // Memoised overlay lists so the map only re-syncs when data really changed.
   List<Stop>? _lastStops;
   List<MapPoint> _stopPoints = const [];
-  int _lastFrameSeq = -1;
-  String _lastFrameKey = '';
-  List<MapPoint> _vehiclePoints = const [];
+  List<Poi>? _lastPois;
+  List<MapPoint> _poiPoints = const [];
 
-  List<MapPoint> _stopsToPoints(List<Stop> stops) {
+  // Live layer: culled id set (recomputed on frame/camera change) + ticker
+  // that pushes interpolated positions at ~10 Hz while buses are moving.
+  final _interp = VehicleInterpolator();
+  late final Ticker _ticker = createTicker(_onTick);
+  VehicleFrame? _frame;
+  List<Vehicle> _culled = const [];
+  String _culledKey = '';
+  List<MapPoint> _vehiclePoints = const [];
+  DateTime _lastPush = DateTime.fromMillisecondsSinceEpoch(0);
+  List<double>? _bounds;
+
+  static const _viewportCullAbove = 1500;
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    _sheet.dispose();
+    super.dispose();
+  }
+
+  List<MapPoint> _stopsToPoints(List<Stop> stops, City city) {
     if (identical(stops, _lastStops)) return _stopPoints;
     _lastStops = stops;
     return _stopPoints = [
@@ -45,41 +73,85 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         MapPoint(
           id: s.id,
           position: s.position,
-          color: componentColor(s.component),
+          color: componentColor(s.component, city: city),
           radius: s.isStation ? 7 : 5,
           label: s.name,
         ),
     ];
   }
 
-  /// Converts the live frame to map points. Real feeds carry ~6,000 buses, so
-  /// beyond [_viewportCullAbove] vehicles only those near the camera are sent
-  /// to the native map (radius shrinks as the user zooms in).
-  static const _viewportCullAbove = 1500;
-
-  List<MapPoint> _frameToPoints(VehicleFrame f, LatLng center, double zoom) {
-    final cull = f.count > _viewportCullAbove;
-    final zoomBucket = (zoom * 2).round();
-    final key = cull ? '${f.seq}|$zoomBucket|${center.lat.toStringAsFixed(3)}|${center.lon.toStringAsFixed(3)}' : '${f.seq}';
-    if (f.seq == _lastFrameSeq && key == _lastFrameKey) return _vehiclePoints;
-    _lastFrameSeq = f.seq;
-    _lastFrameKey = key;
-    // ~40 km at zoom 10, halving with every zoom level; never below 1.5 km.
-    final maxMeters = cull ? (40000 / (1 << (zoom - 10).clamp(0, 6).round())).clamp(1500, 40000).toDouble() : double.infinity;
-    final small = zoom < 12.5;
-    return _vehiclePoints = [
-      for (final v in f.vehicles.values)
-        if (!cull || haversineMeters(center, v.position) <= maxMeters)
-          MapPoint(
-            id: v.id,
-            position: v.position,
-            color: componentColor(v.component),
-            radius: small ? 5 : 9,
-            strokeColor: Colors.white,
-            strokeWidth: small ? 1 : 2,
-            label: small ? '' : (v.routeShortName ?? ''),
-          ),
+  List<MapPoint> _poisToPoints(List<Poi> pois) {
+    if (identical(pois, _lastPois)) return _poiPoints;
+    _lastPois = pois;
+    return _poiPoints = [
+      for (final p in pois)
+        MapPoint(
+          id: 'poi:${p.id}',
+          position: p.position,
+          color: poiColor(p.type),
+          radius: 8,
+          strokeWidth: 1.5,
+          label: poiGlyph(p.type),
+        ),
     ];
+  }
+
+  /// Keeps only vehicles near the camera when the fleet is large.
+  void _recull(VehicleFrame f, LatLng center, double zoom) {
+    final cull = f.count > _viewportCullAbove;
+    final key = cull
+        ? '${f.seq}|${(zoom * 2).round()}|${center.lat.toStringAsFixed(3)}|${center.lon.toStringAsFixed(3)}'
+        : '${f.seq}';
+    if (key == _culledKey) return;
+    _culledKey = key;
+    // ~40 km at zoom 10, halving with every zoom level; never below 1.5 km.
+    final maxMeters = cull
+        ? (40000 / (1 << (zoom - 10).clamp(0, 6).round())).clamp(1500, 40000).toDouble()
+        : double.infinity;
+    _culled = [
+      for (final v in f.vehicles.values)
+        if (!cull || haversineMeters(center, v.position) <= maxMeters) v,
+    ];
+    _pushPoints(DateTime.now(), force: true);
+  }
+
+  void _pushPoints(DateTime now, {bool force = false}) {
+    if (!force && now.difference(_lastPush).inMilliseconds < 100) return;
+    _lastPush = now;
+    final city = ref.read(cityProvider(widget.cityId)).asData?.value;
+    final small = _zoom < 12.5;
+    final pts = <MapPoint>[
+      for (final v in _culled)
+        MapPoint(
+          id: v.id,
+          position: _interp.positionAt(v.id, now) ?? v.position,
+          color: componentColor(v.component, city: city),
+          radius: small ? 5 : 9,
+          strokeColor: Colors.white,
+          strokeWidth: small ? 1 : 2,
+          label: small ? '' : (v.routeShortName ?? ''),
+        ),
+    ];
+    if (mounted) setState(() => _vehiclePoints = pts);
+  }
+
+  void _onTick(Duration _) {
+    final now = DateTime.now();
+    if (!_interp.isAnimating(now)) {
+      _ticker.stop();
+      _pushPoints(now, force: true);
+      return;
+    }
+    _pushPoints(now);
+  }
+
+  void _onFrame(VehicleFrame f, LatLng center, double zoom) {
+    if (!identical(f, _frame)) {
+      _frame = f;
+      _interp.ingest(f, DateTime.now());
+      if (!_ticker.isActive) _ticker.start();
+    }
+    _recull(f, center, zoom);
   }
 
   Future<void> _goToMyLocation() async {
@@ -132,12 +204,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               title: Text(l10n.setAsDestination),
               onTap: () => Navigator.pop(ctx, 'to'),
             ),
+            ListTile(
+              leading: const Icon(Icons.star_outline),
+              title: Text(l10n.saveFavorite),
+              onTap: () => Navigator.pop(ctx, 'fav'),
+            ),
             const SizedBox(height: 8),
           ],
         ),
       ),
     );
     if (choice == null || !mounted) return;
+    if (choice == 'fav') {
+      await showSaveFavoriteSheet(context, ref, widget.cityId, place);
+      return;
+    }
     final planner = ref.read(plannerProvider.notifier);
     if (choice == 'from') {
       planner.setFrom(place);
@@ -145,6 +226,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       planner.setTo(place);
     }
     context.go('/${widget.cityId}/plan');
+  }
+
+  void _onTile(HubTile t, City city) {
+    final c = widget.cityId;
+    switch (t) {
+      case HubTile.plan:
+        context.go('/$c/plan');
+      case HubTile.locate:
+        context.push('/$c/locate');
+      case HubTile.nearby:
+        _sheet.animateTo(0.9, duration: const Duration(milliseconds: 350), curve: Curves.easeOut);
+      case HubTile.routes:
+        context.push('/$c/routes');
+      case HubTile.live:
+        ref.read(settingsProvider.notifier).setLiveVehicles(true);
+        _sheet.animateTo(0.18, duration: const Duration(milliseconds: 350), curve: Curves.easeOut);
+      case HubTile.alerts:
+        context.go('/$c/alerts');
+      case HubTile.favorites:
+        context.go('/$c/favorites');
+    }
+  }
+
+  Future<void> _openExternal(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null) return;
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {}
   }
 
   @override
@@ -164,9 +274,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         final nearby = ref.watch(nearbyStopsProvider(NearbyQuery(widget.cityId, center,
             radius: _zoom >= 15 ? 500 : (_zoom >= 13.5 ? 900 : 1500))));
         final stops = nearby.asData?.value ?? const <Stop>[];
-        final showLive = settings.liveVehicles && city.features.realtimeVehicles;
+        final liveAllowed = city.features.realtimeVehicles && city.config.isEnabled('liveVehicles');
+        final showLive = settings.liveVehicles && liveAllowed;
         final live = showLive ? ref.watch(liveVehiclesProvider(widget.cityId)) : null;
         final frame = live?.asData?.value;
+        if (frame != null) {
+          _onFrame(frame, center, _zoom);
+        } else if (_frame != null) {
+          _frame = null;
+          _culled = const [];
+          _culledKey = '';
+          _interp.clear();
+          _vehiclePoints = const [];
+        }
+        final poisAllowed = city.config.isEnabled('pois');
+        final showPois = settings.poiLayer && poisAllowed && _zoom >= 12.5 && _bounds != null;
+        final pois = showPois
+            ? (ref.watch(poisProvider(BboxQuery(widget.cityId, _bounds!))).asData?.value ?? const <Poi>[])
+            : const <Poi>[];
 
         return Scaffold(
           body: Stack(
@@ -176,18 +301,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   key: _mapKey,
                   initialCenter: city.center,
                   initialZoom: city.defaultZoom,
-                  stops: _stopsToPoints(stops),
-                  vehicles: frame == null ? const [] : _frameToPoints(frame, center, _zoom),
+                  stops: _stopsToPoints(stops, city),
+                  vehicles: _vehiclePoints,
+                  pois: _poisToPoints(pois),
                   myLocation: _showMyLocation,
                   attributionBottomInset: 150,
                   onLongPress: _onLongPress,
                   onStopTap: (id) => context.push('/${widget.cityId}/stops/${Uri.encodeComponent(id)}'),
                   onVehicleTap: (id) => context.push('/${widget.cityId}/vehicles/${Uri.encodeComponent(id)}'),
-                  onCameraIdle: (c, z) {
-                    if (_center == null || haversineMeters(_center!, c) > 150 || (z - _zoom).abs() > 0.5) {
+                  onPoiTap: (id) {
+                    final p = pois.where((x) => 'poi:${x.id}' == id).firstOrNull;
+                    if (p == null) return;
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('${poiLabel(p.type, l10n)}${p.name == null ? '' : ' · ${p.name}'}')));
+                  },
+                  onCameraIdle: (c, z) async {
+                    final b = await _mapKey.currentState?.visibleBounds();
+                    if (!mounted) return;
+                    if (_center == null || haversineMeters(_center!, c) > 150 || (z - _zoom).abs() > 0.5 || b != null) {
                       setState(() {
                         _center = c;
                         _zoom = z;
+                        _bounds = b;
                       });
                     }
                   },
@@ -210,7 +345,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 top: MediaQuery.paddingOf(context).top + 84,
                 child: Column(
                   children: [
-                    if (city.features.realtimeVehicles)
+                    if (liveAllowed)
                       _RoundButton(
                         tooltip: l10n.liveVehicles,
                         active: settings.liveVehicles,
@@ -219,6 +354,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             .read(settingsProvider.notifier)
                             .setLiveVehicles(!settings.liveVehicles),
                       ),
+                    if (poisAllowed) ...[
+                      const SizedBox(height: 10),
+                      _RoundButton(
+                        tooltip: l10n.poiLayer,
+                        active: settings.poiLayer,
+                        icon: Icons.local_convenience_store_outlined,
+                        onTap: () => ref.read(settingsProvider.notifier).setPoiLayer(!settings.poiLayer),
+                      ),
+                    ],
                     const SizedBox(height: 10),
                     _RoundButton(
                       tooltip: l10n.myLocation,
@@ -243,7 +387,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const LiveBadge(compact: true),
+                        FreshnessLabel(cityId: widget.cityId, realtime: true),
                         const SizedBox(width: 6),
                         Text(l10n.vehiclesCount(frame.count),
                             style: Theme.of(context).textTheme.labelMedium),
@@ -251,22 +395,160 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
                 ),
-              // Nearby stops strip
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: _NearbyStrip(
+              // Hub sheet
+              DraggableScrollableSheet(
+                controller: _sheet,
+                initialChildSize: 0.42,
+                minChildSize: 0.18,
+                maxChildSize: 0.9,
+                snap: true,
+                snapSizes: const [0.18, 0.42, 0.9],
+                builder: (context, controller) => _HubSheet(
                   cityId: widget.cityId,
+                  city: city,
+                  controller: controller,
                   stops: stops,
                   loading: nearby.isLoading && stops.isEmpty,
-                  onPlan: () => context.go('/${widget.cityId}/plan'),
+                  onTile: (t) => _onTile(t, city),
+                  onService: (s) => _openExternal(s.url),
                 ),
               ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class _HubSheet extends ConsumerWidget {
+  const _HubSheet({
+    required this.cityId,
+    required this.city,
+    required this.controller,
+    required this.stops,
+    required this.loading,
+    required this.onTile,
+    required this.onService,
+  });
+  final String cityId;
+  final City city;
+  final ScrollController controller;
+  final List<Stop> stops;
+  final bool loading;
+  final void Function(HubTile) onTile;
+  final void Function(CityService) onService;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final tiles = [
+      HubTile.plan,
+      if (city.config.isEnabled('board')) HubTile.locate,
+      HubTile.nearby,
+      HubTile.routes,
+      if (city.features.realtimeVehicles && city.config.isEnabled('liveVehicles')) HubTile.live,
+      if (city.features.alerts) HubTile.alerts,
+      HubTile.favorites,
+    ];
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, -2))],
+      ),
+      child: ListView(
+        controller: controller,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        children: [
+          Center(
+            child: Container(
+              width: 36, height: 4,
+              decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(2)),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(l10n.hubTitle,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.4)),
+          const SizedBox(height: 12),
+          HubTiles(tiles: tiles, onTap: onTile),
+          if (city.features.alerts) AlertCarousel(cityId: cityId),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: Text(l10n.nearbyCardTitle,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+              ),
+              TextButton.icon(
+                onPressed: () => context.push('/$cityId/locate'),
+                icon: const Icon(Icons.search, size: 16),
+                label: Text(l10n.searchStopHint),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          if (loading)
+            const Padding(padding: EdgeInsets.all(20), child: Center(child: CircularProgressIndicator(strokeWidth: 2)))
+          else if (stops.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Text(l10n.longPressHint, style: TextStyle(color: scheme.onSurfaceVariant)),
+            )
+          else
+            for (final s in stops.take(6)) _NearbyTile(cityId: cityId, stop: s),
+          if (city.services.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(l10n.services,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final s in city.services)
+                  ActionChip(
+                    avatar: Icon(iconByName(s.icon, fallback: Icons.open_in_new), size: 16),
+                    label: Text(s.label),
+                    onPressed: () => onService(s),
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _NearbyTile extends ConsumerWidget {
+  const _NearbyTile({required this.cityId, required this.stop});
+  final String cityId;
+  final Stop stop;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: ComponentBadge(stop.component, isStation: stop.isStation),
+      title: Text(stop.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.w600)),
+      subtitle: Text(
+        [
+          stop.isStation ? l10n.station : l10n.stop,
+          if (stop.distanceMeters != null) formatDistance(stop.distanceMeters!),
+        ].join(' · '),
+        style: TextStyle(color: scheme.onSurfaceVariant),
+      ),
+      trailing: IconButton(
+        tooltip: l10n.locateTitle,
+        icon: const Icon(Icons.directions_bus_outlined),
+        onPressed: () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(stop.id)}'),
+      ),
+      onTap: () => context.push('/$cityId/stops/${Uri.encodeComponent(stop.id)}'),
     );
   }
 }
@@ -357,128 +639,6 @@ class _RoundButton extends StatelessWidget {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : Icon(icon, color: active ? scheme.onPrimary : scheme.onSurface),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NearbyStrip extends StatelessWidget {
-  const _NearbyStrip({
-    required this.cityId,
-    required this.stops,
-    required this.loading,
-    required this.onPlan,
-  });
-  final String cityId;
-  final List<Stop> stops;
-  final bool loading;
-  final VoidCallback onPlan;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: scheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, -2))],
-      ),
-      padding: const EdgeInsets.only(top: 12, bottom: 12),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(l10n.nearbyStops,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w700)),
-                ),
-                FilledButton.icon(
-                  onPressed: onPlan,
-                  icon: const Icon(Icons.alt_route, size: 18),
-                  label: Text(l10n.planTrip),
-                  style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      visualDensity: VisualDensity.compact),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 82,
-            child: loading
-                ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
-                : stops.isEmpty
-                    ? Center(
-                        child: Text(l10n.longPressHint,
-                            style: TextStyle(color: scheme.onSurfaceVariant)))
-                    : ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: stops.length,
-                        separatorBuilder: (_, _) => const SizedBox(width: 10),
-                        itemBuilder: (context, i) => _StopCard(cityId: cityId, stop: stops[i]),
-                      ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StopCard extends StatelessWidget {
-  const _StopCard({required this.cityId, required this.stop});
-  final String cityId;
-  final Stop stop;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = componentColor(stop.component);
-    return Material(
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () => context.push('/$cityId/stops/${Uri.encodeComponent(stop.id)}'),
-        child: Container(
-          width: 190,
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Container(
-                width: 36,
-                height: 36,
-                decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)),
-                child: Icon(stop.isStation ? Icons.subway_outlined : Icons.directions_bus,
-                    color: onColor(color), size: 20),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(stop.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13, height: 1.2)),
-                    if (stop.distanceMeters != null)
-                      Text(formatDistance(stop.distanceMeters!),
-                          style: Theme.of(context).textTheme.labelSmall),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
       ),

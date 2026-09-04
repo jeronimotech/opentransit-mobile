@@ -224,5 +224,193 @@
   "goHere": "Ir aquí",
   "leaveFrom": "Salir de aquí",
   "fromHere": "Desde aquí",
-  "accessible": "Accesible"
+  "accessible": "Accesible",
+  "hubTitle": "¿Qué quieres consultar?",
+  "tilePlan": "Planear viaje",
+  "tileLocate": "Ubica tu bus",
+  "tileNearby": "Paradas cerca",
+  "tileRoutes": "Buscar ruta",
+  "tileLive": "Buses en vivo",
+  "tileAlerts": "Alertas",
+  "tileFavorites": "Favoritos",
+  "nearbyCardTitle": "Estaciones y paradas cerca",
+  "services": "Servicios",
+  "messagesOfInterest": "Mensajes de interés",
+  "dismiss": "Ocultar",
+  "seeAll": "Ver todas",
+  "locateTitle": "Ubica tu bus",
+  "locateStep1": "Elige una estación o parada",
+  "locateStep2": "Elige la ruta",
+  "locateNext": "Próximos buses",
+  "sourceLive": "En vivo",
+  "sourceScheduled": "Por programación",
+  "sourceEstimated": "Estimado",
+  "stopsAway": "{count, plural, =1{1 parada} other{{count} paradas}}",
+  "@stopsAway": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noBuses": "Sin buses próximos para esta ruta.",
+  "searchStopHint": "Buscar estación o parada",
+  "changeStop": "Cambiar parada",
+  "board": "Próximos buses",
+  "nextIn": "Siguiente en {minutes} min",
+  "@nextIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "thenAt": "luego {list}",
+  "@thenAt": {
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "noBoard": "Sin buses en la próxima hora.",
+  "freshLive": "En vivo",
+  "freshScheduled": "Programado",
+  "freshStale": "Sin datos en vivo hace {seconds} s",
+  "@freshStale": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "freshNoRealtime": "Sin datos en vivo",
+  "outOfHours": "Fuera de horario",
+  "nextAt": "próximo {time}",
+  "@nextAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "noServiceToday": "Sin servicio hoy",
+  "serviceHours": "Horario",
+  "estimatedFare": "Tarifa estimada",
+  "fareNotPublished": "Tarifa no publicada",
+  "fareBase": "Pasaje",
+  "fareTransfer": "Transbordo",
+  "fareEstimatedNote": "Estimación con la tarifa configurada para la ciudad; puede variar.",
+  "sortFastest": "Más rápido",
+  "sortFewerTransfers": "Menos transbordos",
+  "sortLessWalking": "Menos caminata",
+  "sortCheapest": "Más económico",
+  "sortEarliest": "Salida más próxima",
+  "sortBy": "Ordenar",
+  "favHome": "Casa",
+  "favWork": "Trabajo",
+  "favCustom": "Otro",
+  "saveAs": "Guardar como",
+  "recentTrips": "Viajes recientes",
+  "clearRecent": "Borrar",
+  "setHome": "Fijar Casa",
+  "setWork": "Fijar Trabajo",
+  "chooseIcon": "Elige un ícono",
+  "saveFavorite": "Guardar favorito",
+  "favoriteName": "Nombre",
+  "updateRequired": "Actualiza la app",
+  "updateRequiredBody": "Esta versión ya no es compatible. Actualiza para seguir usando OpenTransit.",
+  "updateAction": "Actualizar",
+  "maintenanceTitle": "En mantenimiento",
+  "maintenanceBody": "Estamos haciendo mejoras. Vuelve a intentarlo en unos minutos.",
+  "checkAgain": "Volver a intentar",
+  "shareCopied": "Enlace copiado",
+  "shareTrip": "Compartir viaje",
+  "copyLink": "Copiar enlace",
+  "openInWeb": "Abrir en la web",
+  "startTrip": "Iniciar viaje",
+  "stopTrip": "Terminar",
+  "currentLeg": "Tramo actual",
+  "nextStopIsYours": "Próxima parada es la tuya",
+  "getOffAt": "Bájate en {stop}",
+  "@getOffAt": {
+    "placeholders": {
+      "stop": {
+        "type": "String"
+      }
+    }
+  },
+  "followAlongHint": "Te avisamos cuando te acerques a tu parada de bajada.",
+  "progressLabel": "Tramo {done} de {total}",
+  "@progressLabel": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "arrived": "¡Llegaste!",
+  "distanceToStop": "{distance} a tu parada",
+  "@distanceToStop": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "followAlongLocationNeeded": "Necesitamos tu ubicación para seguir el viaje.",
+  "poiLayer": "Servicios en estaciones",
+  "poiBikeParking": "Cicloparqueadero",
+  "poiToilets": "Baños",
+  "poiAtm": "Cajero",
+  "poiHealth": "Punto de salud",
+  "poiLibrary": "Biblioteca",
+  "poiOther": "Servicio",
+  "accessibilityUnverified": "Dato del feed no verificado",
+  "accessibilityNotAccessible": "No accesible",
+  "accessibilityUnknown": "Sin información de accesibilidad",
+  "accessibilitySource": "Fuente: {source}",
+  "@accessibilitySource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "accessibilityVerified": "Verificado",
+  "nearYou": "Cerca de ti",
+  "bikeToStation": "Llegar en bici a la estación",
+  "reportProblem": "Reportar un problema",
+  "pqrs": "PQRS",
+  "openExternal": "Abrir enlace",
+  "rechargeCard": "Recargar tarjeta",
+  "routesSearchHint": "Buscar ruta (p. ej. B10)",
+  "station": "Estación",
+  "etaLegend": "≤5 · ≤10 · ≤15 min",
+  "live": "En vivo",
+  "allRoutes": "Todas las rutas",
+  "noRoutes": "No encontramos rutas.",
+  "minutesOnly": "{minutes} min",
+  "@minutesOnly": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "now2": "Ya",
+  "vehicleAgo": "hace {seconds} s",
+  "@vehicleAgo": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "goToStop": "Ir a la parada",
+  "showOnMap": "Ver en el mapa",
+  "selectRoute": "Selecciona una ruta"
 }

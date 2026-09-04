@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/location.dart';
@@ -53,6 +54,12 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
   }
 
   Future<void> _submit() async {
+    final s = ref.read(plannerProvider);
+    if (s.from != null && s.to != null) {
+      // Remember the O/D pair for one-tap replanning (last 10, local only).
+      await ref.read(recentTripsProvider.notifier).add(RecentTrip(
+          cityId: widget.cityId, from: s.from!, to: s.to!, at: DateTime.now()));
+    }
     final res = await ref.read(plannerProvider.notifier).plan(widget.cityId);
     if (!mounted) return;
     // Navigate even on error so the results screen shows the retry state.
@@ -126,6 +133,12 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toString();
     final loading = s.result?.isLoading ?? false;
+    final favs = ref.watch(favoritesProvider.notifier);
+    ref.watch(favoritesProvider);
+    final home = favs.ofKind(widget.cityId, FavoriteKind.home);
+    final work = favs.ofKind(widget.cityId, FavoriteKind.work);
+    final recents = ref.watch(recentTripsProvider).where((t) => t.cityId == widget.cityId).take(5).toList();
+    final bikeAllowed = (city?.modes.contains(TravelMode.bicycle) ?? false) && (city?.config.isEnabled('bike') ?? true);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.planTrip)),
@@ -183,7 +196,29 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
+          // Casa / Trabajo shortcuts
+          if (home != null || work != null)
+            Wrap(
+              spacing: 8,
+              children: [
+                if (home != null)
+                  ActionChip(
+                    key: const ValueKey('chip-home'),
+                    avatar: const Icon(Icons.home_rounded, size: 16),
+                    label: Text(l10n.favHome),
+                    onPressed: () => ref.read(plannerProvider.notifier).setTo(home.toPlace()),
+                  ),
+                if (work != null)
+                  ActionChip(
+                    key: const ValueKey('chip-work'),
+                    avatar: const Icon(Icons.work_rounded, size: 16),
+                    label: Text(l10n.favWork),
+                    onPressed: () => ref.read(plannerProvider.notifier).setTo(work.toPlace()),
+                  ),
+              ],
+            ),
+          const SizedBox(height: 10),
 
           // Time
           Row(
@@ -242,8 +277,27 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
               ],
             ),
 
+          // Bike to the station (BICYCLE + TRANSIT)
+          if (bikeAllowed)
+            SwitchListTile(
+              key: const ValueKey('bike-toggle'),
+              contentPadding: EdgeInsets.zero,
+              secondary: const Icon(Icons.pedal_bike),
+              title: Text(l10n.bikeToStation),
+              value: settings.bikeToStation,
+              onChanged: (v) {
+                ref.read(settingsProvider.notifier).setBikeToStation(v);
+                final planner = ref.read(plannerProvider.notifier);
+                final modes = {...ref.read(plannerProvider).modes};
+                if (v) {
+                  modes.add(TravelMode.bicycle);
+                } else {
+                  modes.remove(TravelMode.bicycle);
+                }
+                planner.setModes(modes);
+              },
+            ),
           // Accessibility
-          const SizedBox(height: 8),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             secondary: const Icon(Icons.accessible),
@@ -259,6 +313,22 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                 : const Icon(Icons.search),
             label: Text(l10n.searchAction),
           ),
+          if (recents.isNotEmpty) ...[
+            SectionTitle(l10n.recentTrips),
+            for (final t in recents)
+              ListTile(
+                key: ValueKey('recent-${t.key}'),
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(Icons.history, color: scheme.onSurfaceVariant),
+                title: Text('${t.from.name} → ${t.to.name}', maxLines: 1, overflow: TextOverflow.ellipsis),
+                onTap: () {
+                  final planner = ref.read(plannerProvider.notifier);
+                  planner.setFrom(t.from);
+                  planner.setTo(t.to);
+                  _submit();
+                },
+              ),
+          ],
         ],
       ),
     );

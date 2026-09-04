@@ -8,7 +8,13 @@
   "locationType": "station",
   "component": "trunk",
   "wheelchair": "accessible",
-  "parentStationId": null
+  "parentStationId": null,
+  "accessibility": {
+   "wheelchair": "accessible",
+   "source": "gtfs",
+   "verified": false,
+   "note": "Dato del feed no verificado"
+  }
  },
  "generatedAt": "2026-09-04T08:00:00-05:00",
  "departures": [
@@ -21,7 +27,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    "headsign": "Portal Sur",
    "tripId": "bogota:B10-0803",
@@ -42,7 +55,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    "headsign": "Ricaurte",
    "tripId": "bogota:K43-0807",
@@ -63,7 +83,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    "headsign": "Museo Nacional",
    "tripId": "bogota:B74-0809",
@@ -84,7 +111,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    "headsign": "Portal Sur",
    "tripId": "bogota:B10-0813",
@@ -105,7 +139,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    "headsign": "Ricaurte",
    "tripId": "bogota:K43-0817",
@@ -126,7 +167,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    "headsign": "Museo Nacional",
    "tripId": "bogota:B74-0820",
@@ -147,7 +195,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    "headsign": "Portal Sur",
    "tripId": "bogota:B10-0823",
@@ -168,7 +223,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    "headsign": "Ricaurte",
    "tripId": "bogota:K43-0827",

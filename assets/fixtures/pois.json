@@ -1,0 +1,195 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "id": "osm:1001",
+   "properties": {
+    "id": "osm:1001",
+    "type": "bike_parking",
+    "name": "Cicloparqueadero Portal Norte",
+    "source": "osm",
+    "osmId": 1001,
+    "wheelchair": "yes"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.0465,
+     4.7552
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1002",
+   "properties": {
+    "id": "osm:1002",
+    "type": "toilets",
+    "name": "Baños Portal Norte",
+    "source": "osm",
+    "osmId": 1002,
+    "wheelchair": null
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.0455,
+     4.7548
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1003",
+   "properties": {
+    "id": "osm:1003",
+    "type": "atm",
+    "name": "Cajero Portal Norte",
+    "source": "osm",
+    "osmId": 1003,
+    "wheelchair": null
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.0462,
+     4.7543
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1004",
+   "properties": {
+    "id": "osm:1004",
+    "type": "library",
+    "name": "BiblioEstación Portal Norte",
+    "source": "osm",
+    "osmId": 1004,
+    "wheelchair": null
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.045,
+     4.7549
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1005",
+   "properties": {
+    "id": "osm:1005",
+    "type": "bike_parking",
+    "name": "Cicloparqueadero Calle 100",
+    "source": "osm",
+    "osmId": 1005,
+    "wheelchair": "yes"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.0549,
+     4.6862
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1006",
+   "properties": {
+    "id": "osm:1006",
+    "type": "health",
+    "name": "Punto de salud Av. Jiménez",
+    "source": "osm",
+    "osmId": 1006,
+    "wheelchair": null
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.077,
+     4.601
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1007",
+   "properties": {
+    "id": "osm:1007",
+    "type": "bike_parking",
+    "name": "Cicloparqueadero Portal Sur",
+    "source": "osm",
+    "osmId": 1007,
+    "wheelchair": "yes"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.162,
+     4.5982
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1008",
+   "properties": {
+    "id": "osm:1008",
+    "type": "toilets",
+    "name": "Baños Portal Sur",
+    "source": "osm",
+    "osmId": 1008,
+    "wheelchair": null
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.1612,
+     4.5975
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1009",
+   "properties": {
+    "id": "osm:1009",
+    "type": "atm",
+    "name": "Cajero Ricaurte",
+    "source": "osm",
+    "osmId": 1009,
+    "wheelchair": null
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.0925,
+     4.612
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "id": "osm:1010",
+   "properties": {
+    "id": "osm:1010",
+    "type": "library",
+    "name": "BiblioEstación Ricaurte",
+    "source": "osm",
+    "osmId": 1010,
+    "wheelchair": null
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -74.0935,
+     4.6115
+    ]
+   }
+  }
+ ]
+}

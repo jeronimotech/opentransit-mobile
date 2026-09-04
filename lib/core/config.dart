@@ -30,6 +30,15 @@ class AppConfig {
     defaultValue: 'https://tiles.openfreemap.org/styles/dark',
   );
 
-  static const String appVersion = '0.1.0';
+  static const String appVersion = '0.2.0';
   static const String deepLinkScheme = 'opentransit';
+
+  /// Host of the web app whose `https://<host>/{city}/...` URLs this app
+  /// claims (App Links / Universal Links) and emits when sharing. Keep in sync
+  /// with `android/app/src/main/AndroidManifest.xml` and
+  /// `ios/Runner/Runner.entitlements`.
+  static const String webHost = String.fromEnvironment(
+    'WEB_HOST',
+    defaultValue: 'opentransit.example.org',
+  );
 }

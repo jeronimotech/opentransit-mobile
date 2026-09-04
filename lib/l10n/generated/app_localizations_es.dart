@@ -388,4 +388,361 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accessible => 'Accesible';
+
+  @override
+  String get hubTitle => '¿Qué quieres consultar?';
+
+  @override
+  String get tilePlan => 'Planear viaje';
+
+  @override
+  String get tileLocate => 'Ubica tu bus';
+
+  @override
+  String get tileNearby => 'Paradas cerca';
+
+  @override
+  String get tileRoutes => 'Buscar ruta';
+
+  @override
+  String get tileLive => 'Buses en vivo';
+
+  @override
+  String get tileAlerts => 'Alertas';
+
+  @override
+  String get tileFavorites => 'Favoritos';
+
+  @override
+  String get nearbyCardTitle => 'Estaciones y paradas cerca';
+
+  @override
+  String get services => 'Servicios';
+
+  @override
+  String get messagesOfInterest => 'Mensajes de interés';
+
+  @override
+  String get dismiss => 'Ocultar';
+
+  @override
+  String get seeAll => 'Ver todas';
+
+  @override
+  String get locateTitle => 'Ubica tu bus';
+
+  @override
+  String get locateStep1 => 'Elige una estación o parada';
+
+  @override
+  String get locateStep2 => 'Elige la ruta';
+
+  @override
+  String get locateNext => 'Próximos buses';
+
+  @override
+  String get sourceLive => 'En vivo';
+
+  @override
+  String get sourceScheduled => 'Por programación';
+
+  @override
+  String get sourceEstimated => 'Estimado';
+
+  @override
+  String stopsAway(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count paradas',
+      one: '1 parada',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noBuses => 'Sin buses próximos para esta ruta.';
+
+  @override
+  String get searchStopHint => 'Buscar estación o parada';
+
+  @override
+  String get changeStop => 'Cambiar parada';
+
+  @override
+  String get board => 'Próximos buses';
+
+  @override
+  String nextIn(int minutes) {
+    return 'Siguiente en $minutes min';
+  }
+
+  @override
+  String thenAt(String list) {
+    return 'luego $list';
+  }
+
+  @override
+  String get noBoard => 'Sin buses en la próxima hora.';
+
+  @override
+  String get freshLive => 'En vivo';
+
+  @override
+  String get freshScheduled => 'Programado';
+
+  @override
+  String freshStale(int seconds) {
+    return 'Sin datos en vivo hace $seconds s';
+  }
+
+  @override
+  String get freshNoRealtime => 'Sin datos en vivo';
+
+  @override
+  String get outOfHours => 'Fuera de horario';
+
+  @override
+  String nextAt(String time) {
+    return 'próximo $time';
+  }
+
+  @override
+  String get noServiceToday => 'Sin servicio hoy';
+
+  @override
+  String get serviceHours => 'Horario';
+
+  @override
+  String get estimatedFare => 'Tarifa estimada';
+
+  @override
+  String get fareNotPublished => 'Tarifa no publicada';
+
+  @override
+  String get fareBase => 'Pasaje';
+
+  @override
+  String get fareTransfer => 'Transbordo';
+
+  @override
+  String get fareEstimatedNote =>
+      'Estimación con la tarifa configurada para la ciudad; puede variar.';
+
+  @override
+  String get sortFastest => 'Más rápido';
+
+  @override
+  String get sortFewerTransfers => 'Menos transbordos';
+
+  @override
+  String get sortLessWalking => 'Menos caminata';
+
+  @override
+  String get sortCheapest => 'Más económico';
+
+  @override
+  String get sortEarliest => 'Salida más próxima';
+
+  @override
+  String get sortBy => 'Ordenar';
+
+  @override
+  String get favHome => 'Casa';
+
+  @override
+  String get favWork => 'Trabajo';
+
+  @override
+  String get favCustom => 'Otro';
+
+  @override
+  String get saveAs => 'Guardar como';
+
+  @override
+  String get recentTrips => 'Viajes recientes';
+
+  @override
+  String get clearRecent => 'Borrar';
+
+  @override
+  String get setHome => 'Fijar Casa';
+
+  @override
+  String get setWork => 'Fijar Trabajo';
+
+  @override
+  String get chooseIcon => 'Elige un ícono';
+
+  @override
+  String get saveFavorite => 'Guardar favorito';
+
+  @override
+  String get favoriteName => 'Nombre';
+
+  @override
+  String get updateRequired => 'Actualiza la app';
+
+  @override
+  String get updateRequiredBody =>
+      'Esta versión ya no es compatible. Actualiza para seguir usando OpenTransit.';
+
+  @override
+  String get updateAction => 'Actualizar';
+
+  @override
+  String get maintenanceTitle => 'En mantenimiento';
+
+  @override
+  String get maintenanceBody =>
+      'Estamos haciendo mejoras. Vuelve a intentarlo en unos minutos.';
+
+  @override
+  String get checkAgain => 'Volver a intentar';
+
+  @override
+  String get shareCopied => 'Enlace copiado';
+
+  @override
+  String get shareTrip => 'Compartir viaje';
+
+  @override
+  String get copyLink => 'Copiar enlace';
+
+  @override
+  String get openInWeb => 'Abrir en la web';
+
+  @override
+  String get startTrip => 'Iniciar viaje';
+
+  @override
+  String get stopTrip => 'Terminar';
+
+  @override
+  String get currentLeg => 'Tramo actual';
+
+  @override
+  String get nextStopIsYours => 'Próxima parada es la tuya';
+
+  @override
+  String getOffAt(String stop) {
+    return 'Bájate en $stop';
+  }
+
+  @override
+  String get followAlongHint =>
+      'Te avisamos cuando te acerques a tu parada de bajada.';
+
+  @override
+  String progressLabel(int done, int total) {
+    return 'Tramo $done de $total';
+  }
+
+  @override
+  String get arrived => '¡Llegaste!';
+
+  @override
+  String distanceToStop(String distance) {
+    return '$distance a tu parada';
+  }
+
+  @override
+  String get followAlongLocationNeeded =>
+      'Necesitamos tu ubicación para seguir el viaje.';
+
+  @override
+  String get poiLayer => 'Servicios en estaciones';
+
+  @override
+  String get poiBikeParking => 'Cicloparqueadero';
+
+  @override
+  String get poiToilets => 'Baños';
+
+  @override
+  String get poiAtm => 'Cajero';
+
+  @override
+  String get poiHealth => 'Punto de salud';
+
+  @override
+  String get poiLibrary => 'Biblioteca';
+
+  @override
+  String get poiOther => 'Servicio';
+
+  @override
+  String get accessibilityUnverified => 'Dato del feed no verificado';
+
+  @override
+  String get accessibilityNotAccessible => 'No accesible';
+
+  @override
+  String get accessibilityUnknown => 'Sin información de accesibilidad';
+
+  @override
+  String accessibilitySource(String source) {
+    return 'Fuente: $source';
+  }
+
+  @override
+  String get accessibilityVerified => 'Verificado';
+
+  @override
+  String get nearYou => 'Cerca de ti';
+
+  @override
+  String get bikeToStation => 'Llegar en bici a la estación';
+
+  @override
+  String get reportProblem => 'Reportar un problema';
+
+  @override
+  String get pqrs => 'PQRS';
+
+  @override
+  String get openExternal => 'Abrir enlace';
+
+  @override
+  String get rechargeCard => 'Recargar tarjeta';
+
+  @override
+  String get routesSearchHint => 'Buscar ruta (p. ej. B10)';
+
+  @override
+  String get station => 'Estación';
+
+  @override
+  String get etaLegend => '≤5 · ≤10 · ≤15 min';
+
+  @override
+  String get live => 'En vivo';
+
+  @override
+  String get allRoutes => 'Todas las rutas';
+
+  @override
+  String get noRoutes => 'No encontramos rutas.';
+
+  @override
+  String minutesOnly(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get now2 => 'Ya';
+
+  @override
+  String vehicleAgo(int seconds) {
+    return 'hace $seconds s';
+  }
+
+  @override
+  String get goToStop => 'Ir a la parada';
+
+  @override
+  String get showOnMap => 'Ver en el mapa';
+
+  @override
+  String get selectRoute => 'Selecciona una ruta';
 }

@@ -11,15 +11,20 @@ class ApiException implements Exception {
 
   bool get isNetwork => code == 'NETWORK';
 
+  /// 404 on a resource that exists only in newer API versions.
+  bool get isNotFound => status == 404;
+
   @override
   String toString() => 'ApiException($code, $status): $message';
 }
 
-/// Contract-level client. Both the HTTP implementation and the fixture-backed
-/// mock implement this, so every feature depends only on this interface.
+/// Contract-level client (v1 + v1.1). Both the HTTP implementation and the
+/// fixture-backed mock implement this, so every feature depends only on this
+/// interface.
 abstract class ApiClient {
   Future<List<City>> cities();
   Future<City> city(String cityId);
+  Future<CityHealth> health(String cityId);
 
   Future<PlanResponse> plan(String cityId, PlanRequest request);
 
@@ -45,15 +50,39 @@ abstract class ApiClient {
     int minutes = 60,
   });
 
+  /// v1.1 — arrival board grouped by route. Implementations fall back to
+  /// grouping [departures] when the endpoint is missing.
+  Future<BoardResponse> board(
+    String cityId,
+    String stopId, {
+    int minutes = 60,
+    int perRoute = 3,
+  });
+
+  /// v1.1 — "Ubica tu bus": next buses of one route at one stop.
+  Future<NextBusesResponse> nextBuses(
+    String cityId,
+    String stopId,
+    String routeId, {
+    int limit = 3,
+  });
+
   Future<List<RouteRef>> routes(String cityId, {Component? component, String? query});
   Future<RouteDetail> route(String cityId, String routeId);
   Future<List<NetworkShape>> network(String cityId);
 
+  /// v1.1 — points of interest inside [bbox] (`minLon,minLat,maxLon,maxLat`).
+  Future<List<Poi>> pois(String cityId, List<double> bbox, {List<String>? types});
+
   Future<VehicleFrame> vehicles(String cityId, {String? routeId, List<double>? bbox});
 
   /// Raw SSE events (`{"type": "full" | "delta", ...}`); fold them with
-  /// [VehicleFrame.apply].
-  Stream<Map<String, dynamic>> vehicleEvents(String cityId);
+  /// [VehicleFrame.apply]. Filters are applied server-side when supported.
+  Stream<Map<String, dynamic>> vehicleEvents(
+    String cityId, {
+    List<double>? bbox,
+    List<String>? routeIds,
+  });
   Future<VehicleDetail> vehicle(String cityId, String vehicleId);
 
   Future<List<TransitAlert>> alerts(

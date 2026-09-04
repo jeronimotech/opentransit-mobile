@@ -18,7 +18,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    {
     "id": "bogota:K43",
@@ -28,7 +35,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    {
     "id": "bogota:B74",
@@ -38,7 +52,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -63,7 +84,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    {
     "id": "bogota:K43",
@@ -73,7 +101,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    {
     "id": "bogota:B74",
@@ -83,7 +118,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    {
     "id": "bogota:P500",
@@ -93,7 +135,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "4",
-    "component": "zonal"
+    "component": "zonal",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -118,7 +167,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -143,7 +199,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -168,7 +231,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -193,7 +263,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    {
     "id": "bogota:G12",
@@ -203,7 +280,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    {
     "id": "bogota:B10",
@@ -213,7 +297,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -238,7 +329,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -263,7 +361,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    },
    {
     "id": "bogota:G12",
@@ -273,7 +378,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -298,7 +410,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "4",
-    "component": "zonal"
+    "component": "zonal",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -323,7 +442,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "2",
-    "component": "feeder"
+    "component": "feeder",
+    "serviceWindow": {
+     "start": "04:30",
+     "end": "22:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -348,7 +474,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "4",
-    "component": "zonal"
+    "component": "zonal",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,
@@ -373,7 +506,14 @@
     "textColor": "#FFFFFF",
     "mode": "BUS",
     "agencyId": "1",
-    "component": "trunk"
+    "component": "trunk",
+    "serviceWindow": {
+     "start": "04:00",
+     "end": "23:00",
+     "active": true,
+     "nextStart": null,
+     "source": "gtfs"
+    }
    }
   ],
   "parentStation": null,

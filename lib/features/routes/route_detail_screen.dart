@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
+import '../../core/utils/links.dart';
 import '../../core/utils/polyline.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
@@ -53,7 +55,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
       error: (e, _) => Scaffold(appBar: AppBar(), body: ErrorView(error: e, onRetry: () => ref.invalidate(routeDetailProvider(key)))),
       data: (d) {
         final r = d.route;
-        final color = colorFromHex(r.color, fallback: componentColor(r.component));
+        final color = colorFromHex(r.color, fallback: componentColor(r.component, city: city));
         final fav = Favorite.route(widget.cityId, r);
         final isFav = ref.watch(favoritesProvider).any((f) => f.key == fav.key);
         final patterns = d.patterns;
@@ -78,6 +80,11 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
               ],
             ),
             actions: [
+              IconButton(
+                tooltip: l10n.share,
+                icon: const Icon(Icons.share_outlined),
+                onPressed: () => SharePlus.instance.share(ShareParams(uri: CanonicalLinks.route(widget.cityId, r.id))),
+              ),
               IconButton(
                 tooltip: isFav ? l10n.removeFavorite : l10n.addFavorite,
                 icon: Icon(isFav ? Icons.star : Icons.star_border, color: isFav ? Colors.amber.shade700 : null),
@@ -117,6 +124,20 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                           ],
                           selected: {_dir.clamp(0, patterns.length - 1)},
                           onSelectionChanged: (v) => setState(() => _dir = v.first),
+                        ),
+                      ),
+                    if (r.serviceWindow != null)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.schedule, size: 16, color: scheme.onSurfaceVariant),
+                            const SizedBox(width: 6),
+                            Text('${l10n.serviceHours}: ${r.serviceWindow!.start ?? '—'} – ${r.serviceWindow!.end ?? '—'}',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+                            const SizedBox(width: 10),
+                            Flexible(child: ServiceHint(r.serviceWindow, dense: true)),
+                          ],
                         ),
                       ),
                     if (d.alerts.isNotEmpty)

@@ -45,6 +45,158 @@ class CityFeatures {
         );
 }
 
+/// Display style for one transit component (v1.1 `city.components[]`).
+class CityComponent {
+  const CityComponent({
+    required this.id,
+    required this.label,
+    required this.color,
+    this.icon,
+  });
+  final Component id;
+  final String label;
+  final String color;
+
+  /// `brt | bus | cable | rail | tram | other`
+  final String? icon;
+
+  factory CityComponent.fromJson(Map<String, dynamic> j) => CityComponent(
+        id: Component.parse(j['id']) ?? Component.other,
+        label: j['label']?.toString() ?? '',
+        color: j['color']?.toString() ?? '#607D8B',
+        icon: j['icon']?.toString(),
+      );
+}
+
+/// Fare parameters used to *estimate* a fare when the GTFS has none.
+class CityFares {
+  const CityFares({
+    required this.currency,
+    required this.base,
+    this.transfer = 0,
+    this.transferWindowMinutes = 110,
+    this.maxTransfers = 2,
+    this.note,
+    this.estimated = true,
+  });
+  final String currency;
+  final num base;
+  final num transfer;
+  final int transferWindowMinutes;
+  final int maxTransfers;
+  final String? note;
+  final bool estimated;
+
+  factory CityFares.fromJson(Map<String, dynamic> j) => CityFares(
+        currency: j['currency']?.toString() ?? 'COP',
+        base: (j['base'] as num?) ?? 0,
+        transfer: (j['transfer'] as num?) ?? 0,
+        transferWindowMinutes: asInt(j['transferWindowMinutes']) ?? 110,
+        maxTransfers: asInt(j['maxTransfers']) ?? 2,
+        note: j['note']?.toString(),
+        estimated: asBool(j['estimated'], fallback: true),
+      );
+}
+
+class MaintenanceState {
+  const MaintenanceState({this.active = false, this.message});
+  final bool active;
+  final String? message;
+
+  factory MaintenanceState.fromJson(Map<String, dynamic>? j) => j == null
+      ? const MaintenanceState()
+      : MaintenanceState(
+          active: asBool(j['active']),
+          message: j['message']?.toString(),
+        );
+}
+
+/// Remote configuration served with the city (v1.1 `city.config`).
+class CityConfig {
+  const CityConfig({
+    this.vehiclePollSeconds = 15,
+    this.departuresRefreshSeconds = 20,
+    this.features = const {},
+    this.minAppVersionIos,
+    this.minAppVersionAndroid,
+    this.maintenance = const MaintenanceState(),
+  });
+  final int vehiclePollSeconds;
+  final int departuresRefreshSeconds;
+
+  /// Module flags: `liveVehicles, board, pois, followAlong, bike`. Missing
+  /// flags default to *enabled* so an older API never hides modules.
+  final Map<String, bool> features;
+  final String? minAppVersionIos;
+  final String? minAppVersionAndroid;
+  final MaintenanceState maintenance;
+
+  bool isEnabled(String feature) => features[feature] ?? true;
+
+  factory CityConfig.fromJson(Map<String, dynamic>? j) {
+    if (j == null) return const CityConfig();
+    final min = j['minAppVersion'] is Map
+        ? Map<String, dynamic>.from(j['minAppVersion'] as Map)
+        : const <String, dynamic>{};
+    final feats = j['features'] is Map
+        ? Map<String, dynamic>.from(j['features'] as Map)
+        : const <String, dynamic>{};
+    return CityConfig(
+      vehiclePollSeconds: asInt(j['vehiclePollSeconds']) ?? 15,
+      departuresRefreshSeconds: asInt(j['departuresRefreshSeconds']) ?? 20,
+      features: {for (final e in feats.entries) e.key: asBool(e.value, fallback: true)},
+      minAppVersionIos: min['ios']?.toString(),
+      minAppVersionAndroid: min['android']?.toString(),
+      maintenance: MaintenanceState.fromJson(
+        j['maintenance'] is Map
+            ? Map<String, dynamic>.from(j['maintenance'] as Map)
+            : null,
+      ),
+    );
+  }
+}
+
+class CityLinks {
+  const CityLinks({this.pqrs, this.recharge, this.support, this.privacy});
+  final String? pqrs;
+  final String? recharge;
+  final String? support;
+  final String? privacy;
+
+  factory CityLinks.fromJson(Map<String, dynamic>? j) => j == null
+      ? const CityLinks()
+      : CityLinks(
+          pqrs: j['pqrs']?.toString(),
+          recharge: j['recharge']?.toString(),
+          support: j['support']?.toString(),
+          privacy: j['privacy']?.toString(),
+        );
+}
+
+/// Partner hand-off tile (card recharge, parking, taxi...). Never core.
+class CityService {
+  const CityService({
+    required this.id,
+    required this.label,
+    this.icon,
+    required this.url,
+    this.kind = 'external',
+  });
+  final String id;
+  final String label;
+  final String? icon;
+  final String url;
+  final String kind;
+
+  factory CityService.fromJson(Map<String, dynamic> j) => CityService(
+        id: j['id'].toString(),
+        label: j['label']?.toString() ?? '',
+        icon: j['icon']?.toString(),
+        url: j['url']?.toString() ?? '',
+        kind: j['kind']?.toString() ?? 'external',
+      );
+}
+
 class City {
   const City({
     required this.id,
@@ -61,6 +213,11 @@ class City {
     required this.features,
     required this.agencies,
     required this.attribution,
+    this.components = const [],
+    this.fares,
+    this.config = const CityConfig(),
+    this.links = const CityLinks(),
+    this.services = const [],
   });
 
   final String id;
@@ -79,6 +236,11 @@ class City {
   final CityFeatures features;
   final List<CityAgency> agencies;
   final String attribution;
+  final List<CityComponent> components;
+  final CityFares? fares;
+  final CityConfig config;
+  final CityLinks links;
+  final List<CityService> services;
 
   factory City.fromJson(Map<String, dynamic> j) {
     final branding = j['branding'] is Map
@@ -108,6 +270,17 @@ class City {
       ),
       agencies: asList(j['agencies'], CityAgency.fromJson),
       attribution: j['attribution']?.toString() ?? '',
+      components: asList(j['components'], CityComponent.fromJson),
+      fares: j['fares'] is Map
+          ? CityFares.fromJson(Map<String, dynamic>.from(j['fares'] as Map))
+          : null,
+      config: CityConfig.fromJson(
+        j['config'] is Map ? Map<String, dynamic>.from(j['config'] as Map) : null,
+      ),
+      links: CityLinks.fromJson(
+        j['links'] is Map ? Map<String, dynamic>.from(j['links'] as Map) : null,
+      ),
+      services: asList(j['services'], CityService.fromJson),
     );
   }
 
@@ -117,4 +290,18 @@ class City {
       p.lat >= bbox[1] &&
       p.lon <= bbox[2] &&
       p.lat <= bbox[3];
+
+  /// Component style from `components[]`, falling back to the agencies list.
+  CityComponent? componentStyle(Component? c) {
+    if (c == null) return null;
+    for (final x in components) {
+      if (x.id == c) return x;
+    }
+    for (final a in agencies) {
+      if (a.component == c) {
+        return CityComponent(id: c, label: a.name, color: a.color);
+      }
+    }
+    return null;
+  }
 }

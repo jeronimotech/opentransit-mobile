@@ -164,12 +164,34 @@ class Leg {
   String? get colorHex => route?.color;
 }
 
+class FareLine {
+  const FareLine({required this.label, required this.amount});
+  final String label;
+  final num amount;
+  factory FareLine.fromJson(Map<String, dynamic> j) => FareLine(
+      label: j['label']?.toString() ?? '', amount: (j['amount'] as num?) ?? 0);
+}
+
 class Fare {
-  const Fare({required this.amount, required this.currency});
+  const Fare({
+    required this.amount,
+    required this.currency,
+    this.estimated = false,
+    this.breakdown = const [],
+  });
   final num amount;
   final String currency;
-  factory Fare.fromJson(Map<String, dynamic> j) =>
-      Fare(amount: (j['amount'] as num?) ?? 0, currency: j['currency']?.toString() ?? '');
+
+  /// True when computed from city parameters rather than GTFS fares.
+  final bool estimated;
+  final List<FareLine> breakdown;
+
+  factory Fare.fromJson(Map<String, dynamic> j) => Fare(
+        amount: (j['amount'] as num?) ?? 0,
+        currency: j['currency']?.toString() ?? '',
+        estimated: asBool(j['estimated']),
+        breakdown: asList(j['breakdown'], FareLine.fromJson),
+      );
 }
 
 class Itinerary {

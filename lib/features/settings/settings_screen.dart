@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/config.dart';
 import '../../core/providers.dart';
@@ -92,6 +93,21 @@ class SettingsScreen extends ConsumerWidget {
             value: s.liveVehicles,
             onChanged: n.setLiveVehicles,
           ),
+          SwitchListTile(
+            secondary: const Icon(Icons.local_convenience_store_outlined),
+            title: Text(l10n.poiLayer),
+            value: s.poiLayer,
+            onChanged: n.setPoiLayer,
+          ),
+          if (city != null && (city.links.pqrs != null || city.links.recharge != null || city.links.support != null)) ...[
+            SectionTitle(l10n.services),
+            if (city.links.recharge != null)
+              ListTile(leading: const Icon(Icons.credit_card), title: Text(l10n.rechargeCard), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.recharge!)),
+            if (city.links.pqrs != null)
+              ListTile(leading: const Icon(Icons.report_outlined), title: Text(l10n.pqrs), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.pqrs!)),
+            if (city.links.support != null)
+              ListTile(leading: const Icon(Icons.support_agent), title: Text(l10n.about), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.support!)),
+          ],
           SectionTitle(l10n.about),
           ListTile(
             leading: const Icon(Icons.info_outline),
@@ -106,10 +122,16 @@ class SettingsScreen extends ConsumerWidget {
             ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-            child: Text('MIT License · github.com/opentransit', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.outline)),
+            child: Text('MIT License · github.com/jeronimotech/opentransit-mobile', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.outline)),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _open(String url) async {
+    try {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } catch (_) {}
   }
 }

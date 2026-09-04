@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 
-import '../../core/config.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/utils/colors.dart';
+import '../../core/utils/fare.dart';
 import '../../core/utils/format.dart';
+import '../../core/utils/links.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/polyline.dart';
 import '../../core/widgets/common.dart';
@@ -42,7 +43,7 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
       final pts = decodeGeometry(leg.geometry);
       all.addAll(pts);
       final color = leg.transit
-          ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component))
+          ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component, city: ref.read(currentCityProvider)))
           : const Color(0xFF546E7A);
       lines.add(MapLine(id: 'leg-$i', points: pts, color: color, width: leg.transit ? 6 : 4, dashed: !leg.transit));
       if (leg.transit) {
@@ -64,27 +65,15 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
     _fit = all.isEmpty ? [first, last] : all;
   }
 
-  String _shareLink(PlanRequest r) => Uri(
-        scheme: AppConfig.deepLinkScheme,
-        host: widget.cityId,
-        path: '/plan',
-        queryParameters: {
-          'fromLat': r.from.position.lat.toString(),
-          'fromLon': r.from.position.lon.toString(),
-          'toLat': r.to.position.lat.toString(),
-          'toLon': r.to.position.lon.toString(),
-          'fromName': r.from.name,
-          'toName': r.to.name,
-          if (r.time != null) 'time': r.time!.toIso8601String(),
-          if (r.arriveBy) 'arriveBy': 'true',
-        },
-      ).toString();
+  /// Canonical https URL (App Link / Universal Link) shared via the OS sheet.
+  Uri _shareLink(PlanRequest r) => CanonicalLinks.plan(widget.cityId, r);
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final s = ref.watch(plannerProvider);
     final city = ref.watch(cityProvider(widget.cityId)).asData?.value;
+    final fare = planFare(s, widget.index, city);
     final plan = s.result?.asData?.value;
     final it = plan != null && widget.index < plan.itineraries.length ? plan.itineraries[widget.index] : null;
     if (it == null) {
@@ -136,10 +125,7 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
               onTap: () async {
                 final req = s.request;
                 if (req == null) return;
-                await Clipboard.setData(ClipboardData(text: _shareLink(req)));
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.share)));
-                }
+                await SharePlus.instance.share(ShareParams(uri: _shareLink(req), subject: l10n.shareTrip));
               },
             ),
           ),
@@ -184,6 +170,16 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
                   const SizedBox(height: 4),
                   Text('${l10n.transfersCount(it.transfers)} · ${l10n.walkDistance(it.walkDistanceMeters)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+                  const SizedBox(height: 10),
+                  _FareBlock(fare: fare),
+                  const SizedBox(height: 10),
+                  if (city?.config.isEnabled('followAlong') ?? true)
+                    FilledButton.icon(
+                      key: const ValueKey('start-trip'),
+                      onPressed: () => context.push('/${widget.cityId}/itinerary/${widget.index}/go'),
+                      icon: const Icon(Icons.navigation_rounded),
+                      label: Text(l10n.startTrip),
+                    ),
                   const SizedBox(height: 16),
                   for (var i = 0; i < named.length; i++)
                     _LegTile(cityId: widget.cityId, leg: named[i], isLast: i == named.length - 1),
@@ -194,6 +190,69 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+Fare? planFare(PlannerState s, int index, City? city) {
+  final plan = s.result?.asData?.value;
+  if (plan == null || index >= plan.itineraries.length) return null;
+  return fareFor(plan.itineraries[index], city);
+}
+
+/// "Tarifa estimada · $ 3.200" with the breakdown lines (Pasaje / Transbordo).
+class _FareBlock extends StatelessWidget {
+  const _FareBlock({required this.fare});
+  final Fare? fare;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final locale = Localizations.localeOf(context).toString();
+    final f = fare;
+    return Container(
+      key: const ValueKey('fare-block'),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(color: scheme.surfaceContainerLow, borderRadius: BorderRadius.circular(14)),
+      child: f == null
+          ? Row(children: [
+              Icon(Icons.payments_outlined, size: 18, color: scheme.outline),
+              const SizedBox(width: 8),
+              Text(l10n.fareNotPublished, style: TextStyle(color: scheme.outline)),
+            ])
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.payments_outlined, size: 18, color: scheme.primary),
+                    const SizedBox(width: 8),
+                    Text(f.estimated ? l10n.estimatedFare : l10n.fareBase, style: const TextStyle(fontWeight: FontWeight.w700)),
+                    const Spacer(),
+                    Text(formatMoney(f.amount, f.currency, locale),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  ],
+                ),
+                if (f.breakdown.length > 1) ...[
+                  const SizedBox(height: 6),
+                  for (final line in f.breakdown)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 26, top: 2),
+                      child: Row(children: [
+                        Text(line.label == 'base' || line.label == 'Pasaje' ? l10n.fareBase : (line.label == 'transfer' || line.label == 'Transbordo' ? l10n.fareTransfer : line.label),
+                            style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
+                        const Spacer(),
+                        Text(formatMoney(line.amount, f.currency, locale), style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
+                      ]),
+                    ),
+                ],
+                if (f.estimated) ...[
+                  const SizedBox(height: 6),
+                  Text(l10n.fareEstimatedNote, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
+                ],
+              ],
+            ),
     );
   }
 }

@@ -78,7 +78,89 @@
      "color": "#EF6C00"
     }
    ],
-   "attribution": "Datos: TRANSMILENIO S.A. (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors"
+   "attribution": "Datos: TRANSMILENIO S.A. (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors",
+   "components": [
+    {
+     "id": "trunk",
+     "label": "Troncal",
+     "color": "#D32F2F",
+     "icon": "brt"
+    },
+    {
+     "id": "feeder",
+     "label": "Alimentador",
+     "color": "#2E7D32",
+     "icon": "bus"
+    },
+    {
+     "id": "dual",
+     "label": "Dual",
+     "color": "#6A1B9A",
+     "icon": "bus"
+    },
+    {
+     "id": "zonal",
+     "label": "Zonal",
+     "color": "#1565C0",
+     "icon": "bus"
+    },
+    {
+     "id": "cable",
+     "label": "TransMiCable",
+     "color": "#EF6C00",
+     "icon": "cable"
+    }
+   ],
+   "fares": {
+    "currency": "COP",
+    "base": 3200,
+    "transfer": 0,
+    "transferWindowMinutes": 110,
+    "maxTransfers": 2,
+    "note": "Valores configurables; verificar con tarifa vigente",
+    "estimated": true
+   },
+   "config": {
+    "vehiclePollSeconds": 15,
+    "departuresRefreshSeconds": 20,
+    "features": {
+     "liveVehicles": true,
+     "board": true,
+     "pois": true,
+     "followAlong": true,
+     "bike": true
+    },
+    "minAppVersion": {
+     "ios": "0.1.0",
+     "android": "0.1.0"
+    },
+    "maintenance": {
+     "active": false,
+     "message": null
+    }
+   },
+   "links": {
+    "pqrs": "https://www.transmilenio.gov.co/publicaciones/147212/pqrs/",
+    "recharge": "https://www.tullaveplus.gov.co",
+    "support": "https://www.transmilenio.gov.co",
+    "privacy": null
+   },
+   "services": [
+    {
+     "id": "recharge",
+     "label": "Recargar tullave",
+     "icon": "card",
+     "url": "https://www.tullaveplus.gov.co",
+     "kind": "external"
+    },
+    {
+     "id": "pqrs",
+     "label": "PQRS",
+     "icon": "help",
+     "url": "https://www.transmilenio.gov.co/publicaciones/147212/pqrs/",
+     "kind": "external"
+    }
+   ]
   },
   {
    "id": "medellin",
@@ -123,7 +205,50 @@
      "color": "#00838F"
     }
    ],
-   "attribution": "Datos: Metro de Medellín (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors"
+   "attribution": "Datos: Metro de Medellín (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors",
+   "components": [
+    {
+     "id": "rail",
+     "label": "Metro",
+     "color": "#00838F",
+     "icon": "rail"
+    }
+   ],
+   "fares": {
+    "currency": "COP",
+    "base": 3350,
+    "transfer": 0,
+    "transferWindowMinutes": 90,
+    "maxTransfers": 1,
+    "note": "Tarifa estimada",
+    "estimated": true
+   },
+   "config": {
+    "vehiclePollSeconds": 15,
+    "departuresRefreshSeconds": 20,
+    "features": {
+     "liveVehicles": true,
+     "board": true,
+     "pois": true,
+     "followAlong": true,
+     "bike": true
+    },
+    "minAppVersion": {
+     "ios": "0.1.0",
+     "android": "0.1.0"
+    },
+    "maintenance": {
+     "active": false,
+     "message": null
+    }
+   },
+   "links": {
+    "pqrs": null,
+    "recharge": null,
+    "support": "https://www.metrodemedellin.gov.co",
+    "privacy": null
+   },
+   "services": []
   }
  ]
 }

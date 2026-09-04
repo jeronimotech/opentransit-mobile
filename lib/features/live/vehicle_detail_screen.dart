@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
@@ -23,6 +24,7 @@ class VehicleDetailScreen extends ConsumerWidget {
     final detail = ref.watch(vehicleDetailProvider(key));
     // Follow the live position if the stream is active.
     final live = ref.watch(liveVehiclesProvider(cityId)).asData?.value.vehicles[vehicleId];
+    final city = ref.watch(currentCityProvider);
     final scheme = Theme.of(context).colorScheme;
 
     return detail.when(
@@ -30,7 +32,7 @@ class VehicleDetailScreen extends ConsumerWidget {
       error: (e, _) => Scaffold(appBar: AppBar(), body: ErrorView(error: e, onRetry: () => ref.invalidate(vehicleDetailProvider(key)))),
       data: (d) {
         final v = live ?? d.vehicle;
-        final color = colorFromHex(d.route?.color, fallback: componentColor(v.component));
+        final color = colorFromHex(d.route?.color, fallback: componentColor(v.component, city: city));
         final shape = d.shape == null ? const <LatLng>[] : decodeGeometry(d.shape!);
         final lines = [
           if (shape.isNotEmpty) MapLine(id: 'shape', points: shape, color: color.withValues(alpha: 0.6), width: 4),
@@ -109,6 +111,19 @@ class VehicleDetailScreen extends ConsumerWidget {
                         leading: alertIcon(a.severity, size: 20),
                         title: Text(a.header, maxLines: 2, overflow: TextOverflow.ellipsis),
                         onTap: () => context.go('/$cityId/alerts'),
+                      ),
+                    if (city?.links.pqrs != null)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          onPressed: () async {
+                            try {
+                              await launchUrl(Uri.parse(city!.links.pqrs!), mode: LaunchMode.externalApplication);
+                            } catch (_) {}
+                          },
+                          icon: const Icon(Icons.report_outlined, size: 18),
+                          label: Text(l10n.reportProblem),
+                        ),
                       ),
                   ],
                 ),

@@ -8,7 +8,14 @@
    "textColor": "#FFFFFF",
    "mode": "BUS",
    "agencyId": "1",
-   "component": "trunk"
+   "component": "trunk",
+   "serviceWindow": {
+    "start": "04:00",
+    "end": "23:00",
+    "active": true,
+    "nextStart": null,
+    "source": "gtfs"
+   }
   },
   {
    "id": "bogota:K43",
@@ -18,7 +25,14 @@
    "textColor": "#FFFFFF",
    "mode": "BUS",
    "agencyId": "1",
-   "component": "trunk"
+   "component": "trunk",
+   "serviceWindow": {
+    "start": "04:00",
+    "end": "23:00",
+    "active": true,
+    "nextStart": null,
+    "source": "gtfs"
+   }
   },
   {
    "id": "bogota:G12",
@@ -28,7 +42,14 @@
    "textColor": "#FFFFFF",
    "mode": "BUS",
    "agencyId": "1",
-   "component": "trunk"
+   "component": "trunk",
+   "serviceWindow": {
+    "start": "04:00",
+    "end": "23:00",
+    "active": true,
+    "nextStart": null,
+    "source": "gtfs"
+   }
   },
   {
    "id": "bogota:B74",
@@ -38,7 +59,14 @@
    "textColor": "#FFFFFF",
    "mode": "BUS",
    "agencyId": "1",
-   "component": "trunk"
+   "component": "trunk",
+   "serviceWindow": {
+    "start": "04:00",
+    "end": "23:00",
+    "active": true,
+    "nextStart": null,
+    "source": "gtfs"
+   }
   },
   {
    "id": "bogota:P500",
@@ -48,7 +76,14 @@
    "textColor": "#FFFFFF",
    "mode": "BUS",
    "agencyId": "4",
-   "component": "zonal"
+   "component": "zonal",
+   "serviceWindow": {
+    "start": "04:00",
+    "end": "23:00",
+    "active": true,
+    "nextStart": null,
+    "source": "gtfs"
+   }
   },
   {
    "id": "bogota:A61",
@@ -58,7 +93,14 @@
    "textColor": "#FFFFFF",
    "mode": "BUS",
    "agencyId": "4",
-   "component": "zonal"
+   "component": "zonal",
+   "serviceWindow": {
+    "start": "04:00",
+    "end": "23:00",
+    "active": true,
+    "nextStart": null,
+    "source": "gtfs"
+   }
   },
   {
    "id": "bogota:L10",
@@ -68,7 +110,14 @@
    "textColor": "#FFFFFF",
    "mode": "CABLE_CAR",
    "agencyId": "7",
-   "component": "cable"
+   "component": "cable",
+   "serviceWindow": {
+    "start": "05:00",
+    "end": "09:00",
+    "active": false,
+    "nextStart": "14:00",
+    "source": "gtfs"
+   }
   },
   {
    "id": "bogota:1-1",
@@ -78,7 +127,14 @@
    "textColor": "#FFFFFF",
    "mode": "BUS",
    "agencyId": "2",
-   "component": "feeder"
+   "component": "feeder",
+   "serviceWindow": {
+    "start": "04:30",
+    "end": "22:00",
+    "active": true,
+    "nextStart": null,
+    "source": "gtfs"
+   }
   }
  ]
 }
