@@ -94,9 +94,18 @@ void main() {
     await settle(tester, 20);
     await waitFor(tester, find.text('Bogotá'));
     await tester.tap(find.text('Bogotá'));
-    await waitFor(tester, find.text('¿Qué quieres consultar?'));
-    await Future<void>.delayed(const Duration(seconds: 8)); // SSE full frame (~1 MB) + tiles
+    await waitFor(tester, find.text('Cerca de ti'));
+    await Future<void>.delayed(const Duration(seconds: 6)); // nearby boards + tiles
     await shot(tester, 'live_01_home');
+
+    final router0 = container.read(routerProvider);
+    // Street zoom at Calle 100: live layer on, ~dozens of buses, not thousands.
+    router0.go('/bogota?lat=4.6837&lon=-74.0530&zoom=16.2');
+    await settle(tester, 20);
+    await Future<void>.delayed(const Duration(seconds: 10)); // SSE full frame (~1 MB)
+    await shot(tester, 'live_02_home_zoom');
+    router0.go('/bogota');
+    await settle(tester, 10);
 
     final planner = container.read(plannerProvider.notifier);
     planner.setFrom(const Place(name: 'Portal Norte', position: LatLng(4.7546, -74.0459)));
@@ -106,25 +115,25 @@ void main() {
     await settle(tester, 10);
     await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
     await waitFor(tester, find.byType(ItineraryCard), seconds: 60);
-    await shot(tester, 'live_02_results');
+    await shot(tester, 'live_03_results');
 
     await tester.tap(find.byType(ItineraryCard).first);
     await settle(tester, 30);
     await Future<void>.delayed(const Duration(seconds: 4));
-    await shot(tester, 'live_03_itinerary');
+    await shot(tester, 'live_04_itinerary');
 
     // Portal Norte station board (aggregated over its platforms)
     router.push('/bogota/stops/bogota:2000');
     await waitFor(tester, find.text('Próximos buses'));
     await Future<void>.delayed(const Duration(seconds: 4));
-    await shot(tester, 'live_04_stop_board');
+    await shot(tester, 'live_05_stop_board');
 
     // Ubica tu bus: route G12 (bogota:12873) at stop bogota:2300
     router.push('/bogota/locate?stop=bogota:2300&route=bogota:12873');
     await waitFor(tester, find.text('Próximos buses'), seconds: 40);
     await waitFor(tester, find.textContaining('min'), seconds: 40);
     await Future<void>.delayed(const Duration(seconds: 5));
-    await shot(tester, 'live_05_next_buses');
+    await shot(tester, 'live_06_next_buses');
 
     router.go('/bogota/favorites');
     await settle(tester, 10);

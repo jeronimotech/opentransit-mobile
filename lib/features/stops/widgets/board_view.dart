@@ -4,18 +4,22 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/models.dart';
 import '../../../core/providers.dart';
+import '../../../core/utils/text.dart';
 import '../../../core/widgets/common.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 /// Arrival board grouped by route: "Siguiente en 5 min · luego 10, 15 y 20"
 /// with a live/scheduled badge per time. Auto-refreshes via [boardProvider].
 class BoardView extends ConsumerWidget {
-  const BoardView({super.key, required this.cityId, required this.stopId, this.compact = false});
+  const BoardView({super.key, required this.cityId, required this.stopId, this.compact = false, this.onLocate});
   final String cityId;
   final String stopId;
 
   /// Compact rows without the section title (favorites screen).
   final bool compact;
+
+  /// When set, a secondary "Ubica tu bus" text button sits in the header.
+  final VoidCallback? onLocate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,9 +34,22 @@ class BoardView extends ConsumerWidget {
         if (!compact)
           SectionTitle(
             l10n.board,
-            trailing: board.asData == null
-                ? null
-                : FreshnessLabel(cityId: cityId, freshness: board.asData!.value.freshness),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (board.asData != null) FreshnessLabel(cityId: cityId, freshness: board.asData!.value.freshness),
+                if (onLocate != null) ...[
+                  const SizedBox(width: 4),
+                  TextButton.icon(
+                    key: const ValueKey('locate-from-stop'),
+                    style: TextButton.styleFrom(minimumSize: const Size(44, 44), visualDensity: VisualDensity.compact),
+                    onPressed: onLocate,
+                    icon: const Icon(Icons.directions_bus_outlined, size: 18),
+                    label: Text(l10n.locateTitle),
+                  ),
+                ],
+              ],
+            ),
           ),
         board.when(
           loading: () => const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator())),
@@ -76,7 +93,7 @@ class BoardRowTile extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              row.headsign == null ? row.route.longName : l10n.towards(row.headsign!),
+              cleanHeadsign(row.headsign) == null ? (cleanHeadsign(row.route.longName) ?? '') : l10n.towards(cleanHeadsign(row.headsign)!),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: compact ? 13 : 14),
@@ -105,12 +122,17 @@ class BoardRowTile extends StatelessWidget {
             ),
       trailing: first == null
           ? null
-          : Text(
-              first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: first.realtime ? Colors.green.shade700 : scheme.onSurface,
-                  ),
+          : Semantics(
+              label: '${first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes)} · ${first.realtime ? l10n.sourceLive : l10n.sourceScheduled}',
+              child: ExcludeSemantics(
+                child: Text(
+                  first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: first.realtime ? Colors.green.shade700 : scheme.onSurface,
+                      ),
+                ),
+              ),
             ),
       onTap: () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(_stopIdFrom(context))}&route=${Uri.encodeComponent(row.route.id)}'),
     );

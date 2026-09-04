@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/models/models.dart';
 import 'core/providers.dart';
 import 'core/utils/links.dart';
 import 'features/alerts/alerts_screen.dart';
@@ -61,7 +62,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(initialLocation: '/-', routes: [
             GoRoute(
               path: '/:city',
-              builder: (_, s) => HomeScreen(cityId: s.pathParameters['city']!),
+              builder: (_, s) {
+                final q = s.uri.queryParameters;
+                final lat = double.tryParse(q['lat'] ?? '');
+                final lon = double.tryParse(q['lon'] ?? '');
+                return HomeScreen(
+                  cityId: s.pathParameters['city']!,
+                  focus: lat != null && lon != null ? LatLng(lat, lon) : null,
+                  focusZoom: double.tryParse(q['zoom'] ?? ''),
+                );
+              },
               routes: [
                 GoRoute(
                   path: 'plan',

@@ -745,4 +745,60 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get selectRoute => 'Selecciona una ruta';
+
+  @override
+  String get layers => 'Capas';
+
+  @override
+  String get layerLive => 'Buses en vivo';
+
+  @override
+  String get layerLiveHint => 'Se muestran al acercar el mapa (zoom 14+)';
+
+  @override
+  String get layerPois => 'Servicios';
+
+  @override
+  String get layerNetwork => 'Red de rutas';
+
+  @override
+  String get nearYouTitle => 'Cerca de ti';
+
+  @override
+  String get zoomInForBuses => 'Acerca el mapa para ver los buses';
+
+  @override
+  String get actionPlan => 'Planear viaje';
+
+  @override
+  String get actionLocate => 'Ubica tu bus';
+
+  @override
+  String get actionRoutes => 'Buscar ruta';
+
+  @override
+  String get timeNow => 'Ahora';
+
+  @override
+  String get timeSheetTitle => '¿Cuándo viajas?';
+
+  @override
+  String get modeBike => 'Bici';
+
+  @override
+  String get modeWalkShort => 'A pie';
+
+  @override
+  String routesCount(int count) {
+    return 'Rutas · $count';
+  }
+
+  @override
+  String get viewOnMapAction => 'Ver en mapa';
+
+  @override
+  String get noNearbyStops => 'No hay paradas cerca de este punto';
+
+  @override
+  String get done => 'Listo';
 }

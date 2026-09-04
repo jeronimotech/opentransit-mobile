@@ -38,6 +38,7 @@ class AppSettings {
     this.liveVehicles = true,
     this.poiLayer = false,
     this.bikeToStation = false,
+    this.networkLayer = true,
   });
   final String? cityId;
 
@@ -49,6 +50,7 @@ class AppSettings {
   final bool liveVehicles;
   final bool poiLayer;
   final bool bikeToStation;
+  final bool networkLayer;
 
   AppSettings copyWith({
     String? cityId,
@@ -61,6 +63,7 @@ class AppSettings {
     bool? liveVehicles,
     bool? poiLayer,
     bool? bikeToStation,
+    bool? networkLayer,
   }) =>
       AppSettings(
         cityId: clearCity ? null : (cityId ?? this.cityId),
@@ -71,6 +74,7 @@ class AppSettings {
         liveVehicles: liveVehicles ?? this.liveVehicles,
         poiLayer: poiLayer ?? this.poiLayer,
         bikeToStation: bikeToStation ?? this.bikeToStation,
+        networkLayer: networkLayer ?? this.networkLayer,
       );
 }
 
@@ -88,6 +92,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       liveVehicles: p.liveVehicles,
       poiLayer: p.poiLayer,
       bikeToStation: p.bikeToStation,
+      networkLayer: p.networkLayer,
     );
   }
 
@@ -131,6 +136,11 @@ class SettingsNotifier extends Notifier<AppSettings> {
   Future<void> setBikeToStation(bool v) async {
     state = state.copyWith(bikeToStation: v);
     await _p.setBikeToStation(v);
+  }
+
+  Future<void> setNetworkLayer(bool v) async {
+    state = state.copyWith(networkLayer: v);
+    await _p.setNetworkLayer(v);
   }
 }
 
@@ -331,6 +341,10 @@ final nextBusesProvider =
 
 final routeDetailProvider = FutureProvider.autoDispose.family<RouteDetail, CityKey>(
     (ref, k) => ref.watch(apiClientProvider).route(k.cityId, k.id));
+
+/// Simplified route shapes for the home map "Red" layer (cached per city).
+final networkProvider = FutureProvider.family<List<NetworkShape>, String>(
+    (ref, cityId) => ref.watch(apiClientProvider).network(cityId));
 
 final routesProvider = FutureProvider.autoDispose.family<List<RouteRef>, String>(
     (ref, cityId) => ref.watch(apiClientProvider).routes(cityId));

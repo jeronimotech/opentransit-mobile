@@ -1405,6 +1405,114 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Selecciona una ruta'**
   String get selectRoute;
+
+  /// No description provided for @layers.
+  ///
+  /// In es, this message translates to:
+  /// **'Capas'**
+  String get layers;
+
+  /// No description provided for @layerLive.
+  ///
+  /// In es, this message translates to:
+  /// **'Buses en vivo'**
+  String get layerLive;
+
+  /// No description provided for @layerLiveHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Se muestran al acercar el mapa (zoom 14+)'**
+  String get layerLiveHint;
+
+  /// No description provided for @layerPois.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicios'**
+  String get layerPois;
+
+  /// No description provided for @layerNetwork.
+  ///
+  /// In es, this message translates to:
+  /// **'Red de rutas'**
+  String get layerNetwork;
+
+  /// No description provided for @nearYouTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerca de ti'**
+  String get nearYouTitle;
+
+  /// No description provided for @zoomInForBuses.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca el mapa para ver los buses'**
+  String get zoomInForBuses;
+
+  /// No description provided for @actionPlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Planear viaje'**
+  String get actionPlan;
+
+  /// No description provided for @actionLocate.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubica tu bus'**
+  String get actionLocate;
+
+  /// No description provided for @actionRoutes.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar ruta'**
+  String get actionRoutes;
+
+  /// No description provided for @timeNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora'**
+  String get timeNow;
+
+  /// No description provided for @timeSheetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuándo viajas?'**
+  String get timeSheetTitle;
+
+  /// No description provided for @modeBike.
+  ///
+  /// In es, this message translates to:
+  /// **'Bici'**
+  String get modeBike;
+
+  /// No description provided for @modeWalkShort.
+  ///
+  /// In es, this message translates to:
+  /// **'A pie'**
+  String get modeWalkShort;
+
+  /// No description provided for @routesCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutas · {count}'**
+  String routesCount(int count);
+
+  /// No description provided for @viewOnMapAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver en mapa'**
+  String get viewOnMapAction;
+
+  /// No description provided for @noNearbyStops.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay paradas cerca de este punto'**
+  String get noNearbyStops;
+
+  /// No description provided for @done.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get done;
 }
 
 class _AppLocalizationsDelegate

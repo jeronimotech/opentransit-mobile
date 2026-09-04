@@ -53,6 +53,7 @@ class ItineraryCard extends StatelessWidget {
                     children: [
                       Text(
                         formatDuration(it.durationSeconds, l10n),
+                        softWrap: false,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.5),
                       ),
                       Text(
@@ -64,24 +65,23 @@ class ItineraryCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
+              // Meta row wraps instead of overflowing on narrow screens.
+              Wrap(
+                spacing: 12,
+                runSpacing: 6,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  Icon(Icons.swap_horiz, size: 16, color: scheme.onSurfaceVariant),
-                  const SizedBox(width: 4),
-                  Text(l10n.transfersCount(it.transfers), style: Theme.of(context).textTheme.labelMedium),
-                  const SizedBox(width: 12),
-                  Icon(Icons.directions_walk, size: 16, color: scheme.onSurfaceVariant),
-                  const SizedBox(width: 4),
-                  Text(l10n.walkDistance(it.walkDistanceMeters), style: Theme.of(context).textTheme.labelMedium),
-                  const SizedBox(width: 12),
-                  Icon(Icons.payments_outlined, size: 16, color: scheme.onSurfaceVariant),
-                  const SizedBox(width: 4),
-                  FareText(it),
-                  const Spacer(),
-                  if (alerts.isNotEmpty) ...[
-                    alertIcon(alerts.first.severity, size: 16),
-                    const SizedBox(width: 8),
-                  ],
+                  _Meta(Icons.swap_horiz, l10n.transfersCount(it.transfers)),
+                  _Meta(Icons.directions_walk, l10n.walkDistance(it.walkDistanceMeters)),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.payments_outlined, size: 16, color: scheme.onSurfaceVariant),
+                      const SizedBox(width: 4),
+                      FareText(it),
+                    ],
+                  ),
+                  if (alerts.isNotEmpty) alertIcon(alerts.first.severity, size: 16),
                   if (it.hasRealtime) const LiveBadge(),
                 ],
               ),
@@ -104,6 +104,24 @@ class _LegChip extends StatelessWidget {
     return Tooltip(
       message: '${modeLabel(leg.mode, l10n)} · ${formatDuration(leg.durationSeconds, l10n)}',
       child: RouteChip(null, dense: true, mode: leg.mode),
+    );
+  }
+}
+
+class _Meta extends StatelessWidget {
+  const _Meta(this.icon, this.text);
+  final IconData icon;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 16, color: scheme.onSurfaceVariant),
+        const SizedBox(width: 4),
+        Text(text, style: Theme.of(context).textTheme.labelMedium),
+      ],
     );
   }
 }

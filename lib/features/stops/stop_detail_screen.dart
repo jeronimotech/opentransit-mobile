@@ -17,6 +17,9 @@ import '../favorites/save_favorite_sheet.dart';
 import '../planner/planner_state.dart';
 import 'widgets/board_view.dart';
 
+/// Stop / station page, "board first" (UX audit §D): a 120 px map strip with
+/// "Ver en mapa", the header chips, then the arrival board above the fold,
+/// routes collapsed, and accessibility as a muted line at the end.
 class StopDetailScreen extends ConsumerWidget {
   const StopDetailScreen({super.key, required this.cityId, required this.stopId});
   final String cityId;
@@ -45,6 +48,7 @@ class StopDetailScreen extends ConsumerWidget {
         final place = Place(name: stop.name, position: stop.position, stopId: stop.id, component: stop.component);
         final access = stop.access;
         final boardEnabled = city?.config.isEnabled('board') ?? true;
+        final routes = _dedupe(d.routes);
         return Scaffold(
           appBar: AppBar(
             title: Text(stop.name, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -88,77 +92,102 @@ class StopDetailScreen extends ConsumerWidget {
               ),
             ],
           ),
-          body: ListView(
-            padding: const EdgeInsets.only(bottom: 32),
-            children: [
-              SizedBox(
-                height: 180,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
-                  child: TransitMap(
-                    initialCenter: stop.position,
-                    initialZoom: 15.5,
-                    markers: [MapPoint(id: stop.id, position: stop.position, color: color, radius: 9, strokeWidth: 3)],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Chip(
-                      backgroundColor: color,
-                      avatar: Icon(stop.isStation ? Icons.subway_outlined : componentIcon(stop.component, city: city), size: 16, color: onColor(color)),
-                      label: Text(componentLabel(stop.component, l10n, city: city), style: TextStyle(color: onColor(color), fontWeight: FontWeight.w700)),
-                      visualDensity: VisualDensity.compact,
-                    ),
-                    if (stop.code != null) Chip(label: Text(stop.code!), visualDensity: VisualDensity.compact),
-                    _AccessibilityChip(access: access),
-                  ],
-                ),
-              ),
-              if (boardEnabled)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                  child: FilledButton.tonalIcon(
-                    key: const ValueKey('locate-from-stop'),
-                    onPressed: () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(stop.id)}'),
-                    icon: const Icon(Icons.directions_bus_outlined),
-                    label: Text(l10n.locateTitle),
-                  ),
-                ),
-              if (d.routes.isNotEmpty) ...[
-                SectionTitle(l10n.routes),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+          body: BoardScope(
+            stopId: stopId,
+            child: ListView(
+              padding: const EdgeInsets.only(bottom: 32),
+              children: [
+                // 120 px map strip with "Ver en mapa" (full map in a sheet).
+                SizedBox(
+                  height: 120,
+                  child: Stack(
+                    fit: StackFit.expand,
                     children: [
-                      for (final r in _dedupe(d.routes))
-                        InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: () => context.push('/$cityId/routes/${Uri.encodeComponent(r.id)}'),
-                          child: RouteChip(r),
+                      IgnorePointer(
+                        child: TransitMap(
+                          initialCenter: stop.position,
+                          initialZoom: 15.5,
+                          markers: [MapPoint(id: stop.id, position: stop.position, color: color, radius: 9, strokeWidth: 3)],
                         ),
+                      ),
+                      Positioned(
+                        right: 12,
+                        bottom: 10,
+                        child: FilledButton.tonalIcon(
+                          key: const ValueKey('view-on-map'),
+                          style: FilledButton.styleFrom(minimumSize: const Size(44, 40), visualDensity: VisualDensity.compact),
+                          onPressed: () => _showFullMap(context, stop, color),
+                          icon: const Icon(Icons.map_outlined, size: 18),
+                          label: Text(l10n.viewOnMapAction),
+                        ),
+                      ),
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Chip(
+                        backgroundColor: color,
+                        avatar: Icon(stop.isStation ? Icons.subway_outlined : componentIcon(stop.component, city: city), size: 16, color: onColor(color)),
+                        label: Text(componentLabel(stop.component, l10n, city: city), style: TextStyle(color: onColor(color), fontWeight: FontWeight.w700)),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      if (stop.code != null) Chip(label: Text(stop.code!), visualDensity: VisualDensity.compact),
+                    ],
+                  ),
+                ),
+                // 1. Arrival board first.
+                BoardView(
+                  cityId: cityId,
+                  stopId: stopId,
+                  onLocate: boardEnabled ? () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(stop.id)}') : null,
+                ),
+                // 2. Routes, collapsed.
+                if (routes.isNotEmpty)
+                  Theme(
+                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      key: const ValueKey('routes-section'),
+                      title: Text(l10n.routesCount(routes.length),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                      tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+                      childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                      children: [
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final r in routes)
+                              InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () => context.push('/$cityId/routes/${Uri.encodeComponent(r.id)}'),
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(minHeight: 36),
+                                  child: RouteChip(r),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                _StopAlerts(cityId: cityId, stopId: stopId, routeIds: d.routes.map((r) => r.id).toSet()),
+                // 3. Accessibility: one muted line.
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: _AccessibilityLine(access: access),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: Text(stop.id, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
+                ),
               ],
-              BoardView(cityId: cityId, stopId: stopId),
-              _StopAlerts(cityId: cityId, stopId: stopId, routeIds: d.routes.map((r) => r.id).toSet()),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                child: _AccessibilityBlock(access: access),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                child: Text(stop.id, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
-              ),
-            ],
+            ),
           ),
         );
       },
@@ -169,68 +198,85 @@ class StopDetailScreen extends ConsumerWidget {
     final seen = <String>{};
     return [for (final r in routes) if (seen.add(r.shortName)) r];
   }
-}
 
-class _AccessibilityChip extends StatelessWidget {
-  const _AccessibilityChip({required this.access});
-  final StopAccessibility access;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    final (icon, text, color) = switch (access.wheelchair) {
-      WheelchairAccess.accessible => (Icons.accessible, access.verified ? l10n.accessible : '${l10n.accessible} · ${l10n.accessibilityUnverified}', access.verified ? Colors.green.shade700 : Colors.orange.shade800),
-      WheelchairAccess.notAccessible => (Icons.not_accessible, l10n.accessibilityNotAccessible, Colors.red.shade700),
-      WheelchairAccess.unknown => (Icons.help_outline, l10n.accessibilityUnknown, scheme.outline),
-    };
-    return Chip(
-      avatar: Icon(icon, size: 16, color: color),
-      label: Text(text, style: TextStyle(color: color, fontSize: 12)),
-      visualDensity: VisualDensity.compact,
-    );
-  }
-}
-
-class _AccessibilityBlock extends StatelessWidget {
-  const _AccessibilityBlock({required this.access});
-  final StopAccessibility access;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(color: scheme.surfaceContainerLow, borderRadius: BorderRadius.circular(16)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.accessible_forward, color: scheme.onSurfaceVariant),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.accessibility, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
-                const SizedBox(height: 4),
-                Text(
-                  switch (access.wheelchair) {
-                    WheelchairAccess.accessible => l10n.accessible,
-                    WheelchairAccess.notAccessible => l10n.accessibilityNotAccessible,
-                    WheelchairAccess.unknown => l10n.accessibilityUnknown,
-                  },
-                  style: Theme.of(context).textTheme.bodyMedium,
+  Future<void> _showFullMap(BuildContext context, Stop stop, Color color) => showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        builder: (ctx) => SizedBox(
+          height: MediaQuery.sizeOf(ctx).height * 0.92,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  child: TransitMap(
+                    initialCenter: stop.position,
+                    initialZoom: 16,
+                    markers: [MapPoint(id: stop.id, position: stop.position, color: color, radius: 10, strokeWidth: 3)],
+                  ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  '${l10n.accessibilitySource(access.source)} · ${access.verified ? l10n.accessibilityVerified : (access.note ?? l10n.accessibilityUnverified)}',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: access.verified ? scheme.onSurfaceVariant : Colors.orange.shade800),
+              ),
+              Positioned(
+                top: 12,
+                right: 12,
+                child: IconButton.filledTonal(
+                  onPressed: () => Navigator.pop(ctx),
+                  icon: const Icon(Icons.close),
+                  tooltip: MaterialLocalizations.of(ctx).closeButtonLabel,
                 ),
-              ],
-            ),
+              ),
+              Positioned(
+                left: 16,
+                bottom: 16,
+                right: 72,
+                child: Material(
+                  color: Theme.of(ctx).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(14),
+                  elevation: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    child: Text(stop.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w700)),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
+      );
+}
+
+/// Small muted accessibility line: "Accesible · Dato del feed no verificado".
+class _AccessibilityLine extends StatelessWidget {
+  const _AccessibilityLine({required this.access});
+  final StopAccessibility access;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final (icon, text) = switch (access.wheelchair) {
+      WheelchairAccess.accessible => (Icons.accessible, l10n.accessible),
+      WheelchairAccess.notAccessible => (Icons.not_accessible, l10n.accessibilityNotAccessible),
+      WheelchairAccess.unknown => (Icons.help_outline, l10n.accessibilityUnknown),
+    };
+    final note = access.verified ? l10n.accessibilityVerified : (access.note ?? l10n.accessibilityUnverified);
+    return Semantics(
+      label: '${l10n.accessibility}: $text. $note',
+      child: ExcludeSemantics(
+        child: Row(
+          children: [
+            Icon(icon, size: 16, color: scheme.onSurfaceVariant),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '$text · $note',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -252,7 +298,7 @@ class _StopAlerts extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionTitle(l10n.alerts),
-        for (final a in relevant)
+        for (final a in relevant.take(3))
           ListTile(
             leading: alertIcon(a.severity),
             title: Text(a.header),

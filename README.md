@@ -8,32 +8,46 @@ Android. Part of the **opentransit** project together with
 
 Flutter 3.41 · Dart 3.11 · MapLibre · Riverpod · go_router · MIT.
 
-| Home hub | Ubica tu bus | Results (sorted) | Itinerary + fare | Stop board |
+**v1.1.1 "map first"** — the map is the product: it keeps ≥ 65 % of the screen,
+the sheet peeks with three actions and the stops near you, and the live fleet
+only appears once you zoom into a district.
+
+| Home (map first) | Sheet dragged up | Street zoom: live buses | Planner form | Stop: board first |
 |---|---|---|---|---|
-| ![](docs/screenshots/02_home_hub.png) | ![](docs/screenshots/03_locate_bus.png) | ![](docs/screenshots/05_results_sorted.png) | ![](docs/screenshots/06_itinerary_fare.png) | ![](docs/screenshots/07_stop_board.png) |
+| ![](docs/screenshots/02_home_map.png) | ![](docs/screenshots/03_home_sheet.png) | ![](docs/screenshots/04_home_live_zoom.png) | ![](docs/screenshots/05_plan_form.png) | ![](docs/screenshots/08_stop_board.png) |
 
-| Favorites | Alerts | Dark mode + POIs | Forced update |
-|---|---|---|---|
-| ![](docs/screenshots/09_favorites.png) | ![](docs/screenshots/10_alerts.png) | ![](docs/screenshots/11_home_dark.png) | ![](docs/screenshots/12_forced_update.png) |
+| Ubica tu bus | Results (sorted) | Itinerary + fare | Favorites | Dark mode + POIs |
+|---|---|---|---|---|
+| ![](docs/screenshots/03_locate_bus.png) | ![](docs/screenshots/06_results_sorted.png) | ![](docs/screenshots/07_itinerary_fare.png) | ![](docs/screenshots/10_favorites.png) | ![](docs/screenshots/12_home_dark.png) |
 
-More: [city picker](docs/screenshots/01_city_picker.png) · [plan form](docs/screenshots/04_plan_form.png) · [route detail](docs/screenshots/08_route_detail.png) · [v1 screens](docs/screenshots/v1/)
+More: [city picker](docs/screenshots/01_city_picker.png) · [route detail](docs/screenshots/09_route_detail.png) · [alerts](docs/screenshots/11_alerts.png) · [forced update](docs/screenshots/12_forced_update.png) · [v1.1 hub screens](docs/screenshots/v1.1/) · [v1 screens](docs/screenshots/v1/)
 
 Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,800 buses):
 
-| Live home hub + fleet | Live results | Live itinerary | Live station board | Live "Ubica tu bus" |
+| Live home | Live street zoom | Live itinerary | Live station board | Live "Ubica tu bus" |
 |---|---|---|---|---|
-| ![](docs/screenshots/live_01_home.png) | ![](docs/screenshots/live_02_results.png) | ![](docs/screenshots/live_03_itinerary.png) | ![](docs/screenshots/live_04_stop_board.png) | ![](docs/screenshots/live_05_next_buses.png) |
+| ![](docs/screenshots/live_01_home.png) | ![](docs/screenshots/live_02_home_zoom.png) | ![](docs/screenshots/live_04_itinerary.png) | ![](docs/screenshots/live_05_stop_board.png) | ![](docs/screenshots/live_06_next_buses.png) |
 
 ## What it does
 
 **v1.1 — the best of TransMi App and Maas, on open data** (see the plan in the
 workspace `ROADMAP-v1.1.md`):
 
-- **Question-led home hub** — "¿Qué quieres consultar?" tiles (Planear viaje ·
-  Ubica tu bus · Paradas cerca · Buscar ruta · Buses en vivo · Alertas ·
-  Favoritos) over a "Estaciones y paradas cerca" card, an alert carousel
-  (severity-sorted, dismissible, max 3 impressions per alert) and the city's
-  partner hand-off tiles (`services[]`: recharge, PQRS…).
+- **Map-first home** — full-bleed map with a floating search pill, one
+  **Capas** button (Buses en vivo · Servicios · Red de rutas) and locate. The
+  sheet peeks at 24 % with three actions (Planear viaje · Ubica tu bus · Buscar
+  ruta) and a "Cerca de ti" strip of the nearest stops with their next two
+  buses; Casa/Trabajo, recent trips, the alert carousel (severity-sorted,
+  dismissible, max 3 impressions per alert) and the city's partner hand-off
+  tiles (`services[]`) appear when you drag it up. Snap points 24 / 55 / 92 %.
+- **Live fleet by zoom** — hidden below zoom 14 (a hint says to zoom in),
+  small translucent dots between 14 and 16, larger dots with a bearing tick and
+  the route label from 16; colours desaturated 20 % so the base map stays
+  readable; positions interpolated between frames (off with reduce-motion).
+- **Route chips** — feed colour blended 35 % toward the component colour and
+  clamped to ≥ 4.5:1 contrast; neon feed colours (`#FF0000`…) fall back to the
+  component colour. Headsigns like `Andalucía || Portal Norte` render as
+  `Andalucía → Portal Norte`.
 - **Ubica tu bus** — station → route chips → next buses labelled **En vivo /
   Por programación / Estimado**, stops away and distance, with the route's
   buses drawn on a map tinted by ETA bucket (≤5 · ≤10 · ≤15 min).

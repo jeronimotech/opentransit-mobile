@@ -12,8 +12,10 @@ import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'planner_state.dart';
 
-/// Trip planning form. Accepts deep-link query params
-/// (`fromLat, fromLon, toLat, toLon, fromName, toName, time, arriveBy`).
+/// Trip planning form (UX audit §C): one origin/destination block, one time
+/// control, one non-wrapping mode row, "Más opciones" for the advanced
+/// toggles, and the primary action pinned at the bottom. Accepts deep-link
+/// query params (`fromLat, fromLon, toLat, toLon, fromName, toName, time, arriveBy`).
 class PlanScreen extends ConsumerStatefulWidget {
   const PlanScreen({super.key, required this.cityId, this.query = const {}});
   final String cityId;
@@ -87,21 +89,87 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     }
   }
 
-  Future<void> _pickTime() async {
+  /// Single time control: a sheet with *Salir a las / Llegar antes de* and
+  /// "Ahora" or a date + time picker.
+  Future<void> _openTimeSheet() async {
+    final l10n = AppLocalizations.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => Consumer(builder: (ctx, ref, _) {
+        final s = ref.watch(plannerProvider);
+        final locale = Localizations.localeOf(ctx).toString();
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(l10n.timeSheetTitle, style: Theme.of(ctx).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 12),
+                SegmentedButton<bool>(
+                  segments: [
+                    ButtonSegment(value: false, label: Text(l10n.departAt), icon: const Icon(Icons.logout, size: 16)),
+                    ButtonSegment(value: true, label: Text(l10n.arriveBy), icon: const Icon(Icons.login, size: 16)),
+                  ],
+                  selected: {s.arriveBy},
+                  onSelectionChanged: (v) => ref.read(plannerProvider.notifier).setArriveBy(v.first),
+                  showSelectedIcon: false,
+                ),
+                const SizedBox(height: 8),
+                RadioGroup<bool>(
+                  groupValue: s.time == null,
+                  onChanged: (v) async {
+                    if (v == true) {
+                      ref.read(plannerProvider.notifier).setTime(null);
+                    } else {
+                      await _pickTime(ctx);
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      RadioListTile<bool>(
+                        value: true,
+                        title: Text(l10n.timeNow),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      RadioListTile<bool>(
+                        value: false,
+                        title: Text(s.time == null ? (s.arriveBy ? l10n.arriveBy : l10n.departAt) : formatDateShort(s.time!, locale)),
+                        secondary: const Icon(Icons.schedule),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                FilledButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                  child: Text(l10n.done),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Future<void> _pickTime(BuildContext ctx) async {
     final now = DateTime.now();
     final current = ref.read(plannerProvider).time ?? now;
     final date = await showDatePicker(
-      context: context,
+      context: ctx,
       initialDate: current,
       firstDate: now.subtract(const Duration(days: 1)),
       lastDate: now.add(const Duration(days: 30)),
     );
-    if (date == null || !mounted) return;
-    final time = await showTimePicker(
-        context: context, initialTime: TimeOfDay.fromDateTime(current));
+    if (date == null || !ctx.mounted) return;
+    final time = await showTimePicker(context: ctx, initialTime: TimeOfDay.fromDateTime(current));
     if (time == null) return;
-    ref.read(plannerProvider.notifier).setTime(
-        DateTime(date.year, date.month, date.day, time.hour, time.minute));
+    ref.read(plannerProvider.notifier).setTime(DateTime(date.year, date.month, date.day, time.hour, time.minute));
   }
 
   /// Toggles a transit mode, expanding the `TRANSIT` shorthand when needed.
@@ -109,11 +177,9 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     final planner = ref.read(plannerProvider.notifier);
     final s = ref.read(plannerProvider);
     final transitModes = city.modes.where((x) => x.isTransit && x != TravelMode.transit).toSet();
-    // Expand the TRANSIT shorthand into the city's concrete transit modes.
     final next = {...s.modes};
     if (next.remove(TravelMode.transit)) next.addAll(transitModes);
     if (!next.remove(m)) next.add(m);
-    // Collapse back to TRANSIT when every transit mode is selected.
     if (transitModes.isNotEmpty && next.containsAll(transitModes)) {
       next.removeAll(transitModes);
       next.add(TravelMode.transit);
@@ -123,6 +189,12 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
 
   bool _selected(TravelMode m, PlannerState s) =>
       s.modes.contains(m) || (m.isTransit && s.modes.contains(TravelMode.transit));
+
+  String _shortModeLabel(TravelMode m, AppLocalizations l10n) => switch (m) {
+        TravelMode.bicycle => l10n.modeBike,
+        TravelMode.walk => l10n.modeWalkShort,
+        _ => modeLabel(m, l10n),
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -140,10 +212,19 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     final recents = ref.watch(recentTripsProvider).where((t) => t.cityId == widget.cityId).take(5).toList();
     final bikeAllowed = (city?.modes.contains(TravelMode.bicycle) ?? false) && (city?.config.isEnabled('bike') ?? true);
 
+    final timeLabel = s.time == null
+        ? l10n.timeNow
+        : '${s.arriveBy ? l10n.arriveBy : l10n.departAt} ${formatDateShort(s.time!, locale)}';
+
+    final modes = <TravelMode>[
+      if (city != null) ...city.modes.where((m) => m != TravelMode.walk && m != TravelMode.transit),
+      TravelMode.walk,
+    ];
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.planTrip)),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
           // Origin / destination
           Container(
@@ -198,7 +279,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
           ),
           const SizedBox(height: 10),
           // Casa / Trabajo shortcuts
-          if (home != null || work != null)
+          if (home != null || work != null) ...[
             Wrap(
               spacing: 8,
               children: [
@@ -218,101 +299,87 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                   ),
               ],
             ),
-          const SizedBox(height: 10),
+            const SizedBox(height: 10),
+          ],
 
-          // Time
+          // One time row: "[Ahora ▾]" opens the sheet (no duplicate chip).
           Row(
             children: [
-              Expanded(
-                child: SegmentedButton<bool>(
-                  segments: [
-                    ButtonSegment(value: false, label: Text(l10n.departAt), icon: const Icon(Icons.logout, size: 16)),
-                    ButtonSegment(value: true, label: Text(l10n.arriveBy), icon: const Icon(Icons.login, size: 16)),
-                  ],
-                  selected: {s.arriveBy},
-                  onSelectionChanged: (v) => ref.read(plannerProvider.notifier).setArriveBy(v.first),
-                  showSelectedIcon: false,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            children: [
-              ChoiceChip(
-                label: Text(l10n.now),
-                selected: s.time == null,
-                onSelected: (_) => ref.read(plannerProvider.notifier).setTime(null),
-              ),
               ActionChip(
+                key: const ValueKey('time-control'),
                 avatar: const Icon(Icons.schedule, size: 16),
-                label: Text(s.time == null ? l10n.departAt : formatDateShort(s.time!, locale)),
-                onPressed: _pickTime,
+                label: Text(timeLabel),
+                onPressed: _openTimeSheet,
                 backgroundColor: s.time != null ? scheme.secondaryContainer : null,
               ),
+              const SizedBox(width: 6),
+              Icon(Icons.expand_more, size: 18, color: scheme.onSurfaceVariant),
             ],
           ),
+          const SizedBox(height: 12),
 
-          // Modes
-          SectionTitle(l10n.modes),
-          if (city != null)
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
+          // One mode row that fits: Bus · Cable · Bici · A pie
+          SizedBox(
+            height: 44,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
               children: [
-                for (final m in city.modes.where((m) => m != TravelMode.walk && m != TravelMode.transit))
+                for (final m in modes) ...[
                   FilterChip(
+                    key: ValueKey('mode-${m.name}'),
                     avatar: Icon(modeIcon(m), size: 16),
-                    label: Text(modeLabel(m, l10n)),
-                    selected: _selected(m, s),
-                    onSelected: (_) => _toggleMode(m, city),
+                    label: Text(_shortModeLabel(m, l10n)),
+                    selected: m == TravelMode.walk ? s.modes.contains(TravelMode.walk) : _selected(m, s),
+                    onSelected: (_) => m == TravelMode.walk
+                        ? ref.read(plannerProvider.notifier).toggleMode(TravelMode.walk)
+                        : (city == null ? null : _toggleMode(m, city)),
                   ),
-                FilterChip(
-                  avatar: const Icon(Icons.directions_walk, size: 16),
-                  label: Text(l10n.modeWalk),
-                  selected: s.modes.contains(TravelMode.walk),
-                  onSelected: (_) => ref.read(plannerProvider.notifier).toggleMode(TravelMode.walk),
+                  const SizedBox(width: 8),
+                ],
+              ],
+            ),
+          ),
+
+          // "Más opciones" disclosure with the advanced toggles.
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              key: const ValueKey('more-options'),
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: EdgeInsets.zero,
+              title: Text(l10n.moreOptions, style: const TextStyle(fontWeight: FontWeight.w600)),
+              initiallyExpanded: settings.bikeToStation || settings.wheelchair,
+              children: [
+                if (bikeAllowed)
+                  SwitchListTile(
+                    key: const ValueKey('bike-toggle'),
+                    contentPadding: EdgeInsets.zero,
+                    secondary: const Icon(Icons.pedal_bike),
+                    title: Text(l10n.bikeToStation),
+                    value: settings.bikeToStation,
+                    onChanged: (v) {
+                      ref.read(settingsProvider.notifier).setBikeToStation(v);
+                      final planner = ref.read(plannerProvider.notifier);
+                      final modes = {...ref.read(plannerProvider).modes};
+                      if (v) {
+                        modes.add(TravelMode.bicycle);
+                      } else {
+                        modes.remove(TravelMode.bicycle);
+                      }
+                      planner.setModes(modes);
+                    },
+                  ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  secondary: const Icon(Icons.accessible),
+                  title: Text(l10n.wheelchair),
+                  value: settings.wheelchair,
+                  onChanged: (v) => ref.read(settingsProvider.notifier).setWheelchair(v),
                 ),
               ],
             ),
+          ),
 
-          // Bike to the station (BICYCLE + TRANSIT)
-          if (bikeAllowed)
-            SwitchListTile(
-              key: const ValueKey('bike-toggle'),
-              contentPadding: EdgeInsets.zero,
-              secondary: const Icon(Icons.pedal_bike),
-              title: Text(l10n.bikeToStation),
-              value: settings.bikeToStation,
-              onChanged: (v) {
-                ref.read(settingsProvider.notifier).setBikeToStation(v);
-                final planner = ref.read(plannerProvider.notifier);
-                final modes = {...ref.read(plannerProvider).modes};
-                if (v) {
-                  modes.add(TravelMode.bicycle);
-                } else {
-                  modes.remove(TravelMode.bicycle);
-                }
-                planner.setModes(modes);
-              },
-            ),
-          // Accessibility
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            secondary: const Icon(Icons.accessible),
-            title: Text(l10n.wheelchair),
-            value: settings.wheelchair,
-            onChanged: (v) => ref.read(settingsProvider.notifier).setWheelchair(v),
-          ),
-          const SizedBox(height: 16),
-          FilledButton.icon(
-            onPressed: s.canPlan && !loading ? _submit : null,
-            icon: loading
-                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                : const Icon(Icons.search),
-            label: Text(l10n.searchAction),
-          ),
           if (recents.isNotEmpty) ...[
             SectionTitle(l10n.recentTrips),
             for (final t in recents)
@@ -331,6 +398,18 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
           ],
         ],
       ),
+      // Primary CTA pinned at the bottom.
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+        child: FilledButton.icon(
+          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+          onPressed: s.canPlan && !loading ? _submit : null,
+          icon: loading
+              ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+              : const Icon(Icons.search),
+          label: Text(l10n.searchAction),
+        ),
+      ),
     );
   }
 }
@@ -348,29 +427,33 @@ class _PlaceField extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
-                  Text(
-                    place?.name ?? '—',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: place == null ? FontWeight.w400 : FontWeight.w600,
-                          color: place == null ? scheme.onSurfaceVariant : scheme.onSurface,
-                        ),
-                  ),
-                ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 44),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(label, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
+                    Text(
+                      place?.name ?? '—',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: place == null ? FontWeight.w400 : FontWeight.w600,
+                            color: place == null ? scheme.onSurfaceVariant : scheme.onSurface,
+                          ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            ?trailing,
-          ],
+              ?trailing,
+            ],
+          ),
         ),
       ),
     );

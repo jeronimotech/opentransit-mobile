@@ -744,4 +744,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectRoute => 'Select a route';
+
+  @override
+  String get layers => 'Layers';
+
+  @override
+  String get layerLive => 'Live buses';
+
+  @override
+  String get layerLiveHint => 'Shown when you zoom in (zoom 14+)';
+
+  @override
+  String get layerPois => 'Services';
+
+  @override
+  String get layerNetwork => 'Route network';
+
+  @override
+  String get nearYouTitle => 'Near you';
+
+  @override
+  String get zoomInForBuses => 'Zoom in to see buses';
+
+  @override
+  String get actionPlan => 'Plan a trip';
+
+  @override
+  String get actionLocate => 'Find my bus';
+
+  @override
+  String get actionRoutes => 'Find a route';
+
+  @override
+  String get timeNow => 'Now';
+
+  @override
+  String get timeSheetTitle => 'When are you travelling?';
+
+  @override
+  String get modeBike => 'Bike';
+
+  @override
+  String get modeWalkShort => 'Walk';
+
+  @override
+  String routesCount(int count) {
+    return 'Routes · $count';
+  }
+
+  @override
+  String get viewOnMapAction => 'View on map';
+
+  @override
+  String get noNearbyStops => 'No stops near this point';
+
+  @override
+  String get done => 'Done';
 }

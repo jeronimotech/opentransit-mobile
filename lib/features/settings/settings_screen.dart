@@ -99,6 +99,12 @@ class SettingsScreen extends ConsumerWidget {
             value: s.poiLayer,
             onChanged: n.setPoiLayer,
           ),
+          SwitchListTile(
+            secondary: const Icon(Icons.timeline_rounded),
+            title: Text(l10n.layerNetwork),
+            value: s.networkLayer,
+            onChanged: n.setNetworkLayer,
+          ),
           if (city != null && (city.links.pqrs != null || city.links.recharge != null || city.links.support != null)) ...[
             SectionTitle(l10n.services),
             if (city.links.recharge != null)

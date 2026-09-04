@@ -1,11 +1,11 @@
-// Widget tests for the home hub tiles and the arrival board.
+// Widget tests for the home action chips and the arrival board.
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opentransit_mobile/core/api/mock_api_client.dart';
 import 'package:opentransit_mobile/core/providers.dart';
-import 'package:opentransit_mobile/features/home/widgets/hub_tiles.dart';
+import 'package:opentransit_mobile/features/home/widgets/action_chips.dart';
 import 'package:opentransit_mobile/features/stops/widgets/board_view.dart';
 import 'package:opentransit_mobile/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,21 +42,21 @@ Widget _app(ProviderContainer c, Widget child) => UncontrolledProviderScope(
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('hub tiles render every tile and report taps', (tester) async {
+  testWidgets('home action chips render the three actions, 44 pt tall, and report taps', (tester) async {
     final c = await _container();
     addTearDown(c.dispose);
-    HubTile? tapped;
-    await tester.pumpWidget(_app(c, HubTiles(tiles: HubTile.values, onTap: (t) => tapped = t)));
+    HomeAction? tapped;
+    await tester.pumpWidget(_app(c, HomeActionChips(actions: HomeAction.values, onTap: (t) => tapped = t)));
     await tester.pump();
     expect(find.text('Planear viaje'), findsOneWidget);
     expect(find.text('Ubica tu bus'), findsOneWidget);
-    expect(find.text('Paradas cerca'), findsOneWidget);
     expect(find.text('Buscar ruta'), findsOneWidget);
-    expect(find.text('Buses en vivo'), findsOneWidget);
-    expect(find.text('Alertas'), findsOneWidget);
-    expect(find.text('Favoritos'), findsOneWidget);
+    // Nothing that duplicates the bottom nav.
+    expect(find.text('Alertas'), findsNothing);
+    expect(find.text('Favoritos'), findsNothing);
+    expect(tester.getSize(find.byKey(const ValueKey('hub-locate'))).height, greaterThanOrEqualTo(44));
     await tester.tap(find.byKey(const ValueKey('hub-locate')));
-    expect(tapped, HubTile.locate);
+    expect(tapped, HomeAction.locate);
   });
 
   testWidgets('board groups by route with next times and live badges', (tester) async {

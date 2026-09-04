@@ -14,6 +14,7 @@ class PreferencesRepository {
   static const _kLive = 'liveVehicles';
   static const _kPois = 'poiLayer';
   static const _kBike = 'bikeToStation';
+  static const _kNetwork = 'networkLayer';
 
   String? get cityId => _prefs.getString(_kCity);
   Future<void> setCityId(String? id) =>
@@ -44,4 +45,8 @@ class PreferencesRepository {
 
   bool get bikeToStation => _prefs.getBool(_kBike) ?? false;
   Future<void> setBikeToStation(bool v) => _prefs.setBool(_kBike, v);
+
+  /// Route shapes on the home map (default on, drawn from zoom 12).
+  bool get networkLayer => _prefs.getBool(_kNetwork) ?? true;
+  Future<void> setNetworkLayer(bool v) => _prefs.setBool(_kNetwork, v);
 }
