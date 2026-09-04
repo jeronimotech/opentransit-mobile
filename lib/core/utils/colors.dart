@@ -103,3 +103,56 @@ const customFavoriteIcons = [
 /// Readable text colour on top of [bg].
 Color onColor(Color bg) =>
     bg.computeLuminance() > 0.5 ? Colors.black87 : Colors.white;
+
+// ───────────────────────── v1.1.1 "map first" colour rules ─────────────────────────
+
+/// Linear blend of [a] toward [b] by [t] (0 = a, 1 = b).
+Color blendColors(Color a, Color b, double t) => Color.lerp(a, b, t.clamp(0, 1))!;
+
+/// WCAG 2.x contrast ratio between two colours (1..21).
+double contrastRatio(Color a, Color b) {
+  final la = a.computeLuminance();
+  final lb = b.computeLuminance();
+  final hi = la > lb ? la : lb;
+  final lo = la > lb ? lb : la;
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/// Pure feed colours (`#FF0000`, `#00FF00`, `#0000FF`) that read as neon on a
+/// map. The component colour is used instead of these.
+bool isNeonColor(Color c) {
+  final v = c.toARGB32() & 0xFFFFFF;
+  return v == 0xFF0000 || v == 0x00FF00 || v == 0x0000FF;
+}
+
+/// Darkens or lightens [bg] until [fg] reaches at least [min] contrast on it.
+Color ensureContrast(Color bg, Color fg, {double min = 4.5}) {
+  if (contrastRatio(bg, fg) >= min) return bg;
+  final towards = fg.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  var out = bg;
+  for (var i = 1; i <= 20; i++) {
+    out = Color.lerp(bg, towards, i / 20)!;
+    if (contrastRatio(out, fg) >= min) return out;
+  }
+  return out;
+}
+
+/// Reduces saturation by [amount] (0..1) so map markers do not fight the base map.
+Color desaturate(Color c, double amount) {
+  final h = HSLColor.fromColor(c);
+  return h.withSaturation((h.saturation * (1 - amount)).clamp(0, 1)).toColor();
+}
+
+/// Background + foreground for a route chip, per the v1.1.1 rule: the feed
+/// colour blended 35 % toward the component colour and clamped to ≥ 4.5:1
+/// contrast with its text; pure neon feed colours fall back to the component.
+({Color bg, Color fg}) routeChipColors(RouteRef r, {City? city}) {
+  final comp = componentColor(r.component, city: city);
+  final feed = colorFromHex(r.color, fallback: comp);
+  var bg = isNeonColor(feed) || r.color.isEmpty ? comp : blendColors(feed, comp, 0.35);
+  final wanted = colorFromHex(r.textColor, fallback: onColor(bg));
+  // A feed text colour that cannot reach contrast is replaced, not honoured.
+  final fg = contrastRatio(bg, wanted) >= 3 ? wanted : onColor(bg);
+  bg = ensureContrast(bg, fg);
+  return (bg: bg, fg: fg);
+}

@@ -1,4 +1,5 @@
 import 'dart:math' show Point;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
@@ -34,6 +35,8 @@ class MapPoint {
     this.strokeColor = Colors.white,
     this.strokeWidth = 1.5,
     this.label,
+    this.bearing,
+    this.opacity = 1,
   });
   final String id;
   final LatLng position;
@@ -42,6 +45,10 @@ class MapPoint {
   final Color strokeColor;
   final double strokeWidth;
   final String? label;
+
+  /// Heading in degrees (0 = north); drawn as a tick on vehicle markers.
+  final double? bearing;
+  final double opacity;
 }
 
 String _hex(Color c) {
@@ -90,6 +97,9 @@ Map<String, dynamic> _pointFc(List<MapPoint> pts) => {
               'stroke': _hex(p.strokeColor),
               'strokeWidth': p.strokeWidth,
               'label': p.label ?? '',
+              'opacity': p.opacity,
+              'bearing': p.bearing ?? -1,
+              'hasBearing': p.bearing != null,
             },
             'geometry': {
               'type': 'Point',
@@ -305,9 +315,31 @@ class TransitMapState extends State<TransitMap> {
         circleRadius: ['get', 'radius'],
         circleStrokeColor: ['get', 'stroke'],
         circleStrokeWidth: ['get', 'strokeWidth'],
-        circleOpacity: 0.95,
+        circleOpacity: ['get', 'opacity'],
+        circleStrokeOpacity: ['get', 'opacity'],
       ),
     );
+    // Bearing tick: a small white chevron rotated with the map, only for
+    // vehicles that report a heading (UX audit §B, street zoom).
+    await _addBearingIcon(c);
+    await c.addSymbolLayer(
+      _srcVehicles,
+      'ot-vehicles-bearing',
+      const ml.SymbolLayerProperties(
+        iconImage: _bearingIcon,
+        iconRotate: ['get', 'bearing'],
+        iconRotationAlignment: 'map',
+        iconAllowOverlap: true,
+        iconIgnorePlacement: true,
+        iconSize: 0.5,
+        iconOpacity: ['get', 'opacity'],
+      ),
+      filter: ['==', ['get', 'hasBearing'], true],
+      minzoom: 15.5,
+      enableInteraction: false,
+    );
+    // Route label sits under the dot (dark text, white halo) instead of
+    // inside it, so it stays legible at street zoom.
     await c.addSymbolLayer(
       _srcVehicles,
       'ot-vehicles-labels',
@@ -315,11 +347,15 @@ class TransitMapState extends State<TransitMap> {
         textField: ['get', 'label'],
         textSize: 10,
         textFont: ['Noto Sans Bold'],
-        textColor: '#ffffff',
-        textAllowOverlap: true,
-        textIgnorePlacement: true,
+        textColor: '#1f2937',
+        textHaloColor: '#ffffff',
+        textHaloWidth: 1.2,
+        textOffset: [0, 0.9],
+        textAnchor: 'top',
+        textAllowOverlap: false,
+        textOptional: true,
       ),
-      minzoom: 13,
+      minzoom: 16,
       enableInteraction: false,
     );
 
@@ -363,6 +399,35 @@ class TransitMapState extends State<TransitMap> {
       ),
       enableInteraction: false,
     );
+  }
+
+  static const _bearingIcon = 'ot-bearing';
+
+  /// Draws a 24×24 white chevron pointing up and registers it as a style image.
+  Future<void> _addBearingIcon(ml.MapLibreMapController c) async {
+    final rec = ui.PictureRecorder();
+    final canvas = Canvas(rec);
+    final paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.5
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    // Chevron sitting just above the circle centre so it reads as a heading.
+    final path = Path()
+      ..moveTo(6, 8)
+      ..lineTo(12, 2)
+      ..lineTo(18, 8);
+    canvas.drawPath(path, paint..color = Colors.black.withValues(alpha: 0.35)..strokeWidth = 5.5);
+    canvas.drawPath(path, paint..color = Colors.white..strokeWidth = 3.5);
+    final img = await rec.endRecording().toImage(24, 24);
+    final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
+    if (bytes == null) return;
+    try {
+      await c.addImage(_bearingIcon, bytes.buffer.asUint8List());
+    } on PlatformException {
+      // style gone
+    }
   }
 
   void _onFeatureTapped(Point<double> point, ml.LatLng coords, String id,

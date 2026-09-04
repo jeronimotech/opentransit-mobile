@@ -23,12 +23,9 @@ class RouteChip extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final r = route;
     final city = ref.watch(currentCityProvider);
-    final bg = r == null
-        ? Theme.of(context).colorScheme.surfaceContainerHighest
-        : colorFromHex(r.color, fallback: componentColor(r.component, city: city));
-    final fg = r == null
-        ? Theme.of(context).colorScheme.onSurfaceVariant
-        : colorFromHex(r.textColor, fallback: onColor(bg));
+    final colors = r == null ? null : routeChipColors(r, city: city);
+    final bg = colors?.bg ?? Theme.of(context).colorScheme.surfaceContainerHighest;
+    final fg = colors?.fg ?? Theme.of(context).colorScheme.onSurfaceVariant;
     final icon = r == null
         ? modeIcon(mode ?? TravelMode.walk)
         : (r.mode == TravelMode.bus ? componentIcon(r.component, city: city) : modeIcon(r.mode));
@@ -91,17 +88,22 @@ class LiveBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final color = Colors.green.shade600;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _Pulse(color: color),
-        if (!compact) ...[
-          const SizedBox(width: 4),
-          Text(l10n.realtime,
-              style: TextStyle(
-                  color: color, fontSize: 11, fontWeight: FontWeight.w700)),
-        ],
-      ],
+    return Semantics(
+      label: l10n.realtime,
+      child: ExcludeSemantics(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _Pulse(color: color),
+            if (!compact) ...[
+              const SizedBox(width: 4),
+              Text(l10n.realtime,
+                  style: TextStyle(
+                      color: color, fontSize: 11, fontWeight: FontWeight.w700)),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }
@@ -125,14 +127,19 @@ class _PulseState extends State<_Pulse> with SingleTickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) => FadeTransition(
-        opacity: Tween(begin: 0.35, end: 1.0).animate(_c),
-        child: Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle),
-        ),
-      );
+  Widget build(BuildContext context) {
+    final dot = Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle),
+    );
+    if (MediaQuery.disableAnimationsOf(context)) {
+      if (_c.isAnimating) _c.stop();
+      return dot;
+    }
+    if (!_c.isAnimating) _c.repeat(reverse: true);
+    return FadeTransition(opacity: Tween(begin: 0.35, end: 1.0).animate(_c), child: dot);
+  }
 }
 
 /// Data-freshness label driven by the city health endpoint:
@@ -157,29 +164,33 @@ class FreshnessLabel extends ConsumerWidget {
     final age = freshness?.ageSeconds ?? rt?.ageSeconds;
     if (stale) {
       return _Label(
-        icon: Icons.cloud_off_rounded,
         color: Colors.orange.shade800,
         text: age == null ? l10n.freshNoRealtime : l10n.freshStale(age.clamp(0, 99999)),
       );
     }
     if (realtime ?? freshness?.realtime ?? false) return const LiveBadge();
-    return _Label(icon: Icons.schedule, color: scheme.outline, text: l10n.freshScheduled);
+    return _Label(color: scheme.outline, text: l10n.freshScheduled);
   }
 }
 
+/// Dot + text, the single freshness style used across the app (§E).
 class _Label extends StatelessWidget {
-  const _Label({required this.icon, required this.color, required this.text});
-  final IconData icon;
+  const _Label({required this.color, required this.text});
   final Color color;
   final String text;
   @override
-  Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 13, color: color),
-          const SizedBox(width: 4),
-          Text(text, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700)),
-        ],
+  Widget build(BuildContext context) => Semantics(
+        label: text,
+        child: ExcludeSemantics(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+              const SizedBox(width: 4),
+              Text(text, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700)),
+            ],
+          ),
+        ),
       );
 }
 
