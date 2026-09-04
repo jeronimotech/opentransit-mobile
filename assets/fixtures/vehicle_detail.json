@@ -1,0 +1,156 @@
+{
+ "id": "V4001",
+ "label": "T4001",
+ "routeId": "bogota:B10",
+ "routeShortName": "B10",
+ "tripId": "bogota:B10-4001",
+ "tripResolved": true,
+ "component": "trunk",
+ "lat": 4.585,
+ "lon": -74.118,
+ "bearing": 285,
+ "timestamp": "2026-09-04T07:59:37-05:00",
+ "stopId": null,
+ "stopSequence": null,
+ "occupancy": null,
+ "route": {
+  "id": "bogota:B10",
+  "shortName": "B10",
+  "longName": "Portal Norte - Portal Sur",
+  "color": "#D32F2F",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "1",
+  "component": "trunk"
+ },
+ "trip": {
+  "id": "bogota:B10-4001",
+  "resolved": true,
+  "headsign": "Portal Sur"
+ },
+ "shape": {
+  "encoded": "gs_\\za}bMfXhD|XpBxY|BtXlCnXbDpWfB~m@dEvk@vBdm@zE`l@jEhm@|C|m@~CxTdEtTpFdSnFrTvFpUrEfSfEnQ|BtPzCbPdBlRnChPjB`QbDlNrDbQbBhPhD|OfCzM|ChPzC~^xDx_@jEx^xCl`@vEp`@|Dj^pEgK|PkIlOqI|PyJfQeJvNqK`Qd[bXt[`ZvY~WfZ`Yf\\dZjZxXkExVgBtUiDhUcElVwBpUmEtUgH~TaFtUoG|VuGtSaGlUeFfV",
+  "precision": 5
+ },
+ "currentStop": {
+  "id": "bogota:C100",
+  "code": null,
+  "name": "Calle 100",
+  "lat": 4.6858,
+  "lon": -74.0553,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null
+ },
+ "nextStop": {
+  "id": "bogota:C76",
+  "code": null,
+  "name": "Calle 76",
+  "lat": 4.6653,
+  "lon": -74.062,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null
+ },
+ "etaSeconds": 240,
+ "delaySeconds": 120,
+ "history": {
+  "points": [
+   [
+    -74.0459,
+    4.7546,
+    1788526200
+   ],
+   [
+    -74.04675435881866,
+    4.750560373789216,
+    1788526260
+   ],
+   [
+    -74.0473203910999,
+    4.746414352801723,
+    1788526320
+   ],
+   [
+    -74.04794702570672,
+    4.74212319956991,
+    1788526380
+   ],
+   [
+    -74.04865987505987,
+    4.738014998263377,
+    1788526440
+   ],
+   [
+    -74.04948038146134,
+    4.733927942169431,
+    1788526500
+   ],
+   [
+    -74.05,
+    4.73,
+    1788526560
+   ],
+   [
+    -74.05099403774749,
+    4.722482854117794,
+    1788526620
+   ],
+   [
+    -74.05158758308968,
+    4.71531763995563,
+    1788526680
+   ],
+   [
+    -74.05269132781014,
+    4.707930841179447,
+    1788526740
+   ]
+  ],
+  "avgKmh": 24.5
+ },
+ "alerts": [
+  {
+   "id": "al-1",
+   "cause": "CONSTRUCTION",
+   "effect": "DETOUR",
+   "severity": "WARNING",
+   "header": "Desvío en Av. Caracas por obras del Metro",
+   "description": "Las rutas troncales que circulan por la Av. Caracas entre Calle 26 y Calle 19 tienen desvío temporal por obras de la Línea 1 del Metro. Tiempo adicional estimado: 8 minutos.",
+   "url": "https://www.transmilenio.gov.co",
+   "start": "2026-09-01T08:00:00-05:00",
+   "end": "2026-09-24T08:00:00-05:00",
+   "routeIds": [
+    "bogota:B10",
+    "bogota:K43"
+   ],
+   "stopIds": [
+    "bogota:AVJ"
+   ],
+   "routes": [
+    {
+     "id": "bogota:B10",
+     "shortName": "B10",
+     "longName": "Portal Norte - Portal Sur",
+     "color": "#D32F2F",
+     "textColor": "#FFFFFF",
+     "mode": "BUS",
+     "agencyId": "1",
+     "component": "trunk"
+    },
+    {
+     "id": "bogota:K43",
+     "shortName": "K43",
+     "longName": "Portal Norte - Ricaurte",
+     "color": "#D32F2F",
+     "textColor": "#FFFFFF",
+     "mode": "BUS",
+     "agencyId": "1",
+     "component": "trunk"
+    }
+   ]
+  }
+ ]
+}

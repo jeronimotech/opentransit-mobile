@@ -1,0 +1,85 @@
+{
+ "feedVersion": "20260904",
+ "shapes": [
+  {
+   "id": "B10",
+   "routeId": "bogota:B10",
+   "component": "trunk",
+   "color": "#D32F2F",
+   "geometry": {
+    "encoded": "gs_\\za}bMfXhD|XpBxY|BtXlCnXbDpWfB~m@dEvk@vBdm@zE`l@jEhm@|C|m@~CxTdEtTpFdSnFrTvFpUrEfSfEnQ|BtPzCbPdBlRnChPjB`QbDlNrDbQbBhPhD|OfCzM|ChPzC~^xDx_@jEx^xCl`@vEp`@|Dj^pEgK|PkIlOqI|PyJfQeJvNqK`Qd[bXt[`ZvY~WfZ`Yf\\dZjZxXkExVgBtUiDhUcElVwBpUmEtUgH~TaFtUoG|VuGtSaGlUeFfV",
+    "precision": 5
+   }
+  },
+  {
+   "id": "K43",
+   "routeId": "bogota:K43",
+   "component": "trunk",
+   "color": "#D32F2F",
+   "geometry": {
+    "encoded": "gs_\\za}bMrY|BvXtDfX`CfXnCnY`CjWjBfn@pCpk@jF|m@~Cvl@`Exk@jB|m@vEjU~FvSpEbSfFjV~C`S|GlTbE|P~AdPxCpR~CfQdB`PbCbQzCzNnBpObDvOxCdQfDhO|DhOnBb`@pDv]rEp_@tCl_@rFha@jEx^jDwJjO_KlQ_JrOaIvPoL`PmIbQ",
+    "precision": 5
+   }
+  },
+  {
+   "id": "G12",
+   "routeId": "bogota:G12",
+   "component": "trunk",
+   "color": "#D32F2F",
+   "geometry": {
+    "encoded": "wvc[fhfcMv[hXnZ~XhY`Zj\\tW`Z~Zn[dXgEbUiBzUgFjVsBdVuCfWcEtTeGlT{FrUcHdWuEfUcGxTwGtU",
+    "precision": 5
+   }
+  },
+  {
+   "id": "B74",
+   "routeId": "bogota:B74",
+   "component": "trunk",
+   "color": "#D32F2F",
+   "geometry": {
+    "encoded": "gs_\\za}bMpYfB`XjD`XdB~XfClXdDrXjCdm@hEbn@~Brl@hEtk@hD~m@rDrl@pDhUxE~StF`SlEzThEnSxFjUxE~PtBdQpC|PbBlPjClPtDbRpBxNrDlQzBxOdDtOrBzMbCjPtDhPUbPsBjRo@fPKfOmA|QW",
+    "precision": 5
+   }
+  },
+  {
+   "id": "P500",
+   "routeId": "bogota:P500",
+   "component": "zonal",
+   "color": "#1565C0",
+   "geometry": {
+    "encoded": "gi_\\zk}bMdD`D~DvCzBlDrDrBpE~C~BfClH|AnEdC`I|DnG|AvFvDvFfBtv@Cby@kAjv@Etx@Z|u@s@|w@]",
+    "precision": 5
+   }
+  },
+  {
+   "id": "A61",
+   "routeId": "bogota:A61",
+   "component": "zonal",
+   "color": "#1565C0",
+   "geometry": {
+    "encoded": "gs_\\za}bMzb@cIhd@_Kna@mK`c@iIlc@yJ`c@mJ|TkAtU}ChX}@|SmCxVk@xUuB",
+    "precision": 5
+   }
+  },
+  {
+   "id": "L10",
+   "routeId": "bogota:L10",
+   "component": "cable",
+   "color": "#EF6C00",
+   "geometry": {
+    "encoded": "_~{ZvumcM~FdHnFnHfDjIrFlGbFzGfGzHfDnHlEdF`CxG~DfGvC`FvCdH",
+    "precision": 5
+   }
+  },
+  {
+   "id": "1-1",
+   "routeId": "bogota:1-1",
+   "component": "feeder",
+   "color": "#2E7D32",
+   "geometry": {
+    "encoded": "gs_\\za}bMmD?yCmAoCBgBe@eEm@iBU",
+    "precision": 5
+   }
+  }
+ ]
+}

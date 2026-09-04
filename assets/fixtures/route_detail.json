@@ -1,0 +1,761 @@
+{
+ "bogota:B10": {
+  "id": "bogota:B10",
+  "shortName": "B10",
+  "longName": "Portal Norte - Portal Sur",
+  "color": "#D32F2F",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "1",
+  "component": "trunk",
+  "patterns": [
+   {
+    "id": "B10:0",
+    "headsign": "Portal Sur",
+    "directionId": 0,
+    "geometry": {
+     "encoded": "gs_\\za}bMfXhD|XpBxY|BtXlCnXbDpWfB~m@dEvk@vBdm@zE`l@jEhm@|C|m@~CxTdEtTpFdSnFrTvFpUrEfSfEnQ|BtPzCbPdBlRnChPjB`QbDlNrDbQbBhPhD|OfCzM|ChPzC~^xDx_@jEx^xCl`@vEp`@|Dj^pEgK|PkIlOqI|PyJfQeJvNqK`Qd[bXt[`ZvY~WfZ`Yf\\dZjZxXkExVgBtUiDhUcElVwBpUmEtUgH~TaFtUoG|VuGtSaGlUeFfV",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:PN",
+      "code": null,
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C100",
+      "code": null,
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C76",
+      "code": null,
+      "name": "Calle 76",
+      "lat": 4.6653,
+      "lon": -74.062,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C45",
+      "code": null,
+      "name": "Calle 45",
+      "lat": 4.632,
+      "lon": -74.0705,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:AVJ",
+      "code": null,
+      "name": "Av. Jiménez",
+      "lat": 4.6008,
+      "lon": -74.0763,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:RIC",
+      "code": null,
+      "name": "Ricaurte",
+      "lat": 4.6118,
+      "lon": -74.093,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:NQS30",
+      "code": null,
+      "name": "NQS - Calle 30 Sur",
+      "lat": 4.585,
+      "lon": -74.118,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:PS",
+      "code": null,
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     }
+    ]
+   },
+   {
+    "id": "B10:1",
+    "headsign": "Portal Norte",
+    "directionId": 1,
+    "geometry": {
+     "encoded": "g_a[~tscMdFgV`GmUtGuSnG}V`FuUfH_UlEuUvBqUbEmVhDiUfBuUjEyVkZyXg\\eZgZaYwY_Xu[aZe[cXpKaQdJwNxJgQpI}PjImOfK}Pk^qEq`@}Dm`@wEy^yCy_@kE__@yDiP{C{M}C}OgCiPiDcQcBmNsDaQcDiPkBmRoCcPeBuP{CoQ}BgSgEqUsEsTwFeSoFuTqFyTeE}m@_Dim@}Cal@kEem@{Ewk@wB_n@eEqWgBoXcDuXmCyY}B}XqBgXiD",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:PS",
+      "code": null,
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:NQS30",
+      "code": null,
+      "name": "NQS - Calle 30 Sur",
+      "lat": 4.585,
+      "lon": -74.118,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:RIC",
+      "code": null,
+      "name": "Ricaurte",
+      "lat": 4.6118,
+      "lon": -74.093,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:AVJ",
+      "code": null,
+      "name": "Av. Jiménez",
+      "lat": 4.6008,
+      "lon": -74.0763,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C45",
+      "code": null,
+      "name": "Calle 45",
+      "lat": 4.632,
+      "lon": -74.0705,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C76",
+      "code": null,
+      "name": "Calle 76",
+      "lat": 4.6653,
+      "lon": -74.062,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C100",
+      "code": null,
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:PN",
+      "code": null,
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     }
+    ]
+   }
+  ],
+  "alerts": [
+   {
+    "id": "al-1",
+    "cause": "CONSTRUCTION",
+    "effect": "DETOUR",
+    "severity": "WARNING",
+    "header": "Desvío en Av. Caracas por obras del Metro",
+    "description": "Las rutas troncales que circulan por la Av. Caracas entre Calle 26 y Calle 19 tienen desvío temporal por obras de la Línea 1 del Metro. Tiempo adicional estimado: 8 minutos.",
+    "url": "https://www.transmilenio.gov.co",
+    "start": "2026-09-01T08:00:00-05:00",
+    "end": "2026-09-24T08:00:00-05:00",
+    "routeIds": [
+     "bogota:B10",
+     "bogota:K43"
+    ],
+    "stopIds": [
+     "bogota:AVJ"
+    ],
+    "routes": [
+     {
+      "id": "bogota:B10",
+      "shortName": "B10",
+      "longName": "Portal Norte - Portal Sur",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk"
+     },
+     {
+      "id": "bogota:K43",
+      "shortName": "K43",
+      "longName": "Portal Norte - Ricaurte",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk"
+     }
+    ]
+   }
+  ]
+ },
+ "bogota:K43": {
+  "id": "bogota:K43",
+  "shortName": "K43",
+  "longName": "Portal Norte - Ricaurte",
+  "color": "#D32F2F",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "1",
+  "component": "trunk",
+  "patterns": [
+   {
+    "id": "K43:0",
+    "headsign": "Ricaurte",
+    "directionId": 0,
+    "geometry": {
+     "encoded": "gs_\\za}bMrY|BvXtDfX`CfXnCnY`CjWjBfn@pCpk@jF|m@~Cvl@`Exk@jB|m@vEjU~FvSpEbSfFjV~C`S|GlTbE|P~AdPxCpR~CfQdB`PbCbQzCzNnBpObDvOxCdQfDhO|DhOnBb`@pDv]rEp_@tCl_@rFha@jEx^jDwJjO_KlQ_JrOaIvPoL`PmIbQ",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:PN",
+      "code": null,
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C100",
+      "code": null,
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C76",
+      "code": null,
+      "name": "Calle 76",
+      "lat": 4.6653,
+      "lon": -74.062,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C45",
+      "code": null,
+      "name": "Calle 45",
+      "lat": 4.632,
+      "lon": -74.0705,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:AVJ",
+      "code": null,
+      "name": "Av. Jiménez",
+      "lat": 4.6008,
+      "lon": -74.0763,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:RIC",
+      "code": null,
+      "name": "Ricaurte",
+      "lat": 4.6118,
+      "lon": -74.093,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     }
+    ]
+   }
+  ],
+  "alerts": [
+   {
+    "id": "al-1",
+    "cause": "CONSTRUCTION",
+    "effect": "DETOUR",
+    "severity": "WARNING",
+    "header": "Desvío en Av. Caracas por obras del Metro",
+    "description": "Las rutas troncales que circulan por la Av. Caracas entre Calle 26 y Calle 19 tienen desvío temporal por obras de la Línea 1 del Metro. Tiempo adicional estimado: 8 minutos.",
+    "url": "https://www.transmilenio.gov.co",
+    "start": "2026-09-01T08:00:00-05:00",
+    "end": "2026-09-24T08:00:00-05:00",
+    "routeIds": [
+     "bogota:B10",
+     "bogota:K43"
+    ],
+    "stopIds": [
+     "bogota:AVJ"
+    ],
+    "routes": [
+     {
+      "id": "bogota:B10",
+      "shortName": "B10",
+      "longName": "Portal Norte - Portal Sur",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk"
+     },
+     {
+      "id": "bogota:K43",
+      "shortName": "K43",
+      "longName": "Portal Norte - Ricaurte",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk"
+     }
+    ]
+   }
+  ]
+ },
+ "bogota:G12": {
+  "id": "bogota:G12",
+  "shortName": "G12",
+  "longName": "Ricaurte - Portal Sur",
+  "color": "#D32F2F",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "1",
+  "component": "trunk",
+  "patterns": [
+   {
+    "id": "G12:0",
+    "headsign": "Portal Sur",
+    "directionId": 0,
+    "geometry": {
+     "encoded": "wvc[fhfcMv[hXnZ~XhY`Zj\\tW`Z~Zn[dXgEbUiBzUgFjVsBdVuCfWcEtTeGlT{FrUcHdWuEfUcGxTwGtU",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:RIC",
+      "code": null,
+      "name": "Ricaurte",
+      "lat": 4.6118,
+      "lon": -74.093,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:NQS30",
+      "code": null,
+      "name": "NQS - Calle 30 Sur",
+      "lat": 4.585,
+      "lon": -74.118,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:PS",
+      "code": null,
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     }
+    ]
+   }
+  ],
+  "alerts": []
+ },
+ "bogota:B74": {
+  "id": "bogota:B74",
+  "shortName": "B74",
+  "longName": "Portal Norte - Museo Nacional",
+  "color": "#D32F2F",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "1",
+  "component": "trunk",
+  "patterns": [
+   {
+    "id": "B74:0",
+    "headsign": "Museo Nacional",
+    "directionId": 0,
+    "geometry": {
+     "encoded": "gs_\\za}bMpYfB`XjD`XdB~XfClXdDrXjCdm@hEbn@~Brl@hEtk@hD~m@rDrl@pDhUxE~StF`SlEzThEnSxFjUxE~PtBdQpC|PbBlPjClPtDbRpBxNrDlQzBxOdDtOrBzMbCjPtDhPUbPsBjRo@fPKfOmA|QW",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:PN",
+      "code": null,
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C100",
+      "code": null,
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C76",
+      "code": null,
+      "name": "Calle 76",
+      "lat": 4.6653,
+      "lon": -74.062,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C45",
+      "code": null,
+      "name": "Calle 45",
+      "lat": 4.632,
+      "lon": -74.0705,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:MUSEO",
+      "code": null,
+      "name": "Museo Nacional",
+      "lat": 4.615,
+      "lon": -74.069,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     }
+    ]
+   }
+  ],
+  "alerts": []
+ },
+ "bogota:P500": {
+  "id": "bogota:P500",
+  "shortName": "P500",
+  "longName": "Portal Norte - Cl 170",
+  "color": "#1565C0",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "4",
+  "component": "zonal",
+  "patterns": [
+   {
+    "id": "P500:0",
+    "headsign": "Calle 100",
+    "directionId": 0,
+    "geometry": {
+     "encoded": "gi_\\zk}bMdD`D~DvCzBlDrDrBpE~C~BfClH|AnEdC`I|DnG|AvFvDvFfBtv@Cby@kAjv@Etx@Z|u@s@|w@]",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:Z170",
+      "code": "A1234",
+      "name": "Autopista Norte - Cl 170",
+      "lat": 4.753,
+      "lon": -74.0475,
+      "locationType": "stop",
+      "component": "zonal",
+      "wheelchair": "unknown",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:C100",
+      "code": null,
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     }
+    ]
+   }
+  ],
+  "alerts": [
+   {
+    "id": "al-3",
+    "cause": "OTHER_CAUSE",
+    "effect": "OTHER_EFFECT",
+    "severity": "INFO",
+    "header": "Nueva ruta zonal P500",
+    "description": "Desde el 1 de septiembre la ruta P500 conecta la Calle 170 con la Calle 100 cada 10 minutos en hora pico.",
+    "url": null,
+    "start": "2026-08-31T08:00:00-05:00",
+    "end": null,
+    "routeIds": [
+     "bogota:P500"
+    ],
+    "stopIds": [],
+    "routes": [
+     {
+      "id": "bogota:P500",
+      "shortName": "P500",
+      "longName": "Portal Norte - Cl 170",
+      "color": "#1565C0",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "4",
+      "component": "zonal"
+     }
+    ]
+   }
+  ]
+ },
+ "bogota:A61": {
+  "id": "bogota:A61",
+  "shortName": "A61",
+  "longName": "Portal Norte - Usaquén",
+  "color": "#1565C0",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "4",
+  "component": "zonal",
+  "patterns": [
+   {
+    "id": "A61:0",
+    "headsign": "Usaquén",
+    "directionId": 0,
+    "geometry": {
+     "encoded": "gs_\\za}bMzb@cIhd@_Kna@mK`c@iIlc@yJ`c@mJ|TkAtU}ChX}@|SmCxVk@xUuB",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:PN",
+      "code": null,
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:ZUSQ",
+      "code": "B2001",
+      "name": "Cra 7 - Cl 116 (Usaquén)",
+      "lat": 4.698,
+      "lon": -74.032,
+      "locationType": "stop",
+      "component": "zonal",
+      "wheelchair": "unknown",
+      "parentStationId": null
+     }
+    ]
+   }
+  ],
+  "alerts": []
+ },
+ "bogota:L10": {
+  "id": "bogota:L10",
+  "shortName": "L10",
+  "longName": "TransMiCable Portal Tunal - Mirador",
+  "color": "#EF6C00",
+  "textColor": "#FFFFFF",
+  "mode": "CABLE_CAR",
+  "agencyId": "7",
+  "component": "cable",
+  "patterns": [
+   {
+    "id": "L10:0",
+    "headsign": "Mirador",
+    "directionId": 0,
+    "geometry": {
+     "encoded": "_~{ZvumcM~FdHnFnHfDjIrFlGbFzGfGzHfDnHlEdF`CxG~DfGvC`FvCdH",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:TUN",
+      "code": null,
+      "name": "Portal Tunal",
+      "lat": 4.572,
+      "lon": -74.131,
+      "locationType": "station",
+      "component": "cable",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:MIR",
+      "code": null,
+      "name": "Mirador del Paraíso",
+      "lat": 4.56,
+      "lon": -74.148,
+      "locationType": "station",
+      "component": "cable",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     }
+    ]
+   }
+  ],
+  "alerts": [
+   {
+    "id": "al-2",
+    "cause": "MAINTENANCE",
+    "effect": "NO_SERVICE",
+    "severity": "SEVERE",
+    "header": "TransMiCable sin servicio por mantenimiento",
+    "description": "El servicio de cable se suspende hoy entre 9:00 y 14:00 por mantenimiento programado. Habrá ruta alimentadora de contingencia.",
+    "url": null,
+    "start": "2026-09-04T09:00:00-05:00",
+    "end": "2026-09-04T14:00:00-05:00",
+    "routeIds": [
+     "bogota:L10"
+    ],
+    "stopIds": [],
+    "routes": [
+     {
+      "id": "bogota:L10",
+      "shortName": "L10",
+      "longName": "TransMiCable Portal Tunal - Mirador",
+      "color": "#EF6C00",
+      "textColor": "#FFFFFF",
+      "mode": "CABLE_CAR",
+      "agencyId": "7",
+      "component": "cable"
+     }
+    ]
+   }
+  ]
+ },
+ "bogota:1-1": {
+  "id": "bogota:1-1",
+  "shortName": "1-1",
+  "longName": "Portal Norte - Cl 175 (alimentador)",
+  "color": "#2E7D32",
+  "textColor": "#FFFFFF",
+  "mode": "BUS",
+  "agencyId": "2",
+  "component": "feeder",
+  "patterns": [
+   {
+    "id": "F1:0",
+    "headsign": "Cl 175",
+    "directionId": 0,
+    "geometry": {
+     "encoded": "gs_\\za}bMmD?yCmAoCBgBe@eEm@iBU",
+     "precision": 5
+    },
+    "stops": [
+     {
+      "id": "bogota:PN",
+      "code": null,
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "locationType": "station",
+      "component": "trunk",
+      "wheelchair": "accessible",
+      "parentStationId": null
+     },
+     {
+      "id": "bogota:Z175",
+      "code": "A1250",
+      "name": "Cra 20 - Cl 175",
+      "lat": 4.759,
+      "lon": -74.045,
+      "locationType": "stop",
+      "component": "feeder",
+      "wheelchair": "unknown",
+      "parentStationId": null
+     }
+    ]
+   }
+  ],
+  "alerts": []
+ }
+}

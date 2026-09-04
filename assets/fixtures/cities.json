@@ -1,0 +1,129 @@
+{
+ "cities": [
+  {
+   "id": "bogota",
+   "name": "Bogotá",
+   "country": "CO",
+   "timezone": "America/Bogota",
+   "locale": "es-CO",
+   "center": {
+    "lat": 4.6534,
+    "lon": -74.0836
+   },
+   "bbox": [
+    -74.45,
+    3.95,
+    -73.85,
+    4.9
+   ],
+   "defaultZoom": 12,
+   "modes": [
+    "WALK",
+    "BUS",
+    "CABLE_CAR",
+    "BICYCLE"
+   ],
+   "branding": {
+    "primaryColor": "#D32F2F",
+    "logoUrl": null
+   },
+   "features": {
+    "realtimeVehicles": true,
+    "tripUpdates": true,
+    "alerts": true,
+    "fares": false,
+    "bikeShare": false
+   },
+   "agencies": [
+    {
+     "id": "1",
+     "name": "TransMilenio Troncal",
+     "component": "trunk",
+     "color": "#D32F2F"
+    },
+    {
+     "id": "2",
+     "name": "Alimentadores",
+     "component": "feeder",
+     "color": "#2E7D32"
+    },
+    {
+     "id": "3",
+     "name": "Dual",
+     "component": "dual",
+     "color": "#6A1B9A"
+    },
+    {
+     "id": "4",
+     "name": "Zonal Urbano",
+     "component": "zonal",
+     "color": "#1565C0"
+    },
+    {
+     "id": "5",
+     "name": "Zonal Complementario",
+     "component": "zonal",
+     "color": "#1565C0"
+    },
+    {
+     "id": "6",
+     "name": "Zonal Especial",
+     "component": "zonal",
+     "color": "#1565C0"
+    },
+    {
+     "id": "7",
+     "name": "TransMiCable",
+     "component": "cable",
+     "color": "#EF6C00"
+    }
+   ],
+   "attribution": "Datos: TRANSMILENIO S.A. (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors"
+  },
+  {
+   "id": "medellin",
+   "name": "Medellín",
+   "country": "CO",
+   "timezone": "America/Bogota",
+   "locale": "es-CO",
+   "center": {
+    "lat": 6.2442,
+    "lon": -75.5812
+   },
+   "bbox": [
+    -75.75,
+    6.1,
+    -75.45,
+    6.4
+   ],
+   "defaultZoom": 12,
+   "modes": [
+    "WALK",
+    "BUS",
+    "SUBWAY",
+    "TRAM",
+    "CABLE_CAR"
+   ],
+   "branding": {
+    "primaryColor": "#00838F",
+    "logoUrl": null
+   },
+   "features": {
+    "realtimeVehicles": false,
+    "tripUpdates": false,
+    "alerts": false,
+    "fares": false,
+    "bikeShare": true
+   },
+   "agencies": [
+    {
+     "id": "1",
+     "name": "Metro de Medellín",
+     "component": "rail",
+     "color": "#00838F"
+    }
+   ],
+   "attribution": "Datos: Metro de Medellín (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors"
+  }
+ ]
+}

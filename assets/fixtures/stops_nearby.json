@@ -1,0 +1,148 @@
+{
+ "stops": [
+  {
+   "id": "bogota:PN",
+   "code": null,
+   "name": "Portal Norte",
+   "lat": 4.7546,
+   "lon": -74.0459,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 261
+  },
+  {
+   "id": "bogota:C100",
+   "code": null,
+   "name": "Calle 100",
+   "lat": 4.6858,
+   "lon": -74.0553,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 7905
+  },
+  {
+   "id": "bogota:C76",
+   "code": null,
+   "name": "Calle 76",
+   "lat": 4.6653,
+   "lon": -74.062,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 10280
+  },
+  {
+   "id": "bogota:C45",
+   "code": null,
+   "name": "Calle 45",
+   "lat": 4.632,
+   "lon": -74.0705,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 14097
+  },
+  {
+   "id": "bogota:AVJ",
+   "code": null,
+   "name": "Av. Jiménez",
+   "lat": 4.6008,
+   "lon": -74.0763,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 17624
+  },
+  {
+   "id": "bogota:RIC",
+   "code": null,
+   "name": "Ricaurte",
+   "lat": 4.6118,
+   "lon": -74.093,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 16928
+  },
+  {
+   "id": "bogota:NQS30",
+   "code": null,
+   "name": "NQS - Calle 30 Sur",
+   "lat": 4.585,
+   "lon": -74.118,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 20707
+  },
+  {
+   "id": "bogota:PS",
+   "code": null,
+   "name": "Portal Sur",
+   "lat": 4.5978,
+   "lon": -74.1616,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 21892
+  },
+  {
+   "id": "bogota:Z170",
+   "code": "A1234",
+   "name": "Autopista Norte - Cl 170",
+   "lat": 4.753,
+   "lon": -74.0475,
+   "locationType": "stop",
+   "component": "zonal",
+   "wheelchair": "unknown",
+   "parentStationId": null,
+   "distanceMeters": 511
+  },
+  {
+   "id": "bogota:Z175",
+   "code": "A1250",
+   "name": "Cra 20 - Cl 175",
+   "lat": 4.759,
+   "lon": -74.045,
+   "locationType": "stop",
+   "component": "feeder",
+   "wheelchair": "unknown",
+   "parentStationId": null,
+   "distanceMeters": 351
+  },
+  {
+   "id": "bogota:ZUSQ",
+   "code": "B2001",
+   "name": "Cra 7 - Cl 116 (Usaquén)",
+   "lat": 4.698,
+   "lon": -74.032,
+   "locationType": "stop",
+   "component": "zonal",
+   "wheelchair": "unknown",
+   "parentStationId": null,
+   "distanceMeters": 6584
+  },
+  {
+   "id": "bogota:MUSEO",
+   "code": null,
+   "name": "Museo Nacional",
+   "lat": 4.615,
+   "lon": -74.069,
+   "locationType": "station",
+   "component": "trunk",
+   "wheelchair": "accessible",
+   "parentStationId": null,
+   "distanceMeters": 15921
+  }
+ ]
+}

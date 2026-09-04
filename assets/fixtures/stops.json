@@ -1,0 +1,382 @@
+{
+ "bogota:PN": {
+  "id": "bogota:PN",
+  "code": null,
+  "name": "Portal Norte",
+  "lat": 4.7546,
+  "lon": -74.0459,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   {
+    "id": "bogota:K43",
+    "shortName": "K43",
+    "longName": "Portal Norte - Ricaurte",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   {
+    "id": "bogota:B74",
+    "shortName": "B74",
+    "longName": "Portal Norte - Museo Nacional",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:C100": {
+  "id": "bogota:C100",
+  "code": null,
+  "name": "Calle 100",
+  "lat": 4.6858,
+  "lon": -74.0553,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   {
+    "id": "bogota:K43",
+    "shortName": "K43",
+    "longName": "Portal Norte - Ricaurte",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   {
+    "id": "bogota:B74",
+    "shortName": "B74",
+    "longName": "Portal Norte - Museo Nacional",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   {
+    "id": "bogota:P500",
+    "shortName": "P500",
+    "longName": "Portal Norte - Cl 170",
+    "color": "#1565C0",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "4",
+    "component": "zonal"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:C76": {
+  "id": "bogota:C76",
+  "code": null,
+  "name": "Calle 76",
+  "lat": 4.6653,
+  "lon": -74.062,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:C45": {
+  "id": "bogota:C45",
+  "code": null,
+  "name": "Calle 45",
+  "lat": 4.632,
+  "lon": -74.0705,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:AVJ": {
+  "id": "bogota:AVJ",
+  "code": null,
+  "name": "Av. Jiménez",
+  "lat": 4.6008,
+  "lon": -74.0763,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:RIC": {
+  "id": "bogota:RIC",
+  "code": null,
+  "name": "Ricaurte",
+  "lat": 4.6118,
+  "lon": -74.093,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:K43",
+    "shortName": "K43",
+    "longName": "Portal Norte - Ricaurte",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   {
+    "id": "bogota:G12",
+    "shortName": "G12",
+    "longName": "Ricaurte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:NQS30": {
+  "id": "bogota:NQS30",
+  "code": null,
+  "name": "NQS - Calle 30 Sur",
+  "lat": 4.585,
+  "lon": -74.118,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:PS": {
+  "id": "bogota:PS",
+  "code": null,
+  "name": "Portal Sur",
+  "lat": 4.5978,
+  "lon": -74.1616,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   {
+    "id": "bogota:G12",
+    "shortName": "G12",
+    "longName": "Ricaurte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:Z170": {
+  "id": "bogota:Z170",
+  "code": "A1234",
+  "name": "Autopista Norte - Cl 170",
+  "lat": 4.753,
+  "lon": -74.0475,
+  "locationType": "stop",
+  "component": "zonal",
+  "wheelchair": "unknown",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:P500",
+    "shortName": "P500",
+    "longName": "Portal Norte - Cl 170",
+    "color": "#1565C0",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "4",
+    "component": "zonal"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:Z175": {
+  "id": "bogota:Z175",
+  "code": "A1250",
+  "name": "Cra 20 - Cl 175",
+  "lat": 4.759,
+  "lon": -74.045,
+  "locationType": "stop",
+  "component": "feeder",
+  "wheelchair": "unknown",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:1-1",
+    "shortName": "1-1",
+    "longName": "Portal Norte - Cl 175 (alimentador)",
+    "color": "#2E7D32",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "2",
+    "component": "feeder"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:ZUSQ": {
+  "id": "bogota:ZUSQ",
+  "code": "B2001",
+  "name": "Cra 7 - Cl 116 (Usaquén)",
+  "lat": 4.698,
+  "lon": -74.032,
+  "locationType": "stop",
+  "component": "zonal",
+  "wheelchair": "unknown",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:A61",
+    "shortName": "A61",
+    "longName": "Portal Norte - Usaquén",
+    "color": "#1565C0",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "4",
+    "component": "zonal"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ },
+ "bogota:MUSEO": {
+  "id": "bogota:MUSEO",
+  "code": null,
+  "name": "Museo Nacional",
+  "lat": 4.615,
+  "lon": -74.069,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null,
+  "routes": [
+   {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   }
+  ],
+  "parentStation": null,
+  "children": []
+ }
+}

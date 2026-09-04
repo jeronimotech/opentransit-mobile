@@ -1,0 +1,202 @@
+{
+ "results": [
+  {
+   "id": "stop:bogota:PN",
+   "name": "Portal Norte",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.7546,
+   "lon": -74.0459,
+   "type": "station",
+   "stopId": "bogota:PN",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:C100",
+   "name": "Calle 100",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.6858,
+   "lon": -74.0553,
+   "type": "station",
+   "stopId": "bogota:C100",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:C76",
+   "name": "Calle 76",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.6653,
+   "lon": -74.062,
+   "type": "station",
+   "stopId": "bogota:C76",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:C45",
+   "name": "Calle 45",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.632,
+   "lon": -74.0705,
+   "type": "station",
+   "stopId": "bogota:C45",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:AVJ",
+   "name": "Av. Jiménez",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.6008,
+   "lon": -74.0763,
+   "type": "station",
+   "stopId": "bogota:AVJ",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:RIC",
+   "name": "Ricaurte",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.6118,
+   "lon": -74.093,
+   "type": "station",
+   "stopId": "bogota:RIC",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:NQS30",
+   "name": "NQS - Calle 30 Sur",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.585,
+   "lon": -74.118,
+   "type": "station",
+   "stopId": "bogota:NQS30",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:PS",
+   "name": "Portal Sur",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.5978,
+   "lon": -74.1616,
+   "type": "station",
+   "stopId": "bogota:PS",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:Z170",
+   "name": "Autopista Norte - Cl 170",
+   "label": "Paradero zonal · Bogotá",
+   "lat": 4.753,
+   "lon": -74.0475,
+   "type": "stop",
+   "stopId": "bogota:Z170",
+   "component": "zonal",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:Z175",
+   "name": "Cra 20 - Cl 175",
+   "label": "Paradero zonal · Bogotá",
+   "lat": 4.759,
+   "lon": -74.045,
+   "type": "stop",
+   "stopId": "bogota:Z175",
+   "component": "feeder",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:ZUSQ",
+   "name": "Cra 7 - Cl 116 (Usaquén)",
+   "label": "Paradero zonal · Bogotá",
+   "lat": 4.698,
+   "lon": -74.032,
+   "type": "stop",
+   "stopId": "bogota:ZUSQ",
+   "component": "zonal",
+   "source": "gtfs"
+  },
+  {
+   "id": "stop:bogota:MUSEO",
+   "name": "Museo Nacional",
+   "label": "Estación troncal · Bogotá",
+   "lat": 4.615,
+   "lon": -74.069,
+   "type": "station",
+   "stopId": "bogota:MUSEO",
+   "component": "trunk",
+   "source": "gtfs"
+  },
+  {
+   "id": "photon:1",
+   "name": "Aeropuerto El Dorado",
+   "label": "Aeropuerto · Fontibón",
+   "lat": 4.7016,
+   "lon": -74.1469,
+   "type": "poi",
+   "stopId": null,
+   "component": null,
+   "source": "photon"
+  },
+  {
+   "id": "photon:2",
+   "name": "Universidad Nacional de Colombia",
+   "label": "Universidad · Teusaquillo",
+   "lat": 4.6363,
+   "lon": -74.0836,
+   "type": "poi",
+   "stopId": null,
+   "component": null,
+   "source": "photon"
+  },
+  {
+   "id": "photon:3",
+   "name": "Plaza de Bolívar",
+   "label": "Plaza · La Candelaria",
+   "lat": 4.5981,
+   "lon": -74.0758,
+   "type": "poi",
+   "stopId": null,
+   "component": null,
+   "source": "photon"
+  },
+  {
+   "id": "photon:4",
+   "name": "Centro Comercial Andino",
+   "label": "Centro comercial · Chapinero",
+   "lat": 4.667,
+   "lon": -74.053,
+   "type": "poi",
+   "stopId": null,
+   "component": null,
+   "source": "photon"
+  },
+  {
+   "id": "photon:5",
+   "name": "Calle 26",
+   "label": "Calle · Bogotá",
+   "lat": 4.625,
+   "lon": -74.09,
+   "type": "street",
+   "stopId": null,
+   "component": null,
+   "source": "photon"
+  },
+  {
+   "id": "photon:6",
+   "name": "Parque Simón Bolívar",
+   "label": "Parque · Teusaquillo",
+   "lat": 4.6584,
+   "lon": -74.0939,
+   "type": "poi",
+   "stopId": null,
+   "component": null,
+   "source": "photon"
+  }
+ ]
+}

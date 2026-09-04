@@ -1,0 +1,184 @@
+{
+ "stop": {
+  "id": "bogota:PN",
+  "code": null,
+  "name": "Portal Norte",
+  "lat": 4.7546,
+  "lon": -74.0459,
+  "locationType": "station",
+  "component": "trunk",
+  "wheelchair": "accessible",
+  "parentStationId": null
+ },
+ "generatedAt": "2026-09-04T08:00:00-05:00",
+ "departures": [
+  {
+   "route": {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   "headsign": "Portal Sur",
+   "tripId": "bogota:B10-0803",
+   "scheduledTime": "2026-09-04T08:03:00-05:00",
+   "realtimeTime": "2026-09-04T08:05:00-05:00",
+   "realtime": true,
+   "delaySeconds": 120,
+   "canceled": false,
+   "vehicleId": "V4021",
+   "stopSequence": 1
+  },
+  {
+   "route": {
+    "id": "bogota:K43",
+    "shortName": "K43",
+    "longName": "Portal Norte - Ricaurte",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   "headsign": "Ricaurte",
+   "tripId": "bogota:K43-0807",
+   "scheduledTime": "2026-09-04T08:07:00-05:00",
+   "realtimeTime": "2026-09-04T08:06:00-05:00",
+   "realtime": true,
+   "delaySeconds": -60,
+   "canceled": false,
+   "vehicleId": "V4021",
+   "stopSequence": 1
+  },
+  {
+   "route": {
+    "id": "bogota:B74",
+    "shortName": "B74",
+    "longName": "Portal Norte - Museo Nacional",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   "headsign": "Museo Nacional",
+   "tripId": "bogota:B74-0809",
+   "scheduledTime": "2026-09-04T08:09:00-05:00",
+   "realtimeTime": null,
+   "realtime": false,
+   "delaySeconds": null,
+   "canceled": false,
+   "vehicleId": null,
+   "stopSequence": 1
+  },
+  {
+   "route": {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   "headsign": "Portal Sur",
+   "tripId": "bogota:B10-0813",
+   "scheduledTime": "2026-09-04T08:13:00-05:00",
+   "realtimeTime": null,
+   "realtime": false,
+   "delaySeconds": null,
+   "canceled": false,
+   "vehicleId": null,
+   "stopSequence": 1
+  },
+  {
+   "route": {
+    "id": "bogota:K43",
+    "shortName": "K43",
+    "longName": "Portal Norte - Ricaurte",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   "headsign": "Ricaurte",
+   "tripId": "bogota:K43-0817",
+   "scheduledTime": "2026-09-04T08:17:00-05:00",
+   "realtimeTime": null,
+   "realtime": false,
+   "delaySeconds": null,
+   "canceled": true,
+   "vehicleId": null,
+   "stopSequence": 1
+  },
+  {
+   "route": {
+    "id": "bogota:B74",
+    "shortName": "B74",
+    "longName": "Portal Norte - Museo Nacional",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   "headsign": "Museo Nacional",
+   "tripId": "bogota:B74-0820",
+   "scheduledTime": "2026-09-04T08:20:00-05:00",
+   "realtimeTime": null,
+   "realtime": false,
+   "delaySeconds": null,
+   "canceled": false,
+   "vehicleId": null,
+   "stopSequence": 1
+  },
+  {
+   "route": {
+    "id": "bogota:B10",
+    "shortName": "B10",
+    "longName": "Portal Norte - Portal Sur",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   "headsign": "Portal Sur",
+   "tripId": "bogota:B10-0823",
+   "scheduledTime": "2026-09-04T08:23:00-05:00",
+   "realtimeTime": null,
+   "realtime": false,
+   "delaySeconds": null,
+   "canceled": false,
+   "vehicleId": null,
+   "stopSequence": 1
+  },
+  {
+   "route": {
+    "id": "bogota:K43",
+    "shortName": "K43",
+    "longName": "Portal Norte - Ricaurte",
+    "color": "#D32F2F",
+    "textColor": "#FFFFFF",
+    "mode": "BUS",
+    "agencyId": "1",
+    "component": "trunk"
+   },
+   "headsign": "Ricaurte",
+   "tripId": "bogota:K43-0827",
+   "scheduledTime": "2026-09-04T08:27:00-05:00",
+   "realtimeTime": null,
+   "realtime": false,
+   "delaySeconds": null,
+   "canceled": false,
+   "vehicleId": null,
+   "stopSequence": 1
+  }
+ ]
+}

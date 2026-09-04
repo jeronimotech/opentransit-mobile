@@ -1,0 +1,944 @@
+{
+ "from": {
+  "name": "Cra 45 # 174-20",
+  "lat": 4.756,
+  "lon": -74.044,
+  "stopId": null,
+  "stopCode": null,
+  "arrival": null,
+  "departure": null,
+  "component": null
+ },
+ "to": {
+  "name": "Cl 57 Sur # 75-10",
+  "lat": 4.599,
+  "lon": -74.16,
+  "stopId": null,
+  "stopCode": null,
+  "arrival": null,
+  "departure": null,
+  "component": null
+ },
+ "itineraries": [
+  {
+   "id": "it-0",
+   "startTime": "2026-09-04T08:00:00-05:00",
+   "endTime": "2026-09-04T09:04:20-05:00",
+   "durationSeconds": 3860,
+   "walkDistanceMeters": 495,
+   "walkTimeSeconds": 440,
+   "waitingTimeSeconds": 60,
+   "transfers": 0,
+   "fare": null,
+   "accessible": true,
+   "legs": [
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T08:00:00-05:00",
+     "endTime": "2026-09-04T08:04:00-05:00",
+     "durationSeconds": 240,
+     "distanceMeters": 269,
+     "from": {
+      "name": "Cra 45 # 174-20",
+      "lat": 4.756,
+      "lon": -74.044,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "to": {
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "stopId": "bogota:PN",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "_|_\\~u|bMz@dApBzAdA|Ab@zB",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Camina hacia el sur por la Carrera 45",
+       "distanceMeters": 120,
+       "lat": 4.7558,
+       "lon": -74.0442,
+       "relativeDirection": "DEPART",
+       "streetName": "Carrera 45"
+      },
+      {
+       "instruction": "Gira a la derecha hacia la Autopista Norte",
+       "distanceMeters": 90,
+       "lat": 4.755,
+       "lon": -74.045,
+       "relativeDirection": "RIGHT",
+       "streetName": "Autopista Norte"
+      }
+     ],
+     "alerts": []
+    },
+    {
+     "mode": "BUS",
+     "transit": true,
+     "startTime": "2026-09-04T08:05:00-05:00",
+     "endTime": "2026-09-04T09:00:00-05:00",
+     "durationSeconds": 3300,
+     "distanceMeters": 28820,
+     "from": {
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "stopId": "bogota:PN",
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:05:00-05:00",
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": "2026-09-04T09:00:00-05:00",
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": {
+      "id": "bogota:B10",
+      "shortName": "B10",
+      "longName": "Portal Norte - Portal Sur",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk"
+     },
+     "headsign": "Portal Sur",
+     "agency": {
+      "id": "1",
+      "name": "TransMilenio S.A."
+     },
+     "tripId": "bogota:B10-0800",
+     "realtime": true,
+     "realtimeState": "UPDATED",
+     "delaySeconds": 120,
+     "geometry": {
+      "encoded": "gs_\\za}bMfXhD|XpBxY|BtXlCnXbDpWfB~m@dEvk@vBdm@zE`l@jEhm@|C|m@~CxTdEtTpFdSnFrTvFpUrEfSfEnQ|BtPzCbPdBlRnChPjB`QbDlNrDbQbBhPhD|OfCzM|ChPzC~^xDx_@jEx^xCl`@vEp`@|Dj^pEgK|PkIlOqI|PyJfQeJvNqK`Qd[bXt[`ZvY~WfZ`Yf\\dZjZxXkExVgBtUiDhUcElVwBpUmEtUgH~TaFtUoG|VuGtSaGlUeFfV",
+      "precision": 5
+     },
+     "intermediateStops": [
+      {
+       "name": "Calle 100",
+       "lat": 4.6858,
+       "lon": -74.0553,
+       "stopId": "bogota:C100",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:11:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Calle 76",
+       "lat": 4.6653,
+       "lon": -74.062,
+       "stopId": "bogota:C76",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:18:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Calle 45",
+       "lat": 4.632,
+       "lon": -74.0705,
+       "stopId": "bogota:C45",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:25:00-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Av. Jiménez",
+       "lat": 4.6008,
+       "lon": -74.0763,
+       "stopId": "bogota:AVJ",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:31:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Ricaurte",
+       "lat": 4.6118,
+       "lon": -74.093,
+       "stopId": "bogota:RIC",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:38:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "NQS - Calle 30 Sur",
+       "lat": 4.585,
+       "lon": -74.118,
+       "stopId": "bogota:NQS30",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:45:00-05:00",
+       "departure": null,
+       "component": "trunk"
+      }
+     ],
+     "steps": [],
+     "alerts": [
+      {
+       "id": "al-1",
+       "cause": "CONSTRUCTION",
+       "effect": "DETOUR",
+       "severity": "WARNING",
+       "header": "Desvío en Av. Caracas por obras del Metro",
+       "description": "Las rutas troncales que circulan por la Av. Caracas entre Calle 26 y Calle 19 tienen desvío temporal por obras de la Línea 1 del Metro. Tiempo adicional estimado: 8 minutos.",
+       "url": "https://www.transmilenio.gov.co",
+       "start": "2026-09-01T08:00:00-05:00",
+       "end": "2026-09-24T08:00:00-05:00",
+       "routeIds": [
+        "bogota:B10",
+        "bogota:K43"
+       ],
+       "stopIds": [
+        "bogota:AVJ"
+       ],
+       "routes": [
+        {
+         "id": "bogota:B10",
+         "shortName": "B10",
+         "longName": "Portal Norte - Portal Sur",
+         "color": "#D32F2F",
+         "textColor": "#FFFFFF",
+         "mode": "BUS",
+         "agencyId": "1",
+         "component": "trunk"
+        },
+        {
+         "id": "bogota:K43",
+         "shortName": "K43",
+         "longName": "Portal Norte - Ricaurte",
+         "color": "#D32F2F",
+         "textColor": "#FFFFFF",
+         "mode": "BUS",
+         "agencyId": "1",
+         "component": "trunk"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T09:01:00-05:00",
+     "endTime": "2026-09-04T09:04:20-05:00",
+     "durationSeconds": 200,
+     "distanceMeters": 226,
+     "from": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Cl 57 Sur # 75-10",
+      "lat": 4.599,
+      "lon": -74.16,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "g_a[~tscM_AqBe@OoAyAy@cB",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Sal de la estación hacia la Calle 57 Sur",
+       "distanceMeters": 150,
+       "lat": 4.5985,
+       "lon": -74.161,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 57 Sur"
+      },
+      {
+       "instruction": "Continúa por la Calle 57 Sur",
+       "distanceMeters": 110,
+       "lat": 4.5988,
+       "lon": -74.1605,
+       "relativeDirection": "CONTINUE",
+       "streetName": "Calle 57 Sur"
+      }
+     ],
+     "alerts": []
+    }
+   ]
+  },
+  {
+   "id": "it-1",
+   "startTime": "2026-09-04T08:00:00-05:00",
+   "endTime": "2026-09-04T09:08:20-05:00",
+   "durationSeconds": 4100,
+   "walkDistanceMeters": 489,
+   "walkTimeSeconds": 440,
+   "waitingTimeSeconds": 360,
+   "transfers": 1,
+   "fare": null,
+   "accessible": true,
+   "legs": [
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T08:00:00-05:00",
+     "endTime": "2026-09-04T08:04:00-05:00",
+     "durationSeconds": 240,
+     "distanceMeters": 266,
+     "from": {
+      "name": "Cra 45 # 174-20",
+      "lat": 4.756,
+      "lon": -74.044,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "to": {
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "stopId": "bogota:PN",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "_|_\\~u|bMhBtBp@vA`@~AxAlA",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Camina hacia el sur por la Carrera 45",
+       "distanceMeters": 120,
+       "lat": 4.7558,
+       "lon": -74.0442,
+       "relativeDirection": "DEPART",
+       "streetName": "Carrera 45"
+      },
+      {
+       "instruction": "Gira a la derecha hacia la Autopista Norte",
+       "distanceMeters": 90,
+       "lat": 4.755,
+       "lon": -74.045,
+       "relativeDirection": "RIGHT",
+       "streetName": "Autopista Norte"
+      }
+     ],
+     "alerts": []
+    },
+    {
+     "mode": "BUS",
+     "transit": true,
+     "startTime": "2026-09-04T08:07:00-05:00",
+     "endTime": "2026-09-04T08:42:00-05:00",
+     "durationSeconds": 2100,
+     "distanceMeters": 19705,
+     "from": {
+      "name": "Portal Norte",
+      "lat": 4.7546,
+      "lon": -74.0459,
+      "stopId": "bogota:PN",
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:07:00-05:00",
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Ricaurte",
+      "lat": 4.6118,
+      "lon": -74.093,
+      "stopId": "bogota:RIC",
+      "stopCode": null,
+      "arrival": "2026-09-04T08:42:00-05:00",
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": {
+      "id": "bogota:K43",
+      "shortName": "K43",
+      "longName": "Portal Norte - Ricaurte",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk"
+     },
+     "headsign": "Ricaurte",
+     "agency": {
+      "id": "1",
+      "name": "TransMilenio S.A."
+     },
+     "tripId": "bogota:K43-0807",
+     "realtime": true,
+     "realtimeState": "UPDATED",
+     "delaySeconds": -60,
+     "geometry": {
+      "encoded": "gs_\\za}bMrY|BvXtDfX`CfXnCnY`CjWjBfn@pCpk@jF|m@~Cvl@`Exk@jB|m@vEjU~FvSpEbSfFjV~C`S|GlTbE|P~AdPxCpR~CfQdB`PbCbQzCzNnBpObDvOxCdQfDhO|DhOnBb`@pDv]rEp_@tCl_@rFha@jEx^jDwJjO_KlQ_JrOaIvPoL`PmIbQ",
+      "precision": 5
+     },
+     "intermediateStops": [
+      {
+       "name": "Calle 100",
+       "lat": 4.6858,
+       "lon": -74.0553,
+       "stopId": "bogota:C100",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:13:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Calle 76",
+       "lat": 4.6653,
+       "lon": -74.062,
+       "stopId": "bogota:C76",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:20:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Calle 45",
+       "lat": 4.632,
+       "lon": -74.0705,
+       "stopId": "bogota:C45",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:27:00-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Av. Jiménez",
+       "lat": 4.6008,
+       "lon": -74.0763,
+       "stopId": "bogota:AVJ",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:33:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      }
+     ],
+     "steps": [],
+     "alerts": []
+    },
+    {
+     "mode": "BUS",
+     "transit": true,
+     "startTime": "2026-09-04T08:45:00-05:00",
+     "endTime": "2026-09-04T09:05:00-05:00",
+     "durationSeconds": 1200,
+     "distanceMeters": 9125,
+     "from": {
+      "name": "Ricaurte",
+      "lat": 4.6118,
+      "lon": -74.093,
+      "stopId": "bogota:RIC",
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:45:00-05:00",
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": "2026-09-04T09:05:00-05:00",
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": {
+      "id": "bogota:G12",
+      "shortName": "G12",
+      "longName": "Ricaurte - Portal Sur",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk"
+     },
+     "headsign": "Portal Sur",
+     "agency": {
+      "id": "1",
+      "name": "TransMilenio S.A."
+     },
+     "tripId": "bogota:G12-0845",
+     "realtime": false,
+     "realtimeState": "SCHEDULED",
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "wvc[fhfcMv[hXnZ~XhY`Zj\\tW`Z~Zn[dXgEbUiBzUgFjVsBdVuCfWcEtTeGlT{FrUcHdWuEfUcGxTwGtU",
+      "precision": 5
+     },
+     "intermediateStops": [
+      {
+       "name": "NQS - Calle 30 Sur",
+       "lat": 4.585,
+       "lon": -74.118,
+       "stopId": "bogota:NQS30",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:51:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      }
+     ],
+     "steps": [],
+     "alerts": []
+    },
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T09:05:00-05:00",
+     "endTime": "2026-09-04T09:08:20-05:00",
+     "durationSeconds": 200,
+     "distanceMeters": 223,
+     "from": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Cl 57 Sur # 75-10",
+      "lat": 4.599,
+      "lon": -74.16,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "g_a[~tscMo@i@s@oAaByBi@kA",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Sal de la estación hacia la Calle 57 Sur",
+       "distanceMeters": 150,
+       "lat": 4.5985,
+       "lon": -74.161,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 57 Sur"
+      },
+      {
+       "instruction": "Continúa por la Calle 57 Sur",
+       "distanceMeters": 110,
+       "lat": 4.5988,
+       "lon": -74.1605,
+       "relativeDirection": "CONTINUE",
+       "streetName": "Calle 57 Sur"
+      }
+     ],
+     "alerts": []
+    }
+   ]
+  },
+  {
+   "id": "it-2",
+   "startTime": "2026-09-04T08:00:00-05:00",
+   "endTime": "2026-09-04T09:28:20-05:00",
+   "durationSeconds": 5300,
+   "walkDistanceMeters": 814,
+   "walkTimeSeconds": 500,
+   "waitingTimeSeconds": 720,
+   "transfers": 1,
+   "fare": null,
+   "accessible": null,
+   "legs": [
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T08:00:00-05:00",
+     "endTime": "2026-09-04T08:03:00-05:00",
+     "durationSeconds": 180,
+     "distanceMeters": 517,
+     "from": {
+      "name": "Cra 45 # 174-20",
+      "lat": 4.756,
+      "lon": -74.044,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "to": {
+      "name": "Autopista Norte - Cl 170",
+      "lat": 4.753,
+      "lon": -74.0475,
+      "stopId": "bogota:Z170",
+      "stopCode": "A1234",
+      "arrival": null,
+      "departure": null,
+      "component": "zonal"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "_|_\\~u|bMrBlE|CtCnDlCtChE",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Camina hacia la Calle 170",
+       "distanceMeters": 150,
+       "lat": 4.7555,
+       "lon": -74.0445,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 170"
+      }
+     ],
+     "alerts": []
+    },
+    {
+     "mode": "BUS",
+     "transit": true,
+     "startTime": "2026-09-04T08:10:00-05:00",
+     "endTime": "2026-09-04T08:35:00-05:00",
+     "durationSeconds": 1500,
+     "distanceMeters": 7782,
+     "from": {
+      "name": "Autopista Norte - Cl 170",
+      "lat": 4.753,
+      "lon": -74.0475,
+      "stopId": "bogota:Z170",
+      "stopCode": "A1234",
+      "arrival": null,
+      "departure": "2026-09-04T08:10:00-05:00",
+      "component": "zonal"
+     },
+     "to": {
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "stopId": "bogota:C100",
+      "stopCode": null,
+      "arrival": "2026-09-04T08:35:00-05:00",
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": {
+      "id": "bogota:P500",
+      "shortName": "P500",
+      "longName": "Portal Norte - Cl 170",
+      "color": "#1565C0",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "4",
+      "component": "zonal"
+     },
+     "headsign": "Calle 100",
+     "agency": {
+      "id": "4",
+      "name": "TransMilenio S.A."
+     },
+     "tripId": "bogota:P500-0810",
+     "realtime": true,
+     "realtimeState": "UPDATED",
+     "delaySeconds": 300,
+     "geometry": {
+      "encoded": "gi_\\zk}bMdD`D~DvCzBlDrDrBpE~C~BfClH|AnEdC`I|DnG|AvFvDvFfBtv@Cby@kAjv@Etx@Z|u@s@|w@]",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [],
+     "alerts": []
+    },
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T08:35:00-05:00",
+     "endTime": "2026-09-04T08:37:00-05:00",
+     "durationSeconds": 120,
+     "distanceMeters": 69,
+     "from": {
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "stopId": "bogota:C100",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "stopId": "bogota:C100",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "ger[r|~bMOe@ZJ[NNH",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Cruza el puente peatonal a la estación Calle 100",
+       "distanceMeters": 120,
+       "lat": 4.6858,
+       "lon": -74.0553,
+       "relativeDirection": "CONTINUE",
+       "streetName": "Calle 100"
+      }
+     ],
+     "alerts": []
+    },
+    {
+     "mode": "BUS",
+     "transit": true,
+     "startTime": "2026-09-04T08:40:00-05:00",
+     "endTime": "2026-09-04T09:25:00-05:00",
+     "durationSeconds": 2700,
+     "distanceMeters": 21097,
+     "from": {
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "stopId": "bogota:C100",
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:40:00-05:00",
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": "2026-09-04T09:25:00-05:00",
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": {
+      "id": "bogota:B10",
+      "shortName": "B10",
+      "longName": "Portal Norte - Portal Sur",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk"
+     },
+     "headsign": "Portal Sur",
+     "agency": {
+      "id": "1",
+      "name": "TransMilenio S.A."
+     },
+     "tripId": "bogota:B10-0840",
+     "realtime": false,
+     "realtimeState": "SCHEDULED",
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "ger[r|~bMlUzFjTnDzSjGvThDlRlFfUjFpQfChQfCvPzAfOdDzRbBjPhD|P~ClNjCjPtCbPfDnOjCrNlC~_@tEx^hD`_@vDp_@nDh`@jFf_@rD_K`PwHzOsL|PaJ|O}HbQkKlPbZfXn[zXtZnY~[tZd[fX~YtXkDrUkDvU{CrW}D`ToClVeD~UuGbVoElUwHtUeGpSoF~VcGdU",
+      "precision": 5
+     },
+     "intermediateStops": [
+      {
+       "name": "Calle 76",
+       "lat": 4.6653,
+       "lon": -74.062,
+       "stopId": "bogota:C76",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:46:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Calle 45",
+       "lat": 4.632,
+       "lon": -74.0705,
+       "stopId": "bogota:C45",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:53:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Av. Jiménez",
+       "lat": 4.6008,
+       "lon": -74.0763,
+       "stopId": "bogota:AVJ",
+       "stopCode": null,
+       "arrival": "2026-09-04T09:00:00-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Ricaurte",
+       "lat": 4.6118,
+       "lon": -74.093,
+       "stopId": "bogota:RIC",
+       "stopCode": null,
+       "arrival": "2026-09-04T09:06:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "NQS - Calle 30 Sur",
+       "lat": 4.585,
+       "lon": -74.118,
+       "stopId": "bogota:NQS30",
+       "stopCode": null,
+       "arrival": "2026-09-04T09:13:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      }
+     ],
+     "steps": [],
+     "alerts": []
+    },
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T09:25:00-05:00",
+     "endTime": "2026-09-04T09:28:20-05:00",
+     "durationSeconds": 200,
+     "distanceMeters": 228,
+     "from": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Cl 57 Sur # 75-10",
+      "lat": 4.599,
+      "lon": -74.16,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "g_a[~tscMqAyAq@c@S}AwAcB",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Sal de la estación hacia la Calle 57 Sur",
+       "distanceMeters": 150,
+       "lat": 4.5985,
+       "lon": -74.161,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 57 Sur"
+      },
+      {
+       "instruction": "Continúa por la Calle 57 Sur",
+       "distanceMeters": 110,
+       "lat": 4.5988,
+       "lon": -74.1605,
+       "relativeDirection": "CONTINUE",
+       "streetName": "Calle 57 Sur"
+      }
+     ],
+     "alerts": []
+    }
+   ]
+  }
+ ],
+ "router": {
+  "engine": "otp",
+  "version": "2.10.0",
+  "realtime": true
+ },
+ "warnings": []
+}

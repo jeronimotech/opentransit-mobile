@@ -1,0 +1,84 @@
+{
+ "routes": [
+  {
+   "id": "bogota:B10",
+   "shortName": "B10",
+   "longName": "Portal Norte - Portal Sur",
+   "color": "#D32F2F",
+   "textColor": "#FFFFFF",
+   "mode": "BUS",
+   "agencyId": "1",
+   "component": "trunk"
+  },
+  {
+   "id": "bogota:K43",
+   "shortName": "K43",
+   "longName": "Portal Norte - Ricaurte",
+   "color": "#D32F2F",
+   "textColor": "#FFFFFF",
+   "mode": "BUS",
+   "agencyId": "1",
+   "component": "trunk"
+  },
+  {
+   "id": "bogota:G12",
+   "shortName": "G12",
+   "longName": "Ricaurte - Portal Sur",
+   "color": "#D32F2F",
+   "textColor": "#FFFFFF",
+   "mode": "BUS",
+   "agencyId": "1",
+   "component": "trunk"
+  },
+  {
+   "id": "bogota:B74",
+   "shortName": "B74",
+   "longName": "Portal Norte - Museo Nacional",
+   "color": "#D32F2F",
+   "textColor": "#FFFFFF",
+   "mode": "BUS",
+   "agencyId": "1",
+   "component": "trunk"
+  },
+  {
+   "id": "bogota:P500",
+   "shortName": "P500",
+   "longName": "Portal Norte - Cl 170",
+   "color": "#1565C0",
+   "textColor": "#FFFFFF",
+   "mode": "BUS",
+   "agencyId": "4",
+   "component": "zonal"
+  },
+  {
+   "id": "bogota:A61",
+   "shortName": "A61",
+   "longName": "Portal Norte - Usaquén",
+   "color": "#1565C0",
+   "textColor": "#FFFFFF",
+   "mode": "BUS",
+   "agencyId": "4",
+   "component": "zonal"
+  },
+  {
+   "id": "bogota:L10",
+   "shortName": "L10",
+   "longName": "TransMiCable Portal Tunal - Mirador",
+   "color": "#EF6C00",
+   "textColor": "#FFFFFF",
+   "mode": "CABLE_CAR",
+   "agencyId": "7",
+   "component": "cable"
+  },
+  {
+   "id": "bogota:1-1",
+   "shortName": "1-1",
+   "longName": "Portal Norte - Cl 175 (alimentador)",
+   "color": "#2E7D32",
+   "textColor": "#FFFFFF",
+   "mode": "BUS",
+   "agencyId": "2",
+   "component": "feeder"
+  }
+ ]
+}

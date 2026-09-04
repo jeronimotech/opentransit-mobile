@@ -1,0 +1,20 @@
+{
+ "static": {
+  "feedVersion": "20260904",
+  "fetchedAt": "2026-09-04T07:00:00-05:00",
+  "routes": 1024,
+  "stops": 8309
+ },
+ "realtime": {
+  "lastFetchAt": "2026-09-04T07:59:48-05:00",
+  "entityAgeP50Seconds": 20,
+  "vehicles": 34,
+  "pctTripResolved": 89.1,
+  "alerts": 3
+ },
+ "router": {
+  "up": true,
+  "version": "2.10.0",
+  "graphBuiltAt": "2026-09-03T08:00:00-05:00"
+ }
+}
