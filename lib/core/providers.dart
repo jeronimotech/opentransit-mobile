@@ -39,6 +39,7 @@ class AppSettings {
     this.poiLayer = false,
     this.bikeToStation = false,
     this.networkLayer = true,
+    this.zonalLayer = false,
   });
   final String? cityId;
 
@@ -51,6 +52,7 @@ class AppSettings {
   final bool poiLayer;
   final bool bikeToStation;
   final bool networkLayer;
+  final bool zonalLayer;
 
   AppSettings copyWith({
     String? cityId,
@@ -64,6 +66,7 @@ class AppSettings {
     bool? poiLayer,
     bool? bikeToStation,
     bool? networkLayer,
+    bool? zonalLayer,
   }) =>
       AppSettings(
         cityId: clearCity ? null : (cityId ?? this.cityId),
@@ -75,6 +78,7 @@ class AppSettings {
         poiLayer: poiLayer ?? this.poiLayer,
         bikeToStation: bikeToStation ?? this.bikeToStation,
         networkLayer: networkLayer ?? this.networkLayer,
+        zonalLayer: zonalLayer ?? this.zonalLayer,
       );
 }
 
@@ -93,6 +97,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       poiLayer: p.poiLayer,
       bikeToStation: p.bikeToStation,
       networkLayer: p.networkLayer,
+      zonalLayer: p.zonalLayer,
     );
   }
 
@@ -141,6 +146,11 @@ class SettingsNotifier extends Notifier<AppSettings> {
   Future<void> setNetworkLayer(bool v) async {
     state = state.copyWith(networkLayer: v);
     await _p.setNetworkLayer(v);
+  }
+
+  Future<void> setZonalLayer(bool v) async {
+    state = state.copyWith(zonalLayer: v);
+    await _p.setZonalLayer(v);
   }
 }
 

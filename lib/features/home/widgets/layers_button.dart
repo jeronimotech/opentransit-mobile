@@ -4,10 +4,16 @@ import '../../../l10n/generated/app_localizations.dart';
 
 /// State of the three home-map layers.
 class MapLayers {
-  const MapLayers({required this.live, required this.pois, required this.network});
+  const MapLayers({required this.live, required this.pois, required this.network, this.zonal = false});
   final bool live;
   final bool pois;
   final bool network;
+
+  /// Zonal/feeder shapes: off by default, they overlap heavily on corridors.
+  final bool zonal;
+
+  MapLayers copyWith({bool? live, bool? pois, bool? network, bool? zonal}) => MapLayers(
+      live: live ?? this.live, pois: pois ?? this.pois, network: network ?? this.network, zonal: zonal ?? this.zonal);
 }
 
 /// Single "Capas" button (UX audit §A) opening a small popover with toggles for
@@ -81,7 +87,7 @@ class LayersButton extends StatelessWidget {
                       title: Text(l10n.layerLive),
                       subtitle: Text(l10n.layerLiveHint),
                       value: cur.live,
-                      onChanged: (v) => update(MapLayers(live: v, pois: cur.pois, network: cur.network)),
+                      onChanged: (v) => update(cur.copyWith(live: v)),
                     ),
                   if (poisAvailable)
                     SwitchListTile(
@@ -90,15 +96,24 @@ class LayersButton extends StatelessWidget {
                       secondary: const Icon(Icons.local_convenience_store_outlined),
                       title: Text(l10n.layerPois),
                       value: cur.pois,
-                      onChanged: (v) => update(MapLayers(live: cur.live, pois: v, network: cur.network)),
+                      onChanged: (v) => update(cur.copyWith(pois: v)),
                     ),
                   SwitchListTile(
                     key: const ValueKey('layer-network'),
                     contentPadding: EdgeInsets.zero,
                     secondary: const Icon(Icons.timeline_rounded),
                     title: Text(l10n.layerNetwork),
+                    subtitle: Text(l10n.layerNetworkHint),
                     value: cur.network,
-                    onChanged: (v) => update(MapLayers(live: cur.live, pois: cur.pois, network: v)),
+                    onChanged: (v) => update(cur.copyWith(network: v)),
+                  ),
+                  SwitchListTile(
+                    key: const ValueKey('layer-zonal'),
+                    contentPadding: EdgeInsets.zero,
+                    secondary: const Icon(Icons.alt_route_rounded),
+                    title: Text(l10n.layerNetworkZonal),
+                    value: cur.zonal,
+                    onChanged: cur.network ? (v) => update(cur.copyWith(zonal: v)) : null,
                   ),
                 ],
               ),

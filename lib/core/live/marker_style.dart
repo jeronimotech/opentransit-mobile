@@ -65,5 +65,5 @@ Color networkLineColor(String? feedHex, Color component, {bool backbone = true})
   final feed = colorFromHex(feedHex, fallback: component);
   final base = isNeonColor(feed) || feedHex == null || feedHex.isEmpty ? component : feed;
   // Zonal corridors stack dozens of overlapping shapes: draw them fainter.
-  return desaturate(base, 0.35).withValues(alpha: backbone ? 0.45 : 0.22);
+  return desaturate(base, 0.35).withValues(alpha: backbone ? 0.5 : 0.18);
 }

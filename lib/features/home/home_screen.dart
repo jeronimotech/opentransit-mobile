@@ -140,13 +140,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     ];
   }
 
-  /// Network layer: trunk/cable/rail shapes from zoom 12, the (much denser)
-  /// zonal/feeder/dual shapes only from zoom 14. Neon feed colours fall back
-  /// to the component colour, then everything is desaturated and translucent
-  /// so the base map stays readable (§B/§E).
+  /// Network layer: trunk/cable/rail backbone (2.5 px, 50 %) from zoom 12; the
+  /// much denser zonal/feeder/dual shapes (1.5 px, 18 %) only when the user
+  /// turns them on and from zoom 14. Widths are screen pixels and never grow
+  /// with zoom. Neon feed colours fall back to the component colour (§B/§E).
   String _shapesKey = '';
-  List<MapLine> _shapesToLines(List<NetworkShape> shapes, City city, double zoom) {
-    final detail = zoom >= 14;
+  List<MapLine> _shapesToLines(List<NetworkShape> shapes, City city, double zoom, {required bool zonal}) {
+    final detail = zonal && zoom >= 14;
     final key = '${identityHashCode(shapes)}|$detail';
     if (identical(shapes, _lastShapes) && key == _shapesKey) return _networkLines;
     _lastShapes = shapes;
@@ -160,7 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
             points: decodeGeometry(s.geometry),
             color: networkLineColor(s.color, componentColor(s.component, city: city),
                 backbone: backbone.contains(s.component)),
-            width: backbone.contains(s.component) ? 2.5 : 1,
+            width: backbone.contains(s.component) ? 2.5 : 1.5,
           ),
     ];
   }
@@ -392,7 +392,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         final shapes = showNetwork
             ? (ref.watch(networkProvider(widget.cityId)).asData?.value ?? const <NetworkShape>[])
             : const <NetworkShape>[];
-        final layers = MapLayers(live: settings.liveVehicles, pois: settings.poiLayer, network: settings.networkLayer);
+        final layers = MapLayers(live: settings.liveVehicles, pois: settings.poiLayer, network: settings.networkLayer, zonal: settings.zonalLayer);
         final liveHint = settings.liveVehicles && liveAllowed && !style.visible;
 
         return Scaffold(
@@ -403,7 +403,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   key: _mapKey,
                   initialCenter: widget.focus ?? city.center,
                   initialZoom: widget.focus == null ? city.defaultZoom : (widget.focusZoom ?? 16),
-                  lines: _shapesToLines(shapes, city, _zoom),
+                  lines: _shapesToLines(shapes, city, _zoom, zonal: settings.zonalLayer),
                   stops: _stopsToPoints(stops, city),
                   vehicles: _vehiclePoints,
                   pois: _poisToPoints(pois),
@@ -490,6 +490,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                         if (next.live != settings.liveVehicles) n.setLiveVehicles(next.live);
                         if (next.pois != settings.poiLayer) n.setPoiLayer(next.pois);
                         if (next.network != settings.networkLayer) n.setNetworkLayer(next.network);
+                        if (next.zonal != settings.zonalLayer) n.setZonalLayer(next.zonal);
                       },
                     ),
                     const SizedBox(height: 10),

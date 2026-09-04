@@ -801,4 +801,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get done => 'Listo';
+
+  @override
+  String get layerNetworkZonal => 'Rutas zonales';
+
+  @override
+  String get layerNetworkHint =>
+      'Troncales y cable; las zonales se superponen mucho';
+
+  @override
+  String thenTimes(String times) {
+    return 'luego $times min';
+  }
 }

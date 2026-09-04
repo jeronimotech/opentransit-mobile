@@ -431,5 +431,9 @@
   "@routesCount": {"placeholders": {"count": {"type": "int"}}},
   "viewOnMapAction": "Ver en mapa",
   "noNearbyStops": "No hay paradas cerca de este punto",
-  "done": "Listo"
+  "done": "Listo",
+  "layerNetworkZonal": "Rutas zonales",
+  "layerNetworkHint": "Troncales y cable; las zonales se superponen mucho",
+  "thenTimes": "luego {times} min",
+  "@thenTimes": {"placeholders": {"times": {"type": "String"}}}
 }

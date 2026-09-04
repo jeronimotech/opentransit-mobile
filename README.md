@@ -34,7 +34,9 @@ Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,8
 workspace `ROADMAP-v1.1.md`):
 
 - **Map-first home** — full-bleed map with a floating search pill, one
-  **Capas** button (Buses en vivo · Servicios · Red de rutas) and locate. The
+  **Capas** button (Buses en vivo · Servicios · Red de rutas [trunk/cable
+  backbone, on] · Rutas zonales [off by default: they overlap heavily]) and
+  locate. The
   sheet peeks at 24 % with three actions (Planear viaje · Ubica tu bus · Buscar
   ruta) and a "Cerca de ti" strip of the nearest stops with their next two
   buses; Casa/Trabajo, recent trips, the alert carousel (severity-sorted,
@@ -51,7 +53,10 @@ workspace `ROADMAP-v1.1.md`):
 - **Ubica tu bus** — station → route chips → next buses labelled **En vivo /
   Por programación / Estimado**, stops away and distance, with the route's
   buses drawn on a map tinted by ETA bucket (≤5 · ≤10 · ≤15 min).
-- **Arrival board** on every stop — grouped by route: "Siguiente en 5 min ·
+- **Arrival board** on every stop — grouped by route, two lines per route:
+  headsign + the big first ETA on the right, then "luego 5 · 7 min" with a
+  live dot only on realtime numbers; the component is the header subtitle
+  ("Estación troncal"). Originally: "Siguiente en 5 min ·
   luego 10, 15 y 20", live/scheduled badge per time, auto-refresh from the
   city's `config.departuresRefreshSeconds`. Works against older APIs too (the
   client groups the flat departures list itself).

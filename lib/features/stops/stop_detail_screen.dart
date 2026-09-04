@@ -51,7 +51,19 @@ class StopDetailScreen extends ConsumerWidget {
         final routes = _dedupe(d.routes);
         return Scaffold(
           appBar: AppBar(
-            title: Text(stop.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(stop.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(
+                  _subtitle(stop, l10n, city),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color, fontWeight: FontWeight.w700),
+                ),
+              ],
+            ),
             actions: [
               IconButton(
                 tooltip: isFav ? l10n.removeFavorite : l10n.addFavorite,
@@ -124,24 +136,7 @@ class StopDetailScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 6,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Chip(
-                        backgroundColor: color,
-                        avatar: Icon(stop.isStation ? Icons.subway_outlined : componentIcon(stop.component, city: city), size: 16, color: onColor(color)),
-                        label: Text(componentLabel(stop.component, l10n, city: city), style: TextStyle(color: onColor(color), fontWeight: FontWeight.w700)),
-                        visualDensity: VisualDensity.compact,
-                      ),
-                      if (stop.code != null) Chip(label: Text(stop.code!), visualDensity: VisualDensity.compact),
-                    ],
-                  ),
-                ),
-                // 1. Arrival board first.
+                // 1. Arrival board first (the component lives in the header subtitle).
                 BoardView(
                   cityId: cityId,
                   stopId: stopId,
@@ -192,6 +187,18 @@ class StopDetailScreen extends ConsumerWidget {
         );
       },
     );
+  }
+
+  /// "Estación troncal" / "Parada zonal · A123": kind + component (+ code).
+  static String _subtitle(Stop stop, AppLocalizations l10n, City? city) {
+    final label = componentLabel(stop.component, l10n, city: city);
+    // Lower-case plain words ("Troncal" → "troncal"), keep brands ("TransMiCable").
+    final lower = RegExp(r'^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+$').hasMatch(label) ? label.toLowerCase() : label;
+    final kind = stop.isStation ? l10n.station : l10n.stop;
+    return [
+      '$kind $lower',
+      if (stop.code != null && stop.code!.isNotEmpty) stop.code!,
+    ].join(' · ');
   }
 
   static List<RouteRef> _dedupe(List<RouteRef> routes) {

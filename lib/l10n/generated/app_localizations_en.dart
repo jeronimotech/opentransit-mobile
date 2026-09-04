@@ -800,4 +800,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get done => 'Done';
+
+  @override
+  String get layerNetworkZonal => 'Zonal routes';
+
+  @override
+  String get layerNetworkHint =>
+      'Trunk and cable; zonal routes overlap heavily';
+
+  @override
+  String thenTimes(String times) {
+    return 'then $times min';
+  }
 }

@@ -85,7 +85,8 @@ void main() {
       final neon = networkLineColor('#0000FF', comp);
       final custom = networkLineColor('#00A0E0', comp);
       expect(HSLColor.fromColor(neon).hue, closeTo(HSLColor.fromColor(comp).hue, 1));
-      expect(neon.a, closeTo(0.45, 0.01));
+      expect(neon.a, closeTo(0.5, 0.01));
+      expect(networkLineColor('#0000FF', comp, backbone: false).a, closeTo(0.18, 0.01));
       expect(HSLColor.fromColor(custom).hue, closeTo(HSLColor.fromColor(const Color(0xFF00A0E0)).hue, 1));
     });
     test('map colours are desaturated unless selected', () {

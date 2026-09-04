@@ -85,60 +85,100 @@ class BoardRowTile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final first = row.next.isEmpty ? null : row.next.first;
     final rest = row.next.skip(1).toList();
-    return ListTile(
-      key: ValueKey('board-${row.route.id}-${row.headsign}'),
-      dense: compact,
-      leading: RouteChip(row.route, dense: compact),
-      title: Row(
-        children: [
-          Expanded(
-            child: Text(
-              cleanHeadsign(row.headsign) == null ? (cleanHeadsign(row.route.longName) ?? '') : l10n.towards(cleanHeadsign(row.headsign)!),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: compact ? 13 : 14),
-            ),
-          ),
-          if (row.route.serviceWindow != null && !row.route.serviceWindow!.active)
-            ServiceHint(row.route.serviceWindow, dense: true),
-        ],
-      ),
-      subtitle: first == null
-          ? null
-          : Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 6,
-              children: [
-                _TimeChip(t: first, primary: true),
-                if (rest.isNotEmpty) ...[
-                  Text(l10n.thenAt(''), style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 12)),
-                  for (var i = 0; i < rest.length; i++) ...[
-                    _TimeChip(t: rest[i]),
-                    if (i < rest.length - 2) Text(',', style: TextStyle(color: scheme.onSurfaceVariant)),
-                    if (i == rest.length - 2) Text('y', style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 12)),
-                  ],
-                ],
-              ],
-            ),
-      trailing: first == null
-          ? null
-          : Semantics(
-              label: '${first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes)} · ${first.realtime ? l10n.sourceLive : l10n.sourceScheduled}',
-              child: ExcludeSemantics(
+    final headsign = cleanHeadsign(row.headsign) ?? cleanHeadsign(row.route.longName) ?? '';
+    final window = row.route.serviceWindow;
+    final etaText = first == null ? null : (first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes));
+    return Semantics(
+      label: [
+        row.route.shortName,
+        if (headsign.isNotEmpty) l10n.towards(headsign),
+        if (etaText != null) '$etaText · ${first!.realtime ? l10n.sourceLive : l10n.sourceScheduled}',
+      ].join(', '),
+      child: ExcludeSemantics(
+        child: ListTile(
+          key: ValueKey('board-${row.route.id}-${row.headsign}'),
+          dense: compact,
+          minVerticalPadding: compact ? 4 : 8,
+          leading: RouteChip(row.route, dense: compact),
+          // Line 1: headsign (single line) … big first ETA on the right.
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
                 child: Text(
-                  first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: first.realtime ? Colors.green.shade700 : scheme.onSurface,
-                      ),
+                  headsign.isEmpty ? row.route.shortName : l10n.towards(headsign),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: compact ? 13 : 14),
                 ),
               ),
-            ),
-      onTap: () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(_stopIdFrom(context))}&route=${Uri.encodeComponent(row.route.id)}'),
+              if (etaText != null) ...[
+                const SizedBox(width: 10),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (first!.realtime) ...[const LiveBadge(compact: true), const SizedBox(width: 4)],
+                    Text(
+                      etaText,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: first.realtime ? Colors.green.shade700 : scheme.onSurface,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+          // Line 2: "luego 5 · 7 min", a live dot only on realtime numbers; or
+          // the service hint when the route is out of hours.
+          subtitle: rest.isNotEmpty
+              ? _ThenTimes(times: rest, compact: compact)
+              : (window != null && !window.active ? ServiceHint(window, dense: true) : null),
+          onTap: () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(_stopIdFrom(context))}&route=${Uri.encodeComponent(row.route.id)}'),
+        ),
+      ),
     );
   }
 
   String _stopIdFrom(BuildContext context) => _StopIdScope.of(context) ?? '';
+}
+
+/// "luego 5 · 7 min" where each number carries a live dot only when realtime.
+class _ThenTimes extends StatelessWidget {
+  const _ThenTimes({required this.times, this.compact = false});
+  final List<BoardTime> times;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final size = compact ? 11.0 : 12.0;
+    final muted = TextStyle(color: scheme.onSurfaceVariant, fontSize: size);
+    // l10n.thenTimes gives "luego {times} min": split around the placeholder.
+    final template = l10n.thenTimes('\u0000');
+    final parts = template.split('\u0000');
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(parts.first, style: muted),
+        for (var i = 0; i < times.length; i++) ...[
+          if (i > 0) Text(' · ', style: muted),
+          if (times[i].realtime) ...[
+            Container(width: 6, height: 6, decoration: BoxDecoration(color: Colors.green.shade600, shape: BoxShape.circle)),
+            const SizedBox(width: 3),
+          ],
+          Text('${times[i].minutes.clamp(0, 999)}',
+              style: TextStyle(
+                  color: times[i].realtime ? Colors.green.shade700 : scheme.onSurfaceVariant,
+                  fontSize: size,
+                  fontWeight: FontWeight.w700)),
+        ],
+        if (parts.length > 1) Text(parts.last, style: muted),
+      ],
+    );
+  }
 }
 
 /// Lets [BoardRowTile] know which stop it belongs to without threading ids.
@@ -157,32 +197,4 @@ class BoardScope extends StatelessWidget {
   final Widget child;
   @override
   Widget build(BuildContext context) => _StopIdScope(stopId: stopId, child: child);
-}
-
-class _TimeChip extends StatelessWidget {
-  const _TimeChip({required this.t, this.primary = false});
-  final BoardTime t;
-  final bool primary;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    final color = t.realtime ? Colors.green.shade700 : scheme.onSurfaceVariant;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (t.realtime) ...[
-          const LiveBadge(compact: true),
-          const SizedBox(width: 3),
-        ] else
-          Icon(Icons.schedule, size: 11, color: scheme.outline),
-        if (!t.realtime) const SizedBox(width: 2),
-        Text(
-          primary ? l10n.nextIn(t.minutes.clamp(0, 999)) : '${t.minutes.clamp(0, 999)}',
-          style: TextStyle(color: color, fontWeight: primary ? FontWeight.w700 : FontWeight.w600, fontSize: 12),
-        ),
-      ],
-    );
-  }
 }

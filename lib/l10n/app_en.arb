@@ -316,5 +316,9 @@
   "@routesCount": {"placeholders": {"count": {"type": "int"}}},
   "viewOnMapAction": "View on map",
   "noNearbyStops": "No stops near this point",
-  "done": "Done"
+  "done": "Done",
+  "layerNetworkZonal": "Zonal routes",
+  "layerNetworkHint": "Trunk and cable; zonal routes overlap heavily",
+  "thenTimes": "then {times} min",
+  "@thenTimes": {"placeholders": {"times": {"type": "String"}}}
 }

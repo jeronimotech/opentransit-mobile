@@ -1513,6 +1513,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Listo'**
   String get done;
+
+  /// No description provided for @layerNetworkZonal.
+  ///
+  /// In es, this message translates to:
+  /// **'Rutas zonales'**
+  String get layerNetworkZonal;
+
+  /// No description provided for @layerNetworkHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Troncales y cable; las zonales se superponen mucho'**
+  String get layerNetworkHint;
+
+  /// No description provided for @thenTimes.
+  ///
+  /// In es, this message translates to:
+  /// **'luego {times} min'**
+  String thenTimes(String times);
 }
 
 class _AppLocalizationsDelegate

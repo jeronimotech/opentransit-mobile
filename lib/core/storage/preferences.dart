@@ -15,6 +15,7 @@ class PreferencesRepository {
   static const _kPois = 'poiLayer';
   static const _kBike = 'bikeToStation';
   static const _kNetwork = 'networkLayer';
+  static const _kZonal = 'zonalLayer';
 
   String? get cityId => _prefs.getString(_kCity);
   Future<void> setCityId(String? id) =>
@@ -49,4 +50,8 @@ class PreferencesRepository {
   /// Route shapes on the home map (default on, drawn from zoom 12).
   bool get networkLayer => _prefs.getBool(_kNetwork) ?? true;
   Future<void> setNetworkLayer(bool v) => _prefs.setBool(_kNetwork, v);
+
+  /// Zonal/feeder shapes on the home map (default off: they overlap heavily).
+  bool get zonalLayer => _prefs.getBool(_kZonal) ?? false;
+  Future<void> setZonalLayer(bool v) => _prefs.setBool(_kZonal, v);
 }
