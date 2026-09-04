@@ -266,7 +266,14 @@ class _RouteAndBuses extends ConsumerWidget {
                 child: Text(l10n.selectRoute, style: TextStyle(color: scheme.onSurfaceVariant)),
               )
             else
-              _NextBuses(cityId: cityId, stop: stop, route: selected),
+              _NextBuses(
+                cityId: cityId,
+                stop: stop,
+                route: selected,
+                // Both directions share a short name in this feed: query every
+                // id behind the chip and merge, so a deep-linked id always shows.
+                routeIds: [for (final r in d.routes) if (r.shortName == selected.shortName) r.id],
+              ),
           ],
         );
       },
@@ -275,16 +282,33 @@ class _RouteAndBuses extends ConsumerWidget {
 }
 
 class _NextBuses extends ConsumerWidget {
-  const _NextBuses({required this.cityId, required this.stop, required this.route});
+  const _NextBuses({required this.cityId, required this.stop, required this.route, required this.routeIds});
   final String cityId;
   final Stop stop;
   final RouteRef route;
+  final List<String> routeIds;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final key = StopRouteKey(cityId, stop.id, route.id);
-    final next = ref.watch(nextBusesProvider(key));
+    final ids = routeIds.isEmpty ? [route.id] : routeIds;
+    final results = [for (final id in ids) ref.watch(nextBusesProvider(StopRouteKey(cityId, stop.id, id)))];
+    // Merge: loading while nothing arrived, error only if every id failed.
+    final datas = [for (final r in results) if (r.asData != null) r.asData!.value];
+    final AsyncValue<NextBusesResponse> next;
+    if (datas.isNotEmpty) {
+      final merged = [for (final d in datas) ...d.next]..sort((a, b) => a.time.compareTo(b.time));
+      next = AsyncValue.data(NextBusesResponse(
+        stop: datas.first.stop,
+        route: datas.first.route,
+        freshness: datas.firstWhere((d) => d.freshness.realtime, orElse: () => datas.first).freshness,
+        next: merged.take(3).toList(),
+      ));
+    } else if (results.every((r) => r.hasError)) {
+      next = AsyncValue.error(results.first.error!, results.first.stackTrace ?? StackTrace.current);
+    } else {
+      next = const AsyncValue.loading();
+    }
     final city = ref.watch(currentCityProvider);
     final live = ref.watch(liveVehiclesProvider(cityId)).asData?.value;
     final scheme = Theme.of(context).colorScheme;
@@ -293,13 +317,19 @@ class _NextBuses extends ConsumerWidget {
 
     return next.when(
       loading: () => const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator())),
-      error: (e, _) => ErrorView(error: e, onRetry: () => ref.invalidate(nextBusesProvider(key))),
+      error: (e, _) => ErrorView(
+          error: e,
+          onRetry: () {
+            for (final id in ids) {
+              ref.invalidate(nextBusesProvider(StopRouteKey(cityId, stop.id, id)));
+            }
+          }),
       data: (r) {
         // ETA per vehicle id from the response; other buses on the route get "far".
         final eta = {for (final n in r.next) if (n.vehicle != null) n.vehicle!.id: n.minutes};
         final onRoute = live == null
             ? [for (final n in r.next) if (n.vehicle != null) n.vehicle!]
-            : [for (final v in live.vehicles.values) if (v.routeId == route.id || v.routeShortName == route.shortName) v];
+            : [for (final v in live.vehicles.values) if (ids.contains(v.routeId) || v.routeShortName == route.shortName) v];
         final vehicles = [
           for (final v in onRoute)
             MapPoint(
