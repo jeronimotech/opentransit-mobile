@@ -1,0 +1,627 @@
+{
+ "itineraries": [
+  {
+   "id": "it-r0",
+   "startTime": "2026-09-04T08:00:00-05:00",
+   "endTime": "2026-09-04T08:15:30-05:00",
+   "durationSeconds": 930,
+   "walkDistanceMeters": 568,
+   "walkTimeSeconds": 270,
+   "waitingTimeSeconds": 60,
+   "transfers": 0,
+   "accessible": null,
+   "legs": [
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T08:00:00-05:00",
+     "endTime": "2026-09-04T08:02:00-05:00",
+     "durationSeconds": 120,
+     "distanceMeters": 203,
+     "from": {
+      "name": "Parque de la 93",
+      "lat": 4.6766,
+      "lon": -74.0483,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "to": {
+      "name": "012 - CL 93 con KR 13",
+      "lat": 4.6772,
+      "lon": -74.05,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null,
+      "rentalStationId": "tembici:12"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "wkp[zp}bM_@nACvAu@lA]|A",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Camina hacia la Calle 93",
+       "distanceMeters": 90,
+       "lat": 4.6768,
+       "lon": -74.049,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 93"
+      }
+     ],
+     "alerts": []
+    },
+    {
+     "mode": "BICYCLE",
+     "transit": false,
+     "startTime": "2026-09-04T08:03:00-05:00",
+     "endTime": "2026-09-04T08:12:00-05:00",
+     "durationSeconds": 540,
+     "distanceMeters": 1070,
+     "from": {
+      "name": "012 - CL 93 con KR 13",
+      "lat": 4.6772,
+      "lon": -74.05,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:03:00-05:00",
+      "component": null,
+      "rentalStationId": "tembici:12"
+     },
+     "to": {
+      "name": "031 - CL 100 con KR 15 (TransMilenio)",
+      "lat": 4.6852,
+      "lon": -74.0548,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": "2026-09-04T08:12:00-05:00",
+      "departure": null,
+      "component": null,
+      "rentalStationId": "tembici:31"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "oop[n{}bMqBvAeC`AwAdAmAzAqCrAyC`BsAzAsBV}CjBwAlAaBAo@j@oAlAgBEmBl@",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [],
+     "alerts": [],
+     "rental": {
+      "networkId": "tembici",
+      "networkName": "Tembici Bogotá",
+      "color": "#00A859",
+      "vehicleType": "bicycle",
+      "pickup": {
+       "id": "tembici:12",
+       "networkId": "tembici",
+       "name": "012 - CL 93 con KR 13",
+       "lat": 4.6772,
+       "lon": -74.05,
+       "capacity": 19,
+       "vehiclesAvailable": 6,
+       "ebikesAvailable": 2,
+       "docksAvailable": 13,
+       "isInstalled": true,
+       "isRenting": true,
+       "isReturning": true,
+       "lastReported": "2026-09-04T07:59:42-05:00",
+       "stationId": "tembici:12"
+      },
+      "dropoff": {
+       "id": "tembici:31",
+       "networkId": "tembici",
+       "name": "031 - CL 100 con KR 15 (TransMilenio)",
+       "lat": 4.6852,
+       "lon": -74.0548,
+       "capacity": 23,
+       "vehiclesAvailable": 3,
+       "ebikesAvailable": 0,
+       "docksAvailable": 4,
+       "isInstalled": true,
+       "isRenting": true,
+       "isReturning": true,
+       "lastReported": "2026-09-04T07:59:35-05:00",
+       "stationId": "tembici:31"
+      },
+      "freeFloating": false,
+      "priceEstimate": {
+       "amount": 11000,
+       "currency": "COP",
+       "label": "Pase diario",
+       "estimated": true
+      }
+     }
+    },
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T08:13:00-05:00",
+     "endTime": "2026-09-04T08:15:30-05:00",
+     "durationSeconds": 150,
+     "distanceMeters": 365,
+     "from": {
+      "name": "031 - CL 100 con KR 15 (TransMilenio)",
+      "lat": 4.6852,
+      "lon": -74.0548,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null,
+      "rentalStationId": "tembici:31"
+     },
+     "to": {
+      "name": "Calle 100 - Marketmedios",
+      "lat": 4.6841,
+      "lon": -74.0517,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "oar[ny~bMl@{Bl@{CfAeDv@mD",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Camina hacia la estación Calle 100",
+       "distanceMeters": 120,
+       "lat": 4.6848,
+       "lon": -74.053,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 100"
+      }
+     ],
+     "alerts": []
+    }
+   ],
+   "rentalLegs": 1,
+   "modesUsed": [
+    "WALK",
+    "BICYCLE_RENTAL"
+   ],
+   "fare": {
+    "amount": 11000,
+    "currency": "COP",
+    "estimated": true,
+    "breakdown": [
+     {
+      "label": "Tembici · pase diario",
+      "amount": 11000,
+      "kind": "rental"
+     }
+    ]
+   }
+  },
+  {
+   "id": "it-r1",
+   "startTime": "2026-09-04T08:00:00-05:00",
+   "endTime": "2026-09-04T09:06:20-05:00",
+   "durationSeconds": 3980,
+   "walkDistanceMeters": 532,
+   "walkTimeSeconds": 440,
+   "waitingTimeSeconds": 180,
+   "transfers": 0,
+   "accessible": null,
+   "legs": [
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T08:00:00-05:00",
+     "endTime": "2026-09-04T08:02:00-05:00",
+     "durationSeconds": 120,
+     "distanceMeters": 203,
+     "from": {
+      "name": "Parque de la 93",
+      "lat": 4.6766,
+      "lon": -74.0483,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "to": {
+      "name": "012 - CL 93 con KR 13",
+      "lat": 4.6772,
+      "lon": -74.05,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null,
+      "rentalStationId": "tembici:12"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "wkp[zp}bM_@nACvAu@lA]|A",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Camina hacia la Calle 93",
+       "distanceMeters": 90,
+       "lat": 4.6768,
+       "lon": -74.049,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 93"
+      }
+     ],
+     "alerts": []
+    },
+    {
+     "mode": "BICYCLE",
+     "transit": false,
+     "startTime": "2026-09-04T08:03:00-05:00",
+     "endTime": "2026-09-04T08:12:00-05:00",
+     "durationSeconds": 540,
+     "distanceMeters": 1070,
+     "from": {
+      "name": "012 - CL 93 con KR 13",
+      "lat": 4.6772,
+      "lon": -74.05,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:03:00-05:00",
+      "component": null,
+      "rentalStationId": "tembici:12"
+     },
+     "to": {
+      "name": "031 - CL 100 con KR 15 (TransMilenio)",
+      "lat": 4.6852,
+      "lon": -74.0548,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": "2026-09-04T08:12:00-05:00",
+      "departure": null,
+      "component": null,
+      "rentalStationId": "tembici:31"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "oop[n{}bMqBvAeC`AwAdAmAzAqCrAyC`BsAzAsBV}CjBwAlAaBAo@j@oAlAgBEmBl@",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [],
+     "alerts": [],
+     "rental": {
+      "networkId": "tembici",
+      "networkName": "Tembici Bogotá",
+      "color": "#00A859",
+      "vehicleType": "bicycle",
+      "pickup": {
+       "id": "tembici:12",
+       "networkId": "tembici",
+       "name": "012 - CL 93 con KR 13",
+       "lat": 4.6772,
+       "lon": -74.05,
+       "capacity": 19,
+       "vehiclesAvailable": 6,
+       "ebikesAvailable": 2,
+       "docksAvailable": 13,
+       "isInstalled": true,
+       "isRenting": true,
+       "isReturning": true,
+       "lastReported": "2026-09-04T07:59:42-05:00",
+       "stationId": "tembici:12"
+      },
+      "dropoff": {
+       "id": "tembici:31",
+       "networkId": "tembici",
+       "name": "031 - CL 100 con KR 15 (TransMilenio)",
+       "lat": 4.6852,
+       "lon": -74.0548,
+       "capacity": 23,
+       "vehiclesAvailable": 3,
+       "ebikesAvailable": 0,
+       "docksAvailable": 4,
+       "isInstalled": true,
+       "isRenting": true,
+       "isReturning": true,
+       "lastReported": "2026-09-04T07:59:35-05:00",
+       "stationId": "tembici:31"
+      },
+      "freeFloating": false,
+      "priceEstimate": {
+       "amount": 11000,
+       "currency": "COP",
+       "label": "Pase diario",
+       "estimated": true
+      }
+     }
+    },
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T08:13:00-05:00",
+     "endTime": "2026-09-04T08:15:00-05:00",
+     "durationSeconds": 120,
+     "distanceMeters": 101,
+     "from": {
+      "name": "031 - CL 100 con KR 15 (TransMilenio)",
+      "lat": 4.6852,
+      "lon": -74.0548,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null,
+      "rentalStationId": "tembici:31"
+     },
+     "to": {
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "stopId": "bogota:C100",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "oar[ny~bMW`@]LGp@y@@",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Cruza el puente peatonal a la estación Calle 100",
+       "distanceMeters": 120,
+       "lat": 4.6858,
+       "lon": -74.0553,
+       "relativeDirection": "CONTINUE",
+       "streetName": "Calle 100"
+      }
+     ],
+     "alerts": []
+    },
+    {
+     "mode": "BUS",
+     "transit": true,
+     "startTime": "2026-09-04T08:18:00-05:00",
+     "endTime": "2026-09-04T09:03:00-05:00",
+     "durationSeconds": 2700,
+     "distanceMeters": 21099,
+     "from": {
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "stopId": "bogota:C100",
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:18:00-05:00",
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": "2026-09-04T09:03:00-05:00",
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": {
+      "id": "bogota:B10",
+      "shortName": "B10",
+      "longName": "Portal Norte - Portal Sur",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
+     },
+     "headsign": "Portal Sur",
+     "agency": {
+      "id": "1",
+      "name": "TransMilenio S.A."
+     },
+     "tripId": "bogota:B10-0818",
+     "realtime": true,
+     "realtimeState": "UPDATED",
+     "delaySeconds": 60,
+     "geometry": {
+      "encoded": "ger[r|~bMfTbEdT|EhUfFzRrErUlGzSnEvOdBdSxDpObCpRtAfPhCxPzCdOzDzP`B|M|BrQzD`NtChPtCp`@~Er_@|Cf^~Dl`@~Ej_@lCv^zEmInQsLjO_JvPuI|OkJdPsJrP`ZxYz[tW`[jZn[fXh[bXtY~YcEpUaC~UmD~T_EtWmDvTeCnV{FnTiH~U{FhUeFrUiFlVeHbU",
+      "precision": 5
+     },
+     "intermediateStops": [
+      {
+       "name": "Calle 76",
+       "lat": 4.6653,
+       "lon": -74.062,
+       "stopId": "bogota:C76",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:24:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Calle 45",
+       "lat": 4.632,
+       "lon": -74.0705,
+       "stopId": "bogota:C45",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:31:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Av. Jiménez",
+       "lat": 4.6008,
+       "lon": -74.0763,
+       "stopId": "bogota:AVJ",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:38:00-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Ricaurte",
+       "lat": 4.6118,
+       "lon": -74.093,
+       "stopId": "bogota:RIC",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:44:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "NQS - Calle 30 Sur",
+       "lat": 4.585,
+       "lon": -74.118,
+       "stopId": "bogota:NQS30",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:51:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      }
+     ],
+     "steps": [],
+     "alerts": []
+    },
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T09:03:00-05:00",
+     "endTime": "2026-09-04T09:06:20-05:00",
+     "durationSeconds": 200,
+     "distanceMeters": 228,
+     "from": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Cl 57 Sur # 75-10",
+      "lat": 4.599,
+      "lon": -74.16,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "g_a[~tscMo@{AqAm@uAsBWaA",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Sal de la estación hacia la Calle 57 Sur",
+       "distanceMeters": 150,
+       "lat": 4.5985,
+       "lon": -74.161,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 57 Sur"
+      },
+      {
+       "instruction": "Continúa por la Calle 57 Sur",
+       "distanceMeters": 110,
+       "lat": 4.5988,
+       "lon": -74.1605,
+       "relativeDirection": "CONTINUE",
+       "streetName": "Calle 57 Sur"
+      }
+     ],
+     "alerts": []
+    }
+   ],
+   "rentalLegs": 1,
+   "modesUsed": [
+    "WALK",
+    "BICYCLE_RENTAL",
+    "BUS"
+   ],
+   "fare": {
+    "amount": 14200,
+    "currency": "COP",
+    "estimated": true,
+    "breakdown": [
+     {
+      "label": "Pasaje",
+      "amount": 3200,
+      "kind": "transit"
+     },
+     {
+      "label": "Tembici · pase diario",
+      "amount": 11000,
+      "kind": "rental"
+     }
+    ]
+   }
+  }
+ ]
+}

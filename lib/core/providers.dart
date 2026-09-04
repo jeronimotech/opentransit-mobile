@@ -40,6 +40,7 @@ class AppSettings {
     this.bikeToStation = false,
     this.networkLayer = true,
     this.zonalLayer = false,
+    this.rentalLayer = true,
   });
   final String? cityId;
 
@@ -53,6 +54,7 @@ class AppSettings {
   final bool bikeToStation;
   final bool networkLayer;
   final bool zonalLayer;
+  final bool rentalLayer;
 
   AppSettings copyWith({
     String? cityId,
@@ -67,6 +69,7 @@ class AppSettings {
     bool? bikeToStation,
     bool? networkLayer,
     bool? zonalLayer,
+    bool? rentalLayer,
   }) =>
       AppSettings(
         cityId: clearCity ? null : (cityId ?? this.cityId),
@@ -79,6 +82,7 @@ class AppSettings {
         bikeToStation: bikeToStation ?? this.bikeToStation,
         networkLayer: networkLayer ?? this.networkLayer,
         zonalLayer: zonalLayer ?? this.zonalLayer,
+        rentalLayer: rentalLayer ?? this.rentalLayer,
       );
 }
 
@@ -98,6 +102,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       bikeToStation: p.bikeToStation,
       networkLayer: p.networkLayer,
       zonalLayer: p.zonalLayer,
+      rentalLayer: p.rentalLayer,
     );
   }
 
@@ -151,6 +156,11 @@ class SettingsNotifier extends Notifier<AppSettings> {
   Future<void> setZonalLayer(bool v) async {
     state = state.copyWith(zonalLayer: v);
     await _p.setZonalLayer(v);
+  }
+
+  Future<void> setRentalLayer(bool v) async {
+    state = state.copyWith(rentalLayer: v);
+    await _p.setRentalLayer(v);
   }
 }
 
@@ -407,3 +417,38 @@ Stream<VehicleFrame> _liveFrames(ApiClient api, String cityId) async* {
     await Future<void>.delayed(const Duration(seconds: 5));
   }
 }
+
+// ───────────────────────── v1.2 shared bikes ─────────────────────────
+
+/// Networks with live counts/pricing (cached per city, refreshed every 5 min).
+final rentalNetworksProvider =
+    FutureProvider.autoDispose.family<List<BikeShareNetwork>, String>((ref, cityId) {
+  final timer = Timer(const Duration(minutes: 5), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  ref.keepAlive();
+  return ref.watch(apiClientProvider).rentalNetworks(cityId);
+});
+
+/// Docking stations inside a bbox, refreshed on the feed's TTL (30 s).
+final rentalStationsProvider =
+    FutureProvider.autoDispose.family<RentalStationsResponse, BboxQuery>((ref, q) async {
+  final r = await ref.watch(apiClientProvider).rentalStations(q.cityId, bbox: q.bbox);
+  final timer = Timer(Duration(seconds: r.ttlSeconds.clamp(15, 120)), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  return r;
+});
+
+final rentalStationProvider = FutureProvider.autoDispose.family<RentalStation, CityKey>((ref, k) {
+  final timer = Timer(const Duration(seconds: 30), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  return ref.watch(apiClientProvider).rentalStation(k.cityId, k.id);
+});
+
+/// Nearest docking stations for the "Cerca de ti" strip.
+final nearbyRentalProvider =
+    FutureProvider.autoDispose.family<List<RentalStation>, NearbyQuery>((ref, q) {
+  final timer = Timer(const Duration(seconds: 30), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  return ref.watch(apiClientProvider).nearbyRentalStations(q.cityId, LatLng(q.lat, q.lon),
+      radiusMeters: q.radius, limit: 3);
+});

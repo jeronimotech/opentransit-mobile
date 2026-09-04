@@ -20,6 +20,16 @@ only appears once you zoom into a district.
 |---|---|---|---|---|
 | ![](docs/screenshots/03_locate_bus.png) | ![](docs/screenshots/06_results_sorted.png) | ![](docs/screenshots/07_itinerary_fare.png) | ![](docs/screenshots/10_favorites.png) | ![](docs/screenshots/12_home_dark.png) |
 
+**v1.2 — shared bikes (GBFS).** Any number of bike-share networks per city,
+all from `city.mobility.bikeShare[]` (name, colour, app links, pricing): a
+"Bici pública" chip in the planner, rental legs with pickup / drop-off station
+cards and live availability, the stations layer with counts on the map, and the
+nearest station in "Cerca de ti".
+
+| Planner: Bici pública | Results with a rental leg | Pickup / drop-off cards | Stations layer | Station sheet |
+|---|---|---|---|---|
+| ![](docs/screenshots/bike_01_plan_form.png) | ![](docs/screenshots/bike_02_results.png) | ![](docs/screenshots/bike_03_itinerary.png) | ![](docs/screenshots/bike_04_home_stations.png) | ![](docs/screenshots/bike_05_station_sheet.png) |
+
 More: [city picker](docs/screenshots/01_city_picker.png) · [route detail](docs/screenshots/09_route_detail.png) · [alerts](docs/screenshots/11_alerts.png) · [forced update](docs/screenshots/12_forced_update.png) · [v1.1 hub screens](docs/screenshots/v1.1/) · [v1 screens](docs/screenshots/v1/)
 
 Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,800 buses):
@@ -27,6 +37,16 @@ Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,8
 | Live home | Live street zoom | Live itinerary | Live station board | Live "Ubica tu bus" |
 |---|---|---|---|---|
 | ![](docs/screenshots/live_01_home.png) | ![](docs/screenshots/live_02_home_zoom.png) | ![](docs/screenshots/live_04_itinerary.png) | ![](docs/screenshots/live_05_stop_board.png) | ![](docs/screenshots/live_06_next_buses.png) |
+
+Shared bikes against the live Tembici Bogotá GBFS feed (252 stations, via the API):
+
+| Bike-only plan | Rental itinerary | Bike + bus request | Stations layer | Station sheet |
+|---|---|---|---|---|
+| ![](docs/screenshots/live_bike_02_results.png) | ![](docs/screenshots/live_bike_03_itinerary.png) | ![](docs/screenshots/live_bike_04_results_mixed.png) | ![](docs/screenshots/live_bike_06_home_stations.png) | ![](docs/screenshots/live_bike_07_station_sheet.png) |
+
+Note: with `TRANSIT,WALK,BIKE_RENTAL` the router currently returns transit-only
+itineraries for long trips (rental as access/egress is an OpenTripPlanner
+tuning matter on the API side); bike-only requests return rental legs.
 
 ## What it does
 
@@ -129,7 +149,7 @@ Without `API_URL` the app defaults to `http://localhost:8001` on iOS and
 
 ```bash
 flutter analyze --fatal-infos
-flutter test                                         # 70 unit + widget tests
+flutter test                                         # 104 unit + widget tests (incl. test/rental_test.dart)
 tool/screenshots.sh                                  # iOS simulator walkthrough (mock) → docs/screenshots/
 tool/screenshots.sh "" integration_test/forced_update_test.dart   # forced-update screen
 tool/screenshots.sh "" integration_test/live_api_test.dart \
@@ -161,6 +181,7 @@ lib/
     utils/     fare · service_window · eta · version · links (canonical https) · notifications · polyline · geo · colors · format · location
     widgets/   transit_map.dart (MapLibre + GeoJSON overlays incl. POIs) · common.dart (RouteChip, ComponentBadge, FreshnessLabel, ServiceHint, FareText…)
   features/
+    rental/                                 station sheet (availability, "Cómo llegar", app hand-off)
     home/ (hub tiles, alert carousel) · locate/ (Ubica tu bus) · planner/ (plan, results + sorting, itinerary + fare, follow-along)
     stops/ (board) · routes/ (list, detail) · live/ · alerts/ · favorites/ (typed, save sheet) · settings/ · config/ (gate) · cities/
   l10n/       app_es.arb (source) · app_en.arb · generated/
@@ -184,6 +205,23 @@ Nothing changes in this repo. When `opentransit-api` lists a new city in
 `GET /v1/cities`, it shows up in the picker with its own colour, modes,
 bounding box, component palette, fare parameters, feature flags, links and
 partner tiles. Screens hide what a city does not support.
+
+### Shared bikes (v1.2)
+
+Bike-share is **per-city configuration, N networks per city**, never a
+hardcoded provider. The app reads `city.features.bikeShare`,
+`city.config.features.bikeShare` and `city.mobility.bikeShare[]`
+(`id, name, network, gbfsUrl, color, url, apps{ios,android}, pricingSummary,
+formFactors`) and uses the network's own `name`, `color` and links everywhere:
+the planner chip ("Bici pública", or the network names when a city has
+several), rental legs (`leg.rental` with `pickup`/`dropoff` stations and a
+`priceEstimate`), the "Bicis públicas" map layer (`/rental/stations?bbox=`,
+refreshed on the feed's TTL), the station sheet ("Cómo llegar" · "Abrir
+{name}") and the nearest-station card in "Cerca de ti"
+(`/stops/nearby?include=rental`). Fares add one pass per network from the leg's
+price estimate. Requesting shared bikes adds `BIKE_RENTAL` (and
+`SCOOTER_RENTAL` when a network lists scooters) to the plan `modes`.
+The Medellín fixture ships two networks to keep the UI honest about N.
 
 ## Deep links
 

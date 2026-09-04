@@ -9,25 +9,44 @@ import '../models/models.dart';
 /// boarding pays the transfer fare, up to `maxTransfers` such legs; beyond
 /// that (or outside the window) a leg pays the base fare again.
 Fare? estimateFare(Itinerary it, CityFares? fares) {
-  if (fares == null) return null;
   final legs = it.legs.where((l) => l.transit).toList();
-  if (legs.isEmpty) return null;
-  num total = fares.base;
-  final lines = <FareLine>[FareLine(label: 'base', amount: fares.base)];
-  final firstBoard = legs.first.startTime;
-  var transfers = 0;
-  for (final l in legs.skip(1)) {
-    final within = l.startTime.difference(firstBoard).inMinutes <= fares.transferWindowMinutes;
-    if (within && transfers < fares.maxTransfers) {
-      transfers++;
-      total += fares.transfer;
-      lines.add(FareLine(label: 'transfer', amount: fares.transfer));
-    } else {
-      total += fares.base;
-      lines.add(FareLine(label: 'base', amount: fares.base));
+  num total = 0;
+  String? currency;
+  final lines = <FareLine>[];
+  if (fares != null && legs.isNotEmpty) {
+    currency = fares.currency;
+    total += fares.base;
+    lines.add(FareLine(label: 'base', amount: fares.base, kind: 'transit'));
+    final firstBoard = legs.first.startTime;
+    var transfers = 0;
+    for (final l in legs.skip(1)) {
+      final within = l.startTime.difference(firstBoard).inMinutes <= fares.transferWindowMinutes;
+      if (within && transfers < fares.maxTransfers) {
+        transfers++;
+        total += fares.transfer;
+        lines.add(FareLine(label: 'transfer', amount: fares.transfer, kind: 'transit'));
+      } else {
+        total += fares.base;
+        lines.add(FareLine(label: 'base', amount: fares.base, kind: 'transit'));
+      }
     }
   }
-  return Fare(amount: total, currency: fares.currency, estimated: true, breakdown: lines);
+  // Shared bikes (v1.2): one pass per network per itinerary, priced by the
+  // leg's `priceEstimate` (from the network's GBFS pricing plans).
+  final seen = <String>{};
+  for (final l in it.rentalLegList) {
+    final r = l.rental!;
+    final p = r.priceEstimate;
+    if (p == null || !seen.add(r.networkId)) continue;
+    currency ??= p.currency;
+    total += p.amount;
+    lines.add(FareLine(
+        label: p.label == null || p.label!.isEmpty ? r.networkName : '${r.networkName} · ${p.label}',
+        amount: p.amount,
+        kind: 'rental'));
+  }
+  if (lines.isEmpty) return null;
+  return Fare(amount: total, currency: currency ?? 'COP', estimated: true, breakdown: lines);
 }
 
 /// Fare to show for an itinerary: the API's, else a client estimate.

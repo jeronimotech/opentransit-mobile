@@ -20,6 +20,7 @@ import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../favorites/save_favorite_sheet.dart';
 import '../planner/planner_state.dart';
+import '../rental/rental_station_sheet.dart';
 import 'widgets/action_chips.dart';
 import 'widgets/alert_carousel.dart';
 import 'widgets/layers_button.dart';
@@ -66,6 +67,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
   List<MapPoint> _poiPoints = const [];
   List<NetworkShape>? _lastShapes;
   List<MapLine> _networkLines = const [];
+  List<RentalStation>? _lastRental;
+  String _rentalKey = '';
+  List<MapPoint> _rentalPoints = const [];
 
   // Live layer: culled id set (recomputed on frame/camera change) + ticker
   // that pushes interpolated positions at ~10 Hz while buses are moving.
@@ -136,6 +140,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
           radius: 8,
           strokeWidth: 1.5,
           label: poiGlyph(p.type),
+        ),
+    ];
+  }
+
+  /// Shared-bike stations (v1.2): white disc, ring in the network colour
+  /// (amber when 1–2 bikes, grey when empty), the count inside from zoom 15.
+  List<MapPoint> _rentalToPoints(List<RentalStation> stations, City city, double zoom) {
+    final style = rentalMarkerStyle(zoom);
+    final key = '${identityHashCode(stations)}|${style.radius}|${style.showCount}';
+    if (identical(stations, _lastRental) && key == _rentalKey) return _rentalPoints;
+    _lastRental = stations;
+    _rentalKey = key;
+    return _rentalPoints = [
+      for (final st in stations)
+        MapPoint(
+          id: 'rental:${st.id}',
+          position: st.position,
+          color: Colors.white,
+          strokeColor: rentalRingColor(st.vehiclesAvailable,
+              colorFromHex(city.mobility.network(st.networkId)?.color, fallback: const Color(0xFF00A859)),
+              renting: st.isRenting && st.isInstalled),
+          strokeWidth: style.strokeWidth,
+          radius: style.radius,
+          label: style.showCount ? '${st.vehiclesAvailable ?? '·'}' : '',
         ),
     ];
   }
@@ -345,6 +373,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     context.push('/${widget.cityId}/stops/${Uri.encodeComponent(s.id)}');
   }
 
+  Future<void> _onRentalTap(RentalStation s) async {
+    await _mapKey.currentState?.animateTo(s.position, zoom: 16);
+    if (!mounted) return;
+    await showRentalStationSheet(context, ref, widget.cityId, s);
+  }
+
   Future<void> _openExternal(String url) async {
     final uri = Uri.tryParse(url);
     if (uri == null) return;
@@ -388,11 +422,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         final pois = showPois
             ? (ref.watch(poisProvider(BboxQuery(widget.cityId, _bounds!))).asData?.value ?? const <Poi>[])
             : const <Poi>[];
+        final rentalStyle = rentalMarkerStyle(_zoom);
+        final showRental = settings.rentalLayer && city.bikeShareEnabled && rentalStyle.visible && _bounds != null;
+        final rentalStations = showRental
+            ? (ref.watch(rentalStationsProvider(BboxQuery(widget.cityId, _bounds!))).asData?.value.stations ?? const <RentalStation>[])
+            : const <RentalStation>[];
+        final nearbyRental = city.bikeShareEnabled
+            ? (ref.watch(nearbyRentalProvider(NearbyQuery(widget.cityId, center, radius: 900))).asData?.value ?? const <RentalStation>[])
+            : const <RentalStation>[];
         final showNetwork = settings.networkLayer && _zoom >= 12;
         final shapes = showNetwork
             ? (ref.watch(networkProvider(widget.cityId)).asData?.value ?? const <NetworkShape>[])
             : const <NetworkShape>[];
-        final layers = MapLayers(live: settings.liveVehicles, pois: settings.poiLayer, network: settings.networkLayer, zonal: settings.zonalLayer);
+        final layers = MapLayers(live: settings.liveVehicles, pois: settings.poiLayer, network: settings.networkLayer,
+            zonal: settings.zonalLayer, rental: settings.rentalLayer);
         final liveHint = settings.liveVehicles && liveAllowed && !style.visible;
 
         return Scaffold(
@@ -407,11 +450,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   stops: _stopsToPoints(stops, city),
                   vehicles: _vehiclePoints,
                   pois: _poisToPoints(pois),
+                  rentalStations: _rentalToPoints(rentalStations, city, _zoom),
                   myLocation: _showMyLocation,
                   attributionBottomInset: MediaQuery.sizeOf(context).height * kSheetPeek + 4,
                   onLongPress: _onLongPress,
                   onStopTap: (id) => context.push('/${widget.cityId}/stops/${Uri.encodeComponent(id)}'),
                   onVehicleTap: (id) => context.push('/${widget.cityId}/vehicles/${Uri.encodeComponent(id)}'),
+                  onRentalTap: (id) {
+                    final st = rentalStations.where((x) => 'rental:${x.id}' == id).firstOrNull;
+                    if (st != null) showRentalStationSheet(context, ref, widget.cityId, st);
+                  },
                   onPoiTap: (id) {
                     final p = pois.where((x) => 'poi:${x.id}' == id).firstOrNull;
                     if (p == null) return;
@@ -485,9 +533,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                       layers: layers,
                       liveAvailable: liveAllowed,
                       poisAvailable: poisAllowed,
+                      rentalAvailable: city.bikeShareEnabled,
+                      rentalLabel: city.mobility.bikeShare.map((n) => n.name).join(' · '),
                       onChanged: (next) {
                         final n = ref.read(settingsProvider.notifier);
                         if (next.live != settings.liveVehicles) n.setLiveVehicles(next.live);
+                        if (next.rental != settings.rentalLayer) n.setRentalLayer(next.rental);
                         if (next.pois != settings.poiLayer) n.setPoiLayer(next.pois);
                         if (next.network != settings.networkLayer) n.setNetworkLayer(next.network);
                         if (next.zonal != settings.zonalLayer) n.setZonalLayer(next.zonal);
@@ -517,10 +568,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   city: city,
                   controller: controller,
                   stops: stops,
+                  rental: nearbyRental,
                   loading: nearby.isLoading && stops.isEmpty,
                   expanded: _expanded,
                   onAction: _onAction,
                   onNearby: _onNearbyTap,
+                  onRental: _onRentalTap,
                   onService: (s) => _openExternal(s.url),
                 ),
               ),
@@ -538,20 +591,24 @@ class _HomeSheet extends ConsumerWidget {
     required this.city,
     required this.controller,
     required this.stops,
+    this.rental = const [],
     required this.loading,
     required this.expanded,
     required this.onAction,
     required this.onNearby,
+    this.onRental,
     required this.onService,
   });
   final String cityId;
   final City city;
   final ScrollController controller;
   final List<Stop> stops;
+  final List<RentalStation> rental;
   final bool loading;
   final bool expanded;
   final void Function(HomeAction) onAction;
   final void Function(Stop) onNearby;
+  final void Function(RentalStation)? onRental;
   final void Function(CityService) onService;
 
   @override
@@ -601,7 +658,8 @@ class _HomeSheet extends ConsumerWidget {
             child: Text(l10n.nearYouTitle,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, color: scheme.onSurfaceVariant)),
           ),
-          NearbyStrip(cityId: cityId, stops: stops, loading: loading, onTap: onNearby),
+          NearbyStrip(cityId: cityId, stops: stops, loading: loading, onTap: onNearby,
+              rental: rental, onRentalTap: onRental, city: city),
           // Only once the sheet is dragged up.
           if (expanded) ...[
             const SizedBox(height: 14),

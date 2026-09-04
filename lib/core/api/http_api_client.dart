@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 import '../models/models.dart';
+import '../utils/geo.dart';
 import 'api_client.dart';
 import 'sse.dart';
 
@@ -257,5 +258,69 @@ class HttpApiClient implements ApiClient {
       'active': active,
     });
     return asList(j['alerts'], TransitAlert.fromJson);
+  }
+
+  // ── v1.2 shared bikes ──
+
+  @override
+  Future<List<BikeShareNetwork>> rentalNetworks(String cityId) async {
+    try {
+      return asList((await _get('${_c(cityId)}/rental/networks'))['networks'], BikeShareNetwork.fromJson);
+    } on ApiException catch (e) {
+      if (e.isNotFound) return const []; // API predates v1.2
+      rethrow;
+    }
+  }
+
+  @override
+  Future<RentalStationsResponse> rentalStations(String cityId,
+      {List<double>? bbox, String? networkId, int limit = 500}) async {
+    try {
+      return RentalStationsResponse.fromJson(await _get('${_c(cityId)}/rental/stations', query: {
+        'bbox': ?bbox?.join(','),
+        'networkId': ?networkId,
+        'limit': limit,
+      }));
+    } on ApiException catch (e) {
+      if (e.isNotFound) return RentalStationsResponse(generatedAt: DateTime.now(), stations: const []);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<RentalStation> rentalStation(String cityId, String stationId) async =>
+      RentalStation.fromJson(await _get('${_c(cityId)}/rental/stations/${Uri.encodeComponent(stationId)}'));
+
+  @override
+  Future<List<RentalStation>> nearbyRentalStations(String cityId, LatLng position,
+      {int radiusMeters = 800, int limit = 5}) async {
+    // Preferred: the nearby endpoint with `include=rental` (distance from PostGIS).
+    try {
+      final j = await _get('${_c(cityId)}/stops/nearby', query: {
+        'lat': position.lat, 'lon': position.lon, 'radius': radiusMeters, 'limit': 50, 'include': 'rental',
+      });
+      // The API answers rental stations under `rentalStations`; older builds
+      // mixed them into `stops` with `kind: rental_station`. Accept both.
+      final items = [
+        ...(j['rentalStations'] as List? ?? const []),
+        ...(j['stops'] as List? ?? const []).whereType<Map>().where((e) => e['kind'] == 'rental_station'),
+      ]
+          .whereType<Map>()
+          .map((e) => RentalStation.fromJson(Map<String, dynamic>.from(e)))
+          .toList()
+        ..sort((a, b) => (a.distanceMeters ?? 1 << 30).compareTo(b.distanceMeters ?? 1 << 30));
+      if (items.isNotEmpty) return items.take(limit).toList();
+    } on ApiException catch (e) {
+      if (!e.isNotFound) rethrow;
+    }
+    // Fallback (older API without `include`): a bbox query around the point.
+    final d = radiusMeters / 111000;
+    final r = await rentalStations(cityId, bbox: [
+      position.lon - d, position.lat - d, position.lon + d, position.lat + d,
+    ]);
+    final near = [
+      for (final s in r.stations) s.copyWith(distanceMeters: haversineMeters(position, s.position).round()),
+    ]..sort((a, b) => a.distanceMeters!.compareTo(b.distanceMeters!));
+    return near.where((s) => s.distanceMeters! <= radiusMeters).take(limit).toList();
   }
 }

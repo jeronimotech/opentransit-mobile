@@ -58,6 +58,36 @@ class RouteChip extends ConsumerWidget {
   }
 }
 
+/// Pill for a shared-bike leg: bike icon + the network's name, in the
+/// network's colour (from `city.mobility.bikeShare[]`, never hardcoded).
+class RentalChip extends StatelessWidget {
+  const RentalChip({super.key, required this.name, required this.color, this.dense = false, this.electric = false});
+  final String name;
+  final Color color;
+  final bool dense;
+  final bool electric;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = ensureContrast(color, Colors.white);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: dense ? 7 : 10, vertical: dense ? 3 : 5),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(electric ? Icons.electric_bike : Icons.pedal_bike, size: dense ? 13 : 16, color: onColor(bg)),
+          const SizedBox(width: 4),
+          Text(name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: onColor(bg), fontWeight: FontWeight.w800, fontSize: dense ? 12 : 14)),
+        ],
+      ),
+    );
+  }
+}
+
 /// Square badge with the component icon in the component colour.
 class ComponentBadge extends ConsumerWidget {
   const ComponentBadge(this.component, {super.key, this.size = 36, this.isStation = false});
@@ -348,6 +378,8 @@ String modeLabel(TravelMode m, AppLocalizations l10n) => switch (m) {
       TravelMode.car => l10n.modeCar,
       TravelMode.ferry => l10n.modeFerry,
       TravelMode.transit => l10n.modeTransit,
+      TravelMode.bikeRental => l10n.modeBikeShare,
+      TravelMode.scooterRental || TravelMode.scooter => l10n.modeScooter,
     };
 
 String poiLabel(String type, AppLocalizations l10n) => switch (type) {

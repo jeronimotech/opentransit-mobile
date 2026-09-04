@@ -4,7 +4,7 @@ import '../../../l10n/generated/app_localizations.dart';
 
 /// State of the three home-map layers.
 class MapLayers {
-  const MapLayers({required this.live, required this.pois, required this.network, this.zonal = false});
+  const MapLayers({required this.live, required this.pois, required this.network, this.zonal = false, this.rental = true});
   final bool live;
   final bool pois;
   final bool network;
@@ -12,8 +12,12 @@ class MapLayers {
   /// Zonal/feeder shapes: off by default, they overlap heavily on corridors.
   final bool zonal;
 
-  MapLayers copyWith({bool? live, bool? pois, bool? network, bool? zonal}) => MapLayers(
-      live: live ?? this.live, pois: pois ?? this.pois, network: network ?? this.network, zonal: zonal ?? this.zonal);
+  /// Shared-bike docking stations (v1.2), on by default from zoom 14.
+  final bool rental;
+
+  MapLayers copyWith({bool? live, bool? pois, bool? network, bool? zonal, bool? rental}) => MapLayers(
+      live: live ?? this.live, pois: pois ?? this.pois, network: network ?? this.network,
+      zonal: zonal ?? this.zonal, rental: rental ?? this.rental);
 }
 
 /// Single "Capas" button (UX audit §A) opening a small popover with toggles for
@@ -25,17 +29,25 @@ class LayersButton extends StatelessWidget {
     required this.onChanged,
     this.liveAvailable = true,
     this.poisAvailable = true,
+    this.rentalAvailable = false,
+    this.rentalLabel,
   });
   final MapLayers layers;
   final void Function(MapLayers) onChanged;
   final bool liveAvailable;
   final bool poisAvailable;
 
+  /// Whether the city has at least one shared-bike network.
+  final bool rentalAvailable;
+
+  /// Network name(s) shown under the toggle, from the city config.
+  final String? rentalLabel;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final anyOn = layers.live || layers.pois;
+    final anyOn = layers.live || layers.pois || (rentalAvailable && layers.rental);
     return Tooltip(
       message: l10n.layers,
       child: Material(
@@ -88,6 +100,16 @@ class LayersButton extends StatelessWidget {
                       subtitle: Text(l10n.layerLiveHint),
                       value: cur.live,
                       onChanged: (v) => update(cur.copyWith(live: v)),
+                    ),
+                  if (rentalAvailable)
+                    SwitchListTile(
+                      key: const ValueKey('layer-rental'),
+                      contentPadding: EdgeInsets.zero,
+                      secondary: const Icon(Icons.pedal_bike_rounded),
+                      title: Text(l10n.layerBikeShare),
+                      subtitle: Text(rentalLabel == null ? l10n.layerBikeShareHint : '$rentalLabel · ${l10n.layerBikeShareHint}'),
+                      value: cur.rental,
+                      onChanged: (v) => update(cur.copyWith(rental: v)),
                     ),
                   if (poisAvailable)
                     SwitchListTile(

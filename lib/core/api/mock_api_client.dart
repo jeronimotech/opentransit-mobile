@@ -87,8 +87,25 @@ class MockApiClient implements ApiClient {
     final shifted = PlanResponse.fromJson(
         Map<String, dynamic>.from(rebaseTimes(j, shift) as Map));
     var its = shifted.itineraries;
+    final wantsTransit = request.modes.any((m) => m.isTransit);
+    final wantsRental = request.modes.any((m) => m.isRental);
     if (request.wheelchair) its = its.where((i) => i.accessible == true).toList();
-    if (!request.modes.any((m) => m.isTransit)) its = const [];
+    if (!wantsTransit) its = const [];
+    if (wantsRental) {
+      // Shared-bike itineraries live in their own fixture so the classic plan
+      // keeps its three transit options; rebased with the same shift.
+      final rj = await _map('plan_rental');
+      final rentalBase = asList(rj['itineraries'], Itinerary.fromJson);
+      // Anchor on its own first departure (fixtures are loaded at different
+      // instants, so the plan shift must not be reused).
+      final rentalShift = rentalBase.isEmpty ? shift : anchor.difference(rentalBase.first.startTime);
+      final rental = asList(
+          (rebaseTimes(rj, rentalShift) as Map)['itineraries'], Itinerary.fromJson);
+      its = [
+        ...rental.where((i) => wantsTransit || !i.legs.any((l) => l.transit)),
+        ...its,
+      ];
+    }
     return PlanResponse(
       from: request.from,
       to: request.to,
@@ -347,5 +364,64 @@ class MockApiClient implements ApiClient {
     if (stopId != null) all = all.where((a) => a.stopIds.contains(stopId)).toList();
     if (active) all = all.where((a) => a.isActiveAt(now)).toList();
     return all;
+  }
+
+  // ── v1.2 shared bikes ──
+
+  @override
+  Future<List<BikeShareNetwork>> rentalNetworks(String cityId) async {
+    final c = await city(cityId);
+    if (!c.features.bikeShare) return const [];
+    return asList((await _map('rental_networks'))['networks'], BikeShareNetwork.fromJson);
+  }
+
+  @override
+  Future<RentalStationsResponse> rentalStations(String cityId,
+      {List<double>? bbox, String? networkId, int limit = 500}) async {
+    final c = await city(cityId);
+    if (!c.features.bikeShare) return RentalStationsResponse(generatedAt: now, stations: const []);
+    final r = RentalStationsResponse.fromJson(await _map('rental_stations'));
+    return RentalStationsResponse(
+      generatedAt: now,
+      ttlSeconds: r.ttlSeconds,
+      stations: [
+        for (final s in r.stations)
+          if ((bbox == null || bbox.length != 4 ||
+                  (s.position.lon >= bbox[0] && s.position.lat >= bbox[1] &&
+                   s.position.lon <= bbox[2] && s.position.lat <= bbox[3])) &&
+              (networkId == null || s.networkId == networkId))
+            s,
+      ].take(limit).toList(),
+    );
+  }
+
+  @override
+  Future<RentalStation> rentalStation(String cityId, String stationId) async {
+    final r = await rentalStations(cityId);
+    final s = r.stations.where((x) => x.id == stationId).firstOrNull;
+    if (s == null) throw ApiException('STATION_NOT_FOUND', 'No rental station $stationId', status: 404);
+    final nets = await rentalNetworks(cityId);
+    return RentalStation(
+      id: s.id, networkId: s.networkId, name: s.name, position: s.position, capacity: s.capacity,
+      vehiclesAvailable: s.vehiclesAvailable, ebikesAvailable: s.ebikesAvailable, docksAvailable: s.docksAvailable,
+      isInstalled: s.isInstalled, isRenting: s.isRenting, isReturning: s.isReturning, lastReported: s.lastReported,
+      vehicleTypesAvailable: [
+        RentalVehicleType(id: 'FIT', formFactor: 'bicycle', propulsion: 'human', name: 'Clásica',
+            count: (s.vehiclesAvailable ?? 0) - (s.ebikesAvailable ?? 0)),
+        RentalVehicleType(id: 'EFIT', formFactor: 'bicycle', propulsion: 'electric_assist', name: 'Eléctrica',
+            count: s.ebikesAvailable ?? 0),
+      ],
+      network: nets.where((n) => n.id == s.networkId).firstOrNull ?? nets.firstOrNull,
+    );
+  }
+
+  @override
+  Future<List<RentalStation>> nearbyRentalStations(String cityId, LatLng position,
+      {int radiusMeters = 800, int limit = 5}) async {
+    final r = await rentalStations(cityId);
+    final near = [
+      for (final s in r.stations) s.copyWith(distanceMeters: haversineMeters(position, s.position).round()),
+    ]..sort((a, b) => a.distanceMeters!.compareTo(b.distanceMeters!));
+    return near.where((s) => s.distanceMeters! <= radiusMeters).take(limit).toList();
   }
 }

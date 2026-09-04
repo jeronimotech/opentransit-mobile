@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
@@ -12,6 +13,7 @@ import '../../core/utils/format.dart';
 import '../../core/utils/links.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/polyline.dart';
+import '../../core/utils/rental.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -43,10 +45,18 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
       final leg = it.legs[i];
       final pts = decodeGeometry(leg.geometry);
       all.addAll(pts);
+      final rental = leg.rental;
       final color = leg.transit
           ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component, city: ref.read(currentCityProvider)))
-          : const Color(0xFF546E7A);
-      lines.add(MapLine(id: 'leg-$i', points: pts, color: color, width: leg.transit ? 6 : 4, dashed: !leg.transit));
+          : rental != null
+              ? colorFromHex(rental.color, fallback: const Color(0xFF00A859))
+              : const Color(0xFF546E7A);
+      // Rental legs: dashed line in the network colour, docking stations as rings.
+      lines.add(MapLine(id: 'leg-$i', points: pts, color: color, width: leg.transit ? 6 : (rental != null ? 5 : 4), dashed: !leg.transit));
+      if (rental != null) {
+        stops.add(MapPoint(id: 'rp-$i', position: leg.from.position, color: Colors.white, strokeColor: color, strokeWidth: 3.5, radius: 7, label: rental.pickup?.name ?? leg.from.name));
+        stops.add(MapPoint(id: 'rd-$i', position: leg.to.position, color: Colors.white, strokeColor: color, strokeWidth: 3.5, radius: 7, label: rental.dropoff?.name ?? leg.to.name));
+      }
       if (leg.transit) {
         stops.add(MapPoint(id: 'b-$i', position: leg.from.position, color: Colors.white, strokeColor: color, strokeWidth: 3, radius: 6, label: leg.from.name));
         stops.add(MapPoint(id: 'a-$i', position: leg.to.position, color: Colors.white, strokeColor: color, strokeWidth: 3, radius: 6, label: leg.to.name));
@@ -183,7 +193,12 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
                     ),
                   const SizedBox(height: 16),
                   for (var i = 0; i < named.length; i++)
-                    _LegTile(cityId: widget.cityId, leg: named[i], isLast: i == named.length - 1),
+                    _LegTile(
+                      cityId: widget.cityId,
+                      leg: named[i],
+                      isLast: i == named.length - 1,
+                      network: city?.mobility.network(named[i].rental?.networkId),
+                    ),
                   _EndTile(place: named.last.to, time: it.endTime),
                 ],
               ),
@@ -235,7 +250,7 @@ class _FareBlock extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
                   ],
                 ),
-                if (f.breakdown.length > 1) ...[
+                if (f.breakdown.length > 1 || f.breakdown.any((l) => l.isRental)) ...[
                   const SizedBox(height: 6),
                   for (final line in f.breakdown)
                     Padding(
@@ -271,7 +286,7 @@ List<Leg> _withNames(Itinerary it, String? fromName, String? toName) {
       durationSeconds: l.durationSeconds, distanceMeters: l.distanceMeters, from: from, to: to,
       route: l.route, headsign: l.headsign, agency: l.agency, tripId: l.tripId, realtime: l.realtime,
       realtimeState: l.realtimeState, delaySeconds: l.delaySeconds, geometry: l.geometry,
-      intermediateStops: l.intermediateStops, steps: l.steps, alerts: l.alerts,
+      intermediateStops: l.intermediateStops, steps: l.steps, alerts: l.alerts, rental: l.rental,
     );
   }
   return [
@@ -299,10 +314,13 @@ class _CircleButton extends StatelessWidget {
 }
 
 class _LegTile extends StatefulWidget {
-  const _LegTile({required this.cityId, required this.leg, required this.isLast});
+  const _LegTile({required this.cityId, required this.leg, required this.isLast, this.network});
   final String cityId;
   final Leg leg;
   final bool isLast;
+
+  /// The configured network behind a rental leg (links, app), if any.
+  final BikeShareNetwork? network;
   @override
   State<_LegTile> createState() => _LegTileState();
 }
@@ -316,9 +334,12 @@ class _LegTileState extends State<_LegTile> {
     final locale = Localizations.localeOf(context).toString();
     final scheme = Theme.of(context).colorScheme;
     final leg = widget.leg;
+    final rental = leg.rental;
     final color = leg.transit
         ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component))
-        : scheme.outline;
+        : rental != null
+            ? colorFromHex(rental.color, fallback: const Color(0xFF00A859))
+            : scheme.outline;
     final delay = formatDelay(leg.delaySeconds, l10n);
 
     return IntrinsicHeight(
@@ -431,6 +452,8 @@ class _LegTileState extends State<_LegTile> {
                       ),
                     const SizedBox(height: 6),
                     Text(l10n.rideTo(leg.to.name), style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                  ] else if (rental != null) ...[
+                    _RentalLegBody(leg: leg, rental: rental, network: widget.network, color: color),
                   ] else ...[
                     Text(l10n.walkTo(leg.to.name), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                     const SizedBox(height: 4),
@@ -471,6 +494,135 @@ class _LegTileState extends State<_LegTile> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Pickup card → ride line → drop-off card → price and app hand-off for a
+/// shared-bike leg. Everything provider-specific comes from the network config.
+class _RentalLegBody extends StatelessWidget {
+  const _RentalLegBody({required this.leg, required this.rental, required this.network, required this.color});
+  final Leg leg;
+  final LegRental rental;
+  final BikeShareNetwork? network;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final locale = Localizations.localeOf(context).toString();
+    final pickup = rental.pickup;
+    final dropoff = rental.dropoff;
+    final price = rental.priceEstimate;
+    final appLink = network == null ? null : rentalAppLink(network!);
+    final pickupAge = pickup?.ageSeconds();
+
+    Widget stationCard({required String title, required RentalStation? st, required bool isPickup, required Key key}) {
+      final count = isPickup ? st?.vehiclesAvailable : st?.docksAvailable;
+      final ok = isPickup ? (st?.canRent ?? true) : (st?.canReturn ?? true);
+      return Container(
+        key: key,
+        margin: const EdgeInsets.only(top: 6),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.35)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(isPickup ? Icons.pedal_bike : Icons.local_parking_rounded, size: 18, color: color),
+                const SizedBox(width: 8),
+                Expanded(child: Text(title, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700))),
+              ],
+            ),
+            if (st != null) ...[
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.only(left: 26),
+                child: Wrap(
+                  spacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      isPickup ? l10n.bikesAvailable(count ?? 0) : l10n.docksAvailable(count ?? 0),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: ok ? Colors.green.shade700 : Colors.orange.shade800),
+                    ),
+                    if (isPickup && (st.ebikesAvailable ?? 0) > 0)
+                      Text(l10n.ebikesShort(st.ebikesAvailable!), style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
+                    if (!ok)
+                      Text(isPickup ? l10n.rentalNotRenting : l10n.rentalNotReturning,
+                          style: TextStyle(fontSize: 12, color: Colors.orange.shade800)),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            RentalChip(name: rental.networkName, color: color, electric: rental.isElectric),
+            const SizedBox(width: 8),
+            if (pickupAge != null)
+              Expanded(
+                child: Text(formatUpdatedAgo(pickupAge, l10n),
+                    maxLines: 1, overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
+              ),
+          ],
+        ),
+        stationCard(
+          key: const ValueKey('rental-pickup'),
+          title: l10n.rentalPickup(pickup?.name ?? leg.from.name),
+          st: pickup,
+          isPickup: true,
+        ),
+        const SizedBox(height: 6),
+        Text(l10n.rentalRide(formatDuration(leg.durationSeconds, l10n), formatDistance(leg.distanceMeters)),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+        stationCard(
+          key: const ValueKey('rental-dropoff'),
+          title: l10n.rentalDropoff(dropoff?.name ?? leg.to.name),
+          st: dropoff,
+          isPickup: false,
+        ),
+        if (price != null) ...[
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Icon(Icons.payments_outlined, size: 16, color: scheme.onSurfaceVariant),
+              const SizedBox(width: 6),
+              Text(l10n.rentalPriceLine(formatMoney(price.amount, price.currency, locale), price.label ?? rental.networkName),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: scheme.onSurface)),
+            ],
+          ),
+        ],
+        if (appLink != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: TextButton.icon(
+              key: const ValueKey('rental-open-app'),
+              style: TextButton.styleFrom(foregroundColor: color, padding: EdgeInsets.zero, minimumSize: const Size(44, 36)),
+              onPressed: () async {
+                try {
+                  await launchUrl(appLink, mode: LaunchMode.externalApplication);
+                } catch (_) {}
+              },
+              icon: const Icon(Icons.open_in_new_rounded, size: 16),
+              label: Text(l10n.openApp(network!.name)),
+            ),
+          ),
+      ],
     );
   }
 }

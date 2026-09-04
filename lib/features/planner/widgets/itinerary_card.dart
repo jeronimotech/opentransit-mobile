@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/models/models.dart';
+import '../../../core/utils/colors.dart';
 import '../../../core/utils/format.dart';
 import '../../../core/widgets/common.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -101,6 +102,18 @@ class _LegChip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (leg.transit) return RouteChip(leg.route, dense: true);
     final l10n = AppLocalizations.of(context);
+    final r = leg.rental;
+    if (r != null) {
+      return Tooltip(
+        message: '${l10n.sharedBikeOf(r.networkName)} · ${formatDuration(leg.durationSeconds, l10n)}',
+        child: RentalChip(
+          name: r.networkName,
+          color: colorFromHex(r.color, fallback: const Color(0xFF00A859)),
+          dense: true,
+          electric: r.isElectric,
+        ),
+      );
+    }
     return Tooltip(
       message: '${modeLabel(leg.mode, l10n)} · ${formatDuration(leg.durationSeconds, l10n)}',
       child: RouteChip(null, dense: true, mode: leg.mode),

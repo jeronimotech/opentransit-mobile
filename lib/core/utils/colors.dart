@@ -70,6 +70,8 @@ IconData modeIcon(TravelMode m) => switch (m) {
       TravelMode.car => Icons.directions_car,
       TravelMode.ferry => Icons.directions_boat,
       TravelMode.transit => Icons.directions_transit,
+      TravelMode.bikeRental => Icons.pedal_bike,
+      TravelMode.scooterRental || TravelMode.scooter => Icons.electric_scooter,
     };
 
 /// Material icon by name, for custom favorites and city service tiles.

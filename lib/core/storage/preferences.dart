@@ -16,6 +16,7 @@ class PreferencesRepository {
   static const _kBike = 'bikeToStation';
   static const _kNetwork = 'networkLayer';
   static const _kZonal = 'zonalLayer';
+  static const _kRental = 'rentalLayer';
 
   String? get cityId => _prefs.getString(_kCity);
   Future<void> setCityId(String? id) =>
@@ -54,4 +55,8 @@ class PreferencesRepository {
   /// Zonal/feeder shapes on the home map (default off: they overlap heavily).
   bool get zonalLayer => _prefs.getBool(_kZonal) ?? false;
   Future<void> setZonalLayer(bool v) => _prefs.setBool(_kZonal, v);
+
+  /// Shared-bike stations on the home map (default on, drawn from zoom 14).
+  bool get rentalLayer => _prefs.getBool(_kRental) ?? true;
+  Future<void> setRentalLayer(bool v) => _prefs.setBool(_kRental, v);
 }

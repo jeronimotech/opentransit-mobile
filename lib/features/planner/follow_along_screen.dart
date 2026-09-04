@@ -88,10 +88,15 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     final st = followAlongStep(it, here, previous: _legIndex);
     final leg = it.legs[st.legIndex];
     if (st.legIndex != _legIndex) _notified = false;
-    if (leg.transit && !_notified && st.metersToLegEnd <= _alertMeters) {
+    if ((leg.transit || leg.isRental) && !_notified && st.metersToLegEnd <= _alertMeters) {
       _notified = true;
       final l10n = AppLocalizations.of(context);
-      LocalNotifications.instance.show(1, l10n.nextStopIsYours, l10n.getOffAt(leg.to.name));
+      if (leg.isRental) {
+        // "Deja la bici en …": dock at the station the plan chose.
+        LocalNotifications.instance.show(1, l10n.rentalDropoff(leg.rental?.dropoff?.name ?? leg.to.name), l10n.rentalDockHint);
+      } else {
+        LocalNotifications.instance.show(1, l10n.nextStopIsYours, l10n.getOffAt(leg.to.name));
+      }
     }
     setState(() {
       _here = here;
@@ -128,7 +133,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     final lines = <MapLine>[];
     for (var i = 0; i < it.legs.length; i++) {
       final l = it.legs[i];
-      final c = l.transit ? colorFromHex(l.route?.color, fallback: componentColor(l.route?.component, city: city)) : const Color(0xFF546E7A);
+      final c = l.transit
+          ? colorFromHex(l.route?.color, fallback: componentColor(l.route?.component, city: city))
+          : l.isRental
+              ? colorFromHex(l.rental!.color, fallback: const Color(0xFF00A859))
+              : const Color(0xFF546E7A);
       final current = i == _legIndex;
       lines.add(MapLine(
         id: 'leg-$i',
@@ -142,7 +151,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
       MapPoint(id: 'end', position: leg.to.position, color: scheme.primary, radius: 10, strokeWidth: 3, label: leg.to.name),
       if (_here != null) MapPoint(id: 'me', position: _here!, color: const Color(0xFF1E88E5), radius: 9, strokeWidth: 3),
     ];
-    final legColor = leg.transit ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component, city: city)) : scheme.outline;
+    final legColor = leg.transit
+        ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component, city: city))
+        : leg.isRental
+            ? colorFromHex(leg.rental!.color, fallback: const Color(0xFF00A859))
+            : scheme.outline;
 
     return Scaffold(
       body: Stack(
@@ -210,11 +223,20 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                   else ...[
                     Row(
                       children: [
-                        if (leg.transit) RouteChip(leg.route) else RouteChip(null, mode: leg.mode),
+                        if (leg.transit)
+                          RouteChip(leg.route)
+                        else if (leg.isRental)
+                          RentalChip(name: leg.rental!.networkName, color: legColor, electric: leg.rental!.isElectric)
+                        else
+                          RouteChip(null, mode: leg.mode),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            leg.transit ? l10n.getOffAt(leg.to.name) : l10n.walkTo(leg.to.name),
+                            leg.transit
+                                ? l10n.getOffAt(leg.to.name)
+                                : leg.isRental
+                                    ? l10n.rentalDropoff(leg.rental?.dropoff?.name ?? leg.to.name)
+                                    : l10n.walkTo(leg.to.name),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),

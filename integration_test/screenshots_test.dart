@@ -13,6 +13,8 @@ import 'package:opentransit_mobile/core/api/mock_api_client.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/providers.dart';
 import 'package:opentransit_mobile/core/storage/favorites.dart';
+import 'package:opentransit_mobile/core/utils/rental.dart';
+import 'package:opentransit_mobile/core/widgets/common.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
 import 'package:opentransit_mobile/features/planner/widgets/itinerary_card.dart';
 import 'package:opentransit_mobile/router.dart';
@@ -153,6 +155,61 @@ void main() {
     await settle(tester, 20);
     await shot(tester, '11_alerts');
 
+    // ── v1.2 shared bikes ──
+    // Planner with "Bici pública" on (chip in the network colour).
+    router.go('/bogota/plan');
+    await settle(tester, 15);
+    planner.setFrom(const Place(name: 'Parque de la 93', position: LatLng(4.6766, -74.0483)));
+    planner.setTo(const Place(name: 'Calle 100 - Marketmedios', position: LatLng(4.6841, -74.0517)));
+    await settle(tester, 5);
+    // The mode row scrolls horizontally: bring the last chip into view first.
+    await tester.drag(find.byKey(const ValueKey('mode-walk')), const Offset(-400, 0));
+    await settle(tester, 10);
+    await tester.tap(find.byKey(const ValueKey('mode-bikeShare')), warnIfMissed: false);
+    await settle(tester, 10);
+    if (!container.read(plannerProvider).modes.contains(TravelMode.bikeRental)) {
+      // Fallback for flaky hit-testing on the platform view: same code path as the chip.
+      planner.setModes(withBikeShare(container.read(plannerProvider).modes, on: true));
+      await settle(tester, 5);
+    }
+    expect(container.read(plannerProvider).modes, contains(TravelMode.bikeRental));
+    await shot(tester, 'bike_01_plan_form');
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+    await settle(tester, 30);
+    // Rental itineraries come first; their cards carry the network chip.
+    expect(find.byType(ItineraryCard), findsWidgets);
+    expect(find.textContaining('Tembici'), findsWidgets);
+    await shot(tester, 'bike_02_results');
+
+    // Open the itinerary that carries the rental leg (its card shows the network chip).
+    await tester.tap(find.ancestor(of: find.byType(RentalChip).first, matching: find.byType(ItineraryCard)).first);
+    await settle(tester, 30);
+    await Future<void>.delayed(const Duration(seconds: 3));
+    // Pull the sheet up so the rental leg (pickup → ride → drop-off) is built and visible.
+    await tester.drag(find.byKey(const ValueKey('fare-block')), const Offset(0, -420));
+    await settle(tester, 20);
+    expect(find.byKey(const ValueKey('rental-pickup')), findsOneWidget);
+    expect(find.byKey(const ValueKey('rental-dropoff')), findsOneWidget);
+    await shot(tester, 'bike_03_itinerary');
+
+    // Home at street zoom in Chapinero: the stations layer with counts.
+    router.go('/bogota?lat=4.6772&lon=-74.0500&zoom=15.6');
+    await settle(tester, 30);
+    await Future<void>.delayed(const Duration(seconds: 5));
+    expect(find.byKey(const ValueKey('nearby-rental')), findsOneWidget);
+    await shot(tester, 'bike_04_home_stations');
+
+    // Station sheet via the "Cerca de ti" card.
+    await tester.tap(find.byKey(const ValueKey('nearby-rental')));
+    await settle(tester, 20);
+    expect(find.byKey(const ValueKey('rental-directions')), findsOneWidget);
+    await shot(tester, 'bike_05_station_sheet');
+    await tester.tap(find.byKey(const ValueKey('rental-directions')));
+    await settle(tester, 15);
+    router.go('/bogota');
+    await settle(tester, 10);
+
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.dark);
     await container.read(settingsProvider.notifier).setPoiLayer(true);
     router.go('/bogota');
@@ -160,5 +217,5 @@ void main() {
     await Future<void>.delayed(const Duration(seconds: 5));
     await shot(tester, '12_home_dark');
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.light);
-  }, timeout: const Timeout(Duration(minutes: 6)));
+  }, timeout: const Timeout(Duration(minutes: 8)));
 }

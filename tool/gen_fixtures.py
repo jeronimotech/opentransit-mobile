@@ -252,3 +252,66 @@ files={"cities":{"cities":[city,city2]},"plan":plan,"stops_nearby":nearby,"stops
 for k,v in files.items():
     json.dump(v,open(f"{OUT}/{k}.json","w"),ensure_ascii=False,indent=1)
 print({k:os.path.getsize(f"{OUT}/{k}.json") for k in files})
+
+
+# ───────────── v1.2 shared bikes (Tembici Bogotá, GBFS) ─────────────
+TEMBICI={"id":"tembici","name":"Tembici Bogotá","network":"tembici_bogota",
+  "gbfsUrl":"https://bogota.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json","color":"#00A859","url":"https://tembici.com.co/",
+  "apps":{"ios":"https://apps.apple.com/co/app/id1454932002","android":"https://play.google.com/store/apps/details?id=com.tembici.app"},
+  "pricingSummary":"Pase diario $11.000 · mensual $31.990","formFactors":["bicycle","scooter"]}
+city["features"]["bikeShare"]=True
+city["config"]["features"]["bikeShare"]=True
+city["mobility"]={"bikeShare":[TEMBICI]}
+# A second city with TWO networks proves nothing is single-provider.
+city2["mobility"]={"bikeShare":[
+  {"id":"encicla","name":"EnCicla","network":"encicla_medellin","gbfsUrl":"https://example.org/encicla/gbfs.json","color":"#0B7A3B","url":"https://www.encicla.gov.co/","apps":{"ios":None,"android":None},"pricingSummary":"Gratis con Cívica","formFactors":["bicycle"]},
+  {"id":"movo","name":"Movo","network":"movo_medellin","gbfsUrl":"https://example.org/movo/gbfs.json","color":"#7B1FA2","url":"https://example.org/movo","apps":{"ios":None,"android":None},"pricingSummary":"Desde $2.000 por viaje","formFactors":["scooter"]}]}
+
+# 60 Tembici-like docking stations between Chapinero and Usaquén.
+random.seed(11)
+rstations=[]
+for i in range(60):
+    lat=round(random.uniform(4.640,4.705),6); lon=round(random.uniform(-74.072,-74.030),6)
+    cl=int(round((lat-4.5978)/0.00093))+57; kr=int(round((-74.0836-lon)/0.00095))+7
+    cap=random.choice([11,15,19,23,27]); bikes=random.randint(0,cap-2); eb=random.randint(0,min(4,bikes)); docks=cap-bikes-random.randint(0,2)
+    rstations.append({"id":f"tembici:{i+1}","networkId":"tembici","name":f"{i+1:03d} - CL {cl} con KR {kr}","lat":lat,"lon":lon,
+      "capacity":cap,"vehiclesAvailable":bikes,"ebikesAvailable":eb,"docksAvailable":max(docks,0),
+      "isInstalled":True,"isRenting":bikes>0 or random.random()>0.1,"isReturning":True,"lastReported":t(-random.randint(5,90))})
+# Two named stations used by the rental itineraries.
+ST_93={"id":"tembici:12","networkId":"tembici","name":"012 - CL 93 con KR 13","lat":4.6772,"lon":-74.0500,"capacity":19,"vehiclesAvailable":6,"ebikesAvailable":2,"docksAvailable":13,"isInstalled":True,"isRenting":True,"isReturning":True,"lastReported":t(-18)}
+ST_100={"id":"tembici:31","networkId":"tembici","name":"031 - CL 100 con KR 15 (TransMilenio)","lat":4.6852,"lon":-74.0548,"capacity":23,"vehiclesAvailable":3,"ebikesAvailable":0,"docksAvailable":4,"isInstalled":True,"isRenting":True,"isReturning":True,"lastReported":t(-25)}
+rstations[11]=ST_93; rstations[30]=ST_100
+rental_networks={"networks":[{**TEMBICI,"systemId":"bogota_bike","timezone":"America/Bogota","stations":len(rstations),
+  "vehicleTypes":[{"id":"FIT","formFactor":"bicycle","propulsion":"human","name":"Clásica"},{"id":"EFIT","formFactor":"bicycle","propulsion":"electric_assist","name":"Eléctrica"},{"id":"CHLOE","formFactor":"scooter","propulsion":"electric","name":"Patineta"}],
+  "pricingPlans":[{"id":"daily","name":"Pase diario","price":11000,"currency":"COP","description":"Viajes de hasta 45 min durante 24 h","isTaxable":False},{"id":"monthly","name":"Mensual","price":31990,"currency":"COP","description":"Viajes de hasta 45 min todo el mes","isTaxable":False}],
+  "lastFetchAt":t(-12),"up":True}]}
+rental_stations={"generatedAt":t(0),"ttlSeconds":30,"stations":rstations}
+
+def rplace(st, arr=None, dep=None): return {"name":st["name"],"lat":st["lat"],"lon":st["lon"],"stopId":None,"stopCode":None,"arrival":arr,"departure":dep,"component":None,"rentalStationId":st["id"]}
+def rental_leg(frm, to, start, secs, shape, price=True):
+    return {"mode":"BICYCLE","transit":False,"startTime":t(start),"endTime":t(start+secs),"durationSeconds":secs,"distanceMeters":int(length(shape)),
+            "from":rplace(frm,dep=t(start)),"to":rplace(to,arr=t(start+secs)),"route":None,"headsign":None,"agency":None,"tripId":None,
+            "realtime":False,"realtimeState":None,"delaySeconds":None,"geometry":geom(shape),"intermediateStops":[],"steps":[],"alerts":[],
+            "rental":{"networkId":"tembici","networkName":"Tembici Bogotá","color":"#00A859","vehicleType":"bicycle",
+                      "pickup":{**frm,"stationId":frm["id"]},"dropoff":{**to,"stationId":to["id"]},"freeFloating":False,
+                      "priceEstimate":{"amount":11000,"currency":"COP","label":"Pase diario","estimated":True} if price else None}}
+P93=place(name="Parque de la 93",lat=4.6766,lon=-74.0483); P100=place(name="Calle 100 - Marketmedios",lat=4.6841,lon=-74.0517)
+rw1=W(P93,rplace(ST_93),0,120,[step("Camina hacia la Calle 93",90,4.6768,-74.0490,"DEPART","Calle 93")])
+bike_shape=dens([(ST_93["lat"],ST_93["lon"]),(4.6800,-74.0520),(4.6830,-74.0540),(ST_100["lat"],ST_100["lon"])],5)
+rleg=rental_leg(ST_93,ST_100,180,540,bike_shape)
+rw2=W(rplace(ST_100),P100,780,150,[step("Camina hacia la estación Calle 100",120,4.6848,-74.0530,"DEPART","Calle 100")])
+itr0={"id":"it-r0","startTime":t(0),"endTime":t(930),"durationSeconds":930,"walkDistanceMeters":rw1["distanceMeters"]+rw2["distanceMeters"],
+      "walkTimeSeconds":270,"waitingTimeSeconds":60,"transfers":0,"accessible":None,"legs":[rw1,rleg,rw2],"rentalLegs":1,"modesUsed":["WALK","BICYCLE_RENTAL"],
+      "fare":{"amount":11000,"currency":"COP","estimated":True,"breakdown":[{"label":"Tembici · pase diario","amount":11000,"kind":"rental"}]}}
+rw3=W(rplace(ST_100),place(S_C100),780,120,[step("Cruza el puente peatonal a la estación Calle 100",120,4.6858,-74.0553,"CONTINUE","Calle 100")])
+rbus=bus_leg(R_B10,S_C100,S_PS,dens(TRUNK_N[2:]+TRUNK_S[1:]),1080,2700,"Portal Sur",[S_C76,S_C45,S_AVJ,S_RIC,S_NQS30],True,60,"B10-0818")
+rw4=W(place(S_PS),d_pl,3780,200,steps2)
+itr1={"id":"it-r1","startTime":t(0),"endTime":t(3980),"durationSeconds":3980,"walkDistanceMeters":rw1["distanceMeters"]+rw3["distanceMeters"]+rw4["distanceMeters"],
+      "walkTimeSeconds":440,"waitingTimeSeconds":180,"transfers":0,"accessible":None,"legs":[rw1,rleg,rw3,rbus,rw4],"rentalLegs":1,"modesUsed":["WALK","BICYCLE_RENTAL","BUS"],
+      "fare":{"amount":14200,"currency":"COP","estimated":True,"breakdown":[{"label":"Pasaje","amount":3200,"kind":"transit"},{"label":"Tembici · pase diario","amount":11000,"kind":"rental"}]}}
+plan_rental={"itineraries":[itr0,itr1]}
+health["rental"]={"networks":[{"id":"tembici","up":True,"stations":len(rstations),"vehiclesAvailable":sum(s["vehiclesAvailable"] for s in rstations),"ageSeconds":12}]}
+
+for k,v in {"cities":{"cities":[city,city2]},"health":health,"rental_networks":rental_networks,"rental_stations":rental_stations,"plan_rental":plan_rental}.items():
+    json.dump(v,open(f"{OUT}/{k}.json","w"),ensure_ascii=False,indent=1)
+print("rental fixtures:", {k:os.path.getsize(f"{OUT}/{k}.json") for k in ("rental_networks","rental_stations","plan_rental")})

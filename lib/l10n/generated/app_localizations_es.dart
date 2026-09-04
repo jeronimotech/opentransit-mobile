@@ -813,4 +813,122 @@ class AppLocalizationsEs extends AppLocalizations {
   String thenTimes(String times) {
     return 'luego $times min';
   }
+
+  @override
+  String get modeBikeShare => 'Bici pública';
+
+  @override
+  String rentalPickup(String station) {
+    return 'Toma una bici en $station';
+  }
+
+  @override
+  String rentalDropoff(String station) {
+    return 'Deja la bici en $station';
+  }
+
+  @override
+  String rentalRide(String duration, String distance) {
+    return 'Pedalea $duration · $distance';
+  }
+
+  @override
+  String bikesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bicis disponibles',
+      one: '1 bici disponible',
+      zero: 'Sin bicis disponibles',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String docksAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count puestos libres',
+      one: '1 puesto libre',
+      zero: 'Sin puestos libres',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bikesShort(int count) {
+    return '$count bicis';
+  }
+
+  @override
+  String ebikesShort(int count) {
+    return '$count eléctricas';
+  }
+
+  @override
+  String docksShort(int count) {
+    return '$count puestos';
+  }
+
+  @override
+  String openApp(String name) {
+    return 'Abrir $name';
+  }
+
+  @override
+  String get layerBikeShare => 'Bicis públicas';
+
+  @override
+  String get layerBikeShareHint => 'Estaciones y bicis disponibles (zoom 14+)';
+
+  @override
+  String get rentalStation => 'Estación de bicis';
+
+  @override
+  String get howToGetThere => 'Cómo llegar';
+
+  @override
+  String noRentalData(String name) {
+    return 'Sin datos de $name ahora';
+  }
+
+  @override
+  String get rentalNotRenting => 'No presta bicis en este momento';
+
+  @override
+  String get rentalNotReturning => 'No recibe bicis en este momento';
+
+  @override
+  String rentalPriceLine(String amount, String label) {
+    return '≈ $amount · $label';
+  }
+
+  @override
+  String get rentalDockHint =>
+      'Al llegar, deja la bici anclada en la estación.';
+
+  @override
+  String sharedBikeOf(String name) {
+    return 'Bici pública · $name';
+  }
+
+  @override
+  String get electricBike => 'eléctrica';
+
+  @override
+  String get rentalUnavailableHint => 'Sin datos de estaciones en esta zona.';
+
+  @override
+  String get modeScooter => 'Patineta';
+
+  @override
+  String updatedMinutesAgo(int minutes) {
+    return 'Actualizado hace $minutes min';
+  }
+
+  @override
+  String updatedHoursAgo(int hours) {
+    return 'Actualizado hace $hours h';
+  }
 }

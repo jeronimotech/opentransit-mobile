@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/models.dart';
 import '../../../core/providers.dart';
+import '../../../core/utils/colors.dart';
 import '../../../core/utils/geo.dart';
+import '../../../core/utils/rental.dart';
 import '../../../core/widgets/common.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
@@ -17,6 +19,9 @@ class NearbyStrip extends StatelessWidget {
     required this.loading,
     required this.onTap,
     this.max = 6,
+    this.rental = const [],
+    this.onRentalTap,
+    this.city,
   });
   final String cityId;
   final List<Stop> stops;
@@ -24,15 +29,22 @@ class NearbyStrip extends StatelessWidget {
   final void Function(Stop) onTap;
   final int max;
 
+  /// Nearest shared-bike stations (v1.2); the closest one gets a card.
+  final List<RentalStation> rental;
+  final void Function(RentalStation)? onRentalTap;
+  final City? city;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
+    final nearest = rental.firstOrNull;
+    final network = nearest == null ? null : city?.mobility.network(nearest.networkId);
     return SizedBox(
       height: 112,
-      child: loading && stops.isEmpty
+      child: loading && stops.isEmpty && nearest == null
           ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)))
-          : stops.isEmpty
+          : stops.isEmpty && nearest == null
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Align(
@@ -44,9 +56,22 @@ class NearbyStrip extends StatelessWidget {
                   key: const ValueKey('nearby-strip'),
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: stops.length.clamp(0, max),
+                  itemCount: stops.length.clamp(0, max) + (nearest == null ? 0 : 1),
                   separatorBuilder: (_, _) => const SizedBox(width: 10),
-                  itemBuilder: (_, i) => _NearbyCard(cityId: cityId, stop: stops[i], onTap: () => onTap(stops[i])),
+                  itemBuilder: (_, i) {
+                    // The docking station card sits second so the nearest
+                    // stop stays first; first when there are no stops.
+                    final rentalAt = stops.isEmpty ? 0 : 1;
+                    if (nearest != null && i == rentalAt) {
+                      return _NearbyRentalCard(
+                        station: nearest,
+                        network: network,
+                        onTap: () => onRentalTap?.call(nearest),
+                      );
+                    }
+                    final si = nearest != null && i > rentalAt ? i - 1 : i;
+                    return _NearbyCard(cityId: cityId, stop: stops[si], onTap: () => onTap(stops[si]));
+                  },
                 ),
     );
   }
@@ -135,6 +160,84 @@ class _NearbyCard extends ConsumerWidget {
                           ],
                         ),
                       ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Nearest shared-bike station: icon in the network colour, name, distance
+/// and "6 bicis · 13 puestos".
+class _NearbyRentalCard extends StatelessWidget {
+  const _NearbyRentalCard({required this.station, required this.network, required this.onTap});
+  final RentalStation station;
+  final BikeShareNetwork? network;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final color = colorFromHex(network?.color, fallback: const Color(0xFF00A859));
+    final subtitle = [
+      network?.name ?? l10n.rentalStation,
+      if (station.distanceMeters != null) formatDistance(station.distanceMeters!),
+    ].join(' · ');
+    final avail = availabilitySummary(station, bikes: l10n.bikesShort, ebikes: l10n.ebikesShort, docks: l10n.docksShort);
+    return Semantics(
+      button: true,
+      label: '${station.name}, $subtitle, $avail',
+      child: Material(
+        key: const ValueKey('nearby-rental'),
+        color: scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: onTap,
+          child: SizedBox(
+            width: 200,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 28, height: 28,
+                        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8)),
+                        child: Icon(Icons.pedal_bike_rounded, color: onColor(color), size: 16),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(station.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                            Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis,
+                                style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 11)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      Icon(Icons.pedal_bike, size: 14, color: (station.vehiclesAvailable ?? 0) > 0 ? color : scheme.outline),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(avail, maxLines: 1, overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12,
+                                color: (station.vehiclesAvailable ?? 0) > 0 ? scheme.onSurface : scheme.outline)),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

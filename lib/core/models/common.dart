@@ -68,7 +68,13 @@ enum TravelMode {
   bicycle('BICYCLE'),
   car('CAR'),
   ferry('FERRY'),
-  transit('TRANSIT');
+  transit('TRANSIT'),
+
+  /// Shared bikes (GBFS network), v1.2. Sent to the API as `BIKE_RENTAL`;
+  /// rental legs still come back as `BICYCLE` with a `rental` block.
+  bikeRental('BIKE_RENTAL'),
+  scooterRental('SCOOTER_RENTAL'),
+  scooter('SCOOTER');
 
   const TravelMode(this.wire);
   final String wire;
@@ -81,7 +87,11 @@ enum TravelMode {
     return TravelMode.bus;
   }
 
-  bool get isTransit => this != walk && this != bicycle && this != car;
+  bool get isTransit =>
+      this != walk && this != bicycle && this != car && this != scooter && !isRental;
+
+  /// Request-only modes that ask the router for shared vehicles.
+  bool get isRental => this == bikeRental || this == scooterRental;
 }
 
 class LatLng {

@@ -428,12 +428,153 @@
   "modeBike": "Bici",
   "modeWalkShort": "A pie",
   "routesCount": "Rutas · {count}",
-  "@routesCount": {"placeholders": {"count": {"type": "int"}}},
+  "@routesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "viewOnMapAction": "Ver en mapa",
   "noNearbyStops": "No hay paradas cerca de este punto",
   "done": "Listo",
   "layerNetworkZonal": "Rutas zonales",
   "layerNetworkHint": "Troncales y cable; las zonales se superponen mucho",
   "thenTimes": "luego {times} min",
-  "@thenTimes": {"placeholders": {"times": {"type": "String"}}}
+  "@thenTimes": {
+    "placeholders": {
+      "times": {
+        "type": "String"
+      }
+    }
+  },
+  "modeBikeShare": "Bici pública",
+  "rentalPickup": "Toma una bici en {station}",
+  "@rentalPickup": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "rentalDropoff": "Deja la bici en {station}",
+  "@rentalDropoff": {
+    "placeholders": {
+      "station": {
+        "type": "String"
+      }
+    }
+  },
+  "rentalRide": "Pedalea {duration} · {distance}",
+  "@rentalRide": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "bikesAvailable": "{count, plural, =0{Sin bicis disponibles} =1{1 bici disponible} other{{count} bicis disponibles}}",
+  "@bikesAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "docksAvailable": "{count, plural, =0{Sin puestos libres} =1{1 puesto libre} other{{count} puestos libres}}",
+  "@docksAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bikesShort": "{count} bicis",
+  "@bikesShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ebikesShort": "{count} eléctricas",
+  "@ebikesShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "docksShort": "{count} puestos",
+  "@docksShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "openApp": "Abrir {name}",
+  "@openApp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "layerBikeShare": "Bicis públicas",
+  "layerBikeShareHint": "Estaciones y bicis disponibles (zoom 14+)",
+  "rentalStation": "Estación de bicis",
+  "howToGetThere": "Cómo llegar",
+  "noRentalData": "Sin datos de {name} ahora",
+  "@noRentalData": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rentalNotRenting": "No presta bicis en este momento",
+  "rentalNotReturning": "No recibe bicis en este momento",
+  "rentalPriceLine": "≈ {amount} · {label}",
+  "@rentalPriceLine": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "rentalDockHint": "Al llegar, deja la bici anclada en la estación.",
+  "sharedBikeOf": "Bici pública · {name}",
+  "@sharedBikeOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "electricBike": "eléctrica",
+  "rentalUnavailableHint": "Sin datos de estaciones en esta zona.",
+  "modeScooter": "Patineta",
+  "updatedMinutesAgo": "Actualizado hace {minutes} min",
+  "updatedHoursAgo": "Actualizado hace {hours} h",
+  "@updatedMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@updatedHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  }
 }

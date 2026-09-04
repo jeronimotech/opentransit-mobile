@@ -1,4 +1,5 @@
 import 'common.dart';
+import 'rental.dart';
 import 'transit.dart';
 
 class Place {
@@ -10,6 +11,7 @@ class Place {
     this.arrival,
     this.departure,
     this.component,
+    this.rentalStationId,
   });
   final String name;
   final LatLng position;
@@ -19,7 +21,11 @@ class Place {
   final DateTime? departure;
   final Component? component;
 
+  /// Set when this place is a shared-bike docking station (v1.2).
+  final String? rentalStationId;
+
   bool get isStop => stopId != null;
+  bool get isRentalStation => rentalStationId != null;
 
   factory Place.fromJson(Map<String, dynamic> j) => Place(
         name: j['name']?.toString() ?? '',
@@ -29,6 +35,7 @@ class Place {
         arrival: parseTime(j['arrival']),
         departure: parseTime(j['departure']),
         component: Component.parse(j['component']),
+        rentalStationId: j['rentalStationId']?.toString(),
       );
 
   Place copyWith({String? name}) => Place(
@@ -39,6 +46,7 @@ class Place {
         arrival: arrival,
         departure: departure,
         component: component,
+        rentalStationId: rentalStationId,
       );
 }
 
@@ -111,6 +119,7 @@ class Leg {
     this.intermediateStops = const [],
     this.steps = const [],
     this.alerts = const [],
+    this.rental,
   });
   final TravelMode mode;
   final bool transit;
@@ -131,6 +140,11 @@ class Leg {
   final List<Place> intermediateStops;
   final List<WalkStep> steps;
   final List<TransitAlert> alerts;
+
+  /// Shared-vehicle block for rental legs (v1.2); null for own bike / walk.
+  final LegRental? rental;
+
+  bool get isRental => rental != null;
 
   factory Leg.fromJson(Map<String, dynamic> j) => Leg(
         mode: TravelMode.parse(j['mode']),
@@ -158,18 +172,30 @@ class Leg {
         intermediateStops: asList(j['intermediateStops'], Place.fromJson),
         steps: asList(j['steps'], WalkStep.fromJson),
         alerts: asList(j['alerts'], TransitAlert.fromJson),
+        rental: j['rental'] is Map
+            ? LegRental.fromJson(Map<String, dynamic>.from(j['rental'] as Map))
+            : null,
       );
 
-  /// Colour for this leg: route colour for transit, null for walking.
-  String? get colorHex => route?.color;
+  /// Colour for this leg: route colour for transit, the network colour for
+  /// rental legs, null for walking.
+  String? get colorHex => route?.color ?? rental?.color;
 }
 
 class FareLine {
-  const FareLine({required this.label, required this.amount});
+  const FareLine({required this.label, required this.amount, this.kind});
   final String label;
   final num amount;
+
+  /// `transit | rental | null` (v1.2).
+  final String? kind;
+
+  bool get isRental => kind == 'rental';
+
   factory FareLine.fromJson(Map<String, dynamic> j) => FareLine(
-      label: j['label']?.toString() ?? '', amount: (j['amount'] as num?) ?? 0);
+      label: j['label']?.toString() ?? '',
+      amount: (j['amount'] as num?) ?? 0,
+      kind: j['kind']?.toString());
 }
 
 class Fare {
@@ -207,6 +233,8 @@ class Itinerary {
     this.fare,
     this.accessible,
     required this.legs,
+    this.rentalLegs,
+    this.modesUsed = const [],
   });
   final String id;
   final DateTime startTime;
@@ -219,6 +247,10 @@ class Itinerary {
   final Fare? fare;
   final bool? accessible;
   final List<Leg> legs;
+
+  /// v1.2 summary fields; derived from the legs when the API omits them.
+  final int? rentalLegs;
+  final List<String> modesUsed;
 
   factory Itinerary.fromJson(Map<String, dynamic> j) => Itinerary(
         id: j['id']?.toString() ?? '',
@@ -234,9 +266,13 @@ class Itinerary {
             : null,
         accessible: j['accessible'] is bool ? j['accessible'] as bool : null,
         legs: asList(j['legs'], Leg.fromJson),
+        rentalLegs: asInt(j['rentalLegs']),
+        modesUsed: asStrings(j['modesUsed']),
       );
 
   Iterable<Leg> get transitLegs => legs.where((l) => l.transit);
+  Iterable<Leg> get rentalLegList => legs.where((l) => l.isRental);
+  bool get hasRental => rentalLegs != null ? rentalLegs! > 0 : legs.any((l) => l.isRental);
   bool get hasRealtime => legs.any((l) => l.realtime);
   List<TransitAlert> get alerts => [
         for (final l in legs) ...l.alerts,

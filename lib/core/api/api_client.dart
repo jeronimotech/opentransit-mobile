@@ -91,4 +91,29 @@ abstract class ApiClient {
     String? stopId,
     bool active = true,
   });
+
+  // ── v1.2 shared bikes (GBFS) ──
+
+  /// Networks configured for the city, enriched with live counts and pricing.
+  /// Empty (never an error) when the API predates v1.2.
+  Future<List<BikeShareNetwork>> rentalNetworks(String cityId);
+
+  /// Docking stations with live availability inside [bbox]
+  /// (`minLon,minLat,maxLon,maxLat`).
+  Future<RentalStationsResponse> rentalStations(
+    String cityId, {
+    List<double>? bbox,
+    String? networkId,
+    int limit = 500,
+  });
+
+  Future<RentalStation> rentalStation(String cityId, String stationId);
+
+  /// Nearest docking stations, sorted by distance.
+  Future<List<RentalStation>> nearbyRentalStations(
+    String cityId,
+    LatLng position, {
+    int radiusMeters = 800,
+    int limit = 5,
+  });
 }

@@ -1,0 +1,64 @@
+{
+ "networks": [
+  {
+   "id": "tembici",
+   "name": "Tembici Bogotá",
+   "network": "tembici_bogota",
+   "gbfsUrl": "https://bogota.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json",
+   "color": "#00A859",
+   "url": "https://tembici.com.co/",
+   "apps": {
+    "ios": "https://apps.apple.com/co/app/id1454932002",
+    "android": "https://play.google.com/store/apps/details?id=com.tembici.app"
+   },
+   "pricingSummary": "Pase diario $11.000 · mensual $31.990",
+   "formFactors": [
+    "bicycle",
+    "scooter"
+   ],
+   "systemId": "bogota_bike",
+   "timezone": "America/Bogota",
+   "stations": 60,
+   "vehicleTypes": [
+    {
+     "id": "FIT",
+     "formFactor": "bicycle",
+     "propulsion": "human",
+     "name": "Clásica"
+    },
+    {
+     "id": "EFIT",
+     "formFactor": "bicycle",
+     "propulsion": "electric_assist",
+     "name": "Eléctrica"
+    },
+    {
+     "id": "CHLOE",
+     "formFactor": "scooter",
+     "propulsion": "electric",
+     "name": "Patineta"
+    }
+   ],
+   "pricingPlans": [
+    {
+     "id": "daily",
+     "name": "Pase diario",
+     "price": 11000,
+     "currency": "COP",
+     "description": "Viajes de hasta 45 min durante 24 h",
+     "isTaxable": false
+    },
+    {
+     "id": "monthly",
+     "name": "Mensual",
+     "price": 31990,
+     "currency": "COP",
+     "description": "Viajes de hasta 45 min todo el mes",
+     "isTaxable": false
+    }
+   ],
+   "lastFetchAt": "2026-09-04T07:59:48-05:00",
+   "up": true
+  }
+ ]
+}

@@ -313,12 +313,49 @@
   "modeBike": "Bike",
   "modeWalkShort": "Walk",
   "routesCount": "Routes · {count}",
-  "@routesCount": {"placeholders": {"count": {"type": "int"}}},
+  "@routesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "viewOnMapAction": "View on map",
   "noNearbyStops": "No stops near this point",
   "done": "Done",
   "layerNetworkZonal": "Zonal routes",
   "layerNetworkHint": "Trunk and cable; zonal routes overlap heavily",
   "thenTimes": "then {times} min",
-  "@thenTimes": {"placeholders": {"times": {"type": "String"}}}
+  "@thenTimes": {
+    "placeholders": {
+      "times": {
+        "type": "String"
+      }
+    }
+  },
+  "modeBikeShare": "Shared bike",
+  "rentalPickup": "Pick up a bike at {station}",
+  "rentalDropoff": "Dock the bike at {station}",
+  "rentalRide": "Ride {duration} · {distance}",
+  "bikesAvailable": "{count, plural, =0{No bikes available} =1{1 bike available} other{{count} bikes available}}",
+  "docksAvailable": "{count, plural, =0{No free docks} =1{1 free dock} other{{count} free docks}}",
+  "bikesShort": "{count} bikes",
+  "ebikesShort": "{count} electric",
+  "docksShort": "{count} docks",
+  "openApp": "Open {name}",
+  "layerBikeShare": "Shared bikes",
+  "layerBikeShareHint": "Stations and available bikes (zoom 14+)",
+  "rentalStation": "Bike station",
+  "howToGetThere": "Directions",
+  "noRentalData": "No {name} data right now",
+  "rentalNotRenting": "Not renting right now",
+  "rentalNotReturning": "Not accepting returns right now",
+  "rentalPriceLine": "≈ {amount} · {label}",
+  "rentalDockHint": "Dock the bike at the station when you arrive.",
+  "sharedBikeOf": "Shared bike · {name}",
+  "electricBike": "electric",
+  "rentalUnavailableHint": "No station data in this area.",
+  "modeScooter": "Scooter",
+  "updatedMinutesAgo": "Updated {minutes} min ago",
+  "updatedHoursAgo": "Updated {hours} h ago"
 }

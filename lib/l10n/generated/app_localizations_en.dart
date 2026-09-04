@@ -812,4 +812,121 @@ class AppLocalizationsEn extends AppLocalizations {
   String thenTimes(String times) {
     return 'then $times min';
   }
+
+  @override
+  String get modeBikeShare => 'Shared bike';
+
+  @override
+  String rentalPickup(String station) {
+    return 'Pick up a bike at $station';
+  }
+
+  @override
+  String rentalDropoff(String station) {
+    return 'Dock the bike at $station';
+  }
+
+  @override
+  String rentalRide(String duration, String distance) {
+    return 'Ride $duration · $distance';
+  }
+
+  @override
+  String bikesAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bikes available',
+      one: '1 bike available',
+      zero: 'No bikes available',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String docksAvailable(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count free docks',
+      one: '1 free dock',
+      zero: 'No free docks',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String bikesShort(int count) {
+    return '$count bikes';
+  }
+
+  @override
+  String ebikesShort(int count) {
+    return '$count electric';
+  }
+
+  @override
+  String docksShort(int count) {
+    return '$count docks';
+  }
+
+  @override
+  String openApp(String name) {
+    return 'Open $name';
+  }
+
+  @override
+  String get layerBikeShare => 'Shared bikes';
+
+  @override
+  String get layerBikeShareHint => 'Stations and available bikes (zoom 14+)';
+
+  @override
+  String get rentalStation => 'Bike station';
+
+  @override
+  String get howToGetThere => 'Directions';
+
+  @override
+  String noRentalData(String name) {
+    return 'No $name data right now';
+  }
+
+  @override
+  String get rentalNotRenting => 'Not renting right now';
+
+  @override
+  String get rentalNotReturning => 'Not accepting returns right now';
+
+  @override
+  String rentalPriceLine(String amount, String label) {
+    return '≈ $amount · $label';
+  }
+
+  @override
+  String get rentalDockHint => 'Dock the bike at the station when you arrive.';
+
+  @override
+  String sharedBikeOf(String name) {
+    return 'Shared bike · $name';
+  }
+
+  @override
+  String get electricBike => 'electric';
+
+  @override
+  String get rentalUnavailableHint => 'No station data in this area.';
+
+  @override
+  String get modeScooter => 'Scooter';
+
+  @override
+  String updatedMinutesAgo(int minutes) {
+    return 'Updated $minutes min ago';
+  }
+
+  @override
+  String updatedHoursAgo(int hours) {
+    return 'Updated $hours h ago';
+  }
 }

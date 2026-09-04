@@ -1531,6 +1531,156 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'luego {times} min'**
   String thenTimes(String times);
+
+  /// No description provided for @modeBikeShare.
+  ///
+  /// In es, this message translates to:
+  /// **'Bici pública'**
+  String get modeBikeShare;
+
+  /// No description provided for @rentalPickup.
+  ///
+  /// In es, this message translates to:
+  /// **'Toma una bici en {station}'**
+  String rentalPickup(String station);
+
+  /// No description provided for @rentalDropoff.
+  ///
+  /// In es, this message translates to:
+  /// **'Deja la bici en {station}'**
+  String rentalDropoff(String station);
+
+  /// No description provided for @rentalRide.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedalea {duration} · {distance}'**
+  String rentalRide(String duration, String distance);
+
+  /// No description provided for @bikesAvailable.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =0{Sin bicis disponibles} =1{1 bici disponible} other{{count} bicis disponibles}}'**
+  String bikesAvailable(int count);
+
+  /// No description provided for @docksAvailable.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =0{Sin puestos libres} =1{1 puesto libre} other{{count} puestos libres}}'**
+  String docksAvailable(int count);
+
+  /// No description provided for @bikesShort.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} bicis'**
+  String bikesShort(int count);
+
+  /// No description provided for @ebikesShort.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} eléctricas'**
+  String ebikesShort(int count);
+
+  /// No description provided for @docksShort.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} puestos'**
+  String docksShort(int count);
+
+  /// No description provided for @openApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir {name}'**
+  String openApp(String name);
+
+  /// No description provided for @layerBikeShare.
+  ///
+  /// In es, this message translates to:
+  /// **'Bicis públicas'**
+  String get layerBikeShare;
+
+  /// No description provided for @layerBikeShareHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Estaciones y bicis disponibles (zoom 14+)'**
+  String get layerBikeShareHint;
+
+  /// No description provided for @rentalStation.
+  ///
+  /// In es, this message translates to:
+  /// **'Estación de bicis'**
+  String get rentalStation;
+
+  /// No description provided for @howToGetThere.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo llegar'**
+  String get howToGetThere;
+
+  /// No description provided for @noRentalData.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin datos de {name} ahora'**
+  String noRentalData(String name);
+
+  /// No description provided for @rentalNotRenting.
+  ///
+  /// In es, this message translates to:
+  /// **'No presta bicis en este momento'**
+  String get rentalNotRenting;
+
+  /// No description provided for @rentalNotReturning.
+  ///
+  /// In es, this message translates to:
+  /// **'No recibe bicis en este momento'**
+  String get rentalNotReturning;
+
+  /// No description provided for @rentalPriceLine.
+  ///
+  /// In es, this message translates to:
+  /// **'≈ {amount} · {label}'**
+  String rentalPriceLine(String amount, String label);
+
+  /// No description provided for @rentalDockHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Al llegar, deja la bici anclada en la estación.'**
+  String get rentalDockHint;
+
+  /// No description provided for @sharedBikeOf.
+  ///
+  /// In es, this message translates to:
+  /// **'Bici pública · {name}'**
+  String sharedBikeOf(String name);
+
+  /// No description provided for @electricBike.
+  ///
+  /// In es, this message translates to:
+  /// **'eléctrica'**
+  String get electricBike;
+
+  /// No description provided for @rentalUnavailableHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin datos de estaciones en esta zona.'**
+  String get rentalUnavailableHint;
+
+  /// No description provided for @modeScooter.
+  ///
+  /// In es, this message translates to:
+  /// **'Patineta'**
+  String get modeScooter;
+
+  /// No description provided for @updatedMinutesAgo.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizado hace {minutes} min'**
+  String updatedMinutesAgo(int minutes);
+
+  /// No description provided for @updatedHoursAgo.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizado hace {hours} h'**
+  String updatedHoursAgo(int hours);
 }
 
 class _AppLocalizationsDelegate

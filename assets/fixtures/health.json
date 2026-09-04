@@ -19,5 +19,16 @@
   "up": true,
   "version": "2.10.0",
   "graphBuiltAt": "2026-09-03T08:00:00-05:00"
+ },
+ "rental": {
+  "networks": [
+   {
+    "id": "tembici",
+    "up": true,
+    "stations": 60,
+    "vehiclesAvailable": 452,
+    "ageSeconds": 12
+   }
+  ]
  }
 }

@@ -8,6 +8,7 @@ import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/location.dart';
+import '../../core/utils/rental.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'planner_state.dart';
@@ -217,9 +218,15 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
         : '${s.arriveBy ? l10n.arriveBy : l10n.departAt} ${formatDateShort(s.time!, locale)}';
 
     final modes = <TravelMode>[
-      if (city != null) ...city.modes.where((m) => m != TravelMode.walk && m != TravelMode.transit),
+      if (city != null)
+        ...city.modes.where((m) => m != TravelMode.walk && m != TravelMode.transit && !m.isRental && m != TravelMode.scooter),
       TravelMode.walk,
     ];
+    // Shared bikes (v1.2): one chip per city, labelled and coloured from the
+    // configured network(s); adds BIKE_RENTAL (+ SCOOTER_RENTAL) to the request.
+    final bikeShare = city != null && city.bikeShareEnabled;
+    final bikeShareOn = s.modes.contains(TravelMode.bikeRental);
+    final bikeShareColor = colorFromHex(city?.mobility.bikeShare.firstOrNull?.color, fallback: const Color(0xFF00A859));
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.planTrip)),
@@ -336,6 +343,21 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                   ),
                   const SizedBox(width: 8),
                 ],
+                if (bikeShare)
+                  FilterChip(
+                    key: const ValueKey('mode-bikeShare'),
+                    avatar: Icon(Icons.pedal_bike, size: 16, color: bikeShareOn ? onColor(bikeShareColor) : bikeShareColor),
+                    label: Text(bikeShareChipLabel(city, l10n.modeBikeShare)),
+                    selected: bikeShareOn,
+                    selectedColor: bikeShareColor,
+                    checkmarkColor: onColor(bikeShareColor),
+                    labelStyle: TextStyle(color: bikeShareOn ? onColor(bikeShareColor) : null, fontWeight: FontWeight.w600),
+                    side: BorderSide(color: bikeShareColor.withValues(alpha: 0.6)),
+                    onSelected: (v) => ref.read(plannerProvider.notifier).setModes(withBikeShare(
+                        ref.read(plannerProvider).modes,
+                        on: v,
+                        scooters: city.mobility.bikeShare.any((n) => n.hasScooters))),
+                  ),
               ],
             ),
           ),

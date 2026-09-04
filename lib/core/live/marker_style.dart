@@ -67,3 +67,36 @@ Color networkLineColor(String? feedHex, Color component, {bool backbone = true})
   // Zonal corridors stack dozens of overlapping shapes: draw them fainter.
   return desaturate(base, 0.35).withValues(alpha: backbone ? 0.5 : 0.18);
 }
+
+// ───────────────────────── v1.2 shared-bike stations ─────────────────────────
+
+/// How docking stations are drawn at a given zoom: hidden below 14, small
+/// rings 14–15, rings with the available count from 15 (contract "Clients").
+class RentalMarkerStyle {
+  const RentalMarkerStyle({required this.visible, required this.radius, required this.showCount, required this.strokeWidth});
+  final bool visible;
+  final double radius;
+  final bool showCount;
+  final double strokeWidth;
+}
+
+const double rentalMinZoom = 14;
+const double rentalCountZoom = 15;
+
+RentalMarkerStyle rentalMarkerStyle(double zoom) {
+  if (zoom < rentalMinZoom) {
+    return const RentalMarkerStyle(visible: false, radius: 0, showCount: false, strokeWidth: 0);
+  }
+  if (zoom < rentalCountZoom) {
+    return const RentalMarkerStyle(visible: true, radius: 6, showCount: false, strokeWidth: 2.5);
+  }
+  return const RentalMarkerStyle(visible: true, radius: 11, showCount: true, strokeWidth: 3);
+}
+
+/// Ring colour for a station: the network colour when bikes are available,
+/// amber when only one or two are left, grey when empty or not renting.
+Color rentalRingColor(int? bikes, Color network, {bool renting = true}) {
+  if (!renting || bikes == null || bikes <= 0) return const Color(0xFF9E9E9E);
+  if (bikes <= 2) return const Color(0xFFF9A825);
+  return network;
+}

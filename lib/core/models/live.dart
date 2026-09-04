@@ -1,4 +1,5 @@
 import 'common.dart';
+import 'rental.dart';
 import 'transit.dart';
 import 'vehicle.dart';
 
@@ -298,11 +299,17 @@ class CityHealth {
     this.routerUp = true,
     this.routerVersion,
     this.feedVersion,
+    this.rental = const [],
   });
   final RealtimeHealth realtime;
   final bool routerUp;
   final String? routerVersion;
   final String? feedVersion;
+
+  /// Per-network shared-bike feed health (v1.2 `health.rental.networks`).
+  final List<RentalNetworkHealth> rental;
+
+  RentalNetworkHealth? rentalOf(String id) => rental.where((n) => n.id == id).firstOrNull;
 
   factory CityHealth.fromJson(Map<String, dynamic> j) {
     final router = j['router'] is Map
@@ -310,6 +317,9 @@ class CityHealth {
         : const <String, dynamic>{};
     final st = j['static'] is Map
         ? Map<String, dynamic>.from(j['static'] as Map)
+        : const <String, dynamic>{};
+    final rental = j['rental'] is Map
+        ? Map<String, dynamic>.from(j['rental'] as Map)
         : const <String, dynamic>{};
     return CityHealth(
       realtime: RealtimeHealth.fromJson(
@@ -320,6 +330,7 @@ class CityHealth {
       routerUp: asBool(router['up'], fallback: true),
       routerVersion: router['version']?.toString(),
       feedVersion: st['feedVersion']?.toString(),
+      rental: asList(rental['networks'], RentalNetworkHealth.fromJson),
     );
   }
 }

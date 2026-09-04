@@ -135,9 +135,80 @@ void main() {
     await Future<void>.delayed(const Duration(seconds: 5));
     await shot(tester, 'live_06_next_buses');
 
+    // ── v1.2 shared bikes (needs the API's /rental/networks) ──
+    final nets = await api.rentalNetworks('bogota');
+    // ignore: avoid_print
+    print('LIVE: rental networks=${nets.map((n) => '${n.name} up=${n.up} stations=${n.stations}').join('; ')}');
+    if (nets.isEmpty || !city.bikeShareEnabled) {
+      // ignore: avoid_print
+      print('LIVE: bike share not available on this API yet — skipping bike screens');
+    } else {
+      final bikeOnly = await api.plan('bogota', const PlanRequest(
+        from: Place(name: 'Parque de la 93', position: LatLng(4.6766, -74.0483)),
+        to: Place(name: 'Calle 100', position: LatLng(4.6841, -74.0517)),
+        modes: [TravelMode.walk, TravelMode.bikeRental],
+      ));
+      // ignore: avoid_print
+      print('LIVE: bike-only 93→Calle 100: ${bikeOnly.itineraries.length} itineraries, rental legs ${bikeOnly.itineraries.map((i) => i.rentalLegList.length).toList()}, fare ${bikeOnly.itineraries.firstOrNull?.fare?.amount}');
+      final mixed = await api.plan('bogota', const PlanRequest(
+        from: Place(name: 'Chicó Norte', position: LatLng(4.6845, -74.0530)),
+        to: Place(name: 'Portal Sur', position: LatLng(4.5978, -74.1616)),
+        modes: [TravelMode.transit, TravelMode.walk, TravelMode.bikeRental],
+      ));
+      // ignore: avoid_print
+      print('LIVE: bike+bus Chicó Norte→Portal Sur: ${mixed.itineraries.length} itineraries, with rental ${mixed.itineraries.where((i) => i.hasRental).length}, modes ${mixed.itineraries.map((i) => i.legs.map((l) => l.isRental ? 'RENTAL' : l.mode.wire).join('>')).toList()}');
+      final near = await api.nearbyRentalStations('bogota', const LatLng(4.6766, -74.0483));
+      // ignore: avoid_print
+      print('LIVE: nearest stations ${near.map((s) => '${s.name} ${s.vehiclesAvailable}b/${s.docksAvailable}d ${s.distanceMeters}m').join('; ')}');
+
+      // Bike-only plan in the UI.
+      planner.setFrom(const Place(name: 'Parque de la 93', position: LatLng(4.6766, -74.0483)));
+      planner.setTo(const Place(name: 'Calle 100 - Marketmedios', position: LatLng(4.6841, -74.0517)));
+      planner.setModes({TravelMode.walk, TravelMode.bikeRental});
+      router.go('/bogota/plan');
+      await settle(tester, 10);
+      expect(find.byKey(const ValueKey('mode-bikeShare')), findsOneWidget);
+      await shot(tester, 'live_bike_01_plan_form');
+      await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+      await waitFor(tester, find.byType(ItineraryCard), seconds: 60);
+      await shot(tester, 'live_bike_02_results');
+      await tester.tap(find.byType(ItineraryCard).first);
+      await settle(tester, 30);
+      await Future<void>.delayed(const Duration(seconds: 4));
+      await shot(tester, 'live_bike_03_itinerary');
+
+      // Bike + bus plan.
+      planner.setFrom(const Place(name: 'Chicó Norte', position: LatLng(4.6845, -74.0530)));
+      planner.setTo(const Place(name: 'Portal Sur', position: LatLng(4.5978, -74.1616)));
+      planner.setModes({TravelMode.transit, TravelMode.walk, TravelMode.bikeRental});
+      router.go('/bogota/plan');
+      await settle(tester, 10);
+      await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+      await waitFor(tester, find.byType(ItineraryCard), seconds: 60);
+      await shot(tester, 'live_bike_04_results_mixed');
+      final withRental = find.byType(ItineraryCard);
+      await tester.tap(withRental.first);
+      await settle(tester, 30);
+      await Future<void>.delayed(const Duration(seconds: 4));
+      await shot(tester, 'live_bike_05_itinerary_mixed');
+
+      // Stations layer + sheet on the home map (Chapinero, street zoom).
+      router.go('/bogota?lat=4.6766&lon=-74.0483&zoom=15.6');
+      await settle(tester, 30);
+      await Future<void>.delayed(const Duration(seconds: 8));
+      await shot(tester, 'live_bike_06_home_stations');
+      if (find.byKey(const ValueKey('nearby-rental')).evaluate().isNotEmpty) {
+        await tester.tap(find.byKey(const ValueKey('nearby-rental')));
+        await settle(tester, 20);
+        await Future<void>.delayed(const Duration(seconds: 2));
+        await shot(tester, 'live_bike_07_station_sheet');
+        router.pop();
+      }
+    }
+
     router.go('/bogota/favorites');
     await settle(tester, 10);
     router.go('/bogota');
     await settle(tester, 20);
-  }, timeout: const Timeout(Duration(minutes: 5)));
+  }, timeout: const Timeout(Duration(minutes: 8)));
 }

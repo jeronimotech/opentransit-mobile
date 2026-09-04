@@ -32,7 +32,7 @@
     "tripUpdates": true,
     "alerts": true,
     "fares": false,
-    "bikeShare": false
+    "bikeShare": true
    },
    "agencies": [
     {
@@ -128,7 +128,8 @@
      "board": true,
      "pois": true,
      "followAlong": true,
-     "bike": true
+     "bike": true,
+     "bikeShare": true
     },
     "minAppVersion": {
      "ios": "0.1.0",
@@ -160,7 +161,28 @@
      "url": "https://www.transmilenio.gov.co/publicaciones/147212/pqrs/",
      "kind": "external"
     }
-   ]
+   ],
+   "mobility": {
+    "bikeShare": [
+     {
+      "id": "tembici",
+      "name": "Tembici Bogotá",
+      "network": "tembici_bogota",
+      "gbfsUrl": "https://bogota.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json",
+      "color": "#00A859",
+      "url": "https://tembici.com.co/",
+      "apps": {
+       "ios": "https://apps.apple.com/co/app/id1454932002",
+       "android": "https://play.google.com/store/apps/details?id=com.tembici.app"
+      },
+      "pricingSummary": "Pase diario $11.000 · mensual $31.990",
+      "formFactors": [
+       "bicycle",
+       "scooter"
+      ]
+     }
+    ]
+   }
   },
   {
    "id": "medellin",
@@ -231,7 +253,8 @@
      "board": true,
      "pois": true,
      "followAlong": true,
-     "bike": true
+     "bike": true,
+     "bikeShare": true
     },
     "minAppVersion": {
      "ios": "0.1.0",
@@ -248,7 +271,43 @@
     "support": "https://www.metrodemedellin.gov.co",
     "privacy": null
    },
-   "services": []
+   "services": [],
+   "mobility": {
+    "bikeShare": [
+     {
+      "id": "encicla",
+      "name": "EnCicla",
+      "network": "encicla_medellin",
+      "gbfsUrl": "https://example.org/encicla/gbfs.json",
+      "color": "#0B7A3B",
+      "url": "https://www.encicla.gov.co/",
+      "apps": {
+       "ios": null,
+       "android": null
+      },
+      "pricingSummary": "Gratis con Cívica",
+      "formFactors": [
+       "bicycle"
+      ]
+     },
+     {
+      "id": "movo",
+      "name": "Movo",
+      "network": "movo_medellin",
+      "gbfsUrl": "https://example.org/movo/gbfs.json",
+      "color": "#7B1FA2",
+      "url": "https://example.org/movo",
+      "apps": {
+       "ios": null,
+       "android": null
+      },
+      "pricingSummary": "Desde $2.000 por viaje",
+      "formFactors": [
+       "scooter"
+      ]
+     }
+    ]
+   }
   }
  ]
 }

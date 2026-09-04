@@ -1,4 +1,5 @@
 import 'common.dart';
+import 'rental.dart';
 
 class CityAgency {
   const CityAgency({
@@ -197,6 +198,25 @@ class CityService {
       );
 }
 
+/// Shared-mobility networks of a city (v1.2 `city.mobility`).
+class CityMobility {
+  const CityMobility({this.bikeShare = const []});
+  final List<BikeShareNetwork> bikeShare;
+
+  bool get hasBikeShare => bikeShare.isNotEmpty;
+
+  BikeShareNetwork? network(String? id) {
+    if (id == null) return bikeShare.firstOrNull;
+    for (final n in bikeShare) {
+      if (n.id == id) return n;
+    }
+    return bikeShare.firstOrNull;
+  }
+
+  factory CityMobility.fromJson(Map<String, dynamic>? j) =>
+      j == null ? const CityMobility() : CityMobility(bikeShare: asList(j['bikeShare'], BikeShareNetwork.fromJson));
+}
+
 class City {
   const City({
     required this.id,
@@ -218,6 +238,7 @@ class City {
     this.config = const CityConfig(),
     this.links = const CityLinks(),
     this.services = const [],
+    this.mobility = const CityMobility(),
   });
 
   final String id;
@@ -241,6 +262,12 @@ class City {
   final CityConfig config;
   final CityLinks links;
   final List<CityService> services;
+  final CityMobility mobility;
+
+  /// Shared bikes are offered when the feature flag is on, the module is not
+  /// disabled by remote config and at least one network is configured.
+  bool get bikeShareEnabled =>
+      features.bikeShare && config.isEnabled('bikeShare') && mobility.hasBikeShare;
 
   factory City.fromJson(Map<String, dynamic> j) {
     final branding = j['branding'] is Map
@@ -281,6 +308,9 @@ class City {
         j['links'] is Map ? Map<String, dynamic>.from(j['links'] as Map) : null,
       ),
       services: asList(j['services'], CityService.fromJson),
+      mobility: CityMobility.fromJson(
+        j['mobility'] is Map ? Map<String, dynamic>.from(j['mobility'] as Map) : null,
+      ),
     );
   }
 

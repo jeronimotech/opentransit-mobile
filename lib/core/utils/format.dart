@@ -27,3 +27,11 @@ String? formatDelay(int? delaySeconds, AppLocalizations l10n) {
 
 String formatDateShort(DateTime t, String locale) =>
     DateFormat.MMMEd(locale).add_Hm().format(t.toLocal());
+
+/// "Actualizado hace 42 s" / "hace 5 min" / "hace 3 h" — GBFS feeds sometimes
+/// carry `last_reported` values that are hours old; seconds alone read badly.
+String formatUpdatedAgo(int seconds, AppLocalizations l10n) {
+  if (seconds < 90) return l10n.updatedAgo(seconds);
+  if (seconds < 7200) return l10n.updatedMinutesAgo((seconds / 60).round());
+  return l10n.updatedHoursAgo((seconds / 3600).round());
+}
