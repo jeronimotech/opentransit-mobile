@@ -85,13 +85,14 @@ class BoardRowTile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final first = row.next.isEmpty ? null : row.next.first;
     final rest = row.next.skip(1).toList();
-    final headsign = cleanHeadsign(row.headsign) ?? cleanHeadsign(row.route.longName) ?? '';
+    final label = headsignLabel(row.headsign, towards: l10n.towards) ??
+        headsignLabel(row.route.longName, towards: l10n.towards) ?? row.route.shortName;
     final window = row.route.serviceWindow;
     final etaText = first == null ? null : (first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes));
     return Semantics(
       label: [
         row.route.shortName,
-        if (headsign.isNotEmpty) l10n.towards(headsign),
+        label,
         if (etaText != null) '$etaText · ${first!.realtime ? l10n.sourceLive : l10n.sourceScheduled}',
       ].join(', '),
       child: ExcludeSemantics(
@@ -106,7 +107,7 @@ class BoardRowTile extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  headsign.isEmpty ? row.route.shortName : l10n.towards(headsign),
+                  label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: compact ? 13 : 14),

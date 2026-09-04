@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/utils/colors.dart';
+import '../../core/utils/text.dart';
 import '../../core/utils/fare.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/links.dart';
@@ -370,7 +371,7 @@ class _LegTileState extends State<_LegTile> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            leg.headsign == null ? (leg.route?.longName ?? '') : l10n.towards(leg.headsign!),
+                            headsignLabel(leg.headsign, towards: l10n.towards) ?? cleanHeadsign(leg.route?.longName) ?? '',
                             maxLines: 2, overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),

@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/utils/colors.dart';
+import '../../core/utils/text.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/polyline.dart';
 import '../../core/widgets/common.dart';
@@ -86,7 +87,7 @@ class VehicleDetailScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    if (d.tripHeadsign != null) Text(l10n.towards(d.tripHeadsign!), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                    if (headsignLabel(d.tripHeadsign, towards: l10n.towards) != null) Text(headsignLabel(d.tripHeadsign, towards: l10n.towards)!, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
                     if (d.nextStop != null)
                       ListTile(
                         contentPadding: EdgeInsets.zero,

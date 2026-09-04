@@ -59,6 +59,13 @@ void main() {
       expect(cleanHeadsign('Portal Norte 2-11'), 'Portal Norte 2-11');
       expect(cleanHeadsign('PORTAL NORTE T4'), 'Portal Norte T4');
     });
+    test('headsignLabel: "Hacia X" for one destination, bare "A → B" otherwise', () {
+      String hacia(String x) => 'Hacia $x';
+      expect(headsignLabel('Portal Sur', towards: hacia), 'Hacia Portal Sur');
+      expect(headsignLabel('Verbenal || Portal Norte', towards: hacia), 'Verbenal → Portal Norte');
+      expect(headsignLabel('  ', towards: hacia), isNull);
+      expect(headsignLabel(null, towards: hacia), isNull);
+    });
     test('empty and null → null', () {
       expect(cleanHeadsign(null), isNull);
       expect(cleanHeadsign('  '), isNull);

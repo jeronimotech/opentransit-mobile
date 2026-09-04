@@ -34,3 +34,12 @@ String? cleanHeadsign(String? raw) {
   if (parts.isEmpty) return null;
   return parts.join(' → ');
 }
+
+/// Display label for a headsign: `Hacia X` for a single destination, but the
+/// bare `A → B` when the cleaned headsign already carries a direction arrow.
+/// [towards] is the localized "Hacia {x}" template. Null when empty.
+String? headsignLabel(String? raw, {required String Function(String) towards}) {
+  final h = cleanHeadsign(raw);
+  if (h == null) return null;
+  return h.contains('→') ? h : towards(h);
+}
