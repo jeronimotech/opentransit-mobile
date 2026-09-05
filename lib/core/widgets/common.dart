@@ -7,6 +7,7 @@ import '../models/models.dart';
 import '../providers.dart';
 import '../utils/colors.dart';
 import '../utils/fare.dart';
+import '../utils/ondemand.dart';
 import '../utils/service_window.dart';
 
 /// Pill showing a route's short name in its brand colour, with the component
@@ -77,6 +78,35 @@ class RentalChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(electric ? Icons.electric_bike : Icons.pedal_bike, size: dense ? 13 : 16, color: onColor(bg)),
+          const SizedBox(width: 4),
+          Text(name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: onColor(bg), fontWeight: FontWeight.w800, fontSize: dense ? 12 : 14)),
+        ],
+      ),
+    );
+  }
+}
+
+/// Chip for a taxi / ride-hailing leg in the provider colour (v1.4).
+class OnDemandChip extends StatelessWidget {
+  const OnDemandChip({super.key, required this.name, required this.color, this.dense = false, this.taxi = true});
+  final String name;
+  final Color color;
+  final bool dense;
+  final bool taxi;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = ensureContrast(color, Colors.white);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: dense ? 7 : 10, vertical: dense ? 3 : 5),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(taxi ? Icons.local_taxi_rounded : Icons.directions_car_rounded, size: dense ? 13 : 16, color: onColor(bg)),
           const SizedBox(width: 4),
           Text(name,
               maxLines: 1,
@@ -266,10 +296,21 @@ class FareText extends ConsumerWidget {
     final city = ref.watch(currentCityProvider);
     final fare = fareFor(itinerary, city);
     final base = style ?? Theme.of(context).textTheme.labelMedium;
+    // On-demand itineraries (v1.4): show the ride's price band when known,
+    // else "Precio en la app".
+    final od = itinerary.onDemand;
+    if (od != null && itinerary.isOnDemandDirect) {
+      final p = od.displayPrice;
+      return Text(p != null ? formatPriceRange(p, locale) : l10n.priceInApp,
+          style: base?.copyWith(fontWeight: FontWeight.w700, color: p == null ? Theme.of(context).colorScheme.outline : null));
+    }
     if (fare == null) {
       return Text(l10n.fareNotPublished, style: base?.copyWith(color: Theme.of(context).colorScheme.outline));
     }
-    final amount = formatMoney(fare.amount, fare.currency, locale);
+    if (fare.amount == null) {
+      return Text(fare.note ?? l10n.priceInApp, style: base?.copyWith(color: Theme.of(context).colorScheme.outline));
+    }
+    final amount = formatMoney(fare.amount!, fare.currency, locale);
     return Text(fare.estimated ? '≈ $amount' : amount, style: base?.copyWith(fontWeight: FontWeight.w700));
   }
 }

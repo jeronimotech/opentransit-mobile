@@ -210,6 +210,48 @@ void main() {
     router.go('/bogota');
     await settle(tester, 10);
 
+    // ── v1.4 taxi / ride-hailing ──
+    router.go('/bogota/plan');
+    await settle(tester, 15);
+    planner.setFrom(const Place(name: 'Cra 45 # 174-20', position: LatLng(4.7560, -74.0440)));
+    planner.setTo(const Place(name: 'Cl 57 Sur # 75-10', position: LatLng(4.5990, -74.1600)));
+    planner.setModes({TravelMode.transit, TravelMode.walk});
+    await settle(tester, 5);
+    await tester.drag(find.byKey(const ValueKey('mode-walk')), const Offset(-500, 0));
+    await settle(tester, 10);
+    await tester.tap(find.byKey(const ValueKey('mode-onDemand')), warnIfMissed: false);
+    await settle(tester, 10);
+    if (!container.read(plannerProvider).onDemand) {
+      planner.setOnDemand(true); // same code path as the chip
+      await settle(tester, 5);
+    }
+    expect(container.read(plannerProvider).onDemand, isTrue);
+    await shot(tester, 'ondemand_01_plan_form');
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+    await settle(tester, 30);
+    expect(find.byType(OnDemandChip), findsWidgets);
+    await shot(tester, 'ondemand_02_results');
+
+    // Open the direct ride (card with the taxi chip) and pull the sheet up to the picker.
+    await tester.tap(find.ancestor(of: find.byType(OnDemandChip).first, matching: find.byType(ItineraryCard)).first);
+    await settle(tester, 30);
+    await Future<void>.delayed(const Duration(seconds: 3));
+    await tester.drag(find.byKey(const ValueKey('fare-block')), const Offset(0, -420));
+    await settle(tester, 20);
+    expect(find.byKey(const ValueKey('ondemand-picker')), findsOneWidget);
+    expect(find.byKey(const ValueKey('ondemand-request-taxi')), findsOneWidget);
+    await shot(tester, 'ondemand_03_itinerary');
+
+    // Stop page: "Llegar en taxi / app" secondary action.
+    router.go('/bogota/stops/bogota:PN');
+    await settle(tester, 30);
+    expect(find.byKey(const ValueKey('stop-ondemand')), findsOneWidget);
+    await shot(tester, 'ondemand_04_stop');
+    planner.setOnDemand(false);
+    router.go('/bogota');
+    await settle(tester, 10);
+
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.dark);
     await container.read(settingsProvider.notifier).setPoiLayer(true);
     router.go('/bogota');

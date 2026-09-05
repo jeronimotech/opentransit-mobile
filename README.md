@@ -226,6 +226,31 @@ price estimate. Requesting shared bikes adds `BIKE_RENTAL` (and
 `SCOOTER_RENTAL` when a network lists scooters) to the plan `modes`.
 The Medellín fixture ships two networks to keep the UI honest about N.
 
+### Taxi and ride-hailing (v1.4)
+
+Cities can list **on-demand providers** (`mobility.onDemand[]`: a regulated taxi
+with a tariff, ride-hailing apps with deep links) and **taxi tariffs**
+(`mobility.taxiTariffs[]`). The app never knows a provider by name — labels,
+colours, links and estimates all come from the city config and the API.
+
+- Planner chip **"Taxi / app"** (`mode-onDemand`) sends `onDemand=true`; the API
+  adds a direct ride and first/last-mile combos ("Taxi → Bus") without
+  displacing transit.
+- Results show a car chip in the provider colour and the price band
+  ("≈ $ 18.000–22.000") or *Precio en la app*; "Más económico" sorts by the estimate.
+- Itinerary detail: a **provider picker** with one "Pedir" per option. The
+  button opens the API-built hand-off URL (`platform=ios|android` appended;
+  credentials never reach the app) and falls back to the store / website.
+  The tariff source line ("Estimación según Decreto 042 de 2026 · el taxímetro
+  manda") and applied surcharges (Nocturno, Aeropuerto…) are shown for taxis.
+- Stop page: **Llegar en taxi / app** prefills the stop as destination.
+- Follow-along: a CAR leg shows "Pide tu vehículo" with the picker inline.
+- Mock fixtures ship 5 providers for Bogotá and 2 for the second city
+  (`tool/gen_fixtures.py`, `assets/fixtures/{ondemand_providers,plan_ondemand}.json`).
+
+Screenshots: `docs/screenshots/ondemand_0{1..4}_*.png` (mock) and
+`live_ondemand_0{1..4}_*.png` (live API).
+
 ## Deep links
 
 Custom scheme:

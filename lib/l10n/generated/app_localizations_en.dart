@@ -929,4 +929,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String updatedHoursAgo(int hours) {
     return 'Updated $hours h ago';
   }
+
+  @override
+  String get modeOnDemand => 'Taxi / app';
+
+  @override
+  String get onDemandTaxi => 'Taxi';
+
+  @override
+  String get onDemandRidehail => 'Ride app';
+
+  @override
+  String get priceInApp => 'Price in the app';
+
+  @override
+  String get requestRide => 'Request';
+
+  @override
+  String get requestVehicle => 'Request your ride';
+
+  @override
+  String requestVehicleTo(String place) {
+    return 'Request a ride to $place';
+  }
+
+  @override
+  String onDemandRideLine(String duration, String distance) {
+    return '$duration · $distance by car';
+  }
+
+  @override
+  String get chooseProvider => 'Choose how to request it';
+
+  @override
+  String get recommended => 'Recommended';
+
+  @override
+  String waitMinutes(int minutes) {
+    return '$minutes min wait';
+  }
+
+  @override
+  String tariffSource(String source) {
+    return 'Estimate based on $source · the meter rules';
+  }
+
+  @override
+  String get onDemandToHere => 'Get here by taxi / app';
+
+  @override
+  String get onDemandNoProviders =>
+      'No taxis or ride apps are configured for this city.';
+
+  @override
+  String get onDemandOpenFailed => 'Could not open the provider\'s app.';
+
+  @override
+  String get taxiToBus => 'Taxi → Bus';
+
+  @override
+  String get onDemandOffline => 'Could not fetch the ride estimate.';
 }

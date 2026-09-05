@@ -1,4 +1,5 @@
 import 'common.dart';
+import 'ondemand.dart';
 import 'rental.dart';
 import 'transit.dart';
 
@@ -120,6 +121,7 @@ class Leg {
     this.steps = const [],
     this.alerts = const [],
     this.rental,
+    this.onDemand,
   });
   final TravelMode mode;
   final bool transit;
@@ -144,7 +146,11 @@ class Leg {
   /// Shared-vehicle block for rental legs (v1.2); null for own bike / walk.
   final LegRental? rental;
 
+  /// Taxi / ride-hailing options for a CAR leg (v1.4); null otherwise.
+  final LegOnDemand? onDemand;
+
   bool get isRental => rental != null;
+  bool get isOnDemand => onDemand != null;
 
   factory Leg.fromJson(Map<String, dynamic> j) => Leg(
         mode: TravelMode.parse(j['mode']),
@@ -175,11 +181,24 @@ class Leg {
         rental: j['rental'] is Map
             ? LegRental.fromJson(Map<String, dynamic>.from(j['rental'] as Map))
             : null,
+        onDemand: j['onDemand'] is Map
+            ? LegOnDemand.fromJson(Map<String, dynamic>.from(j['onDemand'] as Map))
+            : null,
       );
 
   /// Colour for this leg: route colour for transit, the network colour for
-  /// rental legs, null for walking.
-  String? get colorHex => route?.color ?? rental?.color;
+  /// rental legs, the recommended provider's colour for on-demand legs, null
+  /// for walking.
+  String? get colorHex => route?.color ?? rental?.color ?? onDemand?.recommended?.color;
+
+  Leg copyWith({Place? from, Place? to}) => Leg(
+        mode: mode, transit: transit, startTime: startTime, endTime: endTime,
+        durationSeconds: durationSeconds, distanceMeters: distanceMeters,
+        from: from ?? this.from, to: to ?? this.to, route: route, headsign: headsign, agency: agency,
+        tripId: tripId, realtime: realtime, realtimeState: realtimeState, delaySeconds: delaySeconds,
+        geometry: geometry, intermediateStops: intermediateStops, steps: steps, alerts: alerts,
+        rental: rental, onDemand: onDemand,
+      );
 }
 
 class FareLine {
@@ -187,10 +206,11 @@ class FareLine {
   final String label;
   final num amount;
 
-  /// `transit | rental | null` (v1.2).
+  /// `transit | rental | ondemand | null` (v1.2 / v1.4).
   final String? kind;
 
   bool get isRental => kind == 'rental';
+  bool get isOnDemand => kind == 'ondemand';
 
   factory FareLine.fromJson(Map<String, dynamic> j) => FareLine(
       label: j['label']?.toString() ?? '',
@@ -204,19 +224,29 @@ class Fare {
     required this.currency,
     this.estimated = false,
     this.breakdown = const [],
+    this.note,
   });
-  final num amount;
+
+  /// Null when the price is only known inside a provider's app (v1.4
+  /// on-demand itineraries without an estimate); see [note].
+  final num? amount;
   final String currency;
 
   /// True when computed from city parameters rather than GTFS fares.
   final bool estimated;
   final List<FareLine> breakdown;
 
+  /// Free text from the API, e.g. "Precio en la app".
+  final String? note;
+
+  bool get hasAmount => amount != null;
+
   factory Fare.fromJson(Map<String, dynamic> j) => Fare(
-        amount: (j['amount'] as num?) ?? 0,
+        amount: j['amount'] as num?,
         currency: j['currency']?.toString() ?? '',
         estimated: asBool(j['estimated']),
         breakdown: asList(j['breakdown'], FareLine.fromJson),
+        note: j['note']?.toString(),
       );
 }
 
@@ -235,6 +265,7 @@ class Itinerary {
     required this.legs,
     this.rentalLegs,
     this.modesUsed = const [],
+    this.source,
   });
   final String id;
   final DateTime startTime;
@@ -252,6 +283,9 @@ class Itinerary {
   final int? rentalLegs;
   final List<String> modesUsed;
 
+  /// Diagnostic origin of the itinerary (`primary | rental | ondemand`).
+  final String? source;
+
   factory Itinerary.fromJson(Map<String, dynamic> j) => Itinerary(
         id: j['id']?.toString() ?? '',
         startTime: parseTime(j['startTime']) ?? DateTime.now(),
@@ -268,11 +302,22 @@ class Itinerary {
         legs: asList(j['legs'], Leg.fromJson),
         rentalLegs: asInt(j['rentalLegs']),
         modesUsed: asStrings(j['modesUsed']),
+        source: j['source']?.toString(),
       );
 
   Iterable<Leg> get transitLegs => legs.where((l) => l.transit);
   Iterable<Leg> get rentalLegList => legs.where((l) => l.isRental);
+  Iterable<Leg> get onDemandLegList => legs.where((l) => l.isOnDemand);
   bool get hasRental => rentalLegs != null ? rentalLegs! > 0 : legs.any((l) => l.isRental);
+
+  /// True when the itinerary uses a taxi / ride-hailing leg (v1.4).
+  bool get hasOnDemand => modesUsed.contains('CAR_ONDEMAND') || legs.any((l) => l.isOnDemand);
+
+  /// The on-demand leg whose price drives the card (first one).
+  LegOnDemand? get onDemand => onDemandLegList.firstOrNull?.onDemand;
+
+  /// A direct ride: one on-demand leg and no transit at all.
+  bool get isOnDemandDirect => hasOnDemand && !legs.any((l) => l.transit);
   bool get hasRealtime => legs.any((l) => l.realtime);
   List<TransitAlert> get alerts => [
         for (final l in legs) ...l.alerts,
@@ -321,6 +366,7 @@ class PlanRequest {
     this.numItineraries = 5,
     this.maxWalkDistance = 1500,
     this.locale = 'es',
+    this.onDemand = false,
   });
   final Place from;
   final Place to;
@@ -331,6 +377,9 @@ class PlanRequest {
   final int numItineraries;
   final int maxWalkDistance;
   final String locale;
+
+  /// Ask the router for taxi / ride-hailing options too (v1.4 `onDemand=true`).
+  final bool onDemand;
 
   Map<String, String> toQuery() => {
         'fromLat': from.position.lat.toString(),
@@ -344,6 +393,7 @@ class PlanRequest {
         'numItineraries': numItineraries.toString(),
         'maxWalkDistance': maxWalkDistance.toString(),
         'locale': locale,
+        if (onDemand) 'onDemand': 'true',
       };
 }
 

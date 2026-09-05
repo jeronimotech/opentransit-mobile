@@ -576,5 +576,53 @@
         "type": "int"
       }
     }
-  }
+  },
+  "modeOnDemand": "Taxi / app",
+  "onDemandTaxi": "Taxi",
+  "onDemandRidehail": "App de transporte",
+  "priceInApp": "Precio en la app",
+  "requestRide": "Pedir",
+  "requestVehicle": "Pide tu vehículo",
+  "requestVehicleTo": "Pide tu vehículo hacia {place}",
+  "@requestVehicleTo": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "onDemandRideLine": "{duration} · {distance} en carro",
+  "@onDemandRideLine": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseProvider": "Elige cómo pedirlo",
+  "recommended": "Recomendado",
+  "waitMinutes": "{minutes} min de espera",
+  "@waitMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tariffSource": "Estimación según {source} · el taxímetro manda",
+  "@tariffSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "onDemandToHere": "Llegar en taxi / app",
+  "onDemandNoProviders": "No hay taxis ni apps de transporte configurados en esta ciudad.",
+  "onDemandOpenFailed": "No se pudo abrir la app del proveedor.",
+  "taxiToBus": "Taxi → Bus",
+  "onDemandOffline": "No se pudo obtener la estimación del viaje."
 }

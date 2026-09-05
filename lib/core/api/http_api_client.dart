@@ -323,4 +323,34 @@ class HttpApiClient implements ApiClient {
     ]..sort((a, b) => a.distanceMeters!.compareTo(b.distanceMeters!));
     return near.where((s) => s.distanceMeters! <= radiusMeters).take(limit).toList();
   }
+
+  // ── v1.4 on-demand mobility ──
+
+  @override
+  Future<List<OnDemandProvider>> onDemandProviders(String cityId) async {
+    try {
+      return asList((await _get('${_c(cityId)}/ondemand/providers'))['providers'], OnDemandProvider.fromJson);
+    } on ApiException catch (e) {
+      if (e.isNotFound) return const []; // API predates v1.4
+      rethrow;
+    }
+  }
+
+  @override
+  Future<OnDemandEstimate> onDemandEstimate(String cityId, LatLng from, LatLng to,
+      {DateTime? time, String? providerId}) async =>
+      OnDemandEstimate.fromJson(await _get('${_c(cityId)}/ondemand/estimate', query: {
+        'fromLat': from.lat, 'fromLon': from.lon, 'toLat': to.lat, 'toLon': to.lon,
+        'time': ?time?.toIso8601String(),
+        'providerId': ?providerId,
+      }));
+
+  @override
+  Future<OnDemandHandoff> onDemandHandoff(String cityId, String providerId, LatLng from, LatLng to,
+      {String? fromName, String? toName, String platform = 'web'}) async =>
+      OnDemandHandoff.fromJson(await _get('${_c(cityId)}/ondemand/handoff', query: {
+        'providerId': providerId,
+        'fromLat': from.lat, 'fromLon': from.lon, 'toLat': to.lat, 'toLon': to.lon,
+        'fromName': ?fromName, 'toName': ?toName, 'platform': platform,
+      }));
 }

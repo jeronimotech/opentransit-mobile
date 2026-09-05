@@ -14,6 +14,19 @@ import 'widgets/itinerary_card.dart';
 /// Sort orders offered on the results screen (Maas-style chips).
 enum ItinerarySort { fastest, fewerTransfers, lessWalking, cheapest, earliest }
 
+/// Cost used by "Más económico": the fare amount, or for on-demand rides the
+/// estimated ride price; unknown prices sort last.
+num _cost(Itinerary it, City? city) {
+  final od = it.onDemand?.displayPrice;
+  if (it.hasOnDemand && od != null) {
+    final f = fareFor(it, city);
+    // Transit part (if any) plus the ride estimate when the API left it out.
+    final transit = (f?.breakdown.where((l) => l.kind == 'transit').fold<num>(0, (a, l) => a + l.amount)) ?? 0;
+    return (f?.amount ?? transit) >= od.amount ? (f?.amount ?? transit) : transit + od.amount;
+  }
+  return fareFor(it, city)?.amount ?? double.infinity;
+}
+
 /// Stable sort of itineraries by [sort]; ties keep the router's order.
 List<Itinerary> sortItineraries(List<Itinerary> its, ItinerarySort sort, {City? city}) {
   final indexed = its.indexed.toList();
@@ -27,8 +40,8 @@ List<Itinerary> sortItineraries(List<Itinerary> its, ItinerarySort sort, {City? 
           ? cmp(a.transfers, b.transfers, ia, ib)
           : cmp(a.durationSeconds, b.durationSeconds, ia, ib),
       ItinerarySort.lessWalking => cmp(a.walkDistanceMeters, b.walkDistanceMeters, ia, ib),
-      ItinerarySort.cheapest => cmp(fareFor(a, city)?.amount ?? double.infinity, fareFor(b, city)?.amount ?? double.infinity, ia, ib) != 0
-          ? cmp(fareFor(a, city)?.amount ?? double.infinity, fareFor(b, city)?.amount ?? double.infinity, ia, ib)
+      ItinerarySort.cheapest => cmp(_cost(a, city), _cost(b, city), ia, ib) != 0
+          ? cmp(_cost(a, city), _cost(b, city), ia, ib)
           : cmp(a.durationSeconds, b.durationSeconds, ia, ib),
       ItinerarySort.earliest => cmp(a.startTime.millisecondsSinceEpoch, b.startTime.millisecondsSinceEpoch, ia, ib),
     };

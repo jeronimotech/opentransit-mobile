@@ -14,6 +14,7 @@ import '../../core/utils/links.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/polyline.dart';
 import '../../core/utils/rental.dart';
+import '../ondemand/provider_picker.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -46,13 +47,17 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
       final pts = decodeGeometry(leg.geometry);
       all.addAll(pts);
       final rental = leg.rental;
+      final onDemand = leg.onDemand;
       final color = leg.transit
           ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component, city: ref.read(currentCityProvider)))
           : rental != null
               ? colorFromHex(rental.color, fallback: const Color(0xFF00A859))
-              : const Color(0xFF546E7A);
+              : onDemand != null
+                  ? colorFromHex(onDemand.recommended?.color, fallback: const Color(0xFFF2C200))
+                  : const Color(0xFF546E7A);
       // Rental legs: dashed line in the network colour, docking stations as rings.
-      lines.add(MapLine(id: 'leg-$i', points: pts, color: color, width: leg.transit ? 6 : (rental != null ? 5 : 4), dashed: !leg.transit));
+      // On-demand legs: solid line in the provider colour.
+      lines.add(MapLine(id: 'leg-$i', points: pts, color: color, width: leg.transit ? 6 : (rental != null || onDemand != null ? 5 : 4), dashed: !leg.transit && onDemand == null));
       if (rental != null) {
         stops.add(MapPoint(id: 'rp-$i', position: leg.from.position, color: Colors.white, strokeColor: color, strokeWidth: 3.5, radius: 7, label: rental.pickup?.name ?? leg.from.name));
         stops.add(MapPoint(id: 'rd-$i', position: leg.to.position, color: Colors.white, strokeColor: color, strokeWidth: 3.5, radius: 7, label: rental.dropoff?.name ?? leg.to.name));
@@ -246,11 +251,12 @@ class _FareBlock extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(f.estimated ? l10n.estimatedFare : l10n.fareBase, style: const TextStyle(fontWeight: FontWeight.w700)),
                     const Spacer(),
-                    Text(formatMoney(f.amount, f.currency, locale),
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                    Text(f.amount == null ? (f.note ?? l10n.priceInApp) : formatMoney(f.amount!, f.currency, locale),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800, color: f.amount == null ? scheme.outline : null)),
                   ],
                 ),
-                if (f.breakdown.length > 1 || f.breakdown.any((l) => l.isRental)) ...[
+                if (f.breakdown.length > 1 || f.breakdown.any((l) => l.isRental || l.isOnDemand)) ...[
                   const SizedBox(height: 6),
                   for (final line in f.breakdown)
                     Padding(
@@ -281,13 +287,7 @@ List<Leg> _withNames(Itinerary it, String? fromName, String? toName) {
     final from = first && l.from.name.trim().isEmpty && fromName != null ? l.from.copyWith(name: fromName) : l.from;
     final to = last && l.to.name.trim().isEmpty && toName != null ? l.to.copyWith(name: toName) : l.to;
     if (identical(from, l.from) && identical(to, l.to)) return l;
-    return Leg(
-      mode: l.mode, transit: l.transit, startTime: l.startTime, endTime: l.endTime,
-      durationSeconds: l.durationSeconds, distanceMeters: l.distanceMeters, from: from, to: to,
-      route: l.route, headsign: l.headsign, agency: l.agency, tripId: l.tripId, realtime: l.realtime,
-      realtimeState: l.realtimeState, delaySeconds: l.delaySeconds, geometry: l.geometry,
-      intermediateStops: l.intermediateStops, steps: l.steps, alerts: l.alerts, rental: l.rental,
-    );
+    return l.copyWith(from: from, to: to);
   }
   return [
     for (var i = 0; i < it.legs.length; i++)
@@ -335,11 +335,14 @@ class _LegTileState extends State<_LegTile> {
     final scheme = Theme.of(context).colorScheme;
     final leg = widget.leg;
     final rental = leg.rental;
+    final onDemand = leg.onDemand;
     final color = leg.transit
         ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component))
         : rental != null
             ? colorFromHex(rental.color, fallback: const Color(0xFF00A859))
-            : scheme.outline;
+            : onDemand != null
+                ? colorFromHex(onDemand.recommended?.color, fallback: const Color(0xFFF2C200))
+                : scheme.outline;
     final delay = formatDelay(leg.delaySeconds, l10n);
 
     return IntrinsicHeight(
@@ -364,7 +367,7 @@ class _LegTileState extends State<_LegTile> {
                 decoration: BoxDecoration(shape: BoxShape.circle, color: scheme.surface, border: Border.all(color: color, width: 3)),
               ),
               Expanded(
-                child: leg.transit
+                child: leg.transit || onDemand != null
                     ? Container(width: 6, color: color)
                     : _DottedBar(color: color),
               ),
@@ -454,6 +457,8 @@ class _LegTileState extends State<_LegTile> {
                     Text(l10n.rideTo(leg.to.name), style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
                   ] else if (rental != null) ...[
                     _RentalLegBody(leg: leg, rental: rental, network: widget.network, color: color),
+                  ] else if (onDemand != null) ...[
+                    _OnDemandLegBody(leg: leg, onDemand: onDemand, color: color),
                   ] else ...[
                     Text(l10n.walkTo(leg.to.name), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                     const SizedBox(height: 4),
@@ -622,6 +627,55 @@ class _RentalLegBody extends StatelessWidget {
               label: Text(l10n.openApp(network!.name)),
             ),
           ),
+      ],
+    );
+  }
+}
+
+/// Taxi / ride-hailing leg: kind chip, ride summary, the provider picker
+/// with "Pedir" buttons, the tariff source line and surcharge chips (v1.4).
+class _OnDemandLegBody extends ConsumerWidget {
+  const _OnDemandLegBody({required this.leg, required this.onDemand, required this.color});
+  final Leg leg;
+  final LegOnDemand onDemand;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final city = ref.watch(currentCityProvider);
+    final rec = onDemand.recommended;
+    final isTaxi = (city?.mobility.provider(rec?.providerId)?.kind ?? onDemand.displayKind) == 'taxi';
+    final tariffProvider = onDemand.providers
+        .map((o) => city?.mobility.provider(o.providerId))
+        .whereType<OnDemandProvider>()
+        .where((p) => p.estimateKind == 'tariff')
+        .firstOrNull;
+    final tariff = tariffProvider == null ? null : city?.mobility.tariff(tariffProvider.tariffId);
+    final tariffPrice = onDemand.providers.where((o) => o.source == 'tariff').firstOrNull?.price;
+
+    return Column(
+      key: const ValueKey('ondemand-leg'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            OnDemandChip(name: isTaxi ? l10n.onDemandTaxi : l10n.onDemandRidehail, color: color, taxi: isTaxi),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(l10n.requestVehicleTo(leg.to.name),
+                  maxLines: 2, overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(rideSummary(leg, l10n), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+        const SizedBox(height: 4),
+        Text(l10n.chooseProvider, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
+        ProviderPicker(options: onDemand.providers, recommendedId: rec?.providerId),
+        TariffFootnote(tariff: tariff, price: tariffPrice),
       ],
     );
   }

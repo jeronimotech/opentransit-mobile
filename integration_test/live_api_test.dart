@@ -12,6 +12,7 @@ import 'package:opentransit_mobile/core/api/http_api_client.dart';
 import 'package:opentransit_mobile/core/config.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/providers.dart';
+import 'package:opentransit_mobile/core/widgets/common.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
 import 'package:opentransit_mobile/features/planner/widgets/itinerary_card.dart';
 import 'package:opentransit_mobile/router.dart';
@@ -210,5 +211,61 @@ void main() {
     await settle(tester, 10);
     router.go('/bogota');
     await settle(tester, 20);
+
+    // ── v1.4 taxi / ride-hailing (needs the API's /ondemand/providers) ──
+    final odProviders = await api.onDemandProviders('bogota');
+    // ignore: avoid_print
+    print('LIVE: on-demand providers=${odProviders.map((p) => '${p.id}:${p.kind}:${p.estimateKind}').join('; ')}');
+    if (odProviders.isEmpty || !city.onDemandEnabled) {
+      // ignore: avoid_print
+      print('LIVE: on-demand not available on this API yet — skipping taxi/app screens');
+    } else {
+      final est = await api.onDemandEstimate('bogota', const LatLng(4.7546, -74.0459), const LatLng(4.5978, -74.1616));
+      // ignore: avoid_print
+      print('LIVE: estimate Portal Norte→Portal Sur: ${est.distanceMeters} m / ${est.durationSeconds} s; ${est.estimates.map((e) => '${e.providerId}=${e.price?.amount ?? 'app'}').join(', ')}');
+      final odPlan = await api.plan('bogota', const PlanRequest(
+        from: Place(name: 'Portal Norte', position: LatLng(4.7546, -74.0459)),
+        to: Place(name: 'Portal Sur', position: LatLng(4.5978, -74.1616)),
+        modes: [TravelMode.transit, TravelMode.walk],
+        onDemand: true,
+        numItineraries: 6,
+      ));
+      // ignore: avoid_print
+      print('LIVE: onDemand plan: ${odPlan.itineraries.length} itineraries, with ride ${odPlan.itineraries.where((i) => i.hasOnDemand).length}, modes ${odPlan.itineraries.map((i) => i.legs.map((l) => l.isOnDemand ? 'RIDE' : l.mode.wire).join('>')).toList()}');
+
+      router.go('/bogota/plan');
+      await settle(tester, 15);
+      planner.setFrom(const Place(name: 'Portal Norte', position: LatLng(4.7546, -74.0459)));
+      planner.setTo(const Place(name: 'Portal Sur', position: LatLng(4.5978, -74.1616)));
+      planner.setModes({TravelMode.transit, TravelMode.walk});
+      planner.setOnDemand(true);
+      await settle(tester, 10);
+      // The mode row scrolls horizontally; bring the last chip into view.
+      if (find.byKey(const ValueKey('mode-walk')).evaluate().isNotEmpty) {
+        await tester.drag(find.byKey(const ValueKey('mode-walk')), const Offset(-500, 0));
+        await settle(tester, 10);
+      }
+      expect(find.byKey(const ValueKey('mode-onDemand')), findsOneWidget);
+      await shot(tester, 'live_ondemand_01_plan_form');
+      await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+      await settle(tester, 40);
+      await shot(tester, 'live_ondemand_02_results');
+      final rideCards = find.ancestor(of: find.byType(OnDemandChip), matching: find.byType(ItineraryCard));
+      if (rideCards.evaluate().isNotEmpty) {
+        await tester.tap(rideCards.first);
+        await settle(tester, 30);
+        await Future<void>.delayed(const Duration(seconds: 3));
+        await tester.drag(find.byKey(const ValueKey('fare-block')), const Offset(0, -420));
+        await settle(tester, 20);
+        await shot(tester, 'live_ondemand_03_itinerary');
+      } else {
+        // ignore: avoid_print
+        print('LIVE: no on-demand itinerary rendered for this pair');
+      }
+      router.go('/bogota/stops/bogota:2000');
+      await settle(tester, 30);
+      await shot(tester, 'live_ondemand_04_stop');
+      planner.setOnDemand(false);
+    }
   }, timeout: const Timeout(Duration(minutes: 8)));
 }

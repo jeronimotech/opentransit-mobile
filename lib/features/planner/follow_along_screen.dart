@@ -15,6 +15,7 @@ import '../../core/utils/polyline.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../ondemand/provider_picker.dart';
 import 'planner_state.dart';
 
 /// Pure logic behind "Iniciar viaje": which leg the user is on and how far
@@ -137,14 +138,16 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
           ? colorFromHex(l.route?.color, fallback: componentColor(l.route?.component, city: city))
           : l.isRental
               ? colorFromHex(l.rental!.color, fallback: const Color(0xFF00A859))
-              : const Color(0xFF546E7A);
+              : l.isOnDemand
+                  ? colorFromHex(l.onDemand!.recommended?.color, fallback: const Color(0xFFF2C200))
+                  : const Color(0xFF546E7A);
       final current = i == _legIndex;
       lines.add(MapLine(
         id: 'leg-$i',
         points: decodeGeometry(l.geometry),
         color: current ? c : c.withValues(alpha: 0.35),
         width: current ? 8 : 4,
-        dashed: !l.transit,
+        dashed: !l.transit && !l.isOnDemand,
       ));
     }
     final markers = [
@@ -155,7 +158,9 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
         ? colorFromHex(leg.route?.color, fallback: componentColor(leg.route?.component, city: city))
         : leg.isRental
             ? colorFromHex(leg.rental!.color, fallback: const Color(0xFF00A859))
-            : scheme.outline;
+            : leg.isOnDemand
+                ? colorFromHex(leg.onDemand!.recommended?.color, fallback: const Color(0xFFF2C200))
+                : scheme.outline;
 
     return Scaffold(
       body: Stack(
@@ -227,6 +232,13 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                           RouteChip(leg.route)
                         else if (leg.isRental)
                           RentalChip(name: leg.rental!.networkName, color: legColor, electric: leg.rental!.isElectric)
+                        else if (leg.isOnDemand)
+                          OnDemandChip(
+                              name: (city?.mobility.provider(leg.onDemand!.recommended?.providerId)?.kind ?? leg.onDemand!.displayKind) == 'taxi'
+                                  ? l10n.onDemandTaxi
+                                  : l10n.onDemandRidehail,
+                              color: legColor,
+                              taxi: (city?.mobility.provider(leg.onDemand!.recommended?.providerId)?.kind ?? leg.onDemand!.displayKind) == 'taxi')
                         else
                           RouteChip(null, mode: leg.mode),
                         const SizedBox(width: 10),
@@ -236,7 +248,9 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                                 ? l10n.getOffAt(leg.to.name)
                                 : leg.isRental
                                     ? l10n.rentalDropoff(leg.rental?.dropoff?.name ?? leg.to.name)
-                                    : l10n.walkTo(leg.to.name),
+                                    : leg.isOnDemand
+                                        ? l10n.requestVehicleTo(leg.to.name)
+                                        : l10n.walkTo(leg.to.name),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
@@ -251,6 +265,15 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                           : (_toEnd == null ? l10n.followAlongHint : l10n.distanceToStop(formatDistance(_toEnd!.round()))),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _denied ? scheme.error : scheme.onSurfaceVariant),
                     ),
+                    // "Pide tu vehículo": the provider picker inline (top 3).
+                    if (leg.isOnDemand)
+                      ProviderPicker(
+                        key: const ValueKey('follow-ondemand-picker'),
+                        options: leg.onDemand!.providers,
+                        recommendedId: leg.onDemand!.recommendedProviderId,
+                        compact: true,
+                        maxRows: 3,
+                      ),
                   ],
                   const SizedBox(height: 14),
                   FilledButton.tonalIcon(

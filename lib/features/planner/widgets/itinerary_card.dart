@@ -102,6 +102,20 @@ class _LegChip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (leg.transit) return RouteChip(leg.route, dense: true);
     final l10n = AppLocalizations.of(context);
+    final od = leg.onDemand;
+    if (od != null) {
+      final rec = od.recommended;
+      final color = colorFromHex(rec?.color ?? '#455A64', fallback: const Color(0xFF455A64));
+      return Tooltip(
+        message: '${rec?.name ?? modeLabel(leg.mode, l10n)} · ${formatDuration(leg.durationSeconds, l10n)}',
+        child: OnDemandChip(
+          name: rec?.name ?? l10n.onDemandTaxi,
+          color: color,
+          dense: true,
+          taxi: od.displayKind == 'taxi',
+        ),
+      );
+    }
     final r = leg.rental;
     if (r != null) {
       return Tooltip(

@@ -116,4 +116,31 @@ abstract class ApiClient {
     int radiusMeters = 800,
     int limit = 5,
   });
+
+  // ── v1.4 on-demand mobility (taxi, ride-hailing) ──
+
+  /// Providers configured for the city (public shape, no credentials).
+  /// Empty (never an error) when the API predates v1.4.
+  Future<List<OnDemandProvider>> onDemandProviders(String cityId);
+
+  /// Car route + one estimate per provider for a trip.
+  Future<OnDemandEstimate> onDemandEstimate(
+    String cityId,
+    LatLng from,
+    LatLng to, {
+    DateTime? time,
+    String? providerId,
+  });
+
+  /// Builds the provider hand-off URL server-side (credentials injected by
+  /// the API) and returns it with a store/web fallback.
+  Future<OnDemandHandoff> onDemandHandoff(
+    String cityId,
+    String providerId,
+    LatLng from,
+    LatLng to, {
+    String? fromName,
+    String? toName,
+    String platform = 'web',
+  });
 }

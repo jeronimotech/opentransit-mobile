@@ -10,6 +10,7 @@ class PlannerState {
     this.time,
     this.arriveBy = false,
     this.modes = const {TravelMode.transit, TravelMode.walk},
+    this.onDemand = false,
     this.result,
     this.request,
   });
@@ -20,6 +21,9 @@ class PlannerState {
   final DateTime? time;
   final bool arriveBy;
   final Set<TravelMode> modes;
+
+  /// Ask for taxi / ride-hailing options too (v1.4).
+  final bool onDemand;
   final AsyncValue<PlanResponse>? result;
   final PlanRequest? request;
 
@@ -34,6 +38,7 @@ class PlannerState {
     bool clearTime = false,
     bool? arriveBy,
     Set<TravelMode>? modes,
+    bool? onDemand,
     AsyncValue<PlanResponse>? result,
     bool clearResult = false,
     PlanRequest? request,
@@ -44,6 +49,7 @@ class PlannerState {
         time: clearTime ? null : (time ?? this.time),
         arriveBy: arriveBy ?? this.arriveBy,
         modes: modes ?? this.modes,
+        onDemand: onDemand ?? this.onDemand,
         result: clearResult ? null : (result ?? this.result),
         request: request ?? this.request,
       );
@@ -63,6 +69,7 @@ class PlannerNotifier extends Notifier<PlannerState> {
         time: state.time,
         arriveBy: state.arriveBy,
         modes: state.modes,
+        onDemand: state.onDemand,
       );
   void setTime(DateTime? t) =>
       state = state.copyWith(time: t, clearTime: t == null, clearResult: true);
@@ -75,6 +82,8 @@ class PlannerNotifier extends Notifier<PlannerState> {
     if (next.isEmpty) next.add(TravelMode.walk);
     state = state.copyWith(modes: next, clearResult: true);
   }
+
+  void setOnDemand(bool v) => state = state.copyWith(onDemand: v, clearResult: true);
 
   void setModes(Set<TravelMode> modes) =>
       state = state.copyWith(modes: modes.isEmpty ? {TravelMode.walk} : modes, clearResult: true);
@@ -95,6 +104,8 @@ class PlannerNotifier extends Notifier<PlannerState> {
       wheelchair: settings.wheelchair,
       maxWalkDistance: settings.maxWalkDistance,
       locale: settings.locale?.languageCode ?? 'es',
+      onDemand: s.onDemand,
+      numItineraries: s.onDemand ? 6 : 5,
     );
     state = state.copyWith(result: const AsyncValue.loading(), request: req);
     try {

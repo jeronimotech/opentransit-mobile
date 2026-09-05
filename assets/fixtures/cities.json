@@ -32,7 +32,8 @@
     "tripUpdates": true,
     "alerts": true,
     "fares": false,
-    "bikeShare": true
+    "bikeShare": true,
+    "onDemand": true
    },
    "agencies": [
     {
@@ -129,7 +130,8 @@
      "pois": true,
      "followAlong": true,
      "bike": true,
-     "bikeShare": true
+     "bikeShare": true,
+     "onDemand": true
     },
     "minAppVersion": {
      "ios": "0.1.0",
@@ -181,7 +183,204 @@
        "scooter"
       ]
      }
-    ]
+    ],
+    "taxiTariffs": [
+     {
+      "id": "bogota-taxi-2026",
+      "name": "Tarifa oficial de taxi 2026",
+      "currency": "COP",
+      "flagFall": 4500,
+      "unitPrice": 159,
+      "unitMeters": 100,
+      "unitSeconds": 30,
+      "minimumFare": 8000,
+      "surcharges": [
+       {
+        "id": "night",
+        "label": "Nocturno / dominical / festivo",
+        "amount": 3800,
+        "when": {
+         "nightFrom": "19:00",
+         "nightTo": "06:00",
+         "sundays": true,
+         "holidays": true
+        }
+       },
+       {
+        "id": "airport",
+        "label": "Aeropuerto",
+        "amount": 8000,
+        "when": {
+         "zones": [
+          "airport"
+         ]
+        }
+       },
+       {
+        "id": "door",
+        "label": "Puerta a puerta",
+        "amount": 1500,
+        "when": {
+         "optional": true
+        }
+       }
+      ],
+      "zones": [
+       {
+        "id": "airport",
+        "name": "Aeropuerto El Dorado",
+        "polygon": [
+         [
+          -74.16,
+          4.68
+         ],
+         [
+          -74.13,
+          4.68
+         ],
+         [
+          -74.13,
+          4.72
+         ],
+         [
+          -74.16,
+          4.72
+         ]
+        ]
+       }
+      ],
+      "source": {
+       "label": "Decreto Distrital 042 de 2026",
+       "url": "https://bogota.gov.co/mi-ciudad/movilidad/en-firme-el-decreto-que-fija-las-tarifas-de-taxi-en-bogota-en-2026"
+      },
+      "validFrom": "2026-02-12",
+      "note": "Estimación según tarifa oficial; el taxímetro manda."
+     }
+    ],
+    "onDemand": [
+     {
+      "id": "taxi",
+      "name": "Taxi",
+      "kind": "taxi",
+      "color": "#F2C200",
+      "textColor": "#111111",
+      "logoUrl": null,
+      "estimate": {
+       "kind": "tariff",
+       "tariffId": "bogota-taxi-2026"
+      },
+      "handoff": {
+       "kind": "url",
+       "template": null,
+       "web": "https://www.taxislibres.com.co/",
+       "apps": {
+        "ios": "https://apps.apple.com/co/app/id511140577",
+        "android": "https://play.google.com/store/apps/details?id=com.taxislibres.app"
+       },
+       "scheme": null
+      },
+      "enabled": true,
+      "order": 1
+     },
+     {
+      "id": "uber",
+      "name": "Uber",
+      "kind": "ridehail",
+      "color": "#000000",
+      "textColor": "#FFFFFF",
+      "logoUrl": null,
+      "estimate": {
+       "kind": "none"
+      },
+      "handoff": {
+       "kind": "template",
+       "template": "https://m.uber.com/looking?client_id={clientId}&pickup={pickupJson}&drop[0]={dropoffJson}",
+       "web": "https://m.uber.com/",
+       "apps": {
+        "ios": "https://apps.apple.com/co/app/id368677368",
+        "android": "https://play.google.com/store/apps/details?id=com.ubercab"
+       },
+       "scheme": null
+      },
+      "enabled": true,
+      "order": 2
+     },
+     {
+      "id": "cabify",
+      "name": "Cabify",
+      "kind": "ridehail",
+      "color": "#7145D6",
+      "textColor": "#FFFFFF",
+      "logoUrl": null,
+      "estimate": {
+       "kind": "none"
+      },
+      "handoff": {
+       "kind": "url",
+       "template": null,
+       "web": "https://cabify.com/co",
+       "apps": {
+        "ios": "https://apps.apple.com/co/app/id476087442",
+        "android": "https://play.google.com/store/apps/details?id=com.cabify.rider"
+       },
+       "scheme": null
+      },
+      "enabled": true,
+      "order": 3
+     },
+     {
+      "id": "didi",
+      "name": "DiDi",
+      "kind": "ridehail",
+      "color": "#FF7F41",
+      "textColor": "#111111",
+      "logoUrl": null,
+      "estimate": {
+       "kind": "none"
+      },
+      "handoff": {
+       "kind": "url",
+       "template": null,
+       "web": "https://web.didiglobal.com/co/",
+       "apps": {
+        "ios": "https://apps.apple.com/co/app/id1362320138",
+        "android": "https://play.google.com/store/apps/details?id=com.didiglobal.passenger"
+       },
+       "scheme": null
+      },
+      "enabled": true,
+      "order": 4
+     },
+     {
+      "id": "indrive",
+      "name": "inDrive",
+      "kind": "ridehail",
+      "color": "#A6E22E",
+      "textColor": "#111111",
+      "logoUrl": null,
+      "estimate": {
+       "kind": "none"
+      },
+      "handoff": {
+       "kind": "url",
+       "template": null,
+       "web": "https://indrive.com/",
+       "apps": {
+        "ios": "https://apps.apple.com/co/app/id780125801",
+        "android": "https://play.google.com/store/apps/details?id=sinet.startup.inDriver"
+       },
+       "scheme": null
+      },
+      "enabled": true,
+      "order": 5
+     }
+    ],
+    "onDemandPolicy": {
+     "maxDirectDistanceKm": 40,
+     "firstLastMile": true,
+     "maxFeederKm": 8,
+     "showWhenTransitFaster": true
+    }
    }
   },
   {
@@ -217,7 +416,8 @@
     "tripUpdates": false,
     "alerts": false,
     "fares": false,
-    "bikeShare": true
+    "bikeShare": true,
+    "onDemand": true
    },
    "agencies": [
     {
@@ -254,7 +454,8 @@
      "pois": true,
      "followAlong": true,
      "bike": true,
-     "bikeShare": true
+     "bikeShare": true,
+     "onDemand": true
     },
     "minAppVersion": {
      "ios": "0.1.0",
@@ -306,7 +507,112 @@
        "scooter"
       ]
      }
-    ]
+    ],
+    "taxiTariffs": [
+     {
+      "id": "medellin-taxi-2026",
+      "name": "Tarifa de taxi Medellín 2026",
+      "currency": "COP",
+      "flagFall": 4000,
+      "unitPrice": 140,
+      "unitMeters": 100,
+      "unitSeconds": 30,
+      "minimumFare": 7500,
+      "surcharges": [
+       {
+        "id": "night",
+        "label": "Nocturno / dominical / festivo",
+        "amount": 3800,
+        "when": {
+         "nightFrom": "19:00",
+         "nightTo": "06:00",
+         "sundays": true,
+         "holidays": true
+        }
+       },
+       {
+        "id": "airport",
+        "label": "Aeropuerto",
+        "amount": 8000,
+        "when": {
+         "zones": [
+          "airport"
+         ]
+        }
+       },
+       {
+        "id": "door",
+        "label": "Puerta a puerta",
+        "amount": 1500,
+        "when": {
+         "optional": true
+        }
+       }
+      ],
+      "zones": [],
+      "source": {
+       "label": "Resolución AMVA 2026",
+       "url": "https://www.metropol.gov.co/"
+      },
+      "validFrom": "2026-02-12",
+      "note": "Estimación según tarifa oficial; el taxímetro manda."
+     }
+    ],
+    "onDemand": [
+     {
+      "id": "taxi",
+      "name": "Taxi Medellín",
+      "kind": "taxi",
+      "color": "#FFC107",
+      "textColor": "#111111",
+      "logoUrl": null,
+      "estimate": {
+       "kind": "tariff",
+       "tariffId": "medellin-taxi-2026"
+      },
+      "handoff": {
+       "kind": "none",
+       "template": null,
+       "web": null,
+       "apps": {
+        "ios": null,
+        "android": null
+       },
+       "scheme": null
+      },
+      "enabled": true,
+      "order": 1
+     },
+     {
+      "id": "app-x",
+      "name": "Ride App X",
+      "kind": "ridehail",
+      "color": "#0097A7",
+      "textColor": "#FFFFFF",
+      "logoUrl": null,
+      "estimate": {
+       "kind": "none"
+      },
+      "handoff": {
+       "kind": "url",
+       "template": null,
+       "web": "https://example.org/ride-x",
+       "apps": {
+        "ios": null,
+        "android": null
+       },
+       "scheme": null
+      },
+      "enabled": true,
+      "order": 2
+     }
+    ],
+    "onDemandPolicy": {
+     "maxDirectDistanceKm": 40,
+     "firstLastMile": true,
+     "maxFeederKm": 8,
+     "showWhenTransitFaster": true
+    }
    }
   }
  ]

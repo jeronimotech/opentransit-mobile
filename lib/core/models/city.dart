@@ -1,4 +1,5 @@
 import 'common.dart';
+import 'ondemand.dart';
 import 'rental.dart';
 
 class CityAgency {
@@ -28,12 +29,16 @@ class CityFeatures {
     this.alerts = false,
     this.fares = false,
     this.bikeShare = false,
+    this.onDemand = false,
   });
   final bool realtimeVehicles;
   final bool tripUpdates;
   final bool alerts;
   final bool fares;
   final bool bikeShare;
+
+  /// v1.4 taxi / ride-hailing options in the planner.
+  final bool onDemand;
 
   factory CityFeatures.fromJson(Map<String, dynamic>? j) => j == null
       ? const CityFeatures()
@@ -43,6 +48,7 @@ class CityFeatures {
           alerts: asBool(j['alerts']),
           fares: asBool(j['fares']),
           bikeShare: asBool(j['bikeShare']),
+          onDemand: asBool(j['onDemand']),
         );
 }
 
@@ -198,12 +204,26 @@ class CityService {
       );
 }
 
-/// Shared-mobility networks of a city (v1.2 `city.mobility`).
+/// Shared-mobility networks and on-demand providers of a city
+/// (v1.2 `city.mobility.bikeShare[]`, v1.4 `onDemand[]` / `taxiTariffs[]`).
 class CityMobility {
-  const CityMobility({this.bikeShare = const []});
+  const CityMobility({
+    this.bikeShare = const [],
+    this.onDemand = const [],
+    this.taxiTariffs = const [],
+    this.onDemandPolicy = const OnDemandPolicy(),
+  });
   final List<BikeShareNetwork> bikeShare;
+  final List<OnDemandProvider> onDemand;
+  final List<TaxiTariff> taxiTariffs;
+  final OnDemandPolicy onDemandPolicy;
 
   bool get hasBikeShare => bikeShare.isNotEmpty;
+
+  /// Enabled providers, in their configured order.
+  List<OnDemandProvider> get onDemandProviders =>
+      (onDemand.where((p) => p.enabled).toList()..sort((a, b) => a.order.compareTo(b.order)));
+  bool get hasOnDemand => onDemandProviders.isNotEmpty;
 
   BikeShareNetwork? network(String? id) {
     if (id == null) return bikeShare.firstOrNull;
@@ -213,8 +233,31 @@ class CityMobility {
     return bikeShare.firstOrNull;
   }
 
-  factory CityMobility.fromJson(Map<String, dynamic>? j) =>
-      j == null ? const CityMobility() : CityMobility(bikeShare: asList(j['bikeShare'], BikeShareNetwork.fromJson));
+  OnDemandProvider? provider(String? id) {
+    if (id == null) return null;
+    for (final p in onDemand) {
+      if (p.id == id) return p;
+    }
+    return null;
+  }
+
+  TaxiTariff? tariff(String? id) {
+    if (id == null) return taxiTariffs.firstOrNull;
+    for (final t in taxiTariffs) {
+      if (t.id == id) return t;
+    }
+    return taxiTariffs.firstOrNull;
+  }
+
+  factory CityMobility.fromJson(Map<String, dynamic>? j) => j == null
+      ? const CityMobility()
+      : CityMobility(
+          bikeShare: asList(j['bikeShare'], BikeShareNetwork.fromJson),
+          onDemand: asList(j['onDemand'], OnDemandProvider.fromJson),
+          taxiTariffs: asList(j['taxiTariffs'], TaxiTariff.fromJson),
+          onDemandPolicy: OnDemandPolicy.fromJson(
+              j['onDemandPolicy'] is Map ? Map<String, dynamic>.from(j['onDemandPolicy'] as Map) : null),
+        );
 }
 
 class City {
@@ -268,6 +311,12 @@ class City {
   /// disabled by remote config and at least one network is configured.
   bool get bikeShareEnabled =>
       features.bikeShare && config.isEnabled('bikeShare') && mobility.hasBikeShare;
+
+  /// Taxi / ride-hailing options are offered when the feature flag is on, the
+  /// module is not disabled by remote config and at least one provider is
+  /// enabled (v1.4).
+  bool get onDemandEnabled =>
+      features.onDemand && config.isEnabled('onDemand') && mobility.hasOnDemand;
 
   factory City.fromJson(Map<String, dynamic> j) {
     final branding = j['branding'] is Map

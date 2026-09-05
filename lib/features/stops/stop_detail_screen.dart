@@ -77,6 +77,12 @@ class StopDetailScreen extends ConsumerWidget {
                     case 'to':
                       planner.setTo(place);
                       context.go('/$cityId/plan');
+                    case 'ondemand':
+                      // Taxi / ride-hailing to this stop: destination prefilled,
+                      // on-demand options on; the user picks the origin.
+                      planner.setTo(place);
+                      planner.setOnDemand(true);
+                      context.go('/$cityId/plan');
                     case 'from':
                       planner.setFrom(place);
                       context.go('/$cityId/plan');
@@ -98,6 +104,8 @@ class StopDetailScreen extends ConsumerWidget {
                   PopupMenuItem(value: 'from', child: ListTile(leading: const Icon(Icons.trip_origin), title: Text(l10n.leaveFrom))),
                   PopupMenuItem(value: 'saveAs', child: ListTile(leading: const Icon(Icons.home_outlined), title: Text(l10n.saveAs))),
                   PopupMenuItem(value: 'share', child: ListTile(leading: const Icon(Icons.share_outlined), title: Text(l10n.share))),
+                  if (city?.onDemandEnabled ?? false)
+                    PopupMenuItem(value: 'ondemand', child: ListTile(leading: const Icon(Icons.local_taxi_outlined), title: Text(l10n.onDemandToHere))),
                   if (city?.links.pqrs != null)
                     PopupMenuItem(value: 'pqrs', child: ListTile(leading: const Icon(Icons.report_outlined), title: Text(l10n.reportProblem))),
                 ],
@@ -142,6 +150,26 @@ class StopDetailScreen extends ConsumerWidget {
                   stopId: stopId,
                   onLocate: boardEnabled ? () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(stop.id)}') : null,
                 ),
+                // 1b. Taxi / ride-hailing to this stop (v1.4), a quiet secondary action.
+                if (city?.onDemandEnabled ?? false)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        key: const ValueKey('stop-ondemand'),
+                        style: TextButton.styleFrom(minimumSize: const Size(44, 44)),
+                        onPressed: () {
+                          final planner = ref.read(plannerProvider.notifier);
+                          planner.setTo(Place(name: stop.name, position: stop.position, stopId: stop.id, component: stop.component));
+                          planner.setOnDemand(true);
+                          context.push('/$cityId/plan');
+                        },
+                        icon: const Icon(Icons.local_taxi_outlined, size: 18),
+                        label: Text(l10n.onDemandToHere),
+                      ),
+                    ),
+                  ),
                 // 2. Routes, collapsed.
                 if (routes.isNotEmpty)
                   Theme(

@@ -8,6 +8,7 @@ import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/location.dart';
+import '../../core/utils/ondemand.dart';
 import '../../core/utils/rental.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -53,6 +54,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     }
     if (q['time'] != null) planner.setTime(DateTime.tryParse(q['time']!));
     if (q['arriveBy'] == 'true') planner.setArriveBy(true);
+    if (q['onDemand'] == '1' || q['onDemand'] == 'true') planner.setOnDemand(true);
     if (changed && ref.read(plannerProvider).canPlan) _submit();
   }
 
@@ -227,6 +229,11 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     final bikeShare = city != null && city.bikeShareEnabled;
     final bikeShareOn = s.modes.contains(TravelMode.bikeRental);
     final bikeShareColor = colorFromHex(city?.mobility.bikeShare.firstOrNull?.color, fallback: const Color(0xFF00A859));
+    // Taxi / ride-hailing (v1.4): one chip, coloured like the first configured
+    // provider; sets `onDemand=true` on the request (not a router mode).
+    final onDemand = city != null && city.onDemandEnabled;
+    final onDemandOn = s.onDemand;
+    final onDemandColor = colorFromHex(city?.mobility.onDemandProviders.firstOrNull?.color, fallback: const Color(0xFFF2C200));
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.planTrip)),
@@ -358,6 +365,20 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                         on: v,
                         scooters: city.mobility.bikeShare.any((n) => n.hasScooters))),
                   ),
+                if (onDemand) ...[
+                  const SizedBox(width: 8),
+                  FilterChip(
+                    key: const ValueKey('mode-onDemand'),
+                    avatar: Icon(Icons.local_taxi_rounded, size: 16, color: onDemandOn ? onColor(onDemandColor) : onDemandColor),
+                    label: Text(onDemandChipLabel(city, l10n.modeOnDemand)),
+                    selected: onDemandOn,
+                    selectedColor: onDemandColor,
+                    checkmarkColor: onColor(onDemandColor),
+                    labelStyle: TextStyle(color: onDemandOn ? onColor(onDemandColor) : null, fontWeight: FontWeight.w600),
+                    side: BorderSide(color: onDemandColor.withValues(alpha: 0.6)),
+                    onSelected: (v) => ref.read(plannerProvider.notifier).setOnDemand(v),
+                  ),
+                ],
               ],
             ),
           ),

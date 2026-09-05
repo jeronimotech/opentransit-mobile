@@ -1,0 +1,120 @@
+{
+ "providers": [
+  {
+   "id": "taxi",
+   "name": "Taxi",
+   "kind": "taxi",
+   "color": "#F2C200",
+   "textColor": "#111111",
+   "logoUrl": null,
+   "estimate": {
+    "kind": "tariff",
+    "tariffId": "bogota-taxi-2026"
+   },
+   "enabled": true,
+   "order": 1,
+   "handoff": {
+    "kind": "url",
+    "hasTemplate": false,
+    "web": "https://www.taxislibres.com.co/",
+    "apps": {
+     "ios": "https://apps.apple.com/co/app/id511140577",
+     "android": "https://play.google.com/store/apps/details?id=com.taxislibres.app"
+    },
+    "scheme": null
+   }
+  },
+  {
+   "id": "uber",
+   "name": "Uber",
+   "kind": "ridehail",
+   "color": "#000000",
+   "textColor": "#FFFFFF",
+   "logoUrl": null,
+   "estimate": {
+    "kind": "none"
+   },
+   "enabled": true,
+   "order": 2,
+   "handoff": {
+    "kind": "template",
+    "hasTemplate": true,
+    "web": "https://m.uber.com/",
+    "apps": {
+     "ios": "https://apps.apple.com/co/app/id368677368",
+     "android": "https://play.google.com/store/apps/details?id=com.ubercab"
+    },
+    "scheme": null
+   }
+  },
+  {
+   "id": "cabify",
+   "name": "Cabify",
+   "kind": "ridehail",
+   "color": "#7145D6",
+   "textColor": "#FFFFFF",
+   "logoUrl": null,
+   "estimate": {
+    "kind": "none"
+   },
+   "enabled": true,
+   "order": 3,
+   "handoff": {
+    "kind": "url",
+    "hasTemplate": false,
+    "web": "https://cabify.com/co",
+    "apps": {
+     "ios": "https://apps.apple.com/co/app/id476087442",
+     "android": "https://play.google.com/store/apps/details?id=com.cabify.rider"
+    },
+    "scheme": null
+   }
+  },
+  {
+   "id": "didi",
+   "name": "DiDi",
+   "kind": "ridehail",
+   "color": "#FF7F41",
+   "textColor": "#111111",
+   "logoUrl": null,
+   "estimate": {
+    "kind": "none"
+   },
+   "enabled": true,
+   "order": 4,
+   "handoff": {
+    "kind": "url",
+    "hasTemplate": false,
+    "web": "https://web.didiglobal.com/co/",
+    "apps": {
+     "ios": "https://apps.apple.com/co/app/id1362320138",
+     "android": "https://play.google.com/store/apps/details?id=com.didiglobal.passenger"
+    },
+    "scheme": null
+   }
+  },
+  {
+   "id": "indrive",
+   "name": "inDrive",
+   "kind": "ridehail",
+   "color": "#A6E22E",
+   "textColor": "#111111",
+   "logoUrl": null,
+   "estimate": {
+    "kind": "none"
+   },
+   "enabled": true,
+   "order": 5,
+   "handoff": {
+    "kind": "url",
+    "hasTemplate": false,
+    "web": "https://indrive.com/",
+    "apps": {
+     "ios": "https://apps.apple.com/co/app/id780125801",
+     "android": "https://play.google.com/store/apps/details?id=sinet.startup.inDriver"
+    },
+    "scheme": null
+   }
+  }
+ ]
+}

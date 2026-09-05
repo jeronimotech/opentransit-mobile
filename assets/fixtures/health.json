@@ -30,5 +30,10 @@
     "ageSeconds": 12
    }
   ]
+ },
+ "ondemand": {
+  "providers": 5,
+  "tariffs": 1,
+  "routerCar": true
  }
 }

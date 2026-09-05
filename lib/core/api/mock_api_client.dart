@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show AssetBundle, rootBundle;
 
 import '../models/models.dart';
 import '../utils/geo.dart';
+import '../utils/ondemand.dart';
 import '../utils/polyline.dart';
 import 'api_client.dart';
 
@@ -106,10 +107,22 @@ class MockApiClient implements ApiClient {
         ...its,
       ];
     }
+    if (request.onDemand) {
+      // Taxi / ride-hailing options (v1.4): a direct ride and a first-mile
+      // combo, rebased on their own first departure. Never displaces transit.
+      final oj = await _map('plan_ondemand');
+      final odBase = asList(oj['itineraries'], Itinerary.fromJson);
+      final odShift = odBase.isEmpty ? shift : anchor.difference(odBase.first.startTime);
+      final od = asList((rebaseTimes(oj, odShift) as Map)['itineraries'], Itinerary.fromJson);
+      its = [
+        ...its,
+        ...od.where((i) => wantsTransit || i.isOnDemandDirect),
+      ];
+    }
     return PlanResponse(
       from: request.from,
       to: request.to,
-      itineraries: its.take(request.numItineraries).toList(),
+      itineraries: its.take(request.numItineraries + (request.onDemand ? 2 : 0)).toList(),
       routerEngine: 'mock',
       routerVersion: '0',
       warnings: its.isEmpty ? const ['NO_ITINERARIES'] : const [],
@@ -423,5 +436,57 @@ class MockApiClient implements ApiClient {
       for (final s in r.stations) s.copyWith(distanceMeters: haversineMeters(position, s.position).round()),
     ]..sort((a, b) => a.distanceMeters!.compareTo(b.distanceMeters!));
     return near.where((s) => s.distanceMeters! <= radiusMeters).take(limit).toList();
+  }
+
+  // ── v1.4 on-demand mobility ──
+
+  @override
+  Future<List<OnDemandProvider>> onDemandProviders(String cityId) async {
+    final c = await city(cityId);
+    if (!c.features.onDemand) return const [];
+    if (cityId != 'bogota') return c.mobility.onDemandProviders;
+    return asList((await _map('ondemand_providers'))['providers'], OnDemandProvider.fromJson);
+  }
+
+  @override
+  Future<OnDemandEstimate> onDemandEstimate(String cityId, LatLng from, LatLng to,
+      {DateTime? time, String? providerId}) async {
+    final c = await city(cityId);
+    final providers = await onDemandProviders(cityId);
+    // Straight-line distance ×1.3 as a stand-in for the car route.
+    final meters = (haversineMeters(from, to) * 1.3).round();
+    final secs = (meters / (22 * 1000 / 3600)).round() + 120;
+    final at = time ?? now;
+    return OnDemandEstimate(
+      distanceMeters: meters,
+      durationSeconds: secs,
+      geometry: Geometry(encoded: encodePolyline([from, to])),
+      estimates: [
+        for (final p in providers)
+          if (providerId == null || p.id == providerId)
+            OnDemandOption(
+              providerId: p.id, name: p.name, color: p.color, kind: p.kind,
+              price: p.estimateKind == 'tariff'
+                  ? estimateTaxiFare(c.mobility.tariff(p.tariffId), meters, secs, at)
+                  : null,
+              handoffUrl: 'mock://ondemand/handoff?providerId=${p.id}&fromLat=${from.lat}&fromLon=${from.lon}&toLat=${to.lat}&toLon=${to.lon}',
+              source: p.estimateKind == 'tariff' ? 'tariff' : 'none',
+            ),
+      ],
+    );
+  }
+
+  @override
+  Future<OnDemandHandoff> onDemandHandoff(String cityId, String providerId, LatLng from, LatLng to,
+      {String? fromName, String? toName, String platform = 'web'}) async {
+    final providers = await onDemandProviders(cityId);
+    final p = providers.where((x) => x.id == providerId).firstOrNull;
+    if (p == null) throw ApiException('PROVIDER_NOT_FOUND', 'No provider $providerId', status: 404);
+    final store = platform == 'ios' ? p.appIos : platform == 'android' ? p.appAndroid : null;
+    return OnDemandHandoff(
+      url: p.web ?? store ?? 'https://example.org/${p.id}',
+      fallback: store ?? p.web,
+      provider: p,
+    );
   }
 }

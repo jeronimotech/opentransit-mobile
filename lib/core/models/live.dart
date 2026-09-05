@@ -1,4 +1,5 @@
 import 'common.dart';
+import 'ondemand.dart';
 import 'rental.dart';
 import 'transit.dart';
 import 'vehicle.dart';
@@ -300,6 +301,7 @@ class CityHealth {
     this.routerVersion,
     this.feedVersion,
     this.rental = const [],
+    this.ondemand = const OnDemandHealth(),
   });
   final RealtimeHealth realtime;
   final bool routerUp;
@@ -308,6 +310,9 @@ class CityHealth {
 
   /// Per-network shared-bike feed health (v1.2 `health.rental.networks`).
   final List<RentalNetworkHealth> rental;
+
+  /// v1.4 `health.ondemand`.
+  final OnDemandHealth ondemand;
 
   RentalNetworkHealth? rentalOf(String id) => rental.where((n) => n.id == id).firstOrNull;
 
@@ -331,6 +336,8 @@ class CityHealth {
       routerVersion: router['version']?.toString(),
       feedVersion: st['feedVersion']?.toString(),
       rental: asList(rental['networks'], RentalNetworkHealth.fromJson),
+      ondemand: OnDemandHealth.fromJson(
+          j['ondemand'] is Map ? Map<String, dynamic>.from(j['ondemand'] as Map) : null),
     );
   }
 }

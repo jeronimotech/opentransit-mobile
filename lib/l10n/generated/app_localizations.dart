@@ -1681,6 +1681,108 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Actualizado hace {hours} h'**
   String updatedHoursAgo(int hours);
+
+  /// No description provided for @modeOnDemand.
+  ///
+  /// In es, this message translates to:
+  /// **'Taxi / app'**
+  String get modeOnDemand;
+
+  /// No description provided for @onDemandTaxi.
+  ///
+  /// In es, this message translates to:
+  /// **'Taxi'**
+  String get onDemandTaxi;
+
+  /// No description provided for @onDemandRidehail.
+  ///
+  /// In es, this message translates to:
+  /// **'App de transporte'**
+  String get onDemandRidehail;
+
+  /// No description provided for @priceInApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio en la app'**
+  String get priceInApp;
+
+  /// No description provided for @requestRide.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedir'**
+  String get requestRide;
+
+  /// No description provided for @requestVehicle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pide tu vehículo'**
+  String get requestVehicle;
+
+  /// No description provided for @requestVehicleTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Pide tu vehículo hacia {place}'**
+  String requestVehicleTo(String place);
+
+  /// No description provided for @onDemandRideLine.
+  ///
+  /// In es, this message translates to:
+  /// **'{duration} · {distance} en carro'**
+  String onDemandRideLine(String duration, String distance);
+
+  /// No description provided for @chooseProvider.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige cómo pedirlo'**
+  String get chooseProvider;
+
+  /// No description provided for @recommended.
+  ///
+  /// In es, this message translates to:
+  /// **'Recomendado'**
+  String get recommended;
+
+  /// No description provided for @waitMinutes.
+  ///
+  /// In es, this message translates to:
+  /// **'{minutes} min de espera'**
+  String waitMinutes(int minutes);
+
+  /// No description provided for @tariffSource.
+  ///
+  /// In es, this message translates to:
+  /// **'Estimación según {source} · el taxímetro manda'**
+  String tariffSource(String source);
+
+  /// No description provided for @onDemandToHere.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegar en taxi / app'**
+  String get onDemandToHere;
+
+  /// No description provided for @onDemandNoProviders.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay taxis ni apps de transporte configurados en esta ciudad.'**
+  String get onDemandNoProviders;
+
+  /// No description provided for @onDemandOpenFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir la app del proveedor.'**
+  String get onDemandOpenFailed;
+
+  /// No description provided for @taxiToBus.
+  ///
+  /// In es, this message translates to:
+  /// **'Taxi → Bus'**
+  String get taxiToBus;
+
+  /// No description provided for @onDemandOffline.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo obtener la estimación del viaje.'**
+  String get onDemandOffline;
 }
 
 class _AppLocalizationsDelegate

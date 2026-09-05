@@ -1,0 +1,456 @@
+{
+ "itineraries": [
+  {
+   "id": "it-od0",
+   "startTime": "2026-09-04T08:00:00-05:00",
+   "endTime": "2026-09-04T08:38:00-05:00",
+   "durationSeconds": 2280,
+   "walkDistanceMeters": 0,
+   "walkTimeSeconds": 0,
+   "waitingTimeSeconds": 240,
+   "transfers": 0,
+   "accessible": null,
+   "legs": [
+    {
+     "mode": "CAR",
+     "transit": false,
+     "startTime": "2026-09-04T08:00:00-05:00",
+     "endTime": "2026-09-04T08:38:00-05:00",
+     "durationSeconds": 2280,
+     "distanceMeters": 29233,
+     "from": {
+      "name": "Cra 45 # 174-20",
+      "lat": 4.756,
+      "lon": -74.044,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:00:00-05:00",
+      "component": null
+     },
+     "to": {
+      "name": "Cl 57 Sur # 75-10",
+      "lat": 4.599,
+      "lon": -74.16,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": "2026-09-04T08:38:00-05:00",
+      "departure": null,
+      "component": null
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "_|_\\~u|bM~t@lKru@hJzt@vLlzAxH||A~JzyAhJ|i@`Nfj@dL|h@rL~a@dG`d@hF`c@nH~_@rGva@zHf_@rH|~@|KbaA`K|_AfJyTt`@yVxb@cVza@jw@tr@bv@~s@~v@pr@eHnm@oI~l@qJ~k@gPjk@cMjk@kPfm@oBeBm@uCqAcA",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [],
+     "alerts": [],
+     "onDemand": {
+      "kind": "taxi",
+      "providers": [
+       {
+        "providerId": "taxi",
+        "name": "Taxi",
+        "color": "#F2C200",
+        "price": {
+         "amount": 51100,
+         "min": 46000,
+         "max": 56200,
+         "currency": "COP",
+         "estimated": true,
+         "breakdown": [
+          {
+           "id": "base",
+           "label": "Tarifa oficial de taxi 2026",
+           "amount": 51087
+          }
+         ],
+         "surchargesApplied": []
+        },
+        "waitSeconds": 240,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=taxi&fromLat=4.756&fromLon=-74.044&toLat=4.599&toLon=-74.16&fromName=Cra+45+#+174-20&toName=Cl+57+Sur+#+75-10",
+        "source": "tariff"
+       },
+       {
+        "providerId": "uber",
+        "name": "Uber",
+        "color": "#000000",
+        "price": null,
+        "waitSeconds": null,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=uber&fromLat=4.756&fromLon=-74.044&toLat=4.599&toLon=-74.16&fromName=Cra+45+#+174-20&toName=Cl+57+Sur+#+75-10",
+        "source": "none"
+       },
+       {
+        "providerId": "cabify",
+        "name": "Cabify",
+        "color": "#7145D6",
+        "price": null,
+        "waitSeconds": null,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=cabify&fromLat=4.756&fromLon=-74.044&toLat=4.599&toLon=-74.16&fromName=Cra+45+#+174-20&toName=Cl+57+Sur+#+75-10",
+        "source": "none"
+       },
+       {
+        "providerId": "didi",
+        "name": "DiDi",
+        "color": "#FF7F41",
+        "price": null,
+        "waitSeconds": null,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=didi&fromLat=4.756&fromLon=-74.044&toLat=4.599&toLon=-74.16&fromName=Cra+45+#+174-20&toName=Cl+57+Sur+#+75-10",
+        "source": "none"
+       },
+       {
+        "providerId": "indrive",
+        "name": "inDrive",
+        "color": "#A6E22E",
+        "price": null,
+        "waitSeconds": null,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=indrive&fromLat=4.756&fromLon=-74.044&toLat=4.599&toLon=-74.16&fromName=Cra+45+#+174-20&toName=Cl+57+Sur+#+75-10",
+        "source": "none"
+       }
+      ],
+      "recommendedProviderId": "taxi"
+     }
+    }
+   ],
+   "rentalLegs": 0,
+   "modesUsed": [
+    "CAR_ONDEMAND"
+   ],
+   "source": "ondemand",
+   "fare": {
+    "amount": 51100,
+    "currency": "COP",
+    "estimated": true,
+    "breakdown": [
+     {
+      "label": "Taxi (estimado)",
+      "amount": 51100,
+      "kind": "ondemand"
+     }
+    ]
+   }
+  },
+  {
+   "id": "it-od1",
+   "startTime": "2026-09-04T08:00:00-05:00",
+   "endTime": "2026-09-04T09:04:20-05:00",
+   "durationSeconds": 3860,
+   "walkDistanceMeters": 227,
+   "walkTimeSeconds": 200,
+   "waitingTimeSeconds": 420,
+   "transfers": 0,
+   "accessible": null,
+   "legs": [
+    {
+     "mode": "CAR",
+     "transit": false,
+     "startTime": "2026-09-04T08:00:00-05:00",
+     "endTime": "2026-09-04T08:13:00-05:00",
+     "durationSeconds": 780,
+     "distanceMeters": 7915,
+     "from": {
+      "name": "Cra 45 # 174-20",
+      "lat": 4.756,
+      "lon": -74.044,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:00:00-05:00",
+      "component": null
+     },
+     "to": {
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "stopId": "bogota:C100",
+      "stopCode": null,
+      "arrival": "2026-09-04T08:13:00-05:00",
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "_|_\\~u|bM|VtDbYrDbWdFxXnE~m@~Ezn@lDtm@lE|l@bEle@|Cjd@tCpd@rCzd@jE",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [],
+     "alerts": [],
+     "onDemand": {
+      "kind": "taxi",
+      "providers": [
+       {
+        "providerId": "taxi",
+        "name": "Taxi",
+        "color": "#F2C200",
+        "price": {
+         "amount": 17200,
+         "min": 15500,
+         "max": 18900,
+         "currency": "COP",
+         "estimated": true,
+         "breakdown": [
+          {
+           "id": "base",
+           "label": "Tarifa oficial de taxi 2026",
+           "amount": 17220
+          }
+         ],
+         "surchargesApplied": []
+        },
+        "waitSeconds": 240,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=taxi&fromLat=4.756&fromLon=-74.044&toLat=4.6858&toLon=-74.0553&fromName=Cra+45+#+174-20&toName=Calle+100",
+        "source": "tariff"
+       },
+       {
+        "providerId": "uber",
+        "name": "Uber",
+        "color": "#000000",
+        "price": null,
+        "waitSeconds": null,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=uber&fromLat=4.756&fromLon=-74.044&toLat=4.6858&toLon=-74.0553&fromName=Cra+45+#+174-20&toName=Calle+100",
+        "source": "none"
+       },
+       {
+        "providerId": "cabify",
+        "name": "Cabify",
+        "color": "#7145D6",
+        "price": null,
+        "waitSeconds": null,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=cabify&fromLat=4.756&fromLon=-74.044&toLat=4.6858&toLon=-74.0553&fromName=Cra+45+#+174-20&toName=Calle+100",
+        "source": "none"
+       },
+       {
+        "providerId": "didi",
+        "name": "DiDi",
+        "color": "#FF7F41",
+        "price": null,
+        "waitSeconds": null,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=didi&fromLat=4.756&fromLon=-74.044&toLat=4.6858&toLon=-74.0553&fromName=Cra+45+#+174-20&toName=Calle+100",
+        "source": "none"
+       },
+       {
+        "providerId": "indrive",
+        "name": "inDrive",
+        "color": "#A6E22E",
+        "price": null,
+        "waitSeconds": null,
+        "handoffUrl": "https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId=indrive&fromLat=4.756&fromLon=-74.044&toLat=4.6858&toLon=-74.0553&fromName=Cra+45+#+174-20&toName=Calle+100",
+        "source": "none"
+       }
+      ],
+      "recommendedProviderId": "taxi"
+     }
+    },
+    {
+     "mode": "BUS",
+     "transit": true,
+     "startTime": "2026-09-04T08:16:00-05:00",
+     "endTime": "2026-09-04T09:01:00-05:00",
+     "durationSeconds": 2700,
+     "distanceMeters": 21097,
+     "from": {
+      "name": "Calle 100",
+      "lat": 4.6858,
+      "lon": -74.0553,
+      "stopId": "bogota:C100",
+      "stopCode": null,
+      "arrival": null,
+      "departure": "2026-09-04T08:16:00-05:00",
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": "2026-09-04T09:01:00-05:00",
+      "departure": null,
+      "component": "trunk"
+     },
+     "route": {
+      "id": "bogota:B10",
+      "shortName": "B10",
+      "longName": "Portal Norte - Portal Sur",
+      "color": "#D32F2F",
+      "textColor": "#FFFFFF",
+      "mode": "BUS",
+      "agencyId": "1",
+      "component": "trunk",
+      "serviceWindow": {
+       "start": "04:00",
+       "end": "23:00",
+       "active": true,
+       "nextStart": null,
+       "source": "gtfs"
+      }
+     },
+     "headsign": "Portal Sur",
+     "agency": {
+      "id": "1",
+      "name": "TransMilenio S.A."
+     },
+     "tripId": "bogota:B10-0816",
+     "realtime": true,
+     "realtimeState": "UPDATED",
+     "delaySeconds": 60,
+     "geometry": {
+      "encoded": "ger[r|~bM~T|FvRhD~T`GfUbErSfFnTdFxQxC~NnAhQhE`SrBbPfBxPnCvPvDbNnBxObD`PbD~OhBfOhDl`@fDf^dEn`@zEl_@`Dd_@lEd_@lEqJvOkKfQcIdQuKlPoHdOoKpPl[jXl[lZnYjYx[lW|YbZj[nXwDfVuB`UkEjUcE|U}BdVkDtV{FlTkHdWwEdUeGlUeG~UkGvT",
+      "precision": 5
+     },
+     "intermediateStops": [
+      {
+       "name": "Calle 76",
+       "lat": 4.6653,
+       "lon": -74.062,
+       "stopId": "bogota:C76",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:22:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Calle 45",
+       "lat": 4.632,
+       "lon": -74.0705,
+       "stopId": "bogota:C45",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:29:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Av. Jiménez",
+       "lat": 4.6008,
+       "lon": -74.0763,
+       "stopId": "bogota:AVJ",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:36:00-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "Ricaurte",
+       "lat": 4.6118,
+       "lon": -74.093,
+       "stopId": "bogota:RIC",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:42:40-05:00",
+       "departure": null,
+       "component": "trunk"
+      },
+      {
+       "name": "NQS - Calle 30 Sur",
+       "lat": 4.585,
+       "lon": -74.118,
+       "stopId": "bogota:NQS30",
+       "stopCode": null,
+       "arrival": "2026-09-04T08:49:20-05:00",
+       "departure": null,
+       "component": "trunk"
+      }
+     ],
+     "steps": [],
+     "alerts": []
+    },
+    {
+     "mode": "WALK",
+     "transit": false,
+     "startTime": "2026-09-04T09:01:00-05:00",
+     "endTime": "2026-09-04T09:04:20-05:00",
+     "durationSeconds": 200,
+     "distanceMeters": 227,
+     "from": {
+      "name": "Portal Sur",
+      "lat": 4.5978,
+      "lon": -74.1616,
+      "stopId": "bogota:PS",
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": "trunk"
+     },
+     "to": {
+      "name": "Cl 57 Sur # 75-10",
+      "lat": 4.599,
+      "lon": -74.16,
+      "stopId": null,
+      "stopCode": null,
+      "arrival": null,
+      "departure": null,
+      "component": null
+     },
+     "route": null,
+     "headsign": null,
+     "agency": null,
+     "tripId": null,
+     "realtime": false,
+     "realtimeState": null,
+     "delaySeconds": null,
+     "geometry": {
+      "encoded": "g_a[~tscM_AiB}@[iAgCg@q@",
+      "precision": 5
+     },
+     "intermediateStops": [],
+     "steps": [
+      {
+       "instruction": "Sal de la estación hacia la Calle 57 Sur",
+       "distanceMeters": 150,
+       "lat": 4.5985,
+       "lon": -74.161,
+       "relativeDirection": "DEPART",
+       "streetName": "Calle 57 Sur"
+      },
+      {
+       "instruction": "Continúa por la Calle 57 Sur",
+       "distanceMeters": 110,
+       "lat": 4.5988,
+       "lon": -74.1605,
+       "relativeDirection": "CONTINUE",
+       "streetName": "Calle 57 Sur"
+      }
+     ],
+     "alerts": []
+    }
+   ],
+   "rentalLegs": 0,
+   "modesUsed": [
+    "CAR_ONDEMAND",
+    "BUS",
+    "WALK"
+   ],
+   "source": "ondemand",
+   "fare": {
+    "amount": 20400,
+    "currency": "COP",
+    "estimated": true,
+    "breakdown": [
+     {
+      "label": "Taxi (estimado)",
+      "amount": 17200,
+      "kind": "ondemand"
+     },
+     {
+      "label": "Pasaje",
+      "amount": 3200,
+      "kind": "transit"
+     }
+    ]
+   }
+  }
+ ]
+}

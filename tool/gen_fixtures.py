@@ -315,3 +315,84 @@ health["rental"]={"networks":[{"id":"tembici","up":True,"stations":len(rstations
 for k,v in {"cities":{"cities":[city,city2]},"health":health,"rental_networks":rental_networks,"rental_stations":rental_stations,"plan_rental":plan_rental}.items():
     json.dump(v,open(f"{OUT}/{k}.json","w"),ensure_ascii=False,indent=1)
 print("rental fixtures:", {k:os.path.getsize(f"{OUT}/{k}.json") for k in ("rental_networks","rental_stations","plan_rental")})
+
+
+# ───────────── v1.4 on-demand mobility (taxi, ride-hailing) ─────────────
+# Provider names live ONLY here (fixtures) and in the API's city YAML.
+TARIFF={"id":"bogota-taxi-2026","name":"Tarifa oficial de taxi 2026","currency":"COP","flagFall":4500,"unitPrice":159,"unitMeters":100,"unitSeconds":30,"minimumFare":8000,
+  "surcharges":[{"id":"night","label":"Nocturno / dominical / festivo","amount":3800,"when":{"nightFrom":"19:00","nightTo":"06:00","sundays":True,"holidays":True}},
+                {"id":"airport","label":"Aeropuerto","amount":8000,"when":{"zones":["airport"]}},
+                {"id":"door","label":"Puerta a puerta","amount":1500,"when":{"optional":True}}],
+  "zones":[{"id":"airport","name":"Aeropuerto El Dorado","polygon":[[-74.16,4.68],[-74.13,4.68],[-74.13,4.72],[-74.16,4.72]]}],
+  "source":{"label":"Decreto Distrital 042 de 2026","url":"https://bogota.gov.co/mi-ciudad/movilidad/en-firme-el-decreto-que-fija-las-tarifas-de-taxi-en-bogota-en-2026"},
+  "validFrom":"2026-02-12","note":"Estimación según tarifa oficial; el taxímetro manda."}
+def prov(id,name,kind,color,text,est,handoff,order,apps=None,web=None,template=None):
+    return {"id":id,"name":name,"kind":kind,"color":color,"textColor":text,"logoUrl":None,
+            "estimate":est,"handoff":{"kind":handoff,"template":template,"web":web,"apps":apps or {"ios":None,"android":None},"scheme":None},
+            "enabled":True,"order":order}
+ONDEMAND=[
+  prov("taxi","Taxi","taxi","#F2C200","#111111",{"kind":"tariff","tariffId":TARIFF["id"]},"url",1,
+       apps={"ios":"https://apps.apple.com/co/app/id511140577","android":"https://play.google.com/store/apps/details?id=com.taxislibres.app"},web="https://www.taxislibres.com.co/"),
+  prov("uber","Uber","ridehail","#000000","#FFFFFF",{"kind":"none"},"template",2,
+       apps={"ios":"https://apps.apple.com/co/app/id368677368","android":"https://play.google.com/store/apps/details?id=com.ubercab"},web="https://m.uber.com/",
+       template="https://m.uber.com/looking?client_id={clientId}&pickup={pickupJson}&drop[0]={dropoffJson}"),
+  prov("cabify","Cabify","ridehail","#7145D6","#FFFFFF",{"kind":"none"},"url",3,
+       apps={"ios":"https://apps.apple.com/co/app/id476087442","android":"https://play.google.com/store/apps/details?id=com.cabify.rider"},web="https://cabify.com/co"),
+  prov("didi","DiDi","ridehail","#FF7F41","#111111",{"kind":"none"},"url",4,
+       apps={"ios":"https://apps.apple.com/co/app/id1362320138","android":"https://play.google.com/store/apps/details?id=com.didiglobal.passenger"},web="https://web.didiglobal.com/co/"),
+  prov("indrive","inDrive","ridehail","#A6E22E","#111111",{"kind":"none"},"url",5,
+       apps={"ios":"https://apps.apple.com/co/app/id780125801","android":"https://play.google.com/store/apps/details?id=sinet.startup.inDriver"},web="https://indrive.com/"),
+]
+POLICY={"maxDirectDistanceKm":40,"firstLastMile":True,"maxFeederKm":8,"showWhenTransitFaster":True}
+city["features"]["onDemand"]=True; city["config"]["features"]["onDemand"]=True
+city["mobility"].update({"taxiTariffs":[TARIFF],"onDemand":ONDEMAND,"onDemandPolicy":POLICY})
+# Second city: two providers (a taxi with its own tariff, one app) — parametrised, not Bogotá-shaped.
+TARIFF2={**TARIFF,"id":"medellin-taxi-2026","name":"Tarifa de taxi Medellín 2026","flagFall":4000,"unitPrice":140,"minimumFare":7500,"source":{"label":"Resolución AMVA 2026","url":"https://www.metropol.gov.co/"},"zones":[]}
+city2["features"]["onDemand"]=True; city2["config"]["features"]["onDemand"]=True
+city2["mobility"].update({"taxiTariffs":[TARIFF2],"onDemand":[
+  prov("taxi","Taxi Medellín","taxi","#FFC107","#111111",{"kind":"tariff","tariffId":TARIFF2["id"]},"none",1),
+  prov("app-x","Ride App X","ridehail","#0097A7","#FFFFFF",{"kind":"none"},"url",2,web="https://example.org/ride-x")],"onDemandPolicy":POLICY})
+
+def pub(p): return {**{k:v for k,v in p.items() if k!="handoff"},"handoff":{"kind":p["handoff"]["kind"],"hasTemplate":bool(p["handoff"]["template"]),"web":p["handoff"]["web"],"apps":p["handoff"]["apps"],"scheme":None}}
+ondemand_providers={"providers":[pub(p) for p in ONDEMAND]}
+
+def taxi_price(meters, secs, night=False):
+    units=-(-meters//100); wait=max(0,int((secs-meters/(30*1000/3600))//30))
+    fare=max(8000, 4500+(units+wait)*159); lines=[{"id":"base","label":"Tarifa oficial de taxi 2026","amount":fare}]; applied=[]
+    if night: fare+=3800; lines.append({"id":"night","label":"Nocturno / dominical / festivo","amount":3800}); applied.append("night")
+    fare=int(round(fare/100.0))*100
+    return {"amount":fare,"min":int(round(fare*0.9/100.0))*100,"max":int(round(fare*1.1/100.0))*100,"currency":"COP","estimated":True,"breakdown":lines,"surchargesApplied":applied}
+def handoff_url(pid, frm, to): return f"https://api.example.org/v1/cities/bogota/ondemand/handoff?providerId={pid}&fromLat={frm['lat']}&fromLon={frm['lon']}&toLat={to['lat']}&toLon={to['lon']}&fromName={frm['name'].replace(' ','+')}&toName={to['name'].replace(' ','+')}"
+def options(frm, to, meters, secs):
+    out=[]
+    for p in ONDEMAND:
+        out.append({"providerId":p["id"],"name":p["name"],"color":p["color"],"price":taxi_price(meters,secs) if p["estimate"]["kind"]=="tariff" else None,
+                    "waitSeconds":240 if p["id"]=="taxi" else None,"handoffUrl":handoff_url(p["id"],frm,to),"source":"tariff" if p["estimate"]["kind"]=="tariff" else "none"})
+    return out
+def car_leg(frm_pl, to_pl, start, secs, shape):
+    meters=int(length(shape))
+    return {"mode":"CAR","transit":False,"startTime":t(start),"endTime":t(start+secs),"durationSeconds":secs,"distanceMeters":meters,
+            "from":{**frm_pl,"departure":t(start)},"to":{**to_pl,"arrival":t(start+secs)},"route":None,"headsign":None,"agency":None,"tripId":None,
+            "realtime":False,"realtimeState":None,"delaySeconds":None,"geometry":geom(shape),"intermediateStops":[],"steps":[],"alerts":[],
+            "onDemand":{"kind":"taxi","providers":options(frm_pl,to_pl,meters,secs),"recommendedProviderId":"taxi"}}
+# Direct ride: origin → destination by car along the trunk corridor.
+car_shape=dens([ORIG]+TRUNK_N[1:]+TRUNK_S[1:]+[DEST],3)
+cleg=car_leg(o_pl,d_pl,0,2280,car_shape)
+tp=cleg["onDemand"]["providers"][0]["price"]
+ito0={"id":"it-od0","startTime":t(0),"endTime":t(2280),"durationSeconds":2280,"walkDistanceMeters":0,"walkTimeSeconds":0,"waitingTimeSeconds":240,"transfers":0,"accessible":None,
+      "legs":[cleg],"rentalLegs":0,"modesUsed":["CAR_ONDEMAND"],"source":"ondemand",
+      "fare":{"amount":tp["amount"],"currency":"COP","estimated":True,"breakdown":[{"label":"Taxi (estimado)","amount":tp["amount"],"kind":"ondemand"}]}}
+# First-mile combo: taxi to Calle 100, then the trunk bus to Portal Sur.
+feeder_shape=dens([ORIG,(4.7400,-74.0480),(4.7100,-74.0520),(S_C100["lat"],S_C100["lon"])],4)
+fleg=car_leg(o_pl,place(S_C100),0,780,feeder_shape)
+fbus=bus_leg(R_B10,S_C100,S_PS,dens(TRUNK_N[2:]+TRUNK_S[1:]),960,2700,"Portal Sur",[S_C76,S_C45,S_AVJ,S_RIC,S_NQS30],True,60,"B10-0816")
+fw=W(place(S_PS),d_pl,3660,200,steps2)
+fp=fleg["onDemand"]["providers"][0]["price"]
+ito1={"id":"it-od1","startTime":t(0),"endTime":t(3860),"durationSeconds":3860,"walkDistanceMeters":fw["distanceMeters"],"walkTimeSeconds":200,"waitingTimeSeconds":420,"transfers":0,"accessible":None,
+      "legs":[fleg,fbus,fw],"rentalLegs":0,"modesUsed":["CAR_ONDEMAND","BUS","WALK"],"source":"ondemand",
+      "fare":{"amount":fp["amount"]+3200,"currency":"COP","estimated":True,"breakdown":[{"label":"Taxi (estimado)","amount":fp["amount"],"kind":"ondemand"},{"label":"Pasaje","amount":3200,"kind":"transit"}]}}
+plan_ondemand={"itineraries":[ito0,ito1]}
+health["ondemand"]={"providers":len(ONDEMAND),"tariffs":1,"routerCar":True}
+for k,v in {"cities":{"cities":[city,city2]},"health":health,"ondemand_providers":ondemand_providers,"plan_ondemand":plan_ondemand}.items():
+    json.dump(v,open(f"{OUT}/{k}.json","w"),ensure_ascii=False,indent=1)
+print("ondemand fixtures:", {k:os.path.getsize(f"{OUT}/{k}.json") for k in ("ondemand_providers","plan_ondemand")}, "direct taxi price", tp, "feeder", fp["amount"])

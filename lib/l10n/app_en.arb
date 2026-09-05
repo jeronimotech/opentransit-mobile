@@ -357,5 +357,53 @@
   "rentalUnavailableHint": "No station data in this area.",
   "modeScooter": "Scooter",
   "updatedMinutesAgo": "Updated {minutes} min ago",
-  "updatedHoursAgo": "Updated {hours} h ago"
+  "updatedHoursAgo": "Updated {hours} h ago",
+  "modeOnDemand": "Taxi / app",
+  "onDemandTaxi": "Taxi",
+  "onDemandRidehail": "Ride app",
+  "priceInApp": "Price in the app",
+  "requestRide": "Request",
+  "requestVehicle": "Request your ride",
+  "requestVehicleTo": "Request a ride to {place}",
+  "@requestVehicleTo": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "onDemandRideLine": "{duration} · {distance} by car",
+  "@onDemandRideLine": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      },
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseProvider": "Choose how to request it",
+  "recommended": "Recommended",
+  "waitMinutes": "{minutes} min wait",
+  "@waitMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tariffSource": "Estimate based on {source} · the meter rules",
+  "@tariffSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "onDemandToHere": "Get here by taxi / app",
+  "onDemandNoProviders": "No taxis or ride apps are configured for this city.",
+  "onDemandOpenFailed": "Could not open the provider's app.",
+  "taxiToBus": "Taxi → Bus",
+  "onDemandOffline": "Could not fetch the ride estimate."
 }
