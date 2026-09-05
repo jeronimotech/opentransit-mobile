@@ -1047,4 +1047,16 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0 · $_temp1 to this stop';
   }
+
+  @override
+  String get modeSharedShort => 'Shared';
+
+  @override
+  String get modeOnDemandShort => 'Taxi/app';
+
+  @override
+  String get stateOn => 'on';
+
+  @override
+  String get stateOff => 'off';
 }

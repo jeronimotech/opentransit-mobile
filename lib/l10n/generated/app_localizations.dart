@@ -1843,6 +1843,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{count, plural, =1{1 bus en ruta} other{{count} buses en ruta}} · {coming, plural, =1{1 viene} other{{coming} vienen}} hacia esta parada'**
   String locateComing(int count, int coming);
+
+  /// No description provided for @modeSharedShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Pública'**
+  String get modeSharedShort;
+
+  /// No description provided for @modeOnDemandShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Taxi/app'**
+  String get modeOnDemandShort;
+
+  /// No description provided for @stateOn.
+  ///
+  /// In es, this message translates to:
+  /// **'activado'**
+  String get stateOn;
+
+  /// No description provided for @stateOff.
+  ///
+  /// In es, this message translates to:
+  /// **'desactivado'**
+  String get stateOff;
 }
 
 class _AppLocalizationsDelegate

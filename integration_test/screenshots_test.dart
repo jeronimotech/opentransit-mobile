@@ -162,9 +162,6 @@ void main() {
     planner.setFrom(const Place(name: 'Parque de la 93', position: LatLng(4.6766, -74.0483)));
     planner.setTo(const Place(name: 'Calle 100 - Marketmedios', position: LatLng(4.6841, -74.0517)));
     await settle(tester, 5);
-    // The mode row scrolls horizontally: bring the last chip into view first.
-    await tester.drag(find.byKey(const ValueKey('mode-walk')), const Offset(-400, 0));
-    await settle(tester, 10);
     await tester.tap(find.byKey(const ValueKey('mode-bikeShare')), warnIfMissed: false);
     await settle(tester, 10);
     if (!container.read(plannerProvider).modes.contains(TravelMode.bikeRental)) {
@@ -217,8 +214,6 @@ void main() {
     planner.setTo(const Place(name: 'Cl 57 Sur # 75-10', position: LatLng(4.5990, -74.1600)));
     planner.setModes({TravelMode.transit, TravelMode.walk});
     await settle(tester, 5);
-    await tester.drag(find.byKey(const ValueKey('mode-walk')), const Offset(-500, 0));
-    await settle(tester, 10);
     await tester.tap(find.byKey(const ValueKey('mode-onDemand')), warnIfMissed: false);
     await settle(tester, 10);
     if (!container.read(plannerProvider).onDemand) {

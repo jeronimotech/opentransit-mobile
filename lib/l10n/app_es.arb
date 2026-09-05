@@ -675,5 +675,9 @@
         "type": "int"
       }
     }
-  }
+  },
+  "modeSharedShort": "Pública",
+  "modeOnDemandShort": "Taxi/app",
+  "stateOn": "activado",
+  "stateOff": "desactivado"
 }

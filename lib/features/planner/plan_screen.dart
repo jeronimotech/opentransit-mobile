@@ -11,6 +11,7 @@ import '../../core/utils/location.dart';
 import '../../core/utils/ondemand.dart';
 import '../../core/utils/rental.dart';
 import '../../core/widgets/common.dart';
+import '../../core/widgets/mode_grid.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'planner_state.dart';
 
@@ -193,6 +194,14 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
   bool _selected(TravelMode m, PlannerState s) =>
       s.modes.contains(m) || (m.isTransit && s.modes.contains(TravelMode.transit));
 
+  /// Fill colour of a selected mode toggle: the component colour for transit
+  /// modes (cable, rail…), the city's primary for the rest.
+  Color _modeColor(TravelMode m, City? city, ColorScheme scheme) => switch (m) {
+        TravelMode.cableCar => componentColor(Component.cable, city: city),
+        TravelMode.rail || TravelMode.subway || TravelMode.tram => componentColor(Component.rail, city: city),
+        _ => scheme.primary,
+      };
+
   String _shortModeLabel(TravelMode m, AppLocalizations l10n) => switch (m) {
         TravelMode.bicycle => l10n.modeBike,
         TravelMode.walk => l10n.modeWalkShort,
@@ -332,56 +341,50 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
           ),
           const SizedBox(height: 12),
 
-          // One mode row that fits: Bus · Cable · Bici · A pie
-          SizedBox(
-            height: 44,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                for (final m in modes) ...[
-                  FilterChip(
-                    key: ValueKey('mode-${m.name}'),
-                    avatar: Icon(modeIcon(m), size: 16),
-                    label: Text(_shortModeLabel(m, l10n)),
-                    selected: m == TravelMode.walk ? s.modes.contains(TravelMode.walk) : _selected(m, s),
-                    onSelected: (_) => m == TravelMode.walk
-                        ? ref.read(plannerProvider.notifier).toggleMode(TravelMode.walk)
-                        : (city == null ? null : _toggleMode(m, city)),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-                if (bikeShare)
-                  FilterChip(
-                    key: const ValueKey('mode-bikeShare'),
-                    avatar: Icon(Icons.pedal_bike, size: 16, color: bikeShareOn ? onColor(bikeShareColor) : bikeShareColor),
-                    label: Text(bikeShareChipLabel(city, l10n.modeBikeShare)),
-                    selected: bikeShareOn,
-                    selectedColor: bikeShareColor,
-                    checkmarkColor: onColor(bikeShareColor),
-                    labelStyle: TextStyle(color: bikeShareOn ? onColor(bikeShareColor) : null, fontWeight: FontWeight.w600),
-                    side: BorderSide(color: bikeShareColor.withValues(alpha: 0.6)),
-                    onSelected: (v) => ref.read(plannerProvider.notifier).setModes(withBikeShare(
-                        ref.read(plannerProvider).modes,
-                        on: v,
-                        scooters: city.mobility.bikeShare.any((n) => n.hasScooters))),
-                  ),
-                if (onDemand) ...[
-                  const SizedBox(width: 8),
-                  FilterChip(
-                    key: const ValueKey('mode-onDemand'),
-                    avatar: Icon(Icons.local_taxi_rounded, size: 16, color: onDemandOn ? onColor(onDemandColor) : onDemandColor),
-                    label: Text(onDemandChipLabel(city, l10n.modeOnDemand)),
-                    selected: onDemandOn,
-                    selectedColor: onDemandColor,
-                    checkmarkColor: onColor(onDemandColor),
-                    labelStyle: TextStyle(color: onDemandOn ? onColor(onDemandColor) : null, fontWeight: FontWeight.w600),
-                    side: BorderSide(color: onDemandColor.withValues(alpha: 0.6)),
-                    onSelected: (v) => ref.read(plannerProvider.notifier).setOnDemand(v),
-                  ),
-                ],
-              ],
-            ),
+          // Non-scrolling mode grid: six toggles fit in one row on phones
+          // (icon on top, short label); more than six wrap to a second row.
+          ModeGrid(
+            onLabel: l10n.stateOn,
+            offLabel: l10n.stateOff,
+            items: [
+              for (final m in modes)
+                ModeGridItem(
+                  id: m.name,
+                  label: _shortModeLabel(m, l10n),
+                  semanticsLabel: modeLabel(m, l10n),
+                  icon: modeIcon(m),
+                  selected: m == TravelMode.walk ? s.modes.contains(TravelMode.walk) : _selected(m, s),
+                  color: _modeColor(m, city, scheme),
+                  onToggle: (_) => m == TravelMode.walk
+                      ? ref.read(plannerProvider.notifier).toggleMode(TravelMode.walk)
+                      : (city == null ? null : _toggleMode(m, city)),
+                ),
+              if (bikeShare)
+                ModeGridItem(
+                  id: 'bikeShare',
+                  label: city.mobility.bikeShare.length > 1 ? l10n.modeSharedShort : l10n.modeSharedShort,
+                  semanticsLabel: bikeShareChipLabel(city, l10n.modeBikeShare),
+                  icon: Icons.pedal_bike,
+                  selected: bikeShareOn,
+                  color: bikeShareColor,
+                  onToggle: (v) => ref.read(plannerProvider.notifier).setModes(withBikeShare(
+                      ref.read(plannerProvider).modes,
+                      on: v,
+                      scooters: city.mobility.bikeShare.any((n) => n.hasScooters))),
+                ),
+              if (onDemand)
+                ModeGridItem(
+                  id: 'onDemand',
+                  label: l10n.modeOnDemandShort,
+                  semanticsLabel: onDemandChipLabel(city, l10n.modeOnDemand),
+                  icon: Icons.local_taxi_rounded,
+                  selected: onDemandOn,
+                  color: onDemandColor,
+                  onToggle: (v) => ref.read(plannerProvider.notifier).setOnDemand(v),
+                ),
+            ],
           ),
+          const SizedBox(height: 4),
 
           // "Más opciones" disclosure with the advanced toggles.
           Theme(

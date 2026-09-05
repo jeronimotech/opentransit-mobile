@@ -240,11 +240,6 @@ void main() {
       planner.setModes({TravelMode.transit, TravelMode.walk});
       planner.setOnDemand(true);
       await settle(tester, 10);
-      // The mode row scrolls horizontally; bring the last chip into view.
-      if (find.byKey(const ValueKey('mode-walk')).evaluate().isNotEmpty) {
-        await tester.drag(find.byKey(const ValueKey('mode-walk')), const Offset(-500, 0));
-        await settle(tester, 10);
-      }
       expect(find.byKey(const ValueKey('mode-onDemand')), findsOneWidget);
       await shot(tester, 'live_ondemand_01_plan_form');
       await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
