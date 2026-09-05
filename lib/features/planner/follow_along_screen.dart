@@ -280,7 +280,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                           options: leg.onDemand!.providers,
                           recommendedId: leg.onDemand!.recommendedProviderId,
                           compact: true,
-                          maxRows: 3,
+                          maxRows: 4,
                         );
                       }),
                   ],

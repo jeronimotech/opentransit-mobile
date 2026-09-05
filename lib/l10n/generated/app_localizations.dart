@@ -1783,6 +1783,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo obtener la estimación del viaje.'**
   String get onDemandOffline;
+
+  /// No description provided for @requestProviderPriced.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedir {name} · {price}'**
+  String requestProviderPriced(String name, String price);
+
+  /// No description provided for @requestWithProvider.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedir con {name}'**
+  String requestWithProvider(String name);
+
+  /// No description provided for @orRequestWith.
+  ///
+  /// In es, this message translates to:
+  /// **'O pide con:'**
+  String get orRequestWith;
+
+  /// No description provided for @seePrices.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver precios'**
+  String get seePrices;
+
+  /// No description provided for @hidePrices.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocultar precios'**
+  String get hidePrices;
+
+  /// No description provided for @onDemandDestination.
+  ///
+  /// In es, this message translates to:
+  /// **'Hacia {place}'**
+  String onDemandDestination(String place);
+
+  /// No description provided for @viewFullRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver ruta completa'**
+  String get viewFullRoute;
+
+  /// No description provided for @locateNoLive.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin buses en vivo en esta ruta ahora'**
+  String get locateNoLive;
+
+  /// No description provided for @locateNoneComing.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 bus en ruta} other{{count} buses en ruta}} · ninguno viene hacia esta parada todavía'**
+  String locateNoneComing(int count);
+
+  /// No description provided for @locateComing.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 bus en ruta} other{{count} buses en ruta}} · {coming, plural, =1{1 viene} other{{coming} vienen}} hacia esta parada'**
+  String locateComing(int count, int coming);
 }
 
 class _AppLocalizationsDelegate

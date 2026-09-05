@@ -226,6 +226,19 @@ price estimate. Requesting shared bikes adds `BIKE_RENTAL` (and
 `SCOOTER_RENTAL` when a network lists scooters) to the plan `modes`.
 The Medellín fixture ships two networks to keep the UI honest about N.
 
+### Ubica tu bus, map-first (v1.4.2)
+
+`/{city}/locate` is map-first: the map fills the screen under the app bar and
+the stop header, route chips and next buses live in a draggable sheet
+(50 / 92 %). With a route selected the map draws the route's patterns (the
+direction serving the stop at full opacity, the other faint), all its live
+buses interpolated between frames (small dots with bearing), the ones heading
+to the stop tinted by ETA bucket and labelled with their minutes, and fits the
+camera to the stop and the nearest upstream buses ("Ver ruta completa" fits the
+whole route). A muted status line explains "Programado" rows from the API's
+`vehiclesOnRoute` ("3 buses en ruta · ninguno viene hacia esta parada todavía",
+"Sin buses en vivo en esta ruta ahora").
+
 ### Taxi and ride-hailing (v1.4)
 
 Cities can list **on-demand providers** (`mobility.onDemand[]`: a regulated taxi
@@ -238,11 +251,15 @@ colours, links and estimates all come from the city config and the API.
   displacing transit.
 - Results show a car chip in the provider colour and the price band
   ("≈ $ 18.000–22.000") or *Precio en la app*; "Más económico" sorts by the estimate.
-- Itinerary detail: a **provider picker** with one "Pedir" per option. The
-  button opens the API-built hand-off URL (`platform=ios|android` appended;
-  credentials never reach the app) and falls back to the store / website.
-  The tariff source line ("Estimación según Decreto 042 de 2026 · el taxímetro
-  manda") and applied surcharges (Nocturno, Aeropuerto…) are shown for taxis.
+- Itinerary detail: a **compact provider picker** — one primary button for the
+  recommended provider ("Pedir Taxi · ≈ $ 11.300–13.900", or "Pedir con Uber"
+  without an estimate), then "O pide con:" and one pill per other provider,
+  and "Ver precios ▾" when two or more providers carry an estimate. Tapping
+  fetches the hand-off JSON from the API (`platform=ios|android`, endpoint
+  names prefilled; credentials never reach the app) and launches the
+  provider's own URL, falling back to the store / website. The tariff source
+  and applied surcharges are one muted line ("Nocturno · Estimación según
+  Decreto 042 de 2026 · el taxímetro manda").
 - Stop page: **Llegar en taxi / app** prefills the stop as destination.
 - Follow-along: a CAR leg shows "Pide tu vehículo" with the picker inline.
 - Mock fixtures ship 5 providers for Bogotá and 2 for the second city

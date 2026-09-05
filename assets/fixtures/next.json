@@ -38,6 +38,8 @@
   "ageSeconds": 18,
   "stale": false
  },
+ "vehiclesOnRoute": 7,
+ "servesStop": true,
  "next": [
   {
    "minutes": 4,

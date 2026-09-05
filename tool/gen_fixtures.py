@@ -231,7 +231,7 @@ board={"stop":S_PN,"generatedAt":t(0),"freshness":{"realtime":True,"ageSeconds":
                                                     {"time":t(1200),"minutes":20,"realtime":False,"delaySeconds":None,"tripId":"bogota:B74-0820","vehicleId":None}]},
 ]}
 vb10=[v for v in vehicles if v["routeId"]==R_B10["id"]]
-nxt={"stop":S_PN,"route":R_B10,"freshness":{"realtime":True,"ageSeconds":18,"stale":False},"next":[
+nxt={"stop":S_PN,"route":R_B10,"freshness":{"realtime":True,"ageSeconds":18,"stale":False},"vehiclesOnRoute":len(vb10),"servesStop":True,"next":[
   {"minutes":4,"time":t(240),"source":"live","vehicle":vb10[0],"stopsAway":2,"distanceMeters":1450,"tripId":vb10[0]["tripId"]},
   {"minutes":11,"time":t(660),"source":"estimated","vehicle":vb10[1],"stopsAway":5,"distanceMeters":4200,"tripId":vb10[1]["tripId"]},
   {"minutes":23,"time":t(1380),"source":"scheduled","vehicle":None,"stopsAway":None,"distanceMeters":None,"tripId":"bogota:B10-0823"},

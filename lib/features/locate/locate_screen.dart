@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/live/interpolation.dart';
+import '../../core/live/marker_style.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/utils/colors.dart';
@@ -11,9 +13,11 @@ import '../../core/utils/eta.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/location.dart';
+import '../../core/utils/polyline.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
+import 'locate_status.dart';
 
 /// "Ubica tu bus": station → route → next buses (En vivo / Por programación /
 /// Estimado), with the route's buses on a map tinted by ETA bucket.
@@ -189,9 +193,15 @@ class _StopPickerState extends ConsumerState<_StopPicker> {
   }
 }
 
-// ───────────────────────── steps 2 + 3: route, next buses ─────────────────────────
+// ───────────────────────── steps 2 + 3: route, next buses (map-first) ─────────────────────────
 
-class _RouteAndBuses extends ConsumerWidget {
+/// Map-first (UX audit): the map is full-bleed under the app bar; the stop
+/// header, route chips and next buses live in a draggable sheet (50 / 92 %).
+/// With a route selected the map shows its pattern (the direction serving
+/// this stop at full opacity, the other faint), ALL its live buses (small dots
+/// with bearing, interpolated between frames), the ones heading here tinted
+/// by ETA bucket and labelled with their minutes, and the stop highlighted.
+class _RouteAndBuses extends ConsumerStatefulWidget {
   const _RouteAndBuses({required this.cityId, required this.stopId, required this.routeId, required this.onRoute});
   final String cityId;
   final String stopId;
@@ -199,11 +209,66 @@ class _RouteAndBuses extends ConsumerWidget {
   final void Function(String) onRoute;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_RouteAndBuses> createState() => _RouteAndBusesState();
+}
+
+class _RouteAndBusesState extends ConsumerState<_RouteAndBuses> {
+  final _interp = VehicleInterpolator();
+  Timer? _ticker;
+  VehicleFrame? _frame;
+  bool _fitRoute = false;
+  String? _fitKey;
+  List<LatLng>? _fit;
+
+  @override
+  void initState() {
+    super.initState();
+    // ~10 Hz while buses are moving between frames (same as Home).
+    _ticker = Timer.periodic(const Duration(milliseconds: 100), (_) {
+      if (mounted && _frame != null && _interp.isAnimating(DateTime.now())) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _RouteAndBuses old) {
+    super.didUpdateWidget(old);
+    if (old.routeId != widget.routeId || old.stopId != widget.stopId) _fitRoute = false;
+  }
+
+  /// A new list only when the fit target changes: TransitMap re-fits whenever
+  /// the list identity changes, and this widget rebuilds ~10 Hz.
+  List<LatLng>? _fitFor(String key, List<LatLng> Function() build) {
+    if (key != _fitKey) {
+      _fitKey = key;
+      _fit = build();
+    }
+    return _fit;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final key = CityKey(cityId, stopId);
+    final key = CityKey(widget.cityId, widget.stopId);
     final detail = ref.watch(stopDetailProvider(key));
     final scheme = Theme.of(context).colorScheme;
+    final city = ref.watch(currentCityProvider);
+    ref.listen<AsyncValue<VehicleFrame>>(liveVehiclesProvider(widget.cityId), (_, next) {
+      final f = next.asData?.value;
+      if (f != null) {
+        _interp.ingest(f, DateTime.now());
+        _frame = f;
+      }
+    });
+    _frame ??= ref.watch(liveVehiclesProvider(widget.cityId)).asData?.value;
+    final now = DateTime.now();
+    final mapHeight = MediaQuery.sizeOf(context).height * 0.5;
+
     return detail.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => ErrorView(error: e, onRetry: () => ref.invalidate(stopDetailProvider(key))),
@@ -212,68 +277,190 @@ class _RouteAndBuses extends ConsumerWidget {
         // short name: group by short name for the chips.
         final seen = <String>{};
         final routes = [for (final r in d.routes) if (seen.add(r.shortName)) r];
-        // Match by id against the full list (dedupe may have kept a sibling
-        // direction's id), then by short name, so deep links always resolve.
-        final byId = d.routes.where((r) => r.id == routeId).firstOrNull;
+        final byId = d.routes.where((r) => r.id == widget.routeId).firstOrNull;
         final selected = byId == null ? null : (routes.where((r) => r.shortName == byId.shortName).firstOrNull ?? byId);
         final stop = d.stop.component == null ? d.stop.withComponent(dominantComponent(d.routes)) : d.stop;
-        return ListView(
-          padding: const EdgeInsets.only(bottom: 32),
-          children: [
-            ListTile(
-              leading: ComponentBadge(stop.component, isStation: stop.isStation),
-              title: Text(stop.name, style: const TextStyle(fontWeight: FontWeight.w700)),
-              subtitle: Text(stop.isStation ? l10n.station : l10n.stop),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/$cityId/stops/${Uri.encodeComponent(stopId)}'),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Text(l10n.locateStep2, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-            ),
-            if (routes.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(l10n.noRoutes, style: TextStyle(color: scheme.onSurfaceVariant)),
+        final ids = selected == null ? const <String>[] : [for (final r in d.routes) if (r.shortName == selected.shortName) r.id];
+        final routeColor = selected == null
+            ? componentColor(stop.component, city: city)
+            : colorFromHex(selected.color, fallback: componentColor(selected.component, city: city));
+
+        // Route geometry (both directions) and next buses, when a route is selected.
+        final routeDetail = selected == null ? null : ref.watch(routeDetailProvider(CityKey(widget.cityId, selected.id))).asData?.value;
+        final next = selected == null ? null : _mergedNext(ref, widget.cityId, stop.id, ids);
+        final nextData = next?.asData?.value;
+        final eta = {for (final n in nextData?.next ?? const <NextBus>[]) if (n.vehicle != null) n.vehicle!.id: n.minutes};
+
+        // ── map layers ──
+        final lines = <MapLine>[];
+        final routePoints = <LatLng>[];
+        bool serves(RoutePattern p) => p.stops.any((s) =>
+            s.id == stop.id || s.parentStationId == stop.id || (stop.parentStationId != null && s.id == stop.parentStationId));
+        for (final p in routeDetail?.patterns ?? const <RoutePattern>[]) {
+          final pts = decodeGeometry(p.geometry);
+          routePoints.addAll(pts);
+          final here = serves(p);
+          lines.add(MapLine(id: 'pat-${p.id}', points: pts, color: here ? routeColor : routeColor.withValues(alpha: 0.3), width: here ? 5 : 3));
+        }
+        final onRoute = <Vehicle>[];
+        if (selected != null) {
+          if (_frame != null) {
+            onRoute.addAll(_frame!.vehicles.values.where((v) => ids.contains(v.routeId) || v.routeShortName == selected.shortName));
+          } else {
+            onRoute.addAll([for (final n in nextData?.next ?? const <NextBus>[]) if (n.vehicle != null) n.vehicle!]);
+          }
+        } else if (_frame != null) {
+          // No route yet: the stop with its nearby live buses (any route).
+          onRoute.addAll(_frame!.vehicles.values.where((v) => haversineMeters(v.position, stop.position) <= 1500));
+        }
+        final vehicles = <MapPoint>[
+          for (final v in onRoute)
+            if (eta.containsKey(v.id))
+              MapPoint(
+                id: v.id,
+                position: _interp.positionAt(v.id, now) ?? v.position,
+                color: etaColor(etaBucket(eta[v.id])),
+                radius: etaRadius(etaBucket(eta[v.id])),
+                strokeWidth: 2.5,
+                label: '${eta[v.id]}',
+                bearing: v.bearing,
               )
             else
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+              MapPoint(
+                id: v.id,
+                position: _interp.positionAt(v.id, now) ?? v.position,
+                color: mapVehicleColor(selected == null ? componentColor(v.component, city: city) : routeColor),
+                radius: 4.5,
+                opacity: 0.9,
+                strokeWidth: 1.5,
+                bearing: v.bearing,
+              ),
+        ];
+        final upstream = [for (final v in onRoute) if (eta.containsKey(v.id)) v]
+          ..sort((a, b) => (eta[a.id] ?? 999).compareTo(eta[b.id] ?? 999));
+        final fitKey = _fitRoute
+            ? 'route|${selected?.id}|${routePoints.length}'
+            : 'stop|${stop.id}|${selected?.id}|${upstream.take(4).map((v) => v.id).join(',')}|${routePoints.isEmpty ? 0 : 1}';
+        final fit = _fitFor(fitKey, () {
+          if (_fitRoute && routePoints.isNotEmpty) return routePoints;
+          if (upstream.isNotEmpty) return [stop.position, ...upstream.take(4).map((v) => v.position)];
+          if (routePoints.isNotEmpty) return routePoints;
+          return [stop.position];
+        });
+
+        final status = nextData == null
+            ? null
+            : locateStatus(
+                vehiclesOnRoute: nextData.vehiclesOnRoute,
+                next: nextData.next,
+                frame: _frame,
+                routeIds: ids,
+                shortName: selected?.shortName,
+              );
+
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: TransitMap(
+                initialCenter: stop.position,
+                initialZoom: selected == null ? 15 : 13,
+                lines: lines,
+                vehicles: vehicles,
+                markers: [MapPoint(id: stop.id, position: stop.position, color: routeColor, radius: 10, strokeWidth: 3.5, label: stop.name)],
+                fitTo: fit,
+                fitPadding: EdgeInsets.fromLTRB(48, 90, 48, mapHeight + 24),
+                onVehicleTap: (id) => context.push('/${widget.cityId}/vehicles/${Uri.encodeComponent(id)}'),
+                attributionBottomInset: mapHeight,
+              ),
+            ),
+            DraggableScrollableSheet(
+              initialChildSize: 0.5,
+              minChildSize: 0.5,
+              maxChildSize: 0.92,
+              snap: true,
+              snapSizes: const [0.5, 0.92],
+              builder: (context, controller) => Container(
+                decoration: BoxDecoration(
+                  color: scheme.surface,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 16)],
+                ),
+                child: ListView(
+                  controller: controller,
+                  padding: const EdgeInsets.only(bottom: 32),
                   children: [
-                    for (final r in routes)
-                      InkWell(
-                        key: ValueKey('locate-route-${r.shortName}'),
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () => onRoute(r.id),
-                        child: Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: r.shortName == selected?.shortName ? scheme.primary : Colors.transparent, width: 2),
-                          ),
-                          child: RouteChip(r),
+                    Center(
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 8, bottom: 4),
+                        width: 36, height: 4,
+                        decoration: BoxDecoration(color: scheme.outlineVariant, borderRadius: BorderRadius.circular(2)),
+                      ),
+                    ),
+                    ListTile(
+                      leading: ComponentBadge(stop.component, isStation: stop.isStation),
+                      title: Text(stop.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700)),
+                      subtitle: Text(stop.isStation ? l10n.station : l10n.stop),
+                      trailing: selected == null
+                          ? const Icon(Icons.chevron_right)
+                          : TextButton.icon(
+                              key: const ValueKey('locate-fit-route'),
+                              style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                              onPressed: routePoints.isEmpty ? null : () => setState(() => _fitRoute = !_fitRoute),
+                              icon: Icon(_fitRoute ? Icons.center_focus_strong : Icons.route_outlined, size: 18),
+                              label: Text(l10n.viewFullRoute),
+                            ),
+                      onTap: () => context.push('/${widget.cityId}/stops/${Uri.encodeComponent(widget.stopId)}'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                      child: Text(l10n.locateStep2, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                    ),
+                    if (routes.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(l10n.noRoutes, style: TextStyle(color: scheme.onSurfaceVariant)),
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final r in routes)
+                              InkWell(
+                                key: ValueKey('locate-route-${r.shortName}'),
+                                borderRadius: BorderRadius.circular(10),
+                                onTap: () => widget.onRoute(r.id),
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: r.shortName == selected?.shortName ? scheme.primary : Colors.transparent, width: 2),
+                                  ),
+                                  child: RouteChip(r),
+                                ),
+                              ),
+                          ],
                         ),
+                      ),
+                    if (selected == null)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                        child: Text(l10n.selectRoute, style: TextStyle(color: scheme.onSurfaceVariant)),
+                      )
+                    else
+                      _NextBusesList(
+                        cityId: widget.cityId,
+                        stop: stop,
+                        ids: ids,
+                        next: next!,
+                        status: status,
                       ),
                   ],
                 ),
               ),
-            if (selected == null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                child: Text(l10n.selectRoute, style: TextStyle(color: scheme.onSurfaceVariant)),
-              )
-            else
-              _NextBuses(
-                cityId: cityId,
-                stop: stop,
-                route: selected,
-                // Both directions share a short name in this feed: query every
-                // id behind the chip and merge, so a deep-linked id always shows.
-                routeIds: [for (final r in d.routes) if (r.shortName == selected.shortName) r.id],
-              ),
+            ),
           ],
         );
       },
@@ -281,40 +468,43 @@ class _RouteAndBuses extends ConsumerWidget {
   }
 }
 
-class _NextBuses extends ConsumerWidget {
-  const _NextBuses({required this.cityId, required this.stop, required this.route, required this.routeIds});
+/// Merges the next buses of every route id behind one chip (both directions
+/// share a short name in this feed): loading while nothing arrived, error only
+/// if every id failed.
+AsyncValue<NextBusesResponse> _mergedNext(WidgetRef ref, String cityId, String stopId, List<String> ids) {
+  final results = [for (final id in ids) ref.watch(nextBusesProvider(StopRouteKey(cityId, stopId, id)))];
+  final datas = [for (final r in results) if (r.asData != null) r.asData!.value];
+  if (datas.isNotEmpty) {
+    final merged = [for (final d in datas) ...d.next]..sort((a, b) => a.time.compareTo(b.time));
+    final counts = [for (final d in datas) if (d.vehiclesOnRoute != null) d.vehiclesOnRoute!];
+    return AsyncValue.data(NextBusesResponse(
+      stop: datas.first.stop,
+      route: datas.first.route,
+      freshness: datas.firstWhere((d) => d.freshness.realtime, orElse: () => datas.first).freshness,
+      next: merged.take(3).toList(),
+      vehiclesOnRoute: counts.isEmpty ? null : counts.fold<int>(0, (a, b) => a + b),
+      servesStop: datas.any((d) => d.servesStop == true) ? true : datas.first.servesStop,
+    ));
+  }
+  if (results.every((r) => r.hasError)) {
+    return AsyncValue.error(results.first.error!, results.first.stackTrace ?? StackTrace.current);
+  }
+  return const AsyncValue.loading();
+}
+
+class _NextBusesList extends ConsumerWidget {
+  const _NextBusesList({required this.cityId, required this.stop, required this.ids, required this.next, required this.status});
   final String cityId;
   final Stop stop;
-  final RouteRef route;
-  final List<String> routeIds;
+  final List<String> ids;
+  final AsyncValue<NextBusesResponse> next;
+  final LocateStatus? status;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final ids = routeIds.isEmpty ? [route.id] : routeIds;
-    final results = [for (final id in ids) ref.watch(nextBusesProvider(StopRouteKey(cityId, stop.id, id)))];
-    // Merge: loading while nothing arrived, error only if every id failed.
-    final datas = [for (final r in results) if (r.asData != null) r.asData!.value];
-    final AsyncValue<NextBusesResponse> next;
-    if (datas.isNotEmpty) {
-      final merged = [for (final d in datas) ...d.next]..sort((a, b) => a.time.compareTo(b.time));
-      next = AsyncValue.data(NextBusesResponse(
-        stop: datas.first.stop,
-        route: datas.first.route,
-        freshness: datas.firstWhere((d) => d.freshness.realtime, orElse: () => datas.first).freshness,
-        next: merged.take(3).toList(),
-      ));
-    } else if (results.every((r) => r.hasError)) {
-      next = AsyncValue.error(results.first.error!, results.first.stackTrace ?? StackTrace.current);
-    } else {
-      next = const AsyncValue.loading();
-    }
-    final city = ref.watch(currentCityProvider);
-    final live = ref.watch(liveVehiclesProvider(cityId)).asData?.value;
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toString();
-    final color = colorFromHex(route.color, fallback: componentColor(route.component, city: city));
-
     return next.when(
       loading: () => const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator())),
       error: (e, _) => ErrorView(
@@ -325,27 +515,24 @@ class _NextBuses extends ConsumerWidget {
             }
           }),
       data: (r) {
-        // ETA per vehicle id from the response; other buses on the route get "far".
-        final eta = {for (final n in r.next) if (n.vehicle != null) n.vehicle!.id: n.minutes};
-        final onRoute = live == null
-            ? [for (final n in r.next) if (n.vehicle != null) n.vehicle!]
-            : [for (final v in live.vehicles.values) if (ids.contains(v.routeId) || v.routeShortName == route.shortName) v];
-        final vehicles = [
-          for (final v in onRoute)
-            MapPoint(
-              id: v.id,
-              position: live?.vehicles[v.id]?.position ?? v.position,
-              color: etaColor(etaBucket(eta[v.id])),
-              radius: etaRadius(etaBucket(eta[v.id])),
-              strokeWidth: 2,
-              label: eta[v.id] == null ? '' : '${eta[v.id]}',
-            ),
-        ];
-        final fit = [stop.position, ...onRoute.take(6).map((v) => v.position)];
+        final st = status;
+        final statusText = st == null
+            ? null
+            : switch (st.kind) {
+                LocateStatusKind.noLive => l10n.locateNoLive,
+                LocateStatusKind.noneComing => l10n.locateNoneComing(st.onRoute),
+                LocateStatusKind.coming => l10n.locateComing(st.onRoute, st.coming),
+              };
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SectionTitle(l10n.locateNext, trailing: FreshnessLabel(cityId: cityId, freshness: r.freshness)),
+            if (statusText != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                child: Text(statusText, key: const ValueKey('locate-status'),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
+              ),
             if (r.next.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -394,24 +581,6 @@ class _NextBuses extends ConsumerWidget {
                     ),
                   Text('min', style: Theme.of(context).textTheme.labelSmall),
                 ],
-              ),
-            ),
-            SizedBox(
-              height: 240,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: TransitMap(
-                    initialCenter: stop.position,
-                    initialZoom: 13,
-                    vehicles: vehicles,
-                    markers: [MapPoint(id: stop.id, position: stop.position, color: color, radius: 9, strokeWidth: 3)],
-                    fitTo: fit,
-                    fitPadding: const EdgeInsets.all(36),
-                    onVehicleTap: (id) => context.push('/$cityId/vehicles/${Uri.encodeComponent(id)}'),
-                  ),
-                ),
               ),
             ),
           ],

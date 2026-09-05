@@ -405,5 +405,56 @@
   "onDemandNoProviders": "No taxis or ride apps are configured for this city.",
   "onDemandOpenFailed": "Could not open the provider's app.",
   "taxiToBus": "Taxi → Bus",
-  "onDemandOffline": "Could not fetch the ride estimate."
+  "onDemandOffline": "Could not fetch the ride estimate.",
+  "requestProviderPriced": "Request {name} · {price}",
+  "@requestProviderPriced": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "requestWithProvider": "Request with {name}",
+  "@requestWithProvider": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orRequestWith": "Or request with:",
+  "seePrices": "See prices",
+  "hidePrices": "Hide prices",
+  "onDemandDestination": "To {place}",
+  "@onDemandDestination": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "viewFullRoute": "See full route",
+  "locateNoLive": "No live buses on this route right now",
+  "locateNoneComing": "{count, plural, =1{1 bus on the route} other{{count} buses on the route}} · none heading to this stop yet",
+  "@locateNoneComing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "locateComing": "{count, plural, =1{1 bus on the route} other{{count} buses on the route}} · {coming, plural, =1{1 heading} other{{coming} heading}} to this stop",
+  "@locateComing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "coming": {
+        "type": "int"
+      }
+    }
+  }
 }

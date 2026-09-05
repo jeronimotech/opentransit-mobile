@@ -185,11 +185,19 @@ class NextBusesResponse {
     required this.route,
     this.freshness = const Freshness(),
     required this.next,
+    this.vehiclesOnRoute,
+    this.servesStop,
   });
   final Stop stop;
   final RouteRef route;
   final Freshness freshness;
   final List<NextBus> next;
+
+  /// Live buses currently on this route (any direction), when the API says.
+  final int? vehiclesOnRoute;
+
+  /// False when the route's pattern does not serve this stop.
+  final bool? servesStop;
 
   factory NextBusesResponse.fromJson(Map<String, dynamic> j) =>
       NextBusesResponse(
@@ -204,6 +212,8 @@ class NextBusesResponse {
             .whereType<Map>()
             .map((e) => NextBus.fromJson(Map<String, dynamic>.from(e)))
             .toList(growable: false),
+        vehiclesOnRoute: asInt(j['vehiclesOnRoute']),
+        servesStop: j['servesStop'] is bool ? j['servesStop'] as bool : null,
       );
 }
 

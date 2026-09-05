@@ -348,16 +348,73 @@ void main() {
       ));
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('ondemand-picker')), findsOneWidget);
-      expect(find.byKey(const ValueKey('ondemand-provider-taxi')), findsOneWidget);
-      expect(find.text('Precio en la app'), findsNWidgets(4));
-      expect(find.textContaining('≈'), findsOneWidget);
-      expect(find.text('Recomendado'), findsOneWidget);
+      // One primary button for the recommended provider with its price band…
+      final primary = find.byKey(const ValueKey('ondemand-request-taxi'));
+      expect(primary, findsOneWidget);
+      expect(find.descendant(of: primary, matching: find.textContaining('Pedir Taxi · ≈')), findsOneWidget);
+      // …then "O pide con:" and one pill per other provider (name only).
+      expect(find.text('O pide con:'), findsOneWidget);
+      for (final id in ['uber', 'cabify', 'didi', 'indrive']) {
+        expect(find.byKey(ValueKey('ondemand-request-$id')), findsOneWidget);
+      }
+      expect(find.text('Precio en la app'), findsNothing);
+      // Only one provider carries an estimate → no "Ver precios" expander.
+      expect(find.byKey(const ValueKey('ondemand-prices-toggle')), findsNothing);
       await tester.tap(find.byKey(const ValueKey('ondemand-request-uber')));
       await tester.pumpAndSettle();
       // The mock hand-off answers the provider's own web URL; the API endpoint is never opened.
       expect(opened.single, 'https://m.uber.com/');
       expect(opened.single, isNot(contains('/ondemand/handoff')));
       expect(requested, ['uber:link']);
+    });
+
+    testWidgets('"Ver precios" appears with 2+ estimates and its rows request the provider', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final opened = <String>[];
+      final od = plans.first.legs.single.onDemand!;
+      final options = [
+        for (final o in od.providers)
+          o.providerId == 'cabify'
+              ? OnDemandOption(providerId: o.providerId, name: o.name, color: o.color, handoffUrl: o.handoffUrl, source: 'api',
+                  price: const OnDemandPrice(amount: 60000, min: 55000, max: 65000, currency: 'COP'))
+              : o,
+      ];
+      await tester.pumpWidget(ProviderScope(
+        overrides: [sharedPrefsProvider.overrideWithValue(prefs), apiClientProvider.overrideWithValue(api)],
+        child: MaterialApp(
+          locale: const Locale('es'),
+          localizationsDelegates: const [
+            AppLocalizations.delegate, GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: ProviderPicker(
+                cityId: 'bogota',
+                from: const Place(name: 'A', position: LatLng(4.7560, -74.0440)),
+                to: const Place(name: 'B', position: LatLng(4.5990, -74.1600)),
+                options: options,
+                recommendedId: 'taxi',
+                launcher: (u) async { opened.add(u.toString()); return true; },
+              ),
+            ),
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final toggle = find.byKey(const ValueKey('ondemand-prices-toggle'));
+      expect(toggle, findsOneWidget);
+      expect(find.byKey(const ValueKey('ondemand-price-row-cabify')), findsNothing);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('ondemand-price-row-taxi')), findsOneWidget);
+      expect(find.byKey(const ValueKey('ondemand-price-row-cabify')), findsOneWidget);
+      expect(find.textContaining('55.000–65.000'), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('ondemand-price-row-cabify')));
+      await tester.pumpAndSettle();
+      expect(opened.single, 'https://cabify.com/co');
     });
   });
 }

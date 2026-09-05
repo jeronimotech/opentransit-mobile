@@ -624,5 +624,56 @@
   "onDemandNoProviders": "No hay taxis ni apps de transporte configurados en esta ciudad.",
   "onDemandOpenFailed": "No se pudo abrir la app del proveedor.",
   "taxiToBus": "Taxi → Bus",
-  "onDemandOffline": "No se pudo obtener la estimación del viaje."
+  "onDemandOffline": "No se pudo obtener la estimación del viaje.",
+  "requestProviderPriced": "Pedir {name} · {price}",
+  "@requestProviderPriced": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "requestWithProvider": "Pedir con {name}",
+  "@requestWithProvider": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orRequestWith": "O pide con:",
+  "seePrices": "Ver precios",
+  "hidePrices": "Ocultar precios",
+  "onDemandDestination": "Hacia {place}",
+  "@onDemandDestination": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "viewFullRoute": "Ver ruta completa",
+  "locateNoLive": "Sin buses en vivo en esta ruta ahora",
+  "locateNoneComing": "{count, plural, =1{1 bus en ruta} other{{count} buses en ruta}} · ninguno viene hacia esta parada todavía",
+  "@locateNoneComing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "locateComing": "{count, plural, =1{1 bus en ruta} other{{count} buses en ruta}} · {coming, plural, =1{1 viene} other{{coming} vienen}} hacia esta parada",
+  "@locateComing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "coming": {
+        "type": "int"
+      }
+    }
+  }
 }

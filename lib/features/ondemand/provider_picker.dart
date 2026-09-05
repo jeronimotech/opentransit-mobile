@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/api/api_client.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/utils/colors.dart';
@@ -10,10 +9,16 @@ import '../../core/utils/geo.dart';
 import '../../core/utils/ondemand.dart';
 import '../../l10n/generated/app_localizations.dart';
 
-/// Rows of taxi / ride-hailing options with a "Pedir" button each: colour,
-/// name, price (or "Precio en la app"), wait time. Provider identity comes
-/// only from the options / city config.
-class ProviderPicker extends ConsumerWidget {
+/// Compact ride picker (v1.4.2):
+///   • ONE primary full-width button for the recommended provider
+///     ("Pedir Taxi · ≈ $ 11.300–13.900", or "Pedir con Uber" without an estimate);
+///   • one wrap-free row "O pide con:" + small pills for the other providers
+///     (name only, provider colour, spinner inside while requesting);
+///   • "Ver precios ▾" only when 2+ providers carry an estimate → dense rows
+///     (icon · name · price, whole row tappable).
+/// Provider identity comes only from the options / city config. The hand-off
+/// goes through [requestRide] (API JSON → provider URL → store/web fallback).
+class ProviderPicker extends ConsumerStatefulWidget {
   const ProviderPicker({
     super.key,
     required this.cityId,
@@ -35,8 +40,10 @@ class ProviderPicker extends ConsumerWidget {
   final List<OnDemandOption> options;
   final String? recommendedId;
 
-  /// Dense rows for the follow-along sheet.
+  /// Tighter paddings (follow-along sheet).
   final bool compact;
+
+  /// Caps the secondary pills (the primary button always shows).
   final int? maxRows;
 
   /// Called after a hand-off attempt with the option and what was opened
@@ -48,94 +55,30 @@ class ProviderPicker extends ConsumerWidget {
   final Future<bool> Function(Uri)? canLaunch;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    final locale = Localizations.localeOf(context).toString();
-    final city = ref.watch(currentCityProvider);
-    final api = ref.watch(apiClientProvider);
-    var rows = sortOptions(options, recommendedId: recommendedId, city: city);
-    if (maxRows != null) rows = rows.take(maxRows!).toList();
-    if (rows.isEmpty) {
-      return Text(l10n.onDemandNoProviders, style: TextStyle(color: scheme.outline, fontSize: 13));
-    }
-    return Column(
-      key: const ValueKey('ondemand-picker'),
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final o in rows)
-          _ProviderRow(
-            key: ValueKey('ondemand-provider-${o.providerId}'),
-            api: api,
-            cityId: cityId,
-            from: from,
-            to: to,
-            option: o,
-            provider: city?.mobility.provider(o.providerId),
-            recommended: o.providerId == recommendedId && rows.length > 1,
-            compact: compact,
-            locale: locale,
-            onRequest: onRequest,
-            launcher: launcher,
-            canLaunch: canLaunch,
-          ),
-      ],
-    );
-  }
+  ConsumerState<ProviderPicker> createState() => _ProviderPickerState();
 }
 
-class _ProviderRow extends StatefulWidget {
-  const _ProviderRow({
-    super.key,
-    required this.api,
-    required this.cityId,
-    required this.from,
-    required this.to,
-    required this.option,
-    required this.provider,
-    required this.recommended,
-    required this.compact,
-    required this.locale,
-    this.onRequest,
-    this.launcher,
-    this.canLaunch,
-  });
-  final ApiClient api;
-  final String cityId;
-  final Place from;
-  final Place to;
-  final OnDemandOption option;
-  final OnDemandProvider? provider;
-  final bool recommended;
-  final bool compact;
-  final String locale;
-  final void Function(OnDemandOption option, String opened)? onRequest;
-  final Future<bool> Function(Uri)? launcher;
-  final Future<bool> Function(Uri)? canLaunch;
+class _ProviderPickerState extends ConsumerState<ProviderPicker> {
+  String? _busyId;
+  bool _pricesOpen = false;
 
-  @override
-  State<_ProviderRow> createState() => _ProviderRowState();
-}
-
-class _ProviderRowState extends State<_ProviderRow> {
-  bool _busy = false;
-
-  Future<void> _request() async {
-    setState(() => _busy = true);
+  Future<void> _request(OnDemandOption o, OnDemandProvider? provider) async {
+    if (_busyId != null) return;
+    setState(() => _busyId = o.providerId);
     // Fetch the hand-off JSON, then open the provider's own URL — never the API's.
     final opened = await requestRide(
-      api: widget.api,
+      api: ref.read(apiClientProvider),
       cityId: widget.cityId,
-      providerId: widget.option.providerId,
+      providerId: o.providerId,
       from: widget.from,
       to: widget.to,
-      provider: widget.provider,
+      provider: provider,
       launcher: widget.launcher,
       canLaunch: widget.canLaunch,
     );
     if (!mounted) return;
-    setState(() => _busy = false);
-    widget.onRequest?.call(widget.option, opened);
+    setState(() => _busyId = null);
+    widget.onRequest?.call(o, opened);
     if (opened == 'none') {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).onDemandOpenFailed)));
     }
@@ -145,80 +88,154 @@ class _ProviderRowState extends State<_ProviderRow> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final o = widget.option;
-    final color = colorFromHex(o.color, fallback: const Color(0xFF455A64));
-    final price = o.price;
-    final isTaxi = (o.kind ?? widget.provider?.kind) == 'taxi';
-    final title = Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700);
-    final sub = Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant);
+    final locale = Localizations.localeOf(context).toString();
+    final city = ref.watch(currentCityProvider);
+    final rows = sortOptions(widget.options, recommendedId: widget.recommendedId, city: city);
+    if (rows.isEmpty) {
+      return Text(l10n.onDemandNoProviders, style: TextStyle(color: scheme.outline, fontSize: 13));
+    }
+    final primary = rows.first;
+    var others = rows.skip(1).toList();
+    if (widget.maxRows != null) others = others.take(widget.maxRows!).toList();
+    final priced = rows.where((o) => o.price != null).toList();
+    final gap = widget.compact ? 6.0 : 8.0;
+    OnDemandProvider? cfg(OnDemandOption o) => city?.mobility.provider(o.providerId);
+    Color colorOf(OnDemandOption o) => ensureContrast(colorFromHex(o.color, fallback: const Color(0xFF455A64)), Colors.white);
 
-    return Container(
-      margin: EdgeInsets.only(top: widget.compact ? 4 : 6),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: widget.compact ? 6 : 8),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: widget.recommended ? color.withValues(alpha: 0.7) : scheme.outlineVariant),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: widget.compact ? 28 : 34,
-            height: widget.compact ? 28 : 34,
-            decoration: BoxDecoration(color: ensureContrast(color, Colors.white), borderRadius: BorderRadius.circular(9)),
-            child: Icon(isTaxi ? Icons.local_taxi_rounded : Icons.directions_car_rounded,
-                size: widget.compact ? 16 : 19, color: onColor(ensureContrast(color, Colors.white))),
+    final primaryColor = colorOf(primary);
+    final primaryLabel = primary.price != null
+        ? l10n.requestProviderPriced(primary.name, formatPriceRange(primary.price!, locale))
+        : l10n.requestWithProvider(primary.name);
+
+    return Column(
+      key: const ValueKey('ondemand-picker'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // 1. Primary action: the recommended provider.
+        FilledButton.icon(
+          key: ValueKey('ondemand-request-${primary.providerId}'),
+          style: FilledButton.styleFrom(
+            backgroundColor: primaryColor,
+            foregroundColor: onColor(primaryColor),
+            minimumSize: Size.fromHeight(widget.compact ? 44 : 48),
+            padding: const EdgeInsets.symmetric(horizontal: 14),
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          onPressed: _busyId != null ? null : () => _request(primary, cfg(primary)),
+          icon: _busyId == primary.providerId
+              ? SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: onColor(primaryColor)))
+              : Icon((cfg(primary)?.kind ?? primary.kind) == 'taxi' ? Icons.local_taxi_rounded : Icons.directions_car_rounded, size: 18),
+          label: Text(primaryLabel, maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.w800)),
+        ),
+        // 2. "O pide con:" + pills for the other providers (single row, scrolls).
+        if (others.isNotEmpty) ...[
+          SizedBox(height: gap),
+          SizedBox(
+            height: 36,
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Flexible(child: Text(o.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: title)),
-                    if (widget.recommended) ...[
-                      const SizedBox(width: 6),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                        decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(6)),
-                        child: Text(l10n.recommended, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: scheme.onSurface)),
-                      ),
+                Text(l10n.orRequestWith, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      for (final o in others) ...[
+                        _ProviderPill(
+                          key: ValueKey('ondemand-request-${o.providerId}'),
+                          option: o,
+                          color: colorOf(o),
+                          busy: _busyId == o.providerId,
+                          enabled: _busyId == null,
+                          onTap: () => _request(o, cfg(o)),
+                        ),
+                        const SizedBox(width: 6),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-                Text(
-                  price != null ? formatPriceRange(price, widget.locale) : l10n.priceInApp,
-                  style: price != null
-                      ? Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700)
-                      : sub,
-                ),
-                if (o.waitSeconds != null)
-                  Text(l10n.waitMinutes(((o.waitSeconds ?? 0) / 60).ceil()), style: sub),
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          FilledButton(
-            key: ValueKey('ondemand-request-${o.providerId}'),
-            style: FilledButton.styleFrom(
-              backgroundColor: ensureContrast(color, Colors.white),
-              foregroundColor: onColor(ensureContrast(color, Colors.white)),
-              minimumSize: const Size(64, 40),
-              visualDensity: widget.compact ? VisualDensity.compact : VisualDensity.standard,
-            ),
-            onPressed: _busy ? null : _request,
-            child: _busy
-                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                : Text(l10n.requestRide),
-          ),
         ],
+        // 3. "Ver precios ▾" only when at least two providers have an estimate.
+        if (priced.length >= 2) ...[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: const ValueKey('ondemand-prices-toggle'),
+              style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(44, 32), visualDensity: VisualDensity.compact),
+              onPressed: () => setState(() => _pricesOpen = !_pricesOpen),
+              icon: Icon(_pricesOpen ? Icons.expand_less : Icons.expand_more, size: 18),
+              label: Text(_pricesOpen ? l10n.hidePrices : l10n.seePrices),
+            ),
+          ),
+          if (_pricesOpen)
+            for (final o in priced)
+              InkWell(
+                key: ValueKey('ondemand-price-row-${o.providerId}'),
+                borderRadius: BorderRadius.circular(8),
+                onTap: _busyId != null ? null : () => _request(o, cfg(o)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
+                  child: Row(
+                    children: [
+                      Icon((cfg(o)?.kind ?? o.kind) == 'taxi' ? Icons.local_taxi_rounded : Icons.directions_car_rounded,
+                          size: 16, color: colorOf(o)),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(o.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium)),
+                      if (_busyId == o.providerId)
+                        const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))
+                      else
+                        Text(formatPriceRange(o.price!, locale),
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
+                    ],
+                  ),
+                ),
+              ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Small pill in the provider colour: name only, spinner while requesting.
+class _ProviderPill extends StatelessWidget {
+  const _ProviderPill({super.key, required this.option, required this.color, required this.busy, required this.enabled, required this.onTap});
+  final OnDemandOption option;
+  final Color color;
+  final bool busy;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final fg = onColor(color);
+    return Material(
+      color: enabled || busy ? color : color.withValues(alpha: 0.5),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: enabled ? onTap : null,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (busy) ...[
+                SizedBox(width: 12, height: 12, child: CircularProgressIndicator(strokeWidth: 2, color: fg)),
+                const SizedBox(width: 6),
+              ],
+              Text(option.name, style: TextStyle(color: fg, fontWeight: FontWeight.w700, fontSize: 13)),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
-/// "Estimación según Decreto 042 de 2026 · el taxímetro manda" + surcharge chips.
+/// One muted line: applied surcharges + "Estimación según … · el taxímetro manda".
 class TariffFootnote extends StatelessWidget {
   const TariffFootnote({super.key, required this.tariff, this.price});
   final TaxiTariff? tariff;
@@ -230,42 +247,29 @@ class TariffFootnote extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final t = tariff;
     final applied = price?.surchargesApplied ?? const [];
-    final chips = [
+    final labels = [
       for (final id in applied)
         t?.surcharge(id)?.label ?? price?.breakdown.where((b) => b.id == id).firstOrNull?.label ?? id,
     ];
-    if (t == null && chips.isEmpty) return const SizedBox.shrink();
+    if (t == null && labels.isEmpty) return const SizedBox.shrink();
+    final parts = <String>[
+      ...labels,
+      if (t != null) l10n.tariffSource(t.sourceLabel ?? t.name),
+    ];
     return Padding(
       padding: const EdgeInsets.only(top: 6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (chips.isNotEmpty)
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
-              children: [
-                for (final c in chips)
-                  Container(
-                    key: ValueKey('surcharge-$c'),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(color: scheme.tertiaryContainer, borderRadius: BorderRadius.circular(8)),
-                    child: Text(c, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: scheme.onTertiaryContainer)),
-                  ),
-              ],
-            ),
-          if (t != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              l10n.tariffSource(t.sourceLabel ?? t.name),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline),
-            ),
-          ],
-        ],
+      child: Text(
+        parts.join(' · '),
+        key: const ValueKey('ondemand-footnote'),
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline),
       ),
     );
   }
 }
+
+/// "{duration} · {distance}" meta shown next to the kind chip.
+String rideMeta(Leg leg, AppLocalizations l10n) =>
+    '${formatDuration(leg.durationSeconds, l10n)} · ${formatDistance(leg.distanceMeters)}';
 
 /// "{duration} · {distance} en carro" summary line for a CAR leg.
 String rideSummary(Leg leg, AppLocalizations l10n) =>

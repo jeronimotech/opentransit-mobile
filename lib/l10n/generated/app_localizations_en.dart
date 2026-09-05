@@ -989,4 +989,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onDemandOffline => 'Could not fetch the ride estimate.';
+
+  @override
+  String requestProviderPriced(String name, String price) {
+    return 'Request $name · $price';
+  }
+
+  @override
+  String requestWithProvider(String name) {
+    return 'Request with $name';
+  }
+
+  @override
+  String get orRequestWith => 'Or request with:';
+
+  @override
+  String get seePrices => 'See prices';
+
+  @override
+  String get hidePrices => 'Hide prices';
+
+  @override
+  String onDemandDestination(String place) {
+    return 'To $place';
+  }
+
+  @override
+  String get viewFullRoute => 'See full route';
+
+  @override
+  String get locateNoLive => 'No live buses on this route right now';
+
+  @override
+  String locateNoneComing(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count buses on the route',
+      one: '1 bus on the route',
+    );
+    return '$_temp0 · none heading to this stop yet';
+  }
+
+  @override
+  String locateComing(int count, int coming) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count buses on the route',
+      one: '1 bus on the route',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      coming,
+      locale: localeName,
+      other: '$coming heading',
+      one: '1 heading',
+    );
+    return '$_temp0 · $_temp1 to this stop';
+  }
 }
