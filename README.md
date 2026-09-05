@@ -269,3 +269,17 @@ deployed web host, keep the `WEB_HOST` dart-define in sync, and publish
 See [CONTRIBUTING.md](CONTRIBUTING.md). Data attribution for Bogotá:
 TRANSMILENIO S.A. (GTFS / GTFS-RT). Map: © OpenMapTiles © OpenStreetMap
 contributors, tiles by OpenFreeMap. POIs: © OpenStreetMap contributors.
+
+## Release to TestFlight
+
+`tool/testflight.sh` builds, signs, exports and uploads the iOS app using an App Store Connect API
+key (no Xcode UI). Team id and key are read from the environment; nothing Apple-specific lives in
+the repo. Steps, App Store Connect setup and troubleshooting: [`tool/testflight.md`](tool/testflight.md).
+
+```bash
+set -a; source ~/.config/opentransit/apple.env; set +a   # APPLE_TEAM_ID, ASC_KEY_ID, ASC_ISSUER_ID
+API_URL=https://api-sandbox-622d.up.railway.app tool/testflight.sh
+```
+
+Bundle id `tech.jeronimo.opentransit`; app icon source `assets/icon/icon.png` (regenerate platform
+icons with `dart run flutter_launcher_icons`).

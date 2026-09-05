@@ -4,6 +4,16 @@ All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://ke
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-09-05
+### Added
+- On-demand mobility (taxi / ride-hailing): "Taxi / app" mode, provider picker with hand-off, tariff estimates.
+- TestFlight release tooling: `tool/testflight.sh` (API-key signing, export, upload), `tool/testflight.md`, `ios/ExportOptions.plist`.
+- Real app icon (`assets/icon/icon.png`, generated for iOS and Android via flutter_launcher_icons).
+### Changed
+- Bundle id / application id `tech.jeronimo.opentransit`; display name "opentransit"; no team id in the Xcode project.
+- iOS: `ITSAppUsesNonExemptEncryption=false`, privacy manifest `PrivacyInfo.xcprivacy`, clearer location usage text.
+
+
 ## [1.2.0] - 2026-09-04
 ### Added
 - Shared bikes via GBFS: per-city networks, "Bici pública" mode, rental legs with pick-up/drop-off cards, station layer and sheet, nearest-station card, rental fares.
