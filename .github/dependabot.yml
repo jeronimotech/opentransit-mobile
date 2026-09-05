@@ -3,9 +3,18 @@ updates:
   - package-ecosystem: pub
     directory: /
     schedule: { interval: weekly }
+    ignore:
+      # pinned transitively by flutter_localizations; bumping it alone breaks version solving
+      - dependency-name: intl
   - package-ecosystem: gradle
     directory: /android
     schedule: { interval: weekly }
+    ignore:
+      # major Android Gradle plugin / wrapper bumps must follow the Flutter SDK, not Dependabot
+      - dependency-name: com.android.application
+        update-types: ["version-update:semver-major"]
+      - dependency-name: gradle-wrapper
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly }
