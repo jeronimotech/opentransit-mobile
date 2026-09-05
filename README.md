@@ -1,5 +1,8 @@
 # opentransit-mobile
 
+[![CI](https://github.com/jeronimotech/opentransit-mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/jeronimotech/opentransit-mobile/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Docs](https://img.shields.io/badge/docs-jeronimotech.github.io%2Fopentransit-informational)](https://jeronimotech.github.io/opentransit/)
+
+
 Open-source, multi-city, multimodal public-transport trip planner for iOS and
 Android. Part of the **opentransit** project together with
 [`opentransit-api`](https://github.com/jeronimotech/opentransit-api) (FastAPI + OpenTripPlanner) and
