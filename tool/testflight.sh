@@ -139,6 +139,14 @@ prepare_manual_signing() {
 }
 
 # ------------------------------------------------------------------ build
+# Flutter caches native-asset builds (e.g. objective_c.framework from the
+# `objective_c` package) under build/native_assets and reuses them across
+# targets: after a simulator run the cached arm64 slice is a *simulator* binary
+# and App Store Connect rejects the upload (ITMS-91169 "references an
+# unsupported platform in the arm64 slice"). Deleting only build/ is not enough
+# (.dart_tool still marks the assets as up to date and the Xcode copy phase then
+# finds nothing), so start from a clean tree: everything is rebuilt for the device.
+flutter clean >/dev/null
 mkdir -p build
 flutter pub get >/dev/null
 DEFINES=(--dart-define="API_URL=$API_URL")
@@ -149,12 +157,48 @@ XCODE_MAJOR=$(xcodebuild -version | sed -n 's/^Xcode \([0-9]*\).*/\1/p')
 
 if [[ "$SIGNING" == "manual" ]]; then
   prepare_manual_signing
-  echo "==> archive (manual signing)"
+  echo "==> archive (manual signing, Runner target only)"
+  # Manual signing must apply to the Runner target ONLY: passing CODE_SIGN_STYLE /
+  # PROVISIONING_PROFILE_SPECIFIER on the xcodebuild command line overrides every
+  # target, and CocoaPods targets refuse a provisioning profile ("… does not
+  # support provisioning profiles"). So the Runner Release/Profile build settings
+  # are patched in the project for the archive and restored afterwards; only the
+  # team and the keychain flag stay global (harmless for pods).
+  PBXPROJ=ios/Runner.xcodeproj/project.pbxproj
+  cp "$PBXPROJ" build/project.pbxproj.bak
+  restore_pbxproj() { [[ -f build/project.pbxproj.bak ]] && mv build/project.pbxproj.bak "$PBXPROJ"; }
+  trap restore_pbxproj EXIT
+  PBXPROJ="$PBXPROJ" BUNDLE_ID="$BUNDLE_ID" APPLE_TEAM_ID="$APPLE_TEAM_ID" \
+  SIGN_IDENTITY_PREFIX="$SIGN_IDENTITY_PREFIX" PROFILE_NAME="$PROFILE_NAME" python3 - <<'PY'
+import os, re
+p = os.environ["PBXPROJ"]; s = open(p).read()
+want = {
+    "CODE_SIGN_STYLE": "Manual",
+    "DEVELOPMENT_TEAM": os.environ["APPLE_TEAM_ID"],
+    '"CODE_SIGN_IDENTITY[sdk=iphoneos*]"': '"%s"' % os.environ["SIGN_IDENTITY_PREFIX"],
+    "PROVISIONING_PROFILE_SPECIFIER": '"%s"' % os.environ["PROFILE_NAME"],
+}
+n = 0
+def patch(m):
+    global n
+    block = m.group(0)
+    if "PRODUCT_BUNDLE_IDENTIFIER = %s;" % os.environ["BUNDLE_ID"] not in block: return block
+    if not re.search(r"name = (Release|Profile);", block): return block
+    for k, v in want.items():
+        line = "\t\t\t\t%s = %s;" % (k, v)
+        pat = re.compile(r"^\t\t\t\t%s = [^;]*;$" % re.escape(k), re.M)
+        block = pat.sub(line, block) if pat.search(block) else block.replace("\t\t\t\tbuildSettings = {\n", "\t\t\t\tbuildSettings = {\n" + line + "\n", 1)
+    n += 1
+    return block
+s = re.sub(r"\t\t[0-9A-F]{24} /\* (Release|Profile) \*/ = \{\n\t\t\tisa = XCBuildConfiguration;.*?\n\t\t\};", patch, s, flags=re.S)
+open(p, "w").write(s)
+print("==> patched %d Runner build configuration(s) for manual signing" % n)
+assert n >= 1, "Runner Release configuration not found in project.pbxproj"
+PY
   xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release \
     -destination 'generic/platform=iOS' -archivePath "$ARCHIVE" archive \
-    DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGN_STYLE=Manual \
-    CODE_SIGN_IDENTITY="$SIGN_IDENTITY_PREFIX" PROVISIONING_PROFILE_SPECIFIER="$PROFILE_NAME" \
-    OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH" | tail -n 5
+    DEVELOPMENT_TEAM="$APPLE_TEAM_ID" OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH" | tail -n 5
+  restore_pbxproj; trap - EXIT
   echo "==> export (manual)"
   sed -e "s/__TEAM_ID__/$APPLE_TEAM_ID/" -e "s/__BUNDLE_ID__/$BUNDLE_ID/" \
       -e "s/__PROFILE_NAME__/$PROFILE_NAME/" -e "s/__CERT__/$SIGN_IDENTITY_PREFIX/" \
