@@ -46,3 +46,6 @@ app.*.map.json
 
 # IDE
 .idea/
+
+# private venv created by tool/asc_signing.py
+tool/.venv-asc/

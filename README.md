@@ -273,13 +273,16 @@ contributors, tiles by OpenFreeMap. POIs: © OpenStreetMap contributors.
 ## Release to TestFlight
 
 `tool/testflight.sh` builds, signs, exports and uploads the iOS app using an App Store Connect API
-key (no Xcode UI). Team id and key are read from the environment; nothing Apple-specific lives in
-the repo. Steps, App Store Connect setup and troubleshooting: [`tool/testflight.md`](tool/testflight.md).
+key (App Manager role is enough) and no Xcode UI: `tool/asc_signing.py` creates the bundle id,
+distribution certificate and App Store profile through the API, the identity lives in a dedicated
+keychain, and the script waits until App Store Connect marks the build VALID. Nothing Apple-specific
+lives in the repo. Setup and troubleshooting: [`tool/testflight.md`](tool/testflight.md).
 
 ```bash
 set -a; source ~/.config/opentransit/apple.env; set +a   # APPLE_TEAM_ID, ASC_KEY_ID, ASC_ISSUER_ID
 API_URL=https://api-sandbox-622d.up.railway.app tool/testflight.sh
+tool/asc_signing.py builds                               # processing state of recent uploads
 ```
 
-Bundle id `com.jeronimotech.opentransit`; app icon source `assets/icon/icon.png` (regenerate platform
-icons with `dart run flutter_launcher_icons`).
+Bundle id `com.jeronimotech.opentransit`; deployment target iOS 15; app icon source
+`assets/icon/icon.png` (regenerate platform icons with `dart run flutter_launcher_icons`).
