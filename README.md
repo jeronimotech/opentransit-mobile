@@ -281,5 +281,5 @@ set -a; source ~/.config/opentransit/apple.env; set +a   # APPLE_TEAM_ID, ASC_KE
 API_URL=https://api-sandbox-622d.up.railway.app tool/testflight.sh
 ```
 
-Bundle id `tech.jeronimo.opentransit`; app icon source `assets/icon/icon.png` (regenerate platform
+Bundle id `com.jeronimotech.opentransit`; app icon source `assets/icon/icon.png` (regenerate platform
 icons with `dart run flutter_launcher_icons`).

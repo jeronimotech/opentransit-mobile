@@ -10,7 +10,7 @@ All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://ke
 - TestFlight release tooling: `tool/testflight.sh` (API-key signing, export, upload), `tool/testflight.md`, `ios/ExportOptions.plist`.
 - Real app icon (`assets/icon/icon.png`, generated for iOS and Android via flutter_launcher_icons).
 ### Changed
-- Bundle id / application id `tech.jeronimo.opentransit`; display name "opentransit"; no team id in the Xcode project.
+- Bundle id / application id `com.jeronimotech.opentransit`; display name "opentransit"; no team id in the Xcode project.
 - iOS: `ITSAppUsesNonExemptEncryption=false`, privacy manifest `PrivacyInfo.xcprivacy`, clearer location usage text.
 
 

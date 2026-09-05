@@ -79,7 +79,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>tech.jeronimo.opentransit</string>
+			<string>com.jeronimotech.opentransit</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>opentransit</string>

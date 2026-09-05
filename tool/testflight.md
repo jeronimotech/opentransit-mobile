@@ -13,7 +13,7 @@ committed to the repo: the team id and key are read from the environment at buil
    `~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8` (mode 600).
 3. **App record** — App Store Connect → Apps → **+** → New App:
    - Platform iOS · Name `opentransit` (must be unique on the store; add the city if taken)
-   - Primary language Spanish (Colombia) · Bundle ID `tech.jeronimo.opentransit`
+   - Primary language Spanish (Colombia) · Bundle ID `com.jeronimotech.opentransit`
      (appears in the list after the first archive registers it; otherwise register it first at
      developer.apple.com → Certificates, Identifiers & Profiles → Identifiers, capability
      *Associated Domains* enabled) · SKU `opentransit-ios`.
@@ -63,7 +63,7 @@ control it. Bump the version name in `pubspec.yaml` for releases.
 
 ## Troubleshooting
 
-- *No profiles for 'tech.jeronimo.opentransit'* → the first archive with `-allowProvisioningUpdates`
+- *No profiles for 'com.jeronimotech.opentransit'* → the first archive with `-allowProvisioningUpdates`
   registers the bundle id and creates the profile; make sure the API key has App Manager role.
 - *Associated Domains* capability missing → enable it on the identifier at developer.apple.com, or
   temporarily remove `ios/Runner/Runner.entitlements` from the target for the first build.

@@ -16,7 +16,7 @@ mkdir -p "$OUT"
 
 # Pre-grant location so the system prompt never covers the app, and park the
 # simulated device at Portal Norte.
-BUNDLE_ID=tech.jeronimo.opentransit
+BUNDLE_ID=com.jeronimotech.opentransit
 xcrun simctl privacy "$DEVICE" grant location "$BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl privacy "$DEVICE" grant location-always "$BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl location "$DEVICE" set 4.7546,-74.0459 >/dev/null 2>&1 || true
