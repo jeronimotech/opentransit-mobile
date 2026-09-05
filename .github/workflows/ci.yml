@@ -19,7 +19,7 @@ jobs:
       - run: flutter gen-l10n
       - run: flutter analyze --fatal-infos
       - run: flutter test --coverage
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: coverage/lcov.info
@@ -40,7 +40,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter build apk --debug --dart-define=MOCK=true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: app-debug-mock.apk
           path: build/app/outputs/flutter-apk/app-debug.apk
