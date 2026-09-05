@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../api/api_client.dart';
 import '../models/models.dart';
 import 'fare.dart';
 
@@ -124,19 +125,69 @@ bool isNightOrHoliday(DateTime at, {Set<String>? holidays}) {
   return holidays?.contains(key) ?? false;
 }
 
-/// Opens the provider: the API-built deep link first, then the store/web
-/// fallback. Returns which one was opened (`link | fallback | none`).
-Future<String> openHandoff({
-  required String? handoffUrl,
-  Uri? fallback,
+/// Names OTP leaves on raw coordinates; never worth sending to a provider.
+const _genericNames = {'origin', 'destination', 'origen', 'destino', ''};
+
+/// A place name worth prefilling in the provider's app, else null (the API
+/// then reverse-geocodes or omits it).
+String? placeLabel(Place? p) {
+  final n = p?.name.trim() ?? '';
+  return _genericNames.contains(n.toLowerCase()) ? null : n;
+}
+
+/// Uses the names the user typed for the trip's endpoints when a leg's own
+/// place carries a generic name.
+List<Leg> legsWithEndpointNames(Itinerary it, {String? fromName, String? toName}) {
+  if (it.legs.isEmpty) return it.legs;
+  return [
+    for (var i = 0; i < it.legs.length; i++)
+      it.legs[i].copyWith(
+        from: i == 0 && placeLabel(it.legs[i].from) == null && fromName != null
+            ? it.legs[i].from.copyWith(name: fromName)
+            : null,
+        to: i == it.legs.length - 1 && placeLabel(it.legs[i].to) == null && toName != null
+            ? it.legs[i].to.copyWith(name: toName)
+            : null,
+      ),
+  ];
+}
+
+/// Requests a ride: fetches the hand-off JSON from the API (credentials are
+/// injected server-side), then launches the returned provider URL in the
+/// external app (a universal link opens the provider app directly). Never
+/// navigates to the API endpoint itself. Falls back to the store / website
+/// when the link cannot be opened. Returns `link | fallback | none`.
+Future<String> requestRide({
+  required ApiClient api,
+  required String cityId,
+  required String providerId,
+  required Place from,
+  required Place to,
+  OnDemandProvider? provider,
   String? platform,
   Future<bool> Function(Uri)? launcher,
+  Future<bool> Function(Uri)? canLaunch,
 }) async {
   final launch = launcher ?? ((u) => launchUrl(u, mode: LaunchMode.externalApplication));
-  if (handoffUrl != null && handoffUrl.isNotEmpty) {
-    try {
-      if (await launch(handoffUri(handoffUrl, platform: platform))) return 'link';
-    } catch (_) {}
+  final can = canLaunch ?? canLaunchUrl;
+  Uri? fallback = provider == null ? null : providerFallbackLink(provider);
+  try {
+    final h = await api.onDemandHandoff(
+      cityId, providerId, from.position, to.position,
+      fromName: placeLabel(from), toName: placeLabel(to),
+      platform: platform ?? handoffPlatform(),
+    );
+    final fb = h.fallback == null ? null : Uri.tryParse(h.fallback!);
+    if (fb != null) fallback = fb;
+    final u = h.url.isEmpty ? null : Uri.tryParse(h.url);
+    if (u != null) {
+      // https universal links are always launchable; custom schemes only when
+      // the provider app is installed (needs LSApplicationQueriesSchemes on iOS).
+      final web = u.scheme == 'http' || u.scheme == 'https';
+      if ((web || await can(u)) && await launch(u)) return 'link';
+    }
+  } catch (_) {
+    // API unreachable or invalid response: fall through to the store / website.
   }
   if (fallback != null) {
     try {

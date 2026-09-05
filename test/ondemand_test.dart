@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:opentransit_mobile/core/api/api_client.dart';
 import 'package:opentransit_mobile/core/api/mock_api_client.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/providers.dart';
@@ -171,21 +172,90 @@ void main() {
       expect(providerFallbackLink(const OnDemandProvider(id: 'n', name: 'N'), isIos: true), isNull);
     });
 
-    test('openHandoff tries the link, then the fallback, and reports what opened', () async {
-      final tried = <String>[];
-      Future<bool> failFirst(Uri u) async {
-        tried.add(u.toString());
-        return !u.host.contains('api.example.org');
-      }
-      final r = await openHandoff(
-        handoffUrl: 'https://api.example.org/h?providerId=x',
-        fallback: Uri.parse('https://apps.apple.com/app/x'),
+    test('placeLabel drops generic OTP names; endpoint names come from the user', () {
+      expect(placeLabel(const Place(name: 'Origin', position: LatLng(0, 0))), isNull);
+      expect(placeLabel(const Place(name: 'destino', position: LatLng(0, 0))), isNull);
+      expect(placeLabel(const Place(name: 'Portal Norte', position: LatLng(0, 0))), 'Portal Norte');
+      final named = legsWithEndpointNames(plans.first, fromName: 'Casa', toName: 'Oficina');
+      expect(named.single.from.name, 'Cra 45 # 174-20', reason: 'real names are kept');
+      final generic = Itinerary.fromJson({
+        ...loadFixture('plan_ondemand')['itineraries'][0] as Map,
+        'legs': [
+          {...(loadFixture('plan_ondemand')['itineraries'][0] as Map)['legs'][0] as Map,
+            'from': {'name': 'Origin', 'lat': 4.7, 'lon': -74.0}, 'to': {'name': 'Destination', 'lat': 4.6, 'lon': -74.1}},
+        ],
+      });
+      final fixed = legsWithEndpointNames(generic, fromName: 'Casa', toName: 'Oficina');
+      expect(fixed.single.from.name, 'Casa');
+      expect(fixed.single.to.name, 'Oficina');
+    });
+
+    test('requestRide fetches the hand-off JSON with names + platform and launches the provider URL, never the API', () async {
+      final spy = _SpyApi();
+      final launched = <String>[];
+      final r = await requestRide(
+        api: spy, cityId: 'bogota', providerId: 'uber',
+        from: const Place(name: 'Portal Norte', position: LatLng(4.7546, -74.0459)),
+        to: const Place(name: 'Origin', position: LatLng(4.5978, -74.1616)),
         platform: 'ios',
-        launcher: failFirst,
+        launcher: (u) async { launched.add(u.toString()); return true; },
+        canLaunch: (_) async => false,
+      );
+      expect(r, 'link');
+      expect(spy.calls.single['providerId'], 'uber');
+      expect(spy.calls.single['fromName'], 'Portal Norte');
+      expect(spy.calls.single['toName'], isNull, reason: 'generic names are not prefilled');
+      expect(spy.calls.single['platform'], 'ios');
+      expect(launched.single, startsWith('https://m.uber.com/looking?'));
+      expect(launched.single, isNot(contains('/ondemand/handoff')));
+    });
+
+    test('requestRide falls back to the store link when the provider URL cannot be opened', () async {
+      final spy = _SpyApi();
+      final launched = <String>[];
+      final r = await requestRide(
+        api: spy, cityId: 'bogota', providerId: 'uber',
+        from: const Place(name: 'A', position: LatLng(4.7, -74.0)),
+        to: const Place(name: 'B', position: LatLng(4.6, -74.1)),
+        launcher: (u) async { launched.add(u.toString()); return !u.host.contains('m.uber.com'); },
       );
       expect(r, 'fallback');
-      expect(tried.first, contains('platform=ios'));
-      expect(await openHandoff(handoffUrl: null, fallback: null, launcher: failFirst), 'none');
+      expect(launched, hasLength(2));
+      expect(launched.last, 'https://apps.apple.com/co/app/id368677368');
+    });
+
+    test('requestRide uses the configured store/web link when the API call fails', () async {
+      final spy = _SpyApi(fail: true);
+      final launched = <String>[];
+      final uber = providers.firstWhere((p) => p.id == 'uber');
+      final r = await requestRide(
+        api: spy, cityId: 'bogota', providerId: 'uber', provider: uber, platform: 'android',
+        from: const Place(name: 'A', position: LatLng(4.7, -74.0)),
+        to: const Place(name: 'B', position: LatLng(4.6, -74.1)),
+        launcher: (u) async { launched.add(u.toString()); return true; },
+      );
+      expect(r, 'fallback');
+      expect(launched.single, uber.appAndroid);
+      expect(await requestRide(
+        api: spy, cityId: 'bogota', providerId: 'nope',
+        from: const Place(name: 'A', position: LatLng(4.7, -74.0)),
+        to: const Place(name: 'B', position: LatLng(4.6, -74.1)),
+        launcher: (_) async => true,
+      ), 'none');
+    });
+
+    test('custom-scheme URLs are only launched when the app is installed', () async {
+      final spy = _SpyApi(url: 'someapp://ride?x=1', fallback: 'https://example.org/store');
+      final launched = <String>[];
+      final r = await requestRide(
+        api: spy, cityId: 'bogota', providerId: 'x',
+        from: const Place(name: 'A', position: LatLng(4.7, -74.0)),
+        to: const Place(name: 'B', position: LatLng(4.6, -74.1)),
+        launcher: (u) async { launched.add(u.toString()); return true; },
+        canLaunch: (_) async => false,
+      );
+      expect(r, 'fallback');
+      expect(launched.single, 'https://example.org/store');
     });
 
     test('taxi tariff estimate: units, minimum, night surcharge, ±10 % band', () {
@@ -230,6 +300,14 @@ void main() {
   });
 
   group('ProviderPicker widget', () {
+    // Pre-warm the fixture cache OUTSIDE the widget test: the tap triggers a
+    // hand-off fetch, and real file IO never completes under fake async.
+    final api = MockApiClient(bundle: DiskAssetBundle(), latency: Duration.zero);
+    setUpAll(() async {
+      await api.onDemandProviders('bogota');
+      await api.city('bogota');
+    });
+
     testWidgets('renders rows, prices or "Precio en la app", and requests through the hand-off', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
@@ -239,7 +317,7 @@ void main() {
       await tester.pumpWidget(ProviderScope(
         overrides: [
           sharedPrefsProvider.overrideWithValue(prefs),
-          apiClientProvider.overrideWithValue(MockApiClient(bundle: DiskAssetBundle(), latency: Duration.zero)),
+          apiClientProvider.overrideWithValue(api),
         ],
         child: MaterialApp(
           locale: const Locale('es'),
@@ -253,6 +331,9 @@ void main() {
           home: Scaffold(
             body: SingleChildScrollView(
               child: ProviderPicker(
+                cityId: 'bogota',
+                from: const Place(name: 'Cra 45 # 174-20', position: LatLng(4.7560, -74.0440)),
+                to: const Place(name: 'Cl 57 Sur # 75-10', position: LatLng(4.5990, -74.1600)),
                 options: od.providers,
                 recommendedId: od.recommendedProviderId,
                 launcher: (u) async {
@@ -273,9 +354,28 @@ void main() {
       expect(find.text('Recomendado'), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey('ondemand-request-uber')));
       await tester.pumpAndSettle();
-      expect(opened.single, contains('providerId=uber'));
-      expect(opened.single, contains('platform='));
+      // The mock hand-off answers the provider's own web URL; the API endpoint is never opened.
+      expect(opened.single, 'https://m.uber.com/');
+      expect(opened.single, isNot(contains('/ondemand/handoff')));
       expect(requested, ['uber:link']);
     });
   });
+}
+
+/// Records hand-off calls and answers a canned provider URL.
+class _SpyApi extends MockApiClient {
+  _SpyApi({this.fail = false, this.url = 'https://m.uber.com/looking?client_id=abc&pickup=%7B%7D', this.fallback = 'https://apps.apple.com/co/app/id368677368'})
+      : super(bundle: DiskAssetBundle(), latency: Duration.zero);
+  final bool fail;
+  final String url;
+  final String? fallback;
+  final calls = <Map<String, Object?>>[];
+
+  @override
+  Future<OnDemandHandoff> onDemandHandoff(String cityId, String providerId, LatLng from, LatLng to,
+      {String? fromName, String? toName, String platform = 'web'}) async {
+    calls.add({'providerId': providerId, 'fromName': fromName, 'toName': toName, 'platform': platform});
+    if (fail) throw const ApiException('NETWORK', 'offline');
+    return OnDemandHandoff(url: url, fallback: fallback);
+  }
 }

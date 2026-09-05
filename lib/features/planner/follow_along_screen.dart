@@ -15,6 +15,7 @@ import '../../core/utils/polyline.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../../core/utils/ondemand.dart';
 import '../ondemand/provider_picker.dart';
 import 'planner_state.dart';
 
@@ -267,13 +268,21 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                     ),
                     // "Pide tu vehículo": the provider picker inline (top 3).
                     if (leg.isOnDemand)
-                      ProviderPicker(
-                        key: const ValueKey('follow-ondemand-picker'),
-                        options: leg.onDemand!.providers,
-                        recommendedId: leg.onDemand!.recommendedProviderId,
-                        compact: true,
-                        maxRows: 3,
-                      ),
+                      Builder(builder: (context) {
+                        final s = ref.read(plannerProvider);
+                        final named = legsWithEndpointNames(it, fromName: s.from?.name, toName: s.to?.name);
+                        final l = named[_legIndex.clamp(0, named.length - 1)];
+                        return ProviderPicker(
+                          key: const ValueKey('follow-ondemand-picker'),
+                          cityId: widget.cityId,
+                          from: l.from,
+                          to: l.to,
+                          options: leg.onDemand!.providers,
+                          recommendedId: leg.onDemand!.recommendedProviderId,
+                          compact: true,
+                          maxRows: 3,
+                        );
+                      }),
                   ],
                   const SizedBox(height: 14),
                   FilledButton.tonalIcon(

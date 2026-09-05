@@ -458,7 +458,7 @@ class _LegTileState extends State<_LegTile> {
                   ] else if (rental != null) ...[
                     _RentalLegBody(leg: leg, rental: rental, network: widget.network, color: color),
                   ] else if (onDemand != null) ...[
-                    _OnDemandLegBody(leg: leg, onDemand: onDemand, color: color),
+                    _OnDemandLegBody(cityId: widget.cityId, leg: leg, onDemand: onDemand, color: color),
                   ] else ...[
                     Text(l10n.walkTo(leg.to.name), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
                     const SizedBox(height: 4),
@@ -635,7 +635,8 @@ class _RentalLegBody extends StatelessWidget {
 /// Taxi / ride-hailing leg: kind chip, ride summary, the provider picker
 /// with "Pedir" buttons, the tariff source line and surcharge chips (v1.4).
 class _OnDemandLegBody extends ConsumerWidget {
-  const _OnDemandLegBody({required this.leg, required this.onDemand, required this.color});
+  const _OnDemandLegBody({required this.cityId, required this.leg, required this.onDemand, required this.color});
+  final String cityId;
   final Leg leg;
   final LegOnDemand onDemand;
   final Color color;
@@ -674,7 +675,13 @@ class _OnDemandLegBody extends ConsumerWidget {
         Text(rideSummary(leg, l10n), style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
         const SizedBox(height: 4),
         Text(l10n.chooseProvider, style: Theme.of(context).textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
-        ProviderPicker(options: onDemand.providers, recommendedId: rec?.providerId),
+        ProviderPicker(
+          cityId: cityId,
+          from: leg.from,
+          to: leg.to,
+          options: onDemand.providers,
+          recommendedId: rec?.providerId,
+        ),
         TariffFootnote(tariff: tariff, price: tariffPrice),
       ],
     );

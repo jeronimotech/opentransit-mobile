@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/api/api_client.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/utils/colors.dart';
@@ -15,13 +16,22 @@ import '../../l10n/generated/app_localizations.dart';
 class ProviderPicker extends ConsumerWidget {
   const ProviderPicker({
     super.key,
+    required this.cityId,
+    required this.from,
+    required this.to,
     required this.options,
     this.recommendedId,
     this.compact = false,
     this.maxRows,
     this.onRequest,
     this.launcher,
+    this.canLaunch,
   });
+  final String cityId;
+
+  /// Pickup / drop-off of the ride leg (names are prefilled in the provider app).
+  final Place from;
+  final Place to;
   final List<OnDemandOption> options;
   final String? recommendedId;
 
@@ -33,8 +43,9 @@ class ProviderPicker extends ConsumerWidget {
   /// (`link | fallback | none`). Mainly for tests and analytics.
   final void Function(OnDemandOption option, String opened)? onRequest;
 
-  /// Overrides the URL launcher (tests).
+  /// Overrides the URL launcher / launchability check (tests).
   final Future<bool> Function(Uri)? launcher;
+  final Future<bool> Function(Uri)? canLaunch;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,6 +53,7 @@ class ProviderPicker extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toString();
     final city = ref.watch(currentCityProvider);
+    final api = ref.watch(apiClientProvider);
     var rows = sortOptions(options, recommendedId: recommendedId, city: city);
     if (maxRows != null) rows = rows.take(maxRows!).toList();
     if (rows.isEmpty) {
@@ -54,6 +66,10 @@ class ProviderPicker extends ConsumerWidget {
         for (final o in rows)
           _ProviderRow(
             key: ValueKey('ondemand-provider-${o.providerId}'),
+            api: api,
+            cityId: cityId,
+            from: from,
+            to: to,
             option: o,
             provider: city?.mobility.provider(o.providerId),
             recommended: o.providerId == recommendedId && rows.length > 1,
@@ -61,6 +77,7 @@ class ProviderPicker extends ConsumerWidget {
             locale: locale,
             onRequest: onRequest,
             launcher: launcher,
+            canLaunch: canLaunch,
           ),
       ],
     );
@@ -70,6 +87,10 @@ class ProviderPicker extends ConsumerWidget {
 class _ProviderRow extends StatefulWidget {
   const _ProviderRow({
     super.key,
+    required this.api,
+    required this.cityId,
+    required this.from,
+    required this.to,
     required this.option,
     required this.provider,
     required this.recommended,
@@ -77,7 +98,12 @@ class _ProviderRow extends StatefulWidget {
     required this.locale,
     this.onRequest,
     this.launcher,
+    this.canLaunch,
   });
+  final ApiClient api;
+  final String cityId;
+  final Place from;
+  final Place to;
   final OnDemandOption option;
   final OnDemandProvider? provider;
   final bool recommended;
@@ -85,6 +111,7 @@ class _ProviderRow extends StatefulWidget {
   final String locale;
   final void Function(OnDemandOption option, String opened)? onRequest;
   final Future<bool> Function(Uri)? launcher;
+  final Future<bool> Function(Uri)? canLaunch;
 
   @override
   State<_ProviderRow> createState() => _ProviderRowState();
@@ -95,10 +122,16 @@ class _ProviderRowState extends State<_ProviderRow> {
 
   Future<void> _request() async {
     setState(() => _busy = true);
-    final opened = await openHandoff(
-      handoffUrl: widget.option.handoffUrl,
-      fallback: widget.provider == null ? null : providerFallbackLink(widget.provider!),
+    // Fetch the hand-off JSON, then open the provider's own URL — never the API's.
+    final opened = await requestRide(
+      api: widget.api,
+      cityId: widget.cityId,
+      providerId: widget.option.providerId,
+      from: widget.from,
+      to: widget.to,
+      provider: widget.provider,
       launcher: widget.launcher,
+      canLaunch: widget.canLaunch,
     );
     if (!mounted) return;
     setState(() => _busy = false);
