@@ -143,16 +143,22 @@ class ItineraryRow extends StatelessWidget {
                     overflow: TextOverflow.fade,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800, fontSize: 12)),
               ),
+              // Route names vary in length (B10 … HF615): let the chips scroll
+              // inside their slot instead of overflowing the row.
               Expanded(
-                child: Row(
-                  children: [
-                    for (var i = 0; i < transit.length && i < 3; i++) ...[
-                      if (i > 0) Icon(Icons.chevron_right, size: 14, color: scheme.outline),
-                      LegChip(transit[i]),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const ClampingScrollPhysics(),
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < transit.length && i < 3; i++) ...[
+                        if (i > 0) Icon(Icons.chevron_right, size: 14, color: scheme.outline),
+                        LegChip(transit[i]),
+                      ],
+                      if (transit.length > 3) Text(' +${transit.length - 3}', style: Theme.of(context).textTheme.labelSmall),
+                      if (transit.isEmpty) LegChip(it.legs.first),
                     ],
-                    if (transit.length > 3) Text(' +${transit.length - 3}', style: Theme.of(context).textTheme.labelSmall),
-                    if (transit.isEmpty) LegChip(it.legs.first),
-                  ],
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
