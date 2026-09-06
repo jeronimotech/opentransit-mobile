@@ -5,6 +5,8 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics_event.dart';
+import '../../core/analytics/track_view.dart';
 import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/links.dart';
@@ -60,6 +62,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
         final isFav = ref.watch(favoritesProvider).any((f) => f.key == fav.key);
         final patterns = d.patterns;
         final dir = patterns.isEmpty ? null : patterns[_dir.clamp(0, patterns.length - 1)];
+        final trackView = TrackView(type: Ev.routeView, id: r.id, props: {'routeId': r.id, 'component': r.component?.name});
         if (dir != null) _build(dir, color);
         final vehicles = live == null
             ? const <MapPoint>[]
@@ -94,6 +97,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
           ),
           body: Column(
             children: [
+              trackView,
               Expanded(
                 flex: 5,
                 child: TransitMap(

@@ -143,4 +143,11 @@ abstract class ApiClient {
     String? toName,
     String platform = 'web',
   });
+
+  // ── v1.5 first-party analytics ──
+
+  /// Posts one batch of anonymous events (`POST /v1/cities/{city}/events`).
+  /// Returns the number the server accepted; throws on failure so the
+  /// analytics queue can retry later.
+  Future<int> sendEvents(String cityId, Map<String, dynamic> batch);
 }

@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics_event.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
@@ -44,6 +45,7 @@ class RentalStationSheet extends ConsumerWidget {
     final color = colorFromHex(network?.color, fallback: const Color(0xFF00A859));
     final age = s.ageSeconds();
     final appLink = network == null ? null : rentalAppLink(network);
+    ref.read(analyticsProvider).track(Ev.rentalStationView, {'stationId': s.id, 'networkId': s.networkId});
 
     Widget stat(IconData icon, String text, {Color? c}) => Row(
           mainAxisSize: MainAxisSize.min,

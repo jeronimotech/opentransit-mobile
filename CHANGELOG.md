@@ -4,6 +4,11 @@ All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://ke
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-09-06
+### Added
+- Lote 1 (Citymapper playbook): leave-by countdown on result cards ("Sal en 4 min / Sal ahora / Ya salió") with departed options demoted and an "Actualizar" chip; results grouped by scenario (Más rápido · Menos caminata · Menos transbordos · Más barato · En bici · Taxi / app) with the flat sorts moved to an "Ordenar" menu; the next live departures of each transit leg as tappable chips that re-time the itinerary client-side ("Re-temporizado"); Citymapper-style board rows ("y en 13, 23 min"), contextual empty states and a slim offline/stale/back-online bar; one semantic palette (live green, walk blue, disruption orange, severe red) as a theme extension.
+- First-party analytics (v1.5): anonymous, coarsened, batched events posted to `/v1/cities/{city}/events`; session id per start, cohort id rotating every 30 days; opt-out and "Borrar mis estadísticas" in Settings › Privacidad; every screen and action instrumented.
+
 ## [1.4.0] - 2026-09-05
 ### Added
 - On-demand mobility (taxi / ride-hailing): "Taxi / app" mode, provider picker with hand-off, tariff estimates.

@@ -5,6 +5,8 @@ import '../../l10n/generated/app_localizations.dart';
 import '../api/api_client.dart';
 import '../models/models.dart';
 import '../providers.dart';
+import '../analytics/analytics_event.dart';
+import '../theme/semantic_colors.dart';
 import '../utils/colors.dart';
 import '../utils/fare.dart';
 import '../utils/ondemand.dart';
@@ -147,7 +149,7 @@ class LiveBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final color = Colors.green.shade600;
+    final color = context.semantic.live;
     return Semantics(
       label: l10n.realtime,
       child: ExcludeSemantics(
@@ -224,7 +226,7 @@ class FreshnessLabel extends ConsumerWidget {
     final age = freshness?.ageSeconds ?? rt?.ageSeconds;
     if (stale) {
       return _Label(
-        color: Colors.orange.shade800,
+        color: context.semantic.disruption,
         text: age == null ? l10n.freshNoRealtime : l10n.freshStale(age.clamp(0, 99999)),
       );
     }
@@ -266,7 +268,7 @@ class ServiceHint extends StatelessWidget {
     final hint = serviceHint(window,
         outOfHours: l10n.outOfHours, nextAt: l10n.nextAt, noMoreToday: l10n.noServiceToday);
     if (hint == null) return const SizedBox.shrink();
-    final color = Colors.orange.shade800;
+    final color = context.semantic.disruption;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -315,16 +317,26 @@ class FareText extends ConsumerWidget {
   }
 }
 
+/// Errors already reported to analytics (one event per error instance).
+final Expando<bool> _reportedErrors = Expando<bool>();
+
 /// Full-bleed error state with retry.
-class ErrorView extends StatelessWidget {
-  const ErrorView({super.key, required this.error, this.onRetry});
+class ErrorView extends ConsumerWidget {
+  const ErrorView({super.key, required this.error, this.onRetry, this.screen});
   final Object error;
   final VoidCallback? onRetry;
 
+  /// Screen name for the `error` analytics event (optional).
+  final String? screen;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final e = error;
+    if (e is! String && e is! num && e is! bool && _reportedErrors[e] != true) {
+      _reportedErrors[e] = true;
+      ref.read(analyticsProvider).track(Ev.error, {'code': e is ApiException ? e.code : 'UNKNOWN', 'screen': screen});
+    }
     final msg = e is ApiException
         ? (e.isNetwork ? l10n.errorOffline : e.message)
         : l10n.errorGeneric;
@@ -460,9 +472,19 @@ String poiGlyph(String type) => switch (type) {
       _ => '•',
     };
 
-/// Icon for an alert severity.
-Widget alertIcon(AlertSeverity s, {double size = 22}) => switch (s) {
-      AlertSeverity.severe => Icon(Icons.error_rounded, color: Colors.red.shade700, size: size),
-      AlertSeverity.warning => Icon(Icons.warning_rounded, color: Colors.orange.shade800, size: size),
-      AlertSeverity.info => Icon(Icons.info_rounded, color: Colors.blue.shade700, size: size),
+/// Icon for an alert severity (semantic palette: severe red, disruption
+/// orange, info blue).
+Widget alertIcon(AlertSeverity s, {double size = 22}) => Builder(
+      builder: (context) => switch (s) {
+        AlertSeverity.severe => Icon(Icons.error_rounded, color: context.semantic.severe, size: size),
+        AlertSeverity.warning => Icon(Icons.warning_rounded, color: context.semantic.disruption, size: size),
+        AlertSeverity.info => Icon(Icons.info_rounded, color: context.semantic.info, size: size),
+      },
+    );
+
+/// Colour for an alert severity.
+Color alertColor(BuildContext context, AlertSeverity s) => switch (s) {
+      AlertSeverity.severe => context.semantic.severe,
+      AlertSeverity.warning => context.semantic.disruption,
+      AlertSeverity.info => context.semantic.info,
     };

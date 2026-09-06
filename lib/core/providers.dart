@@ -5,10 +5,17 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dart:io' show Platform;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import 'analytics/analytics.dart';
+import 'analytics/analytics_event.dart';
 import 'api/api_client.dart';
 import 'api/http_api_client.dart';
 import 'api/mock_api_client.dart';
 import 'config.dart';
+import 'connectivity.dart';
 import 'models/models.dart';
 import 'storage/favorites.dart';
 import 'storage/preferences.dart';
@@ -19,8 +26,47 @@ final sharedPrefsProvider = Provider<SharedPreferences>(
 );
 
 final apiClientProvider = Provider<ApiClient>(
-  (ref) => AppConfig.mock ? MockApiClient() : HttpApiClient(AppConfig.apiUrl),
+  (ref) => AppConfig.mock
+      ? MockApiClient()
+      : HttpApiClient(AppConfig.apiUrl, onStatus: (ok) => ref.read(connectionProvider.notifier).report(ok)),
 );
+
+// ───────────────────────── analytics (v1.5) ─────────────────────────
+
+class _ApiTransport implements AnalyticsTransport {
+  _ApiTransport(this._api);
+  final ApiClient _api;
+  @override
+  Future<int> send(String cityId, Map<String, dynamic> batch) => _api.sendEvents(cityId, batch);
+}
+
+/// First-party analytics queue. City and locale are read lazily so the
+/// service survives city changes; the opt-out lives in SharedPreferences.
+final analyticsProvider = Provider<Analytics>((ref) {
+  final a = Analytics(
+    prefs: ref.watch(sharedPrefsProvider),
+    transport: _ApiTransport(ref.watch(apiClientProvider)),
+    cityId: () => ref.read(settingsProvider).cityId,
+    locale: () => ref.read(settingsProvider).locale?.languageCode,
+    platform: kIsWeb ? 'web' : (Platform.isAndroid ? 'android' : 'ios'),
+    appVersion: AppConfig.appVersion,
+  );
+  ref.onDispose(a.dispose);
+  return a;
+});
+
+/// Mirrors the opt-out so widgets can rebuild when it changes.
+class AnalyticsEnabledNotifier extends Notifier<bool> {
+  @override
+  bool build() => ref.watch(analyticsProvider).enabled;
+
+  Future<void> set(bool v) async {
+    state = v;
+    await ref.read(analyticsProvider).setEnabled(v);
+  }
+}
+
+final analyticsEnabledProvider = NotifierProvider<AnalyticsEnabledNotifier, bool>(AnalyticsEnabledNotifier.new);
 
 final preferencesProvider = Provider<PreferencesRepository>(
   (ref) => PreferencesRepository(ref.watch(sharedPrefsProvider)),
@@ -134,11 +180,13 @@ class SettingsNotifier extends Notifier<AppSettings> {
   }
 
   Future<void> setLiveVehicles(bool v) async {
+    ref.read(analyticsProvider).track(Ev.layerToggle, {'layer': 'liveVehicles', 'on': v});
     state = state.copyWith(liveVehicles: v);
     await _p.setLiveVehicles(v);
   }
 
   Future<void> setPoiLayer(bool v) async {
+    ref.read(analyticsProvider).track(Ev.layerToggle, {'layer': 'pois', 'on': v});
     state = state.copyWith(poiLayer: v);
     await _p.setPoiLayer(v);
   }
@@ -149,16 +197,19 @@ class SettingsNotifier extends Notifier<AppSettings> {
   }
 
   Future<void> setNetworkLayer(bool v) async {
+    ref.read(analyticsProvider).track(Ev.layerToggle, {'layer': 'network', 'on': v});
     state = state.copyWith(networkLayer: v);
     await _p.setNetworkLayer(v);
   }
 
   Future<void> setZonalLayer(bool v) async {
+    ref.read(analyticsProvider).track(Ev.layerToggle, {'layer': 'zonal', 'on': v});
     state = state.copyWith(zonalLayer: v);
     await _p.setZonalLayer(v);
   }
 
   Future<void> setRentalLayer(bool v) async {
+    ref.read(analyticsProvider).track(Ev.layerToggle, {'layer': 'rental', 'on': v});
     state = state.copyWith(rentalLayer: v);
     await _p.setRentalLayer(v);
   }
@@ -207,23 +258,35 @@ class FavoritesNotifier extends Notifier<List<Favorite>> {
   bool contains(Favorite f) => state.any((x) => x.key == f.key);
 
   Future<void> toggle(Favorite f) async {
-    final next = contains(f)
+    final had = contains(f);
+    final next = had
         ? state.where((x) => x.key != f.key).toList()
         : [...state, f];
+    ref.read(analyticsProvider).track(had ? Ev.favoriteRemove : Ev.favoriteAdd, _favProps(f));
     state = next;
     await FavoritesRepository(ref.read(sharedPrefsProvider)).save(next);
   }
 
   /// Adds or replaces (same key) — used for Casa/Trabajo which are singletons.
   Future<void> put(Favorite f) async {
+    ref.read(analyticsProvider).track(Ev.favoriteAdd, _favProps(f));
     state = [...state.where((x) => x.key != f.key), f];
     await FavoritesRepository(ref.read(sharedPrefsProvider)).save(state);
   }
 
   Future<void> remove(Favorite f) async {
+    ref.read(analyticsProvider).track(Ev.favoriteRemove, _favProps(f));
     state = state.where((x) => x.key != f.key).toList();
     await FavoritesRepository(ref.read(sharedPrefsProvider)).save(state);
   }
+
+  /// Only the kind (and the home/work label) is reported: never a custom
+  /// name or address.
+  static Map<String, Object?> _favProps(Favorite f) => {
+        'kind': f.type.name,
+        if (f.type == FavoriteType.place && (f.kind == FavoriteKind.home || f.kind == FavoriteKind.work))
+          'label': f.kind.name,
+      };
 
   Favorite? ofKind(String cityId, FavoriteKind kind) => state
       .where((f) => f.cityId == cityId && f.type == FavoriteType.place && f.kind == kind)

@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:opentransit_mobile/app.dart';
 import 'package:opentransit_mobile/core/api/mock_api_client.dart';
+import 'package:opentransit_mobile/core/connectivity.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/providers.dart';
 import 'package:opentransit_mobile/core/storage/favorites.dart';
@@ -117,15 +118,42 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
     await settle(tester, 30);
     expect(find.byType(ItineraryCard), findsWidgets);
+    // Lote 1: results grouped by scenario with a leave-by countdown per card.
+    expect(find.byKey(const ValueKey('results-scenarios')), findsOneWidget);
+    expect(find.byKey(const ValueKey('scenario-fastest')), findsOneWidget);
+    expect(find.byType(LeaveByLabel), findsWidgets);
+    await shot(tester, 'lote1_01_results_scenarios');
+    // The flat sorts moved into the "Ordenar" menu.
+    await tester.tap(find.byKey(const ValueKey('sort-menu')));
+    await settle(tester, 10);
     await tester.tap(find.byKey(const ValueKey('sort-fewerTransfers')));
     await settle(tester, 10);
+    expect(find.byKey(const ValueKey('results-scenarios')), findsNothing);
     await shot(tester, '06_results_sorted');
+    await tester.tap(find.byKey(const ValueKey('sort-menu')));
+    await settle(tester, 10);
+    await tester.tap(find.byKey(const ValueKey('sort-scenario')));
+    await settle(tester, 10);
 
     await tester.tap(find.byType(ItineraryCard).first);
     await settle(tester, 30);
     await Future<void>.delayed(const Duration(seconds: 4));
     expect(find.byKey(const ValueKey('fare-block')), findsOneWidget);
     await shot(tester, '07_itinerary_fare');
+    // Lote 1: live departure chips at the boarding stop; picking one re-times
+    // the itinerary client-side ("Re-temporizado").
+    expect(find.byKey(const ValueKey('retimed-tag')), findsNothing);
+    // Pull the sheet up so the chips are on screen, then pick the second one.
+    await tester.drag(find.byKey(const ValueKey('fare-block')), const Offset(0, -500));
+    await settle(tester, 20);
+    expect(find.text('Próximas salidas aquí'), findsWidgets);
+    final depChip = find.byType(ChoiceChip).at(1);
+    await tester.ensureVisible(depChip);
+    await settle(tester, 10);
+    await tester.tap(depChip);
+    await settle(tester, 20);
+    expect(find.byKey(const ValueKey('retimed-tag')), findsOneWidget);
+    await shot(tester, 'lote1_02_itinerary_departures');
 
     router.push('/bogota/stops/bogota:PN');
     await settle(tester, 30);
@@ -135,6 +163,18 @@ void main() {
     expect(find.byKey(const ValueKey('routes-section')), findsOneWidget);
     await Future<void>.delayed(const Duration(seconds: 3));
     await shot(tester, '08_stop_board');
+    // Lote 1: Citymapper-style rows ("y en 13, 23 min") and the offline bar.
+    expect(find.text('y en '), findsWidgets);
+    await shot(tester, 'lote1_03_board_rows');
+    container.read(connectionProvider.notifier).report(false);
+    await settle(tester, 10);
+    expect(find.byKey(const ValueKey('bar-offline')), findsOneWidget);
+    await shot(tester, 'lote1_04_offline_bar');
+    container.read(connectionProvider.notifier).report(true);
+    await settle(tester, 10);
+    expect(find.byKey(const ValueKey('bar-online')), findsOneWidget);
+    await Future<void>.delayed(const Duration(seconds: 4));
+    await settle(tester, 10);
 
     router.push('/bogota/routes/bogota:B10');
     await settle(tester, 30);
@@ -246,6 +286,15 @@ void main() {
     planner.setOnDemand(false);
     router.go('/bogota');
     await settle(tester, 10);
+
+    // Lote 1: privacy section with the anonymous-statistics toggle.
+    router.go('/bogota/settings');
+    await settle(tester, 20);
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('analytics-toggle')), 200, scrollable: find.byType(Scrollable).first);
+    await settle(tester, 10);
+    expect(find.byKey(const ValueKey('analytics-clear')), findsOneWidget);
+    await shot(tester, 'lote1_05_settings_analytics');
+    expect(container.read(analyticsProvider).pending, isNotEmpty, reason: 'events were tracked during the walkthrough');
 
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.dark);
     await container.read(settingsProvider.notifier).setPoiLayer(true);

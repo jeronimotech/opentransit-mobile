@@ -76,13 +76,13 @@ void main() {
     expect(find.text('B10'), findsOneWidget);
     expect(find.text('K43'), findsOneWidget);
     expect(find.text('B74'), findsOneWidget);
-    // Line 1: headsign + big first ETA on the right; line 2: "luego 13 · 23 min".
+    // Line 1: headsign + big first ETA on the right; line 2: "y en 13, 23 min".
     expect(find.text('Hacia Portal Sur'), findsOneWidget);
     expect(find.text('5 min'), findsOneWidget);
     expect(find.textContaining('Siguiente en'), findsNothing);
-    expect(find.text('luego '), findsWidgets);
+    expect(find.text('y en '), findsWidgets);
     expect(find.text(' min'), findsWidgets);
-    expect(find.text(' · '), findsWidgets);
+    expect(find.text(', '), findsWidgets);
     expect(find.byIcon(Icons.schedule), findsNothing);
     // Tear the tree down and dispose the container so the board's refresh
     // timer is cancelled before the framework checks for pending timers.

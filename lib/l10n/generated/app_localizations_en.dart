@@ -1059,4 +1059,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stateOff => 'off';
+
+  @override
+  String leaveIn(int minutes) {
+    return 'Leave in $minutes min';
+  }
+
+  @override
+  String get leaveNow => 'Leave now';
+
+  @override
+  String get departed => 'Already left';
+
+  @override
+  String get refreshResults => 'Refresh';
+
+  @override
+  String get scenarioFastest => 'Fastest';
+
+  @override
+  String get scenarioLessWalking => 'Less walking';
+
+  @override
+  String get scenarioFewerTransfers => 'Fewer transfers';
+
+  @override
+  String get scenarioCheapest => 'Cheapest';
+
+  @override
+  String get scenarioBike => 'By bike';
+
+  @override
+  String get scenarioOnDemand => 'Taxi / app';
+
+  @override
+  String get sortByScenario => 'By scenario';
+
+  @override
+  String get orderMenu => 'Sort';
+
+  @override
+  String moreOptionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count more options',
+      one: '1 more option',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nextDeparturesHere => 'Next departures here';
+
+  @override
+  String get retimed => 'Re-timed';
+
+  @override
+  String get retimedHint => 'Times adjusted to the departure you picked';
+
+  @override
+  String andThenTimes(String times) {
+    return 'and in $times min';
+  }
+
+  @override
+  String get noStopsNearbyWalk => 'No stops within a 30-minute walk';
+
+  @override
+  String get noBoardContext => 'No upcoming departures at this stop';
+
+  @override
+  String get noLiveScheduledBelow =>
+      'No live buses on this route right now · schedule below';
+
+  @override
+  String get offlineBar => 'Offline · showing saved data';
+
+  @override
+  String get backOnlineBar => 'Back online';
+
+  @override
+  String staleBar(int seconds) {
+    return 'Live data delayed · $seconds s ago';
+  }
+
+  @override
+  String get privacyTitle => 'Privacy';
+
+  @override
+  String get analyticsToggle => 'Share anonymous usage statistics';
+
+  @override
+  String get analyticsExplain =>
+      'Helps improve your city\'s transit: only anonymous, aggregated data, never your exact location.';
+
+  @override
+  String get analyticsClear => 'Delete my statistics';
+
+  @override
+  String get analyticsCleared => 'Statistics deleted and identifier renewed';
+
+  @override
+  String get privacyPolicy => 'Privacy policy';
 }

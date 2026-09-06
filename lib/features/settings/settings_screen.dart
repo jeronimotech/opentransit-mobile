@@ -114,6 +114,33 @@ class SettingsScreen extends ConsumerWidget {
             if (city.links.support != null)
               ListTile(leading: const Icon(Icons.support_agent), title: Text(l10n.about), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.support!)),
           ],
+          SectionTitle(l10n.privacyTitle),
+          SwitchListTile(
+            key: const ValueKey('analytics-toggle'),
+            secondary: const Icon(Icons.insights_outlined),
+            title: Text(l10n.analyticsToggle),
+            subtitle: Text(l10n.analyticsExplain),
+            value: ref.watch(analyticsEnabledProvider),
+            onChanged: (v) => ref.read(analyticsEnabledProvider.notifier).set(v),
+          ),
+          ListTile(
+            key: const ValueKey('analytics-clear'),
+            leading: const Icon(Icons.delete_sweep_outlined),
+            title: Text(l10n.analyticsClear),
+            onTap: () async {
+              await ref.read(analyticsProvider).clearData();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.analyticsCleared)));
+              }
+            },
+          ),
+          if (city?.links.privacy != null)
+            ListTile(
+              leading: const Icon(Icons.privacy_tip_outlined),
+              title: Text(l10n.privacyPolicy),
+              trailing: const Icon(Icons.open_in_new, size: 18),
+              onTap: () => _open(city!.links.privacy!),
+            ),
           SectionTitle(l10n.about),
           ListTile(
             leading: const Icon(Icons.info_outline),

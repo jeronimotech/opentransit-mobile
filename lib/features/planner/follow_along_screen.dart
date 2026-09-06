@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics_event.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
@@ -60,9 +61,16 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
   bool _denied = false;
   static const _alertMeters = 300.0;
 
+  DateTime? _goStartedAt;
+
   @override
   void initState() {
     super.initState();
+    final it = _itinerary();
+    if (it != null) {
+      _goStartedAt = DateTime.now();
+      ref.read(analyticsProvider).track(Ev.goStart, {'durationSeconds': it.durationSeconds, 'legs': it.legs.length, 'modes': it.modesUsed});
+    }
     _start();
   }
 
@@ -116,6 +124,15 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
 
   @override
   void dispose() {
+    final it = _itinerary();
+    if (it != null && _goStartedAt != null) {
+      ref.read(analyticsProvider).track(Ev.goEnd, {
+        'durationSeconds': it.durationSeconds,
+        'elapsedSeconds': DateTime.now().difference(_goStartedAt!).inSeconds,
+        'completed': _arrived,
+        'legs': it.legs.length,
+      });
+    }
     _sub?.cancel();
     LocalNotifications.instance.cancelAll();
     super.dispose();

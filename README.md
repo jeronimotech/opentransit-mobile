@@ -287,6 +287,20 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Data attribution for Bogotá:
 TRANSMILENIO S.A. (GTFS / GTFS-RT). Map: © OpenMapTiles © OpenStreetMap
 contributors, tiles by OpenFreeMap. POIs: © OpenStreetMap contributors.
 
+## v1.5 — Lote 1 UX and analytics
+
+Inspired by the Citymapper playbook (see the private reference analysis):
+
+- **Leave-by countdown** on every result card: "Sal en 4 min", "Sal ahora", "Ya salió". A 15-second ticker keeps it honest; departed options sink to the bottom greyed out and an **Actualizar** chip appears once two have passed.
+- **Results by scenario** — Más rápido · Menos caminata · Menos transbordos · Más barato (only when fares differ) · En bici · Taxi / app. Each itinerary belongs to exactly one section (`lib/core/utils/scenarios.dart`); the best one is a full card, the rest one-line rows. The flat sorts live in the **Ordenar** menu.
+- **Live departures inside the waiting step**: the next three departures of the leg's route at its boarding stop (`/stops/{id}/routes/{routeId}/next`) as chips; tapping one re-times the whole itinerary client-side (`lib/core/utils/retime.dart`) and shows a **Re-temporizado** tag.
+- **Stop rows and states**: large route chip, headsign under it, big right-aligned minutes with the live blip and "y en 13, 23 min"; contextual empty states; a slim top bar that turns red when the API is unreachable, flashes green when it is back and amber when live data is stale (`lib/core/widgets/connectivity_bar.dart`).
+- **Semantic colours** (`lib/core/theme/semantic_colors.dart`): live green, walking blue, disruption orange, severe red — a `ThemeExtension`, never hardcoded shades.
+
+### Analytics (first-party, privacy by design)
+
+`lib/core/analytics/` implements CONTRACT-analytics v1.5: `Analytics.track(type, props)` queues coarsened events (coordinates rounded to 3 decimals ≈ 110 m, no free text, no addresses) in SharedPreferences (cap 500) and flushes them every 30 s, at 20 pending events or when the app goes to background, as one `POST /v1/cities/{city}/events` batch (≤ 50 events, 24 h max age, exponential back-off). Identity is a random session id per start and a cohort id that rotates every 30 days; both are renewed by **Borrar mis estadísticas**. The toggle **Compartir estadísticas anónimas de uso** (Settings › Privacidad, default on) drops the queue and stops everything when off. Instrumented: app open, screen views, search selections, plan request/result, itinerary select, GO start/end, stop/board/route views, "Ubica tu bus" queries, provider hand-offs, rental station views, favorites, alert views, layer and mode toggles, errors. No third-party SDKs.
+
 ## Release to TestFlight
 
 `tool/testflight.sh` builds, signs, exports and uploads the iOS app using an App Store Connect API

@@ -460,5 +460,62 @@
   "modeSharedShort": "Shared",
   "modeOnDemandShort": "Taxi/app",
   "stateOn": "on",
-  "stateOff": "off"
+  "stateOff": "off",
+  "leaveIn": "Leave in {minutes} min",
+  "@leaveIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveNow": "Leave now",
+  "departed": "Already left",
+  "refreshResults": "Refresh",
+  "scenarioFastest": "Fastest",
+  "scenarioLessWalking": "Less walking",
+  "scenarioFewerTransfers": "Fewer transfers",
+  "scenarioCheapest": "Cheapest",
+  "scenarioBike": "By bike",
+  "scenarioOnDemand": "Taxi / app",
+  "sortByScenario": "By scenario",
+  "orderMenu": "Sort",
+  "moreOptionsCount": "{count, plural, =1{1 more option} other{{count} more options}}",
+  "@moreOptionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nextDeparturesHere": "Next departures here",
+  "retimed": "Re-timed",
+  "retimedHint": "Times adjusted to the departure you picked",
+  "andThenTimes": "and in {times} min",
+  "@andThenTimes": {
+    "placeholders": {
+      "times": {
+        "type": "String"
+      }
+    }
+  },
+  "noStopsNearbyWalk": "No stops within a 30-minute walk",
+  "noBoardContext": "No upcoming departures at this stop",
+  "noLiveScheduledBelow": "No live buses on this route right now · schedule below",
+  "offlineBar": "Offline · showing saved data",
+  "backOnlineBar": "Back online",
+  "staleBar": "Live data delayed · {seconds} s ago",
+  "@staleBar": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "privacyTitle": "Privacy",
+  "analyticsToggle": "Share anonymous usage statistics",
+  "analyticsExplain": "Helps improve your city's transit: only anonymous, aggregated data, never your exact location.",
+  "analyticsClear": "Delete my statistics",
+  "analyticsCleared": "Statistics deleted and identifier renewed",
+  "privacyPolicy": "Privacy policy"
 }

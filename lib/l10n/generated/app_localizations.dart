@@ -1867,6 +1867,180 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'desactivado'**
   String get stateOff;
+
+  /// No description provided for @leaveIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Sal en {minutes} min'**
+  String leaveIn(int minutes);
+
+  /// No description provided for @leaveNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Sal ahora'**
+  String get leaveNow;
+
+  /// No description provided for @departed.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya salió'**
+  String get departed;
+
+  /// No description provided for @refreshResults.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get refreshResults;
+
+  /// No description provided for @scenarioFastest.
+  ///
+  /// In es, this message translates to:
+  /// **'Más rápido'**
+  String get scenarioFastest;
+
+  /// No description provided for @scenarioLessWalking.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos caminata'**
+  String get scenarioLessWalking;
+
+  /// No description provided for @scenarioFewerTransfers.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos transbordos'**
+  String get scenarioFewerTransfers;
+
+  /// No description provided for @scenarioCheapest.
+  ///
+  /// In es, this message translates to:
+  /// **'Más barato'**
+  String get scenarioCheapest;
+
+  /// No description provided for @scenarioBike.
+  ///
+  /// In es, this message translates to:
+  /// **'En bici'**
+  String get scenarioBike;
+
+  /// No description provided for @scenarioOnDemand.
+  ///
+  /// In es, this message translates to:
+  /// **'Taxi / app'**
+  String get scenarioOnDemand;
+
+  /// No description provided for @sortByScenario.
+  ///
+  /// In es, this message translates to:
+  /// **'Por escenario'**
+  String get sortByScenario;
+
+  /// No description provided for @orderMenu.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar'**
+  String get orderMenu;
+
+  /// No description provided for @moreOptionsCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 opción más} other{{count} opciones más}}'**
+  String moreOptionsCount(int count);
+
+  /// No description provided for @nextDeparturesHere.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximas salidas aquí'**
+  String get nextDeparturesHere;
+
+  /// No description provided for @retimed.
+  ///
+  /// In es, this message translates to:
+  /// **'Re-temporizado'**
+  String get retimed;
+
+  /// No description provided for @retimedHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas ajustadas a la salida elegida'**
+  String get retimedHint;
+
+  /// No description provided for @andThenTimes.
+  ///
+  /// In es, this message translates to:
+  /// **'y en {times} min'**
+  String andThenTimes(String times);
+
+  /// No description provided for @noStopsNearbyWalk.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay paradas a 30 min a pie'**
+  String get noStopsNearbyWalk;
+
+  /// No description provided for @noBoardContext.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay salidas próximas en esta parada'**
+  String get noBoardContext;
+
+  /// No description provided for @noLiveScheduledBelow.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin buses en vivo en esta ruta ahora · horario programado abajo'**
+  String get noLiveScheduledBelow;
+
+  /// No description provided for @offlineBar.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión · mostrando datos guardados'**
+  String get offlineBar;
+
+  /// No description provided for @backOnlineBar.
+  ///
+  /// In es, this message translates to:
+  /// **'Conexión restablecida'**
+  String get backOnlineBar;
+
+  /// No description provided for @staleBar.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos en vivo con retraso · hace {seconds} s'**
+  String staleBar(int seconds);
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad'**
+  String get privacyTitle;
+
+  /// No description provided for @analyticsToggle.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir estadísticas anónimas de uso'**
+  String get analyticsToggle;
+
+  /// No description provided for @analyticsExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayuda a mejorar el transporte de tu ciudad: solo datos anónimos y agregados, nunca tu ubicación exacta.'**
+  String get analyticsExplain;
+
+  /// No description provided for @analyticsClear.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrar mis estadísticas'**
+  String get analyticsClear;
+
+  /// No description provided for @analyticsCleared.
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas borradas y identificador renovado'**
+  String get analyticsCleared;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In es, this message translates to:
+  /// **'Política de privacidad'**
+  String get privacyPolicy;
 }
 
 class _AppLocalizationsDelegate

@@ -1061,4 +1061,108 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get stateOff => 'desactivado';
+
+  @override
+  String leaveIn(int minutes) {
+    return 'Sal en $minutes min';
+  }
+
+  @override
+  String get leaveNow => 'Sal ahora';
+
+  @override
+  String get departed => 'Ya salió';
+
+  @override
+  String get refreshResults => 'Actualizar';
+
+  @override
+  String get scenarioFastest => 'Más rápido';
+
+  @override
+  String get scenarioLessWalking => 'Menos caminata';
+
+  @override
+  String get scenarioFewerTransfers => 'Menos transbordos';
+
+  @override
+  String get scenarioCheapest => 'Más barato';
+
+  @override
+  String get scenarioBike => 'En bici';
+
+  @override
+  String get scenarioOnDemand => 'Taxi / app';
+
+  @override
+  String get sortByScenario => 'Por escenario';
+
+  @override
+  String get orderMenu => 'Ordenar';
+
+  @override
+  String moreOptionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count opciones más',
+      one: '1 opción más',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get nextDeparturesHere => 'Próximas salidas aquí';
+
+  @override
+  String get retimed => 'Re-temporizado';
+
+  @override
+  String get retimedHint => 'Horas ajustadas a la salida elegida';
+
+  @override
+  String andThenTimes(String times) {
+    return 'y en $times min';
+  }
+
+  @override
+  String get noStopsNearbyWalk => 'No hay paradas a 30 min a pie';
+
+  @override
+  String get noBoardContext => 'No hay salidas próximas en esta parada';
+
+  @override
+  String get noLiveScheduledBelow =>
+      'Sin buses en vivo en esta ruta ahora · horario programado abajo';
+
+  @override
+  String get offlineBar => 'Sin conexión · mostrando datos guardados';
+
+  @override
+  String get backOnlineBar => 'Conexión restablecida';
+
+  @override
+  String staleBar(int seconds) {
+    return 'Datos en vivo con retraso · hace $seconds s';
+  }
+
+  @override
+  String get privacyTitle => 'Privacidad';
+
+  @override
+  String get analyticsToggle => 'Compartir estadísticas anónimas de uso';
+
+  @override
+  String get analyticsExplain =>
+      'Ayuda a mejorar el transporte de tu ciudad: solo datos anónimos y agregados, nunca tu ubicación exacta.';
+
+  @override
+  String get analyticsClear => 'Borrar mis estadísticas';
+
+  @override
+  String get analyticsCleared =>
+      'Estadísticas borradas y identificador renovado';
+
+  @override
+  String get privacyPolicy => 'Política de privacidad';
 }

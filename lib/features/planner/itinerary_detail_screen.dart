@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/theme/semantic_colors.dart';
+import '../../core/utils/retime.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/text.dart';
 import '../../core/utils/fare.dart';
@@ -35,6 +37,22 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
   List<MapPoint>? _markers;
   List<LatLng>? _fit;
   Itinerary? _built;
+
+  /// Client-side re-timed copy after the user picked another live departure.
+  Itinerary? _retimed;
+  final Map<int, DateTime> _chosen = {};
+
+  void _retime(Itinerary base, int legIndex, DateTime start, {bool? realtime, String? tripId}) {
+    setState(() {
+      _chosen[legIndex] = start;
+      // Always re-time from the untouched itinerary so picks don't accumulate.
+      var out = base;
+      for (final e in _chosen.entries) {
+        out = retimeItinerary(out, e.key, e.value, realtime: e.key == legIndex ? realtime : null, tripId: e.key == legIndex ? tripId : null);
+      }
+      _retimed = out;
+    });
+  }
 
   void _buildOverlays(Itinerary it) {
     if (identical(_built, it)) return;
@@ -91,8 +109,9 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
     final city = ref.watch(cityProvider(widget.cityId)).asData?.value;
     final fare = planFare(s, widget.index, city);
     final plan = s.result?.asData?.value;
-    final it = plan != null && widget.index < plan.itineraries.length ? plan.itineraries[widget.index] : null;
-    if (it == null) {
+    final base = plan != null && widget.index < plan.itineraries.length ? plan.itineraries[widget.index] : null;
+    final it = base != null && _retimed != null && _retimed!.id == base.id ? _retimed! : base;
+    if (it == null || base == null) {
       return Scaffold(
         appBar: AppBar(title: Text(l10n.itinerary)),
         body: EmptyView(icon: Icons.alt_route, message: l10n.noItineraries),
@@ -180,6 +199,18 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
                       ),
                       const Spacer(),
+                      if (it.retimed) ...[
+                        Tooltip(
+                          message: l10n.retimedHint,
+                          child: Container(
+                            key: const ValueKey('retimed-tag'),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(color: scheme.secondaryContainer, borderRadius: BorderRadius.circular(8)),
+                            child: Text(l10n.retimed, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: scheme.onSecondaryContainer)),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
                       if (it.hasRealtime) const LiveBadge(),
                     ],
                   ),
@@ -201,8 +232,12 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
                     _LegTile(
                       cityId: widget.cityId,
                       leg: named[i],
+                      legIndex: i,
                       isLast: i == named.length - 1,
                       network: city?.mobility.network(named[i].rental?.networkId),
+                      chosenStart: _chosen[i],
+                      showDepartures: showDeparturesFor(it, i),
+                      onRetime: (start, {realtime, tripId}) => _retime(base, i, start, realtime: realtime, tripId: tripId),
                     ),
                   _EndTile(place: named.last.to, time: it.endTime),
                 ],
@@ -213,6 +248,16 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
       ),
     );
   }
+}
+
+/// Live departure chips belong to the leg the user is about to board: the
+/// first transit leg, or any transit leg boarding within 30 minutes.
+bool showDeparturesFor(Itinerary it, int legIndex, {DateTime? now}) {
+  final leg = it.legs[legIndex];
+  if (!leg.transit) return false;
+  final first = it.legs.indexWhere((l) => l.transit);
+  if (legIndex == first) return true;
+  return leg.startTime.difference(now ?? DateTime.now()).abs() <= const Duration(minutes: 30);
 }
 
 Fare? planFare(PlannerState s, int index, City? city) {
@@ -313,19 +358,38 @@ class _CircleButton extends StatelessWidget {
       );
 }
 
-class _LegTile extends StatefulWidget {
-  const _LegTile({required this.cityId, required this.leg, required this.isLast, this.network});
+typedef _Retime = void Function(DateTime start, {bool? realtime, String? tripId});
+
+class _LegTile extends ConsumerStatefulWidget {
+  const _LegTile({
+    required this.cityId,
+    required this.leg,
+    required this.legIndex,
+    required this.isLast,
+    this.network,
+    this.chosenStart,
+    this.onRetime,
+    this.showDepartures = false,
+  });
   final String cityId;
   final Leg leg;
+  final int legIndex;
   final bool isLast;
 
   /// The configured network behind a rental leg (links, app), if any.
   final BikeShareNetwork? network;
+
+  /// Departure the user picked from the live chips (highlighted).
+  final DateTime? chosenStart;
+  final _Retime? onRetime;
+
+  /// Whether to offer the live departure chips for this leg.
+  final bool showDepartures;
   @override
-  State<_LegTile> createState() => _LegTileState();
+  ConsumerState<_LegTile> createState() => _LegTileState();
 }
 
-class _LegTileState extends State<_LegTile> {
+class _LegTileState extends ConsumerState<_LegTile> {
   bool _expanded = false;
 
   @override
@@ -333,6 +397,7 @@ class _LegTileState extends State<_LegTile> {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toString();
     final scheme = Theme.of(context).colorScheme;
+    final sem = context.semantic;
     final leg = widget.leg;
     final rental = leg.rental;
     final onDemand = leg.onDemand;
@@ -356,7 +421,7 @@ class _LegTileState extends State<_LegTile> {
               children: [
                 Text(formatClock(leg.startTime, locale), style: const TextStyle(fontWeight: FontWeight.w700)),
                 if (leg.transit && leg.realtime)
-                  Text(l10n.realtime, style: TextStyle(fontSize: 10, color: Colors.green.shade700, fontWeight: FontWeight.w700)),
+                  Text(l10n.realtime, style: TextStyle(fontSize: 10, color: sem.live, fontWeight: FontWeight.w700)),
               ],
             ),
           ),
@@ -410,10 +475,25 @@ class _LegTileState extends State<_LegTile> {
                         if (delay != null) ...[
                           const SizedBox(width: 8),
                           Text(delay, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
-                              color: (leg.delaySeconds ?? 0) > 60 ? Colors.orange.shade800 : Colors.green.shade700)),
+                              color: (leg.delaySeconds ?? 0) > 60 ? sem.disruption : sem.live)),
                         ],
                       ],
                     ),
+                    // Next live departures of this route at the boarding stop:
+                    // tapping one re-times the plan without a new request. Only
+                    // for the leg about to be boarded (the first transit leg, or
+                    // one boarding within 30 min) — later legs' "next buses"
+                    // would be departures long before their planned time.
+                    if (leg.from.stopId != null && leg.route != null && widget.onRetime != null && widget.showDepartures)
+                      _DepartureChips(
+                        cityId: widget.cityId,
+                        stopId: leg.from.stopId!,
+                        routeId: leg.route!.id,
+                        current: leg.startTime,
+                        chosen: widget.chosenStart,
+                        color: color,
+                        onPick: widget.onRetime!,
+                      ),
                     if (leg.intermediateStops.isNotEmpty)
                       InkWell(
                         onTap: () => setState(() => _expanded = !_expanded),
@@ -555,13 +635,13 @@ class _RentalLegBody extends StatelessWidget {
                   children: [
                     Text(
                       isPickup ? l10n.bikesAvailable(count ?? 0) : l10n.docksAvailable(count ?? 0),
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: ok ? Colors.green.shade700 : Colors.orange.shade800),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: ok ? context.semantic.live : context.semantic.disruption),
                     ),
                     if (isPickup && (st.ebikesAvailable ?? 0) > 0)
                       Text(l10n.ebikesShort(st.ebikesAvailable!), style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant)),
                     if (!ok)
                       Text(isPickup ? l10n.rentalNotRenting : l10n.rentalNotReturning,
-                          style: TextStyle(fontSize: 12, color: Colors.orange.shade800)),
+                          style: TextStyle(fontSize: 12, color: context.semantic.disruption)),
                   ],
                 ),
               ),
@@ -737,6 +817,77 @@ class _EndTile extends StatelessWidget {
         const SizedBox(width: 14),
         Expanded(child: Text(l10n.arriveAt(place.name), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700))),
       ],
+    );
+  }
+}
+
+
+/// "Próximas salidas aquí": the next 3 departures of the leg's route at its
+/// boarding stop, live ones with a green dot. Selecting one re-times the
+/// itinerary client-side (Lote 1 §3). Hidden when the API has no data.
+class _DepartureChips extends ConsumerWidget {
+  const _DepartureChips({
+    required this.cityId,
+    required this.stopId,
+    required this.routeId,
+    required this.current,
+    required this.chosen,
+    required this.color,
+    required this.onPick,
+  });
+  final String cityId;
+  final String stopId;
+  final String routeId;
+  final DateTime current;
+  final DateTime? chosen;
+  final Color color;
+  final _Retime onPick;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    final scheme = Theme.of(context).colorScheme;
+    final sem = context.semantic;
+    final next = ref.watch(nextBusesProvider(StopRouteKey(cityId, stopId, routeId))).asData?.value;
+    final options = (next?.next ?? const <NextBus>[]).take(3).toList();
+    if (options.isEmpty) return const SizedBox.shrink();
+    bool isSelected(NextBus n) {
+      final target = chosen ?? current;
+      return n.time.difference(target).abs() < const Duration(seconds: 30);
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.nextDeparturesHere,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 4),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final n in options)
+                ChoiceChip(
+                  key: ValueKey('dep-${n.time.toIso8601String()}'),
+                  selected: isSelected(n),
+                  selectedColor: color.withValues(alpha: 0.18),
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                  avatar: n.isLive
+                      ? Container(width: 8, height: 8, decoration: BoxDecoration(color: sem.live, shape: BoxShape.circle))
+                      : null,
+                  label: Text(
+                    n.isLive ? '${formatClock(n.time, locale)} · ${l10n.sourceLive}' : formatClock(n.time, locale),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: n.isLive ? sem.live : scheme.onSurface),
+                  ),
+                  onSelected: (_) => onPick(n.time, realtime: n.isLive, tripId: n.tripId),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

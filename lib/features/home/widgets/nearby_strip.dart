@@ -49,7 +49,7 @@ class NearbyStrip extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(l10n.noNearbyStops, style: TextStyle(color: scheme.onSurfaceVariant)),
+                    child: Text(l10n.noStopsNearbyWalk, style: TextStyle(color: scheme.onSurfaceVariant)),
                   ),
                 )
               : ListView.separated(

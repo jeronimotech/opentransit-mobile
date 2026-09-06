@@ -11,6 +11,7 @@ import 'package:opentransit_mobile/app.dart';
 import 'package:opentransit_mobile/core/api/http_api_client.dart';
 import 'package:opentransit_mobile/core/config.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
+import 'package:opentransit_mobile/core/connectivity.dart';
 import 'package:opentransit_mobile/core/providers.dart';
 import 'package:opentransit_mobile/core/widgets/common.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
@@ -117,17 +118,48 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
     await waitFor(tester, find.byType(ItineraryCard), seconds: 60);
     await shot(tester, 'live_03_results');
+    // Lote 1: scenario sections + countdowns on live data.
+    expect(find.byKey(const ValueKey('results-scenarios')), findsOneWidget);
+    expect(find.byKey(const ValueKey('scenario-fastest')), findsOneWidget);
+    await shot(tester, 'live_lote1_01_results_scenarios');
 
     await tester.tap(find.byType(ItineraryCard).first);
     await settle(tester, 30);
     await Future<void>.delayed(const Duration(seconds: 4));
     await shot(tester, 'live_04_itinerary');
+    // Lote 1: departure chips come from /stops/{id}/routes/{routeId}/next; pick the
+    // second one when the API returned any.
+    await tester.drag(find.byKey(const ValueKey('fare-block')), const Offset(0, -500));
+    await settle(tester, 20);
+    // Pick the last chip (the departure furthest from the plan's own), so the
+    // itinerary visibly shifts; the re-timing rule itself is unit-tested.
+    final depChips = find.byType(ChoiceChip);
+    final n = depChips.evaluate().length;
+    if (n >= 2) {
+      await tester.ensureVisible(depChips.at(n - 1));
+      await settle(tester, 10);
+      await tester.tap(depChips.at(n - 1), warnIfMissed: false);
+      await settle(tester, 20);
+      // ignore: avoid_print
+      print('LOTE1: departure chips=$n retimed=${find.byKey(const ValueKey('retimed-tag')).evaluate().isNotEmpty}');
+    }
+    await shot(tester, 'live_lote1_02_itinerary_departures');
 
     // Portal Norte station board (aggregated over its platforms)
     router.push('/bogota/stops/bogota:2000');
     await waitFor(tester, find.text('Próximos buses'));
     await Future<void>.delayed(const Duration(seconds: 4));
     await shot(tester, 'live_05_stop_board');
+    expect(find.text('y en '), findsWidgets);
+    await shot(tester, 'live_lote1_03_board_rows');
+    container.read(connectionProvider.notifier).report(false);
+    await settle(tester, 10);
+    expect(find.byKey(const ValueKey('bar-offline')), findsOneWidget);
+    await shot(tester, 'live_lote1_04_offline_bar');
+    container.read(connectionProvider.notifier).report(true);
+    await settle(tester, 10);
+    await Future<void>.delayed(const Duration(seconds: 4));
+    await settle(tester, 10);
 
     // Ubica tu bus: route G12 (bogota:12873) at stop bogota:2300
     router.push('/bogota/locate?stop=bogota:2300&route=bogota:12873');
@@ -206,6 +238,15 @@ void main() {
         router.pop();
       }
     }
+
+    router.go('/bogota/settings');
+    await settle(tester, 20);
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('analytics-toggle')), 200, scrollable: find.byType(Scrollable).first);
+    await settle(tester, 10);
+    await shot(tester, 'live_lote1_05_settings_analytics');
+    // Flush the walkthrough's events to the real API: 202 with `accepted`.
+    await container.read(analyticsProvider).flush();
+    expect(container.read(analyticsProvider).pending, isEmpty, reason: 'POST /events accepted the batch');
 
     router.go('/bogota/favorites');
     await settle(tester, 10);

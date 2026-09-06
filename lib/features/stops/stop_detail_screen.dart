@@ -6,6 +6,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics_event.dart';
+import '../../core/analytics/track_view.dart';
 import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
@@ -48,6 +50,7 @@ class StopDetailScreen extends ConsumerWidget {
         final place = Place(name: stop.name, position: stop.position, stopId: stop.id, component: stop.component);
         final access = stop.access;
         final boardEnabled = city?.config.isEnabled('board') ?? true;
+        final trackView = TrackView(type: Ev.stopView, id: stop.id, props: {'stopId': stop.id, 'component': stop.component?.name});
         final routes = _dedupe(d.routes);
         return Scaffold(
           appBar: AppBar(
@@ -117,6 +120,7 @@ class StopDetailScreen extends ConsumerWidget {
             child: ListView(
               padding: const EdgeInsets.only(bottom: 32),
               children: [
+                trackView,
                 // 120 px map strip with "Ver en mapa" (full map in a sheet).
                 SizedBox(
                   height: 120,

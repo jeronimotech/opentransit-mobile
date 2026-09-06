@@ -8,6 +8,8 @@ import '../../core/live/interpolation.dart';
 import '../../core/live/marker_style.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics_event.dart';
+import '../../core/analytics/track_view.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/eta.dart';
 import '../../core/utils/format.dart';
@@ -348,6 +350,18 @@ class _RouteAndBusesState extends ConsumerState<_RouteAndBuses> {
           return [stop.position];
         });
 
+        final trackQuery = nextData == null || selected == null
+            ? null
+            : TrackView(
+                type: Ev.locateQuery,
+                id: '${stop.id}|${selected.id}',
+                props: {
+                  'stopId': stop.id,
+                  'routeId': selected.id,
+                  'liveRows': nextData.next.where((n) => n.isLive || n.isEstimated).length,
+                  'scheduledRows': nextData.next.where((n) => !n.isLive && !n.isEstimated).length,
+                },
+              );
         final status = nextData == null
             ? null
             : locateStatus(
@@ -360,6 +374,7 @@ class _RouteAndBusesState extends ConsumerState<_RouteAndBuses> {
 
         return Stack(
           children: [
+            ?trackQuery,
             Positioned.fill(
               child: TransitMap(
                 initialCenter: stop.position,

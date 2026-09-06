@@ -679,5 +679,62 @@
   "modeSharedShort": "Pública",
   "modeOnDemandShort": "Taxi/app",
   "stateOn": "activado",
-  "stateOff": "desactivado"
+  "stateOff": "desactivado",
+  "leaveIn": "Sal en {minutes} min",
+  "@leaveIn": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "leaveNow": "Sal ahora",
+  "departed": "Ya salió",
+  "refreshResults": "Actualizar",
+  "scenarioFastest": "Más rápido",
+  "scenarioLessWalking": "Menos caminata",
+  "scenarioFewerTransfers": "Menos transbordos",
+  "scenarioCheapest": "Más barato",
+  "scenarioBike": "En bici",
+  "scenarioOnDemand": "Taxi / app",
+  "sortByScenario": "Por escenario",
+  "orderMenu": "Ordenar",
+  "moreOptionsCount": "{count, plural, =1{1 opción más} other{{count} opciones más}}",
+  "@moreOptionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nextDeparturesHere": "Próximas salidas aquí",
+  "retimed": "Re-temporizado",
+  "retimedHint": "Horas ajustadas a la salida elegida",
+  "andThenTimes": "y en {times} min",
+  "@andThenTimes": {
+    "placeholders": {
+      "times": {
+        "type": "String"
+      }
+    }
+  },
+  "noStopsNearbyWalk": "No hay paradas a 30 min a pie",
+  "noBoardContext": "No hay salidas próximas en esta parada",
+  "noLiveScheduledBelow": "Sin buses en vivo en esta ruta ahora · horario programado abajo",
+  "offlineBar": "Sin conexión · mostrando datos guardados",
+  "backOnlineBar": "Conexión restablecida",
+  "staleBar": "Datos en vivo con retraso · hace {seconds} s",
+  "@staleBar": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "privacyTitle": "Privacidad",
+  "analyticsToggle": "Compartir estadísticas anónimas de uso",
+  "analyticsExplain": "Ayuda a mejorar el transporte de tu ciudad: solo datos anónimos y agregados, nunca tu ubicación exacta.",
+  "analyticsClear": "Borrar mis estadísticas",
+  "analyticsCleared": "Estadísticas borradas y identificador renovado",
+  "privacyPolicy": "Política de privacidad"
 }

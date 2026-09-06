@@ -39,13 +39,25 @@ class Place {
         rentalStationId: j['rentalStationId']?.toString(),
       );
 
-  Place copyWith({String? name}) => Place(
+  Place copyWith({String? name, DateTime? arrival, DateTime? departure}) => Place(
         name: name ?? this.name,
         position: position,
         stopId: stopId,
         stopCode: stopCode,
-        arrival: arrival,
-        departure: departure,
+        arrival: arrival ?? this.arrival,
+        departure: departure ?? this.departure,
+        component: component,
+        rentalStationId: rentalStationId,
+      );
+
+  /// Same place with its times moved by [delta] (client-side re-timing).
+  Place shifted(Duration delta) => Place(
+        name: name,
+        position: position,
+        stopId: stopId,
+        stopCode: stopCode,
+        arrival: arrival?.add(delta),
+        departure: departure?.add(delta),
         component: component,
         rentalStationId: rentalStationId,
       );
@@ -191,13 +203,36 @@ class Leg {
   /// for walking.
   String? get colorHex => route?.color ?? rental?.color ?? onDemand?.recommended?.color;
 
-  Leg copyWith({Place? from, Place? to}) => Leg(
-        mode: mode, transit: transit, startTime: startTime, endTime: endTime,
+  Leg copyWith({
+    Place? from,
+    Place? to,
+    DateTime? startTime,
+    DateTime? endTime,
+    List<Place>? intermediateStops,
+    bool? realtime,
+    RealtimeState? realtimeState,
+    String? tripId,
+  }) =>
+      Leg(
+        mode: mode, transit: transit, startTime: startTime ?? this.startTime, endTime: endTime ?? this.endTime,
         durationSeconds: durationSeconds, distanceMeters: distanceMeters,
         from: from ?? this.from, to: to ?? this.to, route: route, headsign: headsign, agency: agency,
-        tripId: tripId, realtime: realtime, realtimeState: realtimeState, delaySeconds: delaySeconds,
-        geometry: geometry, intermediateStops: intermediateStops, steps: steps, alerts: alerts,
+        tripId: tripId ?? this.tripId, realtime: realtime ?? this.realtime,
+        realtimeState: realtimeState ?? this.realtimeState, delaySeconds: delaySeconds,
+        geometry: geometry, intermediateStops: intermediateStops ?? this.intermediateStops, steps: steps, alerts: alerts,
         rental: rental, onDemand: onDemand,
+      );
+
+  /// The same leg moved by [delta] (all times, including the places' and the
+  /// intermediate stops'). Used when the user picks another live departure.
+  Leg shifted(Duration delta, {bool? realtime, String? tripId}) => copyWith(
+        startTime: startTime.add(delta),
+        endTime: endTime.add(delta),
+        from: from.shifted(delta),
+        to: to.shifted(delta),
+        intermediateStops: [for (final s in intermediateStops) s.shifted(delta)],
+        realtime: realtime,
+        tripId: tripId,
       );
 }
 
@@ -266,6 +301,7 @@ class Itinerary {
     this.rentalLegs,
     this.modesUsed = const [],
     this.source,
+    this.retimed = false,
   });
   final String id;
   final DateTime startTime;
@@ -285,6 +321,35 @@ class Itinerary {
 
   /// Diagnostic origin of the itinerary (`primary | rental | ondemand`).
   final String? source;
+
+  /// True after the user re-timed it from the live departure chips (client
+  /// side; never comes from the API).
+  final bool retimed;
+
+  Itinerary copyWith({
+    List<Leg>? legs,
+    DateTime? startTime,
+    DateTime? endTime,
+    int? durationSeconds,
+    bool? retimed,
+  }) =>
+      Itinerary(
+        id: id,
+        startTime: startTime ?? this.startTime,
+        endTime: endTime ?? this.endTime,
+        durationSeconds: durationSeconds ?? this.durationSeconds,
+        walkDistanceMeters: walkDistanceMeters,
+        walkTimeSeconds: walkTimeSeconds,
+        waitingTimeSeconds: waitingTimeSeconds,
+        transfers: transfers,
+        fare: fare,
+        accessible: accessible,
+        legs: legs ?? this.legs,
+        rentalLegs: rentalLegs,
+        modesUsed: modesUsed,
+        source: source,
+        retimed: retimed ?? this.retimed,
+      );
 
   factory Itinerary.fromJson(Map<String, dynamic> j) => Itinerary(
         id: j['id']?.toString() ?? '',

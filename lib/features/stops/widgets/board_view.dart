@@ -3,14 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/models/models.dart';
+import '../../../core/analytics/analytics_event.dart';
 import '../../../core/providers.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../core/utils/text.dart';
 import '../../../core/widgets/common.dart';
 import '../../../l10n/generated/app_localizations.dart';
 
 /// Arrival board grouped by route: "Siguiente en 5 min · luego 10, 15 y 20"
 /// with a live/scheduled badge per time. Auto-refreshes via [boardProvider].
-class BoardView extends ConsumerWidget {
+class BoardView extends ConsumerStatefulWidget {
   const BoardView({super.key, required this.cityId, required this.stopId, this.compact = false, this.onLocate});
   final String cityId;
   final String stopId;
@@ -22,11 +24,27 @@ class BoardView extends ConsumerWidget {
   final VoidCallback? onLocate;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BoardView> createState() => _BoardViewState();
+}
+
+class _BoardViewState extends ConsumerState<BoardView> {
+  bool _tracked = false;
+
+  String get cityId => widget.cityId;
+  String get stopId => widget.stopId;
+  bool get compact => widget.compact;
+  VoidCallback? get onLocate => widget.onLocate;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final key = CityKey(cityId, stopId);
     final board = ref.watch(boardProvider(key));
     final scheme = Theme.of(context).colorScheme;
+    if (!_tracked && board.hasValue && !compact) {
+      _tracked = true;
+      ref.read(analyticsProvider).track(Ev.boardView, {'stopId': stopId, 'component': board.value?.stop.component?.name});
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +77,11 @@ class BoardView extends ConsumerWidget {
           data: (b) => b.rows.isEmpty
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(l10n.noBoard, style: TextStyle(color: scheme.onSurfaceVariant)),
+                  child: Row(children: [
+                    Icon(Icons.departure_board_outlined, size: 18, color: scheme.outline),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(l10n.noBoardContext, style: TextStyle(color: scheme.onSurfaceVariant))),
+                  ]),
                 )
               : Column(
                   children: [
@@ -89,6 +111,8 @@ class BoardRowTile extends StatelessWidget {
         headsignLabel(row.route.longName, towards: l10n.towards) ?? row.route.shortName;
     final window = row.route.serviceWindow;
     final etaText = first == null ? null : (first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes));
+    final sem = context.semantic;
+    final firstLive = first?.realtime ?? false;
     return Semantics(
       label: [
         row.route.shortName,
@@ -96,47 +120,52 @@ class BoardRowTile extends StatelessWidget {
         if (etaText != null) '$etaText · ${first!.realtime ? l10n.sourceLive : l10n.sourceScheduled}',
       ].join(', '),
       child: ExcludeSemantics(
-        child: ListTile(
+        child: InkWell(
           key: ValueKey('board-${row.route.id}-${row.headsign}'),
-          dense: compact,
-          minVerticalPadding: compact ? 4 : 8,
-          leading: RouteChip(row.route, dense: compact),
-          // Line 1: headsign (single line) … big first ETA on the right.
-          title: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: compact ? 13 : 14),
-                ),
-              ),
-              if (etaText != null) ...[
-                const SizedBox(width: 10),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (first!.realtime) ...[const LiveBadge(compact: true), const SizedBox(width: 4)],
-                    Text(
-                      etaText,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: first.realtime ? Colors.green.shade700 : scheme.onSurface,
-                          ),
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-          // Line 2: "luego 5 · 7 min", a live dot only on realtime numbers; or
-          // the service hint when the route is out of hours.
-          subtitle: rest.isNotEmpty
-              ? _ThenTimes(times: rest, compact: compact)
-              : (window != null && !window.active ? ServiceHint(window, dense: true) : null),
           onTap: () => context.push('/$cityId/locate?stop=${Uri.encodeComponent(_stopIdFrom(context))}&route=${Uri.encodeComponent(row.route.id)}'),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: compact ? 6 : 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Large route chip on the left …
+                RouteChip(row.route, dense: compact),
+                const SizedBox(width: 12),
+                // … headsign under it (single line) and the secondary times …
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: compact ? 13 : 15, fontWeight: FontWeight.w600)),
+                      if (rest.isNotEmpty)
+                        _ThenTimes(times: rest, compact: compact)
+                      else if (window != null && !window.active)
+                        ServiceHint(window, dense: true),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // … and the first ETA big on the right, with the live blip.
+                if (etaText != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        etaText,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontSize: compact ? 18 : 22,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.5,
+                              color: firstLive ? sem.live : scheme.onSurface,
+                            ),
+                      ),
+                      if (firstLive) const LiveBadge(compact: true),
+                    ],
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -157,22 +186,23 @@ class _ThenTimes extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final size = compact ? 11.0 : 12.0;
     final muted = TextStyle(color: scheme.onSurfaceVariant, fontSize: size);
-    // l10n.thenTimes gives "luego {times} min": split around the placeholder.
-    final template = l10n.thenTimes('\u0000');
+    final live = context.semantic.live;
+    // l10n.andThenTimes gives "y en {times} min": split around the placeholder.
+    final template = l10n.andThenTimes('\u0000');
     final parts = template.split('\u0000');
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(parts.first, style: muted),
         for (var i = 0; i < times.length; i++) ...[
-          if (i > 0) Text(' · ', style: muted),
+          if (i > 0) Text(', ', style: muted),
           if (times[i].realtime) ...[
-            Container(width: 6, height: 6, decoration: BoxDecoration(color: Colors.green.shade600, shape: BoxShape.circle)),
+            Container(width: 6, height: 6, decoration: BoxDecoration(color: live, shape: BoxShape.circle)),
             const SizedBox(width: 3),
           ],
           Text('${times[i].minutes.clamp(0, 999)}',
               style: TextStyle(
-                  color: times[i].realtime ? Colors.green.shade700 : scheme.onSurfaceVariant,
+                  color: times[i].realtime ? live : scheme.onSurfaceVariant,
                   fontSize: size,
                   fontWeight: FontWeight.w700)),
         ],

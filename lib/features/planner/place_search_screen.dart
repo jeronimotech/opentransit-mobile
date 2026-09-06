@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics_event.dart';
 import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/geo.dart';
@@ -93,6 +94,20 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
     }
   }
 
+  void _pickTracked(Place p, {required String resultType, int? position, String? id}) {
+    final isStop = resultType == 'stop' || resultType == 'station';
+    ref.read(analyticsProvider).track(Ev.searchSelect, {
+      'resultType': resultType,
+      'resultId': isStop ? (p.stopId ?? id) : null,
+      'label': isStop || resultType == 'poi' ? p.name : null,
+      'lat': p.position.lat,
+      'lon': p.position.lon,
+      'field': widget.saveAs != null ? 'favorite' : widget.field,
+      'position': position,
+    });
+    _pick(p);
+  }
+
   void _pick(Place p) {
     if (widget.saveAs != null) {
       final kind = FavoriteKind.parse(widget.saveAs);
@@ -177,7 +192,7 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
                   leading: Icon(f.type == FavoriteType.stop ? Icons.directions_bus : iconByName(f.icon, fallback: Icons.star), color: componentColor(f.component)),
                   title: Text(f.name),
                   subtitle: f.subtitle == null ? null : Text(f.subtitle!),
-                  onTap: () => _pick(f.toPlace()),
+                  onTap: () => _pickTracked(f.toPlace(), resultType: f.type == FavoriteType.stop ? 'stop' : 'favorite'),
                 ),
             if (near.isNotEmpty) SectionTitle(l10n.nearYou),
             for (final s in near.take(5))
@@ -185,7 +200,8 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
                 leading: ComponentBadge(s.component, isStation: s.isStation),
                 title: Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                 subtitle: Text(s.distanceMeters == null ? '' : formatDistance(s.distanceMeters!)),
-                onTap: () => _pick(Place(name: s.name, position: s.position, stopId: s.id, component: s.component)),
+                onTap: () => _pickTracked(Place(name: s.name, position: s.position, stopId: s.id, component: s.component),
+                    resultType: s.isStation ? 'station' : 'stop'),
               ),
           ],
           if (_loading) const LinearProgressIndicator(minHeight: 2),
@@ -195,7 +211,7 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
               leading: _ResultIcon(r),
               title: Text(r.name),
               subtitle: r.label == null ? null : Text(r.label!, maxLines: 1, overflow: TextOverflow.ellipsis),
-              onTap: () => _pick(r.toPlace()),
+              onTap: () => _pickTracked(r.toPlace(), resultType: r.type, position: _results.indexOf(r)),
             ),
           if (!_loading && query.isNotEmpty && _results.isEmpty && _error == null)
             Padding(

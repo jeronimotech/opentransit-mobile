@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics_event.dart';
 import '../../core/utils/format.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -82,16 +83,21 @@ Future<void> _launch(String url) async {
   } catch (_) {}
 }
 
-class _AlertCard extends StatefulWidget {
+class _AlertCard extends ConsumerStatefulWidget {
   const _AlertCard({required this.cityId, required this.alert});
   final String cityId;
   final TransitAlert alert;
   @override
-  State<_AlertCard> createState() => _AlertCardState();
+  ConsumerState<_AlertCard> createState() => _AlertCardState();
 }
 
-class _AlertCardState extends State<_AlertCard> {
+class _AlertCardState extends ConsumerState<_AlertCard> {
   bool _open = false;
+
+  void _toggle() {
+    setState(() => _open = !_open);
+    if (_open) ref.read(analyticsProvider).track(Ev.alertView, {'alertId': widget.alert.id, 'severity': widget.alert.severity.name});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,17 +105,13 @@ class _AlertCardState extends State<_AlertCard> {
     final a = widget.alert;
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toString();
-    final accent = switch (a.severity) {
-      AlertSeverity.severe => Colors.red.shade700,
-      AlertSeverity.warning => Colors.orange.shade800,
-      AlertSeverity.info => Colors.blue.shade700,
-    };
+    final accent = alertColor(context, a.severity);
     return Material(
       color: scheme.surfaceContainerLow,
       borderRadius: BorderRadius.circular(18),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => setState(() => _open = !_open),
+        onTap: _toggle,
         // IntrinsicHeight: the ListView gives unbounded height, so a stretched
         // Row needs a measured height for the accent bar to fill.
         child: IntrinsicHeight(

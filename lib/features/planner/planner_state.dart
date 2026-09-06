@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/analytics/analytics_event.dart';
+import '../../core/api/api_client.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 
@@ -78,12 +80,17 @@ class PlannerNotifier extends Notifier<PlannerState> {
 
   void toggleMode(TravelMode m) {
     final next = Set<TravelMode>.from(state.modes);
-    if (!next.remove(m)) next.add(m);
+    final on = !next.remove(m);
+    if (on) next.add(m);
     if (next.isEmpty) next.add(TravelMode.walk);
+    ref.read(analyticsProvider).track(Ev.modeToggle, {'mode': m.wire, 'on': on});
     state = state.copyWith(modes: next, clearResult: true);
   }
 
-  void setOnDemand(bool v) => state = state.copyWith(onDemand: v, clearResult: true);
+  void setOnDemand(bool v) {
+    ref.read(analyticsProvider).track(Ev.modeToggle, {'mode': 'ONDEMAND', 'on': v});
+    state = state.copyWith(onDemand: v, clearResult: true);
+  }
 
   void setModes(Set<TravelMode> modes) =>
       state = state.copyWith(modes: modes.isEmpty ? {TravelMode.walk} : modes, clearResult: true);
@@ -108,15 +115,46 @@ class PlannerNotifier extends Notifier<PlannerState> {
       numItineraries: s.onDemand ? 6 : 5,
     );
     state = state.copyWith(result: const AsyncValue.loading(), request: req);
+    final analytics = ref.read(analyticsProvider);
+    analytics.track(Ev.planRequest, {
+      'fromLat': s.from!.position.lat, 'fromLon': s.from!.position.lon,
+      'toLat': s.to!.position.lat, 'toLon': s.to!.position.lon,
+      'fromKind': placeKind(s.from!), 'toKind': placeKind(s.to!),
+      'modes': [for (final m in s.modes) m.wire],
+      'timeType': s.time == null ? 'now' : (s.arriveBy ? 'arrive' : 'depart'),
+      'wheelchair': settings.wheelchair,
+      'rental': s.modes.any((m) => m.isRental),
+      'onDemand': s.onDemand,
+      'bike': settings.bikeToStation || s.modes.contains(TravelMode.bicycle),
+    });
+    final t0 = DateTime.now();
     try {
       final res = await ref.read(apiClientProvider).plan(cityId, req);
       state = state.copyWith(result: AsyncValue.data(res));
+      final best = res.itineraries.isEmpty ? null : res.itineraries.reduce((a, b) => a.durationSeconds <= b.durationSeconds ? a : b);
+      analytics.track(Ev.planResult, {
+        'count': res.itineraries.length,
+        'bestDurationSeconds': best?.durationSeconds,
+        'bestTransfers': best?.transfers,
+        'hasRental': res.itineraries.any((i) => i.hasRental),
+        'hasOnDemand': res.itineraries.any((i) => i.hasOnDemand),
+        'latencyMs': DateTime.now().difference(t0).inMilliseconds,
+      });
       return res;
     } catch (e, st) {
       state = state.copyWith(result: AsyncValue.error(e, st));
+      analytics.track(Ev.error, {'code': e is ApiException ? e.code : 'PLAN_FAILED', 'screen': 'results'});
       return null;
     }
   }
+}
+
+/// Coarse origin/destination category for analytics (never the address).
+String placeKind(Place p) {
+  if (p.isRentalStation) return 'rental_station';
+  if (p.isStop) return 'stop';
+  if (p.name.trim().isEmpty) return 'myLocation';
+  return 'address';
 }
 
 final plannerProvider =

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'semantic_colors.dart';
+
 /// Builds the app theme from a city's brand colour.
 ///
 /// The palette is seeded from the city colour but the surfaces stay neutral so
@@ -13,6 +15,7 @@ ThemeData buildTheme(Color seed, Brightness brightness) {
   final base = ThemeData(colorScheme: scheme, useMaterial3: true);
   final radius = BorderRadius.circular(18);
   return base.copyWith(
+    extensions: [SemanticColors.of(brightness)],
     scaffoldBackgroundColor: scheme.surface,
     appBarTheme: AppBarTheme(
       backgroundColor: scheme.surface,

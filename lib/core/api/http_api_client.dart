@@ -9,7 +9,7 @@ import 'sse.dart';
 
 /// Dio-backed implementation of the opentransit-api v1 contract.
 class HttpApiClient implements ApiClient {
-  HttpApiClient(String baseUrl, {Dio? dio})
+  HttpApiClient(String baseUrl, {Dio? dio, this.onStatus})
       : _dio = dio ??
             Dio(BaseOptions(
               baseUrl: baseUrl,
@@ -19,6 +19,11 @@ class HttpApiClient implements ApiClient {
             ));
 
   final Dio _dio;
+
+  /// Reports reachability after every request: `true` when the server
+  /// answered (any status), `false` on network-level failures. Drives the
+  /// offline bar.
+  final void Function(bool online)? onStatus;
 
   String get baseUrl => _dio.options.baseUrl;
 
@@ -30,12 +35,30 @@ class HttpApiClient implements ApiClient {
   }) async {
     try {
       final r = await _dio.get<dynamic>(path, queryParameters: query);
+      onStatus?.call(true);
       final body = r.data;
       if (body is Map) return Map<String, dynamic>.from(body);
       throw ApiException('BAD_RESPONSE', 'Unexpected body for $path',
           status: r.statusCode);
     } on DioException catch (e) {
-      throw _toApiException(e);
+      final ex = _toApiException(e);
+      onStatus?.call(!ex.isNetwork);
+      throw ex;
+    }
+  }
+
+  @override
+  Future<int> sendEvents(String cityId, Map<String, dynamic> batch) async {
+    try {
+      final r = await _dio.post<dynamic>('${_c(cityId)}/events', data: batch);
+      onStatus?.call(true);
+      final body = r.data;
+      if (body is Map) return asInt(body['accepted']) ?? (batch['events'] as List?)?.length ?? 0;
+      return (batch['events'] as List?)?.length ?? 0;
+    } on DioException catch (e) {
+      final ex = _toApiException(e);
+      onStatus?.call(!ex.isNetwork);
+      throw ex;
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics_event.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
@@ -78,6 +79,12 @@ class _ProviderPickerState extends ConsumerState<ProviderPicker> {
     );
     if (!mounted) return;
     setState(() => _busyId = null);
+    ref.read(analyticsProvider).track(Ev.handoff, {
+      'providerId': o.providerId,
+      'kind': provider?.kind ?? o.kind,
+      'hadEstimate': o.price != null,
+      'opened': opened,
+    });
     widget.onRequest?.call(o, opened);
     if (opened == 'none') {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).onDemandOpenFailed)));

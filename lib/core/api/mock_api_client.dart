@@ -489,4 +489,13 @@ class MockApiClient implements ApiClient {
       provider: p,
     );
   }
+
+  /// Events accepted by the fixture client (inspectable in tests).
+  final List<Map<String, dynamic>> sentBatches = [];
+
+  @override
+  Future<int> sendEvents(String cityId, Map<String, dynamic> batch) async {
+    sentBatches.add(batch);
+    return (batch['events'] as List?)?.length ?? 0;
+  }
 }
