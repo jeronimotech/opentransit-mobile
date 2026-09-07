@@ -155,6 +155,15 @@ prepare_manual_signing() {
 flutter clean >/dev/null
 mkdir -p build
 flutter pub get >/dev/null
+
+# A fresh checkout has the companion sources but not the Xcode target entries;
+# the generator is idempotent, so this is a no-op once they exist.
+if command -v ruby >/dev/null 2>&1; then
+  GEM_HOME_PODS="$(sed -n 's/^GEM_HOME="\([^"]*\)".*/\1/p' "$(command -v pod)" 2>/dev/null | head -1)"
+  APPLE_TEAM_ID="$APPLE_TEAM_ID" BUNDLE_ID="$BUNDLE_ID" \
+    GEM_HOME="${GEM_HOME_PODS:-$GEM_HOME}" ruby tool/xcode_targets.rb || {
+      echo "!! could not ensure the companion Xcode targets" >&2; exit 1; }
+fi
 DEFINES=(--dart-define="API_URL=$API_URL")
 [[ -n "$WEB_HOST" ]] && DEFINES+=(--dart-define="WEB_HOST=$WEB_HOST")
 flutter build ios --release --no-codesign "${DEFINES[@]}" --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"

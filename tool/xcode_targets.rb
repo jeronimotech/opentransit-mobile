@@ -71,7 +71,7 @@ missing = TARGETS.reject { |t| project.targets.any? { |x| x.name == t[:name] } }
 
 if CHECK_ONLY
   if missing.empty?
-    puts JSON.dump(ok: true, targets: TARGETS.map { |t| t[:name] }) rescue puts('ok')
+    puts "ok: #{TARGETS.map { |t| t[:name] }.join(', ')}"
     exit 0
   end
   warn "missing targets: #{missing.map { |t| t[:name] }.join(', ')} — run tool/xcode_targets.rb"
