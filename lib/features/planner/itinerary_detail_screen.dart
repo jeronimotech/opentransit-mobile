@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../core/utils/share_session.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
@@ -155,9 +157,12 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
           Positioned(
             top: MediaQuery.paddingOf(context).top + 8,
             right: 8,
-            child: _CircleButton(
-              icon: Icons.share_outlined,
-              onTap: () async {
+            child: _ShareButton(
+              cityId: widget.cityId,
+              itinerary: it,
+              // "Compartir ruta" hands over a link that re-plans the same
+              // trip; "Compartir en vivo" publishes a page that follows it.
+              onSharePlan: () async {
                 final req = s.request;
                 if (req == null) return;
                 await SharePlus.instance.share(ShareParams(uri: _shareLink(req), subject: l10n.shareTrip));
@@ -886,6 +891,69 @@ class _DepartureChips extends ConsumerWidget {
                 ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+
+/// Share control on the itinerary: the plan link, or a live ETA page.
+class _ShareButton extends ConsumerStatefulWidget {
+  const _ShareButton({required this.cityId, required this.itinerary, required this.onSharePlan});
+  final String cityId;
+  final Itinerary itinerary;
+  final Future<void> Function() onSharePlan;
+
+  @override
+  ConsumerState<_ShareButton> createState() => _ShareButtonState();
+}
+
+class _ShareButtonState extends ConsumerState<_ShareButton> {
+  bool _busy = false;
+
+  Future<void> _shareLive() async {
+    final l10n = AppLocalizations.of(context);
+    setState(() => _busy = true);
+    try {
+      final session = ShareSession(ref.read(apiClientProvider), widget.cityId);
+      final trip = await session.start(
+        widget.itinerary,
+        label: widget.itinerary.legs.last.to.name,
+        // No GO running yet: publish the plan's own timing.
+        progress: () => ShareProgress(legIndex: 0, etaAt: widget.itinerary.endTime),
+      );
+      session.dispose();
+      if (!mounted) return;
+      if (trip == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.shareTripFailed)));
+        return;
+      }
+      await SharePlus.instance.share(ShareParams(uri: Uri.parse(trip.url)));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.surface,
+      shape: const CircleBorder(),
+      elevation: 4,
+      child: PopupMenuButton<int>(
+        key: const ValueKey('itinerary-share'),
+        tooltip: l10n.share,
+        icon: _busy
+            ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+            : const Icon(Icons.share_outlined),
+        onSelected: (v) => v == 0 ? widget.onSharePlan() : _shareLive(),
+        itemBuilder: (context) => [
+          PopupMenuItem<int>(value: 0, child: Text(l10n.shareTrip)),
+          PopupMenuItem<int>(
+              key: const ValueKey('share-live'), value: 1, child: Text(l10n.shareTripActive)),
         ],
       ),
     );

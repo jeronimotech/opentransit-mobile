@@ -599,5 +599,6 @@
   "shareTripStop": "Stop sharing",
   "shareTripStopped": "The link is no longer active",
   "shareTripFailed": "Could not create the link",
-  "shareTripActive": "Sharing live"
+  "shareTripActive": "Sharing live",
+  "ok": "Got it"
 }

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
@@ -11,14 +13,18 @@ import '../../core/analytics/analytics_event.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
+import '../../core/utils/go_trip.dart';
 import '../../core/utils/notifications.dart';
 import '../../core/utils/polyline.dart';
+import '../../core/utils/share_session.dart';
+import '../../core/theme/semantic_colors.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../../core/utils/ondemand.dart';
 import '../ondemand/provider_picker.dart';
 import 'planner_state.dart';
+import 'widgets/trip_receipt_sheet.dart';
 
 /// Pure logic behind "Iniciar viaje": which leg the user is on and how far
 /// they are from the current leg's alighting point. Foreground location only.
@@ -63,6 +69,12 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
 
   DateTime? _goStartedAt;
 
+  final _offRoute = OffRouteDetector();
+  bool _offRoutePrompt = false;
+  ShareSession? _share;
+  bool _sharing = false;
+  bool _shareBusy = false;
+
   @override
   void initState() {
     super.initState();
@@ -78,7 +90,24 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     await LocalNotifications.instance.requestPermission();
     try {
       var perm = await Geolocator.checkPermission();
-      if (perm == LocationPermission.denied) perm = await Geolocator.requestPermission();
+      if (perm == LocationPermission.denied) {
+        // Explain before the system prompt: GO is the only place we ask.
+        if (mounted) {
+          final l10n = AppLocalizations.of(context);
+          await showDialog<void>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              key: const ValueKey('go-location-why'),
+              icon: const Icon(Icons.my_location_rounded),
+              content: Text(l10n.goLocationWhy),
+              actions: [
+                TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(l10n.ok)),
+              ],
+            ),
+          );
+        }
+        perm = await Geolocator.requestPermission();
+      }
       if (perm == LocationPermission.denied || perm == LocationPermission.deniedForever) {
         if (mounted) setState(() => _denied = true);
         return;
@@ -97,10 +126,16 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     final here = LatLng(p.latitude, p.longitude);
     final st = followAlongStep(it, here, previous: _legIndex);
     final leg = it.legs[st.legIndex];
-    if (st.legIndex != _legIndex) _notified = false;
+    if (st.legIndex != _legIndex) {
+      _notified = false;
+      _offRoute.reset();
+      _offRoutePrompt = false;
+    }
+    final l10n = AppLocalizations.of(context);
     if ((leg.transit || leg.isRental) && !_notified && st.metersToLegEnd <= _alertMeters) {
       _notified = true;
-      final l10n = AppLocalizations.of(context);
+      // Haptics + sound: the phone is usually in a pocket at this moment.
+      HapticFeedback.heavyImpact();
       if (leg.isRental) {
         // "Deja la bici en …": dock at the station the plan chose.
         LocalNotifications.instance.show(1, l10n.rentalDropoff(leg.rental?.dropoff?.name ?? leg.to.name), l10n.rentalDockHint);
@@ -108,12 +143,106 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
         LocalNotifications.instance.show(1, l10n.nextStopIsYours, l10n.getOffAt(leg.to.name));
       }
     }
+
+    // Off route: sustained distance from the current leg's shape.
+    final away = metersFromLeg(leg, here);
+    final off = _offRoute.update(metersFromRoute: away, at: DateTime.now());
+    if (off && !_offRoutePrompt) _offRoutePrompt = true;
+    if (!off && _offRoutePrompt && away <= _offRoute.thresholdMeters) _offRoutePrompt = false;
+
     setState(() {
       _here = here;
       _legIndex = st.legIndex;
       _toEnd = st.metersToLegEnd;
       _arrived = st.arrived;
     });
+    _updateOngoing(it, leg);
+    if (_arrived) _onArrived(it);
+  }
+
+  /// Keeps the persistent notification in step with the trip.
+  void _updateOngoing(Itinerary it, Leg leg) {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    LocalNotifications.instance.showOngoing(
+      title: l10n.goNotificationTitle,
+      body: l10n.goNotificationBody(leg.to.name, formatClock(it.endTime, locale)),
+      progress: _legIndex + 1,
+      maxProgress: it.legs.length,
+    );
+  }
+
+  bool _arrivalHandled = false;
+  Future<void> _onArrived(Itinerary it) async {
+    if (_arrivalHandled) return;
+    _arrivalHandled = true;
+    await _share?.finish(ShareState.arrived);
+    await LocalNotifications.instance.cancelOngoing();
+    if (!mounted) return;
+    await TripReceiptSheet.show(
+      context,
+      buildReceipt(
+        itinerary: it,
+        actualSeconds: _goStartedAt == null ? it.durationSeconds : DateTime.now().difference(_goStartedAt!).inSeconds,
+        completed: true,
+      ),
+    );
+  }
+
+  /// Current progress for the shared page, with coarse coordinates.
+  ShareProgress _shareProgress() {
+    final it = _itinerary();
+    final here = _here;
+    return here == null
+        ? ShareProgress(legIndex: _legIndex, etaAt: it?.endTime, state: _arrived ? ShareState.arrived : ShareState.onTime)
+        : ShareProgress.at(
+            legIndex: _legIndex,
+            latitude: here.lat,
+            longitude: here.lon,
+            atStopId: it == null ? null : it.legs[_legIndex.clamp(0, it.legs.length - 1)].to.stopId,
+            etaAt: it?.endTime,
+            state: _arrived ? ShareState.arrived : ShareState.onTime,
+          );
+  }
+
+  Future<void> _toggleShare() async {
+    final it = _itinerary();
+    if (it == null || _shareBusy) return;
+    final l10n = AppLocalizations.of(context);
+    setState(() => _shareBusy = true);
+    try {
+      if (_sharing) {
+        await _share?.revoke();
+        if (!mounted) return;
+        setState(() => _sharing = false);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.shareTripStopped)));
+        return;
+      }
+      final session = _share ??= ShareSession(ref.read(apiClientProvider), widget.cityId);
+      final trip = await session.start(it, label: it.legs.last.to.name, progress: _shareProgress);
+      if (!mounted) return;
+      if (trip == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.shareTripFailed)));
+        return;
+      }
+      setState(() => _sharing = true);
+      await SharePlus.instance.share(ShareParams(uri: Uri.parse(trip.url)));
+    } finally {
+      if (mounted) setState(() => _shareBusy = false);
+    }
+  }
+
+  Future<void> _replan() async {
+    final planner = ref.read(plannerProvider.notifier);
+    _offRoute.reset();
+    setState(() => _offRoutePrompt = false);
+    if (_here != null) {
+      final l10n = AppLocalizations.of(context);
+      planner.setFrom(Place(name: l10n.myLocation, position: _here!));
+    }
+    await planner.plan(widget.cityId);
+    if (mounted) context.pop();
   }
 
   Itinerary? _itinerary() {
@@ -134,8 +263,30 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
       });
     }
     _sub?.cancel();
+    _share?.dispose();
     LocalNotifications.instance.cancelAll();
     super.dispose();
+  }
+
+  /// Stop button: finish the share, drop the notification and show what the
+  /// trip cost even when it was abandoned.
+  Future<void> _stop() async {
+    final it = _itinerary();
+    await _share?.finish(_arrived ? ShareState.arrived : ShareState.cancelled);
+    await LocalNotifications.instance.cancelOngoing();
+    if (!mounted) return;
+    if (it != null && !_arrivalHandled) {
+      _arrivalHandled = true;
+      await TripReceiptSheet.show(
+        context,
+        buildReceipt(
+          itinerary: it,
+          actualSeconds: _goStartedAt == null ? 0 : DateTime.now().difference(_goStartedAt!).inSeconds,
+          completed: _arrived,
+        ),
+      );
+    }
+    if (mounted) context.pop();
   }
 
   @override
@@ -301,12 +452,74 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                         );
                       }),
                   ],
+                  if (_offRoutePrompt && !_arrived) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      key: const ValueKey('go-off-route'),
+                      padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+                      decoration: BoxDecoration(
+                        color: context.semantic.disruption.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.wrong_location_rounded, size: 18, color: context.semantic.disruption),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(l10n.goOffRoute,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
+                          ),
+                          TextButton(
+                            key: const ValueKey('go-dismiss'),
+                            onPressed: () {
+                              _offRoute.reset();
+                              setState(() => _offRoutePrompt = false);
+                            },
+                            child: Text(l10n.goDismiss),
+                          ),
+                          FilledButton(
+                            key: const ValueKey('go-replan'),
+                            onPressed: _replan,
+                            child: Text(l10n.goReplan),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 14),
-                  FilledButton.tonalIcon(
-                    onPressed: () => context.pop(),
-                    icon: const Icon(Icons.stop_circle_outlined),
-                    label: Text(l10n.stopTrip),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.tonalIcon(
+                          key: const ValueKey('go-stop'),
+                          onPressed: _stop,
+                          icon: const Icon(Icons.stop_circle_outlined),
+                          label: Text(l10n.stopTrip),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      OutlinedButton.icon(
+                        key: const ValueKey('go-share'),
+                        onPressed: _shareBusy ? null : _toggleShare,
+                        icon: _shareBusy
+                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            : Icon(_sharing ? Icons.stop_screen_share_outlined : Icons.ios_share_rounded, size: 18),
+                        label: Text(_sharing ? l10n.shareTripStop : l10n.shareTrip),
+                      ),
+                    ],
                   ),
+                  if (_sharing)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Row(
+                        children: [
+                          Icon(Icons.circle, size: 8, color: context.semantic.live),
+                          const SizedBox(width: 6),
+                          Text(l10n.shareTripActive,
+                              style: Theme.of(context).textTheme.labelSmall?.copyWith(color: context.semantic.live)),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),

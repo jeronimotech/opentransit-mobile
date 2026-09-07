@@ -2305,6 +2305,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Compartiendo en vivo'**
   String get shareTripActive;
+
+  /// No description provided for @ok.
+  ///
+  /// In es, this message translates to:
+  /// **'Entendido'**
+  String get ok;
 }
 
 class _AppLocalizationsDelegate

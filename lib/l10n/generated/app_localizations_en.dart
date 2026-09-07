@@ -1312,4 +1312,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareTripActive => 'Sharing live';
+
+  @override
+  String get ok => 'Got it';
 }

@@ -1315,4 +1315,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shareTripActive => 'Compartiendo en vivo';
+
+  @override
+  String get ok => 'Entendido';
 }

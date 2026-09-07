@@ -65,6 +65,54 @@ class LocalNotifications {
     }
   }
 
+  /// The persistent "trip in progress" notification. Android gets an ongoing,
+  /// silent, low-priority entry with a progress bar; iOS has no equivalent, so
+  /// it simply keeps the latest banner updated under the same id.
+  static const ongoingId = 10;
+
+  Future<void> showOngoing({
+    required String title,
+    required String body,
+    int? progress,
+    int? maxProgress,
+  }) async {
+    if (!await init()) return;
+    try {
+      final android = AndroidNotificationDetails(
+        'trip_ongoing',
+        'Viaje en curso',
+        importance: Importance.low,
+        priority: Priority.low,
+        ongoing: true,
+        autoCancel: false,
+        onlyAlertOnce: true,
+        playSound: false,
+        showProgress: progress != null && maxProgress != null,
+        maxProgress: maxProgress ?? 0,
+        progress: progress ?? 0,
+      );
+      await _plugin.show(
+        id: ongoingId,
+        title: title,
+        body: body,
+        notificationDetails: NotificationDetails(
+          android: android,
+          iOS: const DarwinNotificationDetails(
+              presentAlert: false, presentSound: false, presentBanner: false),
+        ),
+      );
+    } catch (e) {
+      debugPrint('ongoing notification failed: $e');
+    }
+  }
+
+  Future<void> cancelOngoing() async {
+    if (!_ready) return;
+    try {
+      await _plugin.cancel(id: ongoingId);
+    } catch (_) {}
+  }
+
   Future<void> cancelAll() async {
     if (!_ready) return;
     try {

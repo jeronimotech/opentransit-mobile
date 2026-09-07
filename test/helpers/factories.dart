@@ -24,6 +24,7 @@ Leg leg({
   LatLng from = const LatLng(4.60, -74.10),
   LatLng to = const LatLng(4.61, -74.11),
   int distanceMeters = 800,
+  Geometry geometry = const Geometry(encoded: ''),
 }) {
   final s = start ?? DateTime(2026, 9, 8, 9, 0);
   final e = s.add(Duration(minutes: minutes));
@@ -38,7 +39,7 @@ Leg leg({
     to: Place(name: 'B', position: to, stopId: toStopId, arrival: e),
     route: route,
     realtime: false,
-    geometry: const Geometry(encoded: ''),
+    geometry: geometry,
     intermediateStops: const [],
   );
 }

@@ -818,5 +818,6 @@
   "shareTripStop": "Dejar de compartir",
   "shareTripStopped": "El enlace ya no está activo",
   "shareTripFailed": "No se pudo crear el enlace",
-  "shareTripActive": "Compartiendo en vivo"
+  "shareTripActive": "Compartiendo en vivo",
+  "ok": "Entendido"
 }
