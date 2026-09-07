@@ -31,6 +31,7 @@ class LayersButton extends StatelessWidget {
     this.poisAvailable = true,
     this.rentalAvailable = false,
     this.rentalLabel,
+    this.onNearMe,
   });
   final MapLayers layers;
   final void Function(MapLayers) onChanged;
@@ -42,6 +43,11 @@ class LayersButton extends StatelessWidget {
 
   /// Network name(s) shown under the toggle, from the city config.
   final String? rentalLabel;
+
+  /// Opens "Cerca de mí"; hidden when null. The live layer answers "what runs
+  /// here", the mode answers "what is near me" — different questions, so the
+  /// popover offers both rather than making the toggle mean two things.
+  final void Function()? onNearMe;
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +143,21 @@ class LayersButton extends StatelessWidget {
                     value: cur.zonal,
                     onChanged: cur.network ? (v) => update(cur.copyWith(zonal: v)) : null,
                   ),
+                  if (onNearMe != null) ...[
+                    const Divider(height: 12),
+                    ListTile(
+                      key: const ValueKey('layer-near-me'),
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.radar_rounded),
+                      title: Text(l10n.nearMeTitle),
+                      subtitle: Text(l10n.nearMeEntry),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () {
+                        Navigator.of(ctx).pop();
+                        onNearMe!();
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),

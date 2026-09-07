@@ -603,5 +603,47 @@
   "shareTripStopped": "The link is no longer active",
   "shareTripFailed": "Could not create the link",
   "shareTripActive": "Sharing live",
-  "ok": "Got it"
+  "ok": "Got it",
+  "nearMeTitle": "Near me",
+  "nearMeEntry": "Buses near you",
+  "nearMeLoading": "Looking for buses…",
+  "nearMeCount": "{count, plural, =0{No buses within {radius}} =1{1 bus within {radius}} other{{count} buses within {radius}}}",
+  "@nearMeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "radius": {
+        "type": "String"
+      }
+    }
+  },
+  "nearMeEmpty": "No buses within {radius}",
+  "@nearMeEmpty": {
+    "placeholders": {
+      "radius": {
+        "type": "String"
+      }
+    }
+  },
+  "nearMeWiden": "Widen to {radius}",
+  "@nearMeWiden": {
+    "placeholders": {
+      "radius": {
+        "type": "String"
+      }
+    }
+  },
+  "nearMeAt": "{distance} away",
+  "@nearMeAt": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+  "nearMeApproaching": "Approaching",
+  "nearMeLeaving": "Moving away",
+  "nearMeNeedsLocation": "We need your location to show the buses around you.",
+  "backToMyLocation": "Back to my location"
 }

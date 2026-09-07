@@ -2311,6 +2311,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Entendido'**
   String get ok;
+
+  /// No description provided for @nearMeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerca de mí'**
+  String get nearMeTitle;
+
+  /// No description provided for @nearMeEntry.
+  ///
+  /// In es, this message translates to:
+  /// **'Buses cerca'**
+  String get nearMeEntry;
+
+  /// No description provided for @nearMeLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando buses…'**
+  String get nearMeLoading;
+
+  /// No description provided for @nearMeCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =0{Sin buses en {radius}} =1{1 bus en {radius}} other{{count} buses en {radius}}}'**
+  String nearMeCount(int count, String radius);
+
+  /// No description provided for @nearMeEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay buses en {radius}'**
+  String nearMeEmpty(String radius);
+
+  /// No description provided for @nearMeWiden.
+  ///
+  /// In es, this message translates to:
+  /// **'Ampliar a {radius}'**
+  String nearMeWiden(String radius);
+
+  /// No description provided for @nearMeAt.
+  ///
+  /// In es, this message translates to:
+  /// **'a {distance}'**
+  String nearMeAt(String distance);
+
+  /// No description provided for @nearMeApproaching.
+  ///
+  /// In es, this message translates to:
+  /// **'Se acerca'**
+  String get nearMeApproaching;
+
+  /// No description provided for @nearMeLeaving.
+  ///
+  /// In es, this message translates to:
+  /// **'Se aleja'**
+  String get nearMeLeaving;
+
+  /// No description provided for @nearMeNeedsLocation.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos tu ubicación para mostrarte los buses a tu alrededor.'**
+  String get nearMeNeedsLocation;
+
+  /// No description provided for @backToMyLocation.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a mi ubicación'**
+  String get backToMyLocation;
 }
 
 class _AppLocalizationsDelegate

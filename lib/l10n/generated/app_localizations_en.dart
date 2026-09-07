@@ -1315,4 +1315,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ok => 'Got it';
+
+  @override
+  String get nearMeTitle => 'Near me';
+
+  @override
+  String get nearMeEntry => 'Buses near you';
+
+  @override
+  String get nearMeLoading => 'Looking for buses…';
+
+  @override
+  String nearMeCount(int count, String radius) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count buses within $radius',
+      one: '1 bus within $radius',
+      zero: 'No buses within $radius',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String nearMeEmpty(String radius) {
+    return 'No buses within $radius';
+  }
+
+  @override
+  String nearMeWiden(String radius) {
+    return 'Widen to $radius';
+  }
+
+  @override
+  String nearMeAt(String distance) {
+    return '$distance away';
+  }
+
+  @override
+  String get nearMeApproaching => 'Approaching';
+
+  @override
+  String get nearMeLeaving => 'Moving away';
+
+  @override
+  String get nearMeNeedsLocation =>
+      'We need your location to show the buses around you.';
+
+  @override
+  String get backToMyLocation => 'Back to my location';
 }

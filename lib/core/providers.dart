@@ -573,19 +573,65 @@ final liveVehiclesProvider =
   return _liveFrames(api, cityId);
 });
 
-Stream<VehicleFrame> _liveFrames(ApiClient api, String cityId) async* {
+/// Live fleet inside a bbox — the "Cerca de mí" stream (contract v1.9).
+///
+/// Subscribing by bbox is what keeps this mode cheap: the radius, not the city,
+/// decides the bandwidth. The key rounds the box (see [BboxQuery]) so ordinary
+/// GPS jitter does not tear the subscription down and build it again.
+final nearbyLiveVehiclesProvider =
+    StreamProvider.autoDispose.family<VehicleFrame, BboxQuery>((ref, q) {
+  final api = ref.watch(apiClientProvider);
+  return _liveFrames(api, q.cityId, bbox: q.bbox);
+});
+
+/// Folds the SSE events into frames and reconnects, with a subscription the
+/// caller can actually end.
+///
+/// This was an `async*` generator with `await for` inside a retry loop, which
+/// leaks: cancelling such a generator only takes effect at its next `yield`, so
+/// while the feed is quiet — a stalled connection, or Bogotá after the last
+/// service — the upstream subscription stays open forever after the screen is
+/// gone. Owning the subscription explicitly makes cancellation immediate and
+/// deterministic, which is the whole battery story of the live map.
+Stream<VehicleFrame> _liveFrames(ApiClient api, String cityId, {List<double>? bbox}) {
   VehicleFrame? frame;
-  while (true) {
-    try {
-      await for (final event in api.vehicleEvents(cityId)) {
-        frame = frame == null ? VehicleFrame.fromJson(event) : frame.apply(event);
-        yield frame;
-      }
-    } catch (e) {
-      if (frame == null) yield* Stream<VehicleFrame>.error(e);
-    }
-    await Future<void>.delayed(const Duration(seconds: 5));
+  StreamSubscription<Map<String, dynamic>>? sub;
+  Timer? retry;
+  var closed = false;
+  late StreamController<VehicleFrame> out;
+
+  void connect() {
+    if (closed) return;
+    sub = api.vehicleEvents(cityId, bbox: bbox).listen(
+      (event) {
+        frame = frame == null ? VehicleFrame.fromJson(event) : frame!.apply(event);
+        if (!out.isClosed) out.add(frame!);
+      },
+      onError: (Object e, StackTrace st) {
+        // Keep the last good frame rather than flickering the map empty; only
+        // a failure before the first frame is worth surfacing.
+        if (frame == null && !out.isClosed) out.addError(e, st);
+      },
+      onDone: () {
+        sub = null;
+        if (closed) return;
+        retry = Timer(const Duration(seconds: 5), connect);
+      },
+      cancelOnError: false,
+    );
   }
+
+  out = StreamController<VehicleFrame>(
+    onListen: connect,
+    onCancel: () async {
+      closed = true;
+      retry?.cancel();
+      final s = sub;
+      sub = null;
+      await s?.cancel();
+    },
+  );
+  return out.stream;
 }
 
 // ───────────────────────── v1.2 shared bikes ─────────────────────────

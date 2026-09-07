@@ -558,6 +558,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                       poisAvailable: poisAllowed,
                       rentalAvailable: city.bikeShareEnabled,
                       rentalLabel: city.mobility.bikeShare.map((n) => n.name).join(' · '),
+                      onNearMe: () => context.push('/${widget.cityId}/live'),
                       onChanged: (next) {
                         final n = ref.read(settingsProvider.notifier);
                         if (next.live != settings.liveVehicles) n.setLiveVehicles(next.live);
@@ -681,11 +682,24 @@ class _HomeSheet extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
               child: CommuteCard(cityId: cityId),
             ),
-          // Peek row 3: "Cerca de ti".
+          // Peek row 3: "Cerca de ti", with the live-map mode one tap away.
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
-            child: Text(l10n.nearYouTitle,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, color: scheme.onSurfaceVariant)),
+            padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(l10n.nearYouTitle,
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, color: scheme.onSurfaceVariant)),
+                ),
+                TextButton.icon(
+                  key: const ValueKey('home-near-me'),
+                  onPressed: () => context.push('/$cityId/live'),
+                  icon: const Icon(Icons.radar_rounded, size: 16),
+                  label: Text(l10n.nearMeEntry),
+                  style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                ),
+              ],
+            ),
           ),
           NearbyStrip(cityId: cityId, stops: stops, loading: loading, onTap: onNearby,
               rental: rental, onRentalTap: onRental, city: city),

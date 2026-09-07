@@ -17,6 +17,8 @@ class PreferencesRepository {
   static const _kNetwork = 'networkLayer';
   static const _kZonal = 'zonalLayer';
   static const _kRental = 'rentalLayer';
+  static const _kNearRadius = 'nearMeRadius';
+  static const _kNearComponents = 'nearMeComponents';
 
   String? get cityId => _prefs.getString(_kCity);
   Future<void> setCityId(String? id) =>
@@ -55,6 +57,15 @@ class PreferencesRepository {
   /// Zonal/feeder shapes on the home map (default off: they overlap heavily).
   bool get zonalLayer => _prefs.getBool(_kZonal) ?? false;
   Future<void> setZonalLayer(bool v) => _prefs.setBool(_kZonal, v);
+
+  /// "Cerca de mí" radius in meters (300 / 600 / 1000, default 600).
+  int get nearMeRadius => _prefs.getInt(_kNearRadius) ?? 600;
+  Future<void> setNearMeRadius(int m) => _prefs.setInt(_kNearRadius, m);
+
+  /// Component filter for "Cerca de mí"; empty means every component.
+  List<String> get nearMeComponents => _prefs.getStringList(_kNearComponents) ?? const [];
+  Future<void> setNearMeComponents(List<String> v) =>
+      v.isEmpty ? _prefs.remove(_kNearComponents) : _prefs.setStringList(_kNearComponents, v);
 
   /// Shared-bike stations on the home map (default on, drawn from zoom 14).
   bool get rentalLayer => _prefs.getBool(_kRental) ?? true;

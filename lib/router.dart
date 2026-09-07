@@ -10,6 +10,7 @@ import 'features/cities/city_picker_screen.dart';
 import 'features/favorites/favorites_screen.dart';
 import 'features/home/app_shell.dart';
 import 'features/home/home_screen.dart';
+import 'features/live/near_me_screen.dart';
 import 'features/live/vehicle_detail_screen.dart';
 import 'features/locate/locate_screen.dart';
 import 'features/planner/follow_along_screen.dart';
@@ -116,9 +117,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                     routeId: s.uri.queryParameters['route'],
                   ),
                 ),
+                // "Cerca de mí": the live map centred on the user. `?near=me`
+                // is accepted (and is what the deep link carries) but the mode
+                // is the page, so a bare /live lands here too.
                 GoRoute(
                   path: 'live',
-                  redirect: (_, s) => '/${s.pathParameters['city']}',
+                  builder: (_, s) => NearMeScreen(cityId: s.pathParameters['city']!),
                 ),
                 GoRoute(
                   path: 'routes',
