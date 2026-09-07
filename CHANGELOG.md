@@ -2,6 +2,19 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.9.0 — "Cerca de mí"
+
+### Added
+- **"Cerca de mí"**, a live map *mode* rather than a layer: the map follows you, a ring shows the radius you chose (300 m · 600 m · 1 km, remembered), and a sheet lists the buses inside it nearest first, each with its route chip, component and distance. Reached from the "Cerca de ti" header on the home sheet, from the Capas popover, and at `/{city}/live` (the deep link `?near=me` still works).
+- Component filters (Troncal · Zonal · Alimentador · Dual · Cable), remembered between sessions, so a corridor like la Caracas can be cut down to what you actually ride.
+- An approaching/leaving arrow derived from the vehicle's bearing against the bearing to you. Feeds without a bearing — Bogotá's among them today — get no arrow at all rather than a guess.
+- Selecting a bus frames you and it together, highlights it and draws its route faintly.
+- Empty state that says which radius came up empty and widens it in one tap.
+
+### Fixed
+- **A leaking vehicle stream.** `_liveFrames` was an `async*` generator with `await for` inside a retry loop, and cancelling such a generator only takes effect at its next `yield`. While the feed was quiet — a stalled connection, or Bogotá after the last service — the upstream subscription stayed open after the screen was gone. It now owns its subscription and cancels immediately. This affected the home map too, not only the new mode.
+- The component filters no longer scroll horizontally with the last chips off-screen; they wrap, like the planner's modes.
+
 ## 1.8.0 — Wear OS and Android Live Updates
 
 ### Added

@@ -43,6 +43,25 @@ off-route re-plan, an end-of-trip receipt and a live link you can share.
 |---|---|---|---|---|
 | ![](docs/screenshots/lote2_01_commute_card.png) | ![](docs/screenshots/lote2_03_when_to_leave.png) | ![](docs/screenshots/lote2_04_line_page.png) | ![](docs/screenshots/lote3_02_go_in_progress.png) | ![](docs/screenshots/lote3_03_receipt.png) |
 
+### Cerca de mí (v1.9)
+
+The live fleet used to be a layer you switched on; now it is also a mode that
+answers one question — *what is moving around me right now, and should I care?*
+The map follows you until you touch it, a ring shows the radius you chose, and
+the list underneath is sorted by distance. The stream subscribes to the box
+around that ring, so a 300 m radius costs a fraction of a city-wide feed.
+
+| Map + ring | Nearby list | Selected bus | Nothing nearby |
+|---|---|---|---|
+| ![](docs/screenshots/nearme_01_map.png) | ![](docs/screenshots/nearme_02_list.png) | ![](docs/screenshots/nearme_03_selected.png) | ![](docs/screenshots/nearme_04_empty.png) |
+
+Against the real feed at Portal Norte: 29 buses within 600 m, 56 within 1 km
+([map](docs/screenshots/live_nearme_01_map.png) ·
+[list](docs/screenshots/live_nearme_02_list.png) ·
+[1 km](docs/screenshots/live_nearme_03_wide.png)). Note the absence of
+approaching/leaving arrows there: Bogotá's GTFS-RT does not publish a bearing,
+and the mode says nothing rather than guessing a direction.
+
 More: [city picker](docs/screenshots/01_city_picker.png) · [route detail](docs/screenshots/09_route_detail.png) · [alerts](docs/screenshots/11_alerts.png) · [forced update](docs/screenshots/12_forced_update.png) · [commute inverted](docs/screenshots/lote2_02_commute_inverted.png) · [route alert schedule](docs/screenshots/lote2_05_route_alerts.png) · [share menu](docs/screenshots/lote3_01_share_menu.png) · [v1.1 hub screens](docs/screenshots/v1.1/) · [v1 screens](docs/screenshots/v1/)
 
 Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,800 buses):

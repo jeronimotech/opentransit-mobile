@@ -302,6 +302,38 @@ void main() {
     router.go('/bogota');
     await settle(tester, 15);
 
+    // v1.9 "Cerca de mí" against the real feed. Bogotá goes quiet late at
+    // night, so the count is reported rather than asserted — an empty radius at
+    // 23:00 is the truth, not a failure.
+    router.go('/bogota/live');
+    await settle(tester, 45);
+    await Future<void>.delayed(const Duration(seconds: 6));
+    await settle(tester, 25);
+    final nearRows = find.byWidgetPredicate(
+      (w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('near-row-'),
+    );
+    // ignore: avoid_print
+    print('NEAR-ME: ${nearRows.evaluate().length} buses within 600 m of the simulated position');
+    await shot(tester, 'live_nearme_01_map');
+
+    await tester.drag(find.byKey(const ValueKey('near-radius-600')), const Offset(0, -360));
+    await settle(tester, 25);
+    await shot(tester, 'live_nearme_02_list');
+
+    // Widen to 1 km and report again: this is the control that shows the radius
+    // really re-subscribes rather than filtering a city-wide stream.
+    await tester.tap(find.byKey(const ValueKey('near-radius-1000')));
+    await settle(tester, 40);
+    await Future<void>.delayed(const Duration(seconds: 5));
+    await settle(tester, 20);
+    // ignore: avoid_print
+    print('NEAR-ME: ${nearRows.evaluate().length} buses within 1 km');
+    await shot(tester, 'live_nearme_03_wide');
+    await tester.tap(find.byKey(const ValueKey('near-radius-600')));
+    await settle(tester, 15);
+    router.go('/bogota');
+    await settle(tester, 15);
+
     router.go('/bogota/settings');
     await settle(tester, 20);
     await tester.scrollUntilVisible(find.byKey(const ValueKey('analytics-toggle')), 200, scrollable: find.byType(Scrollable).first);
