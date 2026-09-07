@@ -801,11 +801,14 @@
   "goReplan": "Replanear",
   "goDismiss": "Seguir igual",
   "goNotificationTitle": "Viaje en curso",
-  "goNotificationBody": "{stop} · llegas {time}",
+  "goNotificationBody": "Bájate en {stop} · {minutes} min · llegas {time}",
   "@goNotificationBody": {
     "placeholders": {
       "stop": {
         "type": "String"
+      },
+      "minutes": {
+        "type": "int"
       },
       "time": {
         "type": "String"

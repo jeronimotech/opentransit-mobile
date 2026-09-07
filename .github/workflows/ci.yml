@@ -40,10 +40,18 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter build apk --debug --dart-define=MOCK=true
+      # The wear module is not a dependency of :app, so it needs its own build
+      # to catch breakage. It also proves the phone build stays independent.
+      - name: Build the Wear OS app
+        run: cd android && ./gradlew :wear:assembleDebug
       - uses: actions/upload-artifact@v7
         with:
           name: app-debug-mock.apk
           path: build/app/outputs/flutter-apk/app-debug.apk
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wear-debug.apk
+          path: build/wear/outputs/apk/debug/wear-debug.apk
 
   build-ios:
     runs-on: macos-latest

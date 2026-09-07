@@ -2261,8 +2261,8 @@ abstract class AppLocalizations {
   /// No description provided for @goNotificationBody.
   ///
   /// In es, this message translates to:
-  /// **'{stop} · llegas {time}'**
-  String goNotificationBody(String stop, String time);
+  /// **'Bájate en {stop} · {minutes} min · llegas {time}'**
+  String goNotificationBody(String stop, int minutes, String time);
 
   /// No description provided for @goLocationWhy.
   ///

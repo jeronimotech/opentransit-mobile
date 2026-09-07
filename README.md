@@ -395,6 +395,85 @@ Live Activities are updated **locally** by the app. While GO runs the app holds
 a foreground location session, so no APNs key is needed for the shipped scope;
 `config.push` on the API is the seam for server-pushed updates later.
 
+## Wear OS
+
+The watch app for Wear OS 4+ lives in `android/wear/` as its own Gradle module.
+It mirrors the Apple Watch app screen for screen and shares its wire format, so
+the phone code has one watch bridge, not two.
+
+| Screen | What it shows |
+|---|---|
+| *Cerca de ti* | The favourite stops the phone sent, each with its next departures |
+| *Ubica tu bus* | Every route at one saved stop, with live/scheduled labels |
+| GO mirror | Next stop, minutes left, and a double tap on the wrist when it is time to get off |
+| Tile | The pinned stop's next departures, one swipe from the watch face |
+
+![Cerca de ti](docs/screenshots/wear_01_nearby.png)
+![GO](docs/screenshots/wear_03_go.png)
+![Tile](docs/screenshots/wear_04_tile.png)
+![Sin salidas](docs/screenshots/wear_05_empty.png)
+
+The last image is the honest empty state: Bogotá's service had ended for the
+night when it was taken. The watch says so rather than blaming the connection.
+
+### How it gets its data
+
+1. **From the phone** — `WatchSync` (Dart) sends one JSON snapshot over the
+   `opentransit/watch` MethodChannel. On Android `WatchDataLayerBridge` writes it
+   as a Wearable Data Layer data item at `/opentransit/snapshot`; the watch's
+   `PhoneSnapshotListenerService` stores it. Latest snapshot wins and it survives
+   a sleeping watch, exactly like the application context used on watchOS.
+2. **From the API** — when the phone is out of range the watch calls
+   `GET /v1/cities/{city}/watch/summary` itself. The last board is cached and
+   always shown with its age.
+
+Both the phone and the watch app use the **same `applicationId`**
+(`com.jeronimotech.opentransit`): Wear OS pairs a watch app to its phone app by
+package name, and the Data Layer only talks within one package.
+
+### Build and install
+
+```bash
+# The wear module is never a dependency of :app, so the phone build is untouched.
+cd android && ./gradlew :wear:assembleDebug
+adb install -r build/wear/outputs/apk/debug/wear-debug.apk   # note: build/ is redirected at the repo root
+```
+
+To run it without a paired phone, debug builds accept a snapshot over `adb`
+(release builds ignore the extra entirely):
+
+```bash
+adb shell "am start -n com.jeronimotech.opentransit/com.jeronimotech.opentransit.wear.WearMainActivity \
+  --es snapshot '{\"cityId\":\"bogota\",\"cityName\":\"Bogota\",\"apiBaseUrl\":\"http://10.0.2.2:8001\",\"favourites\":[{\"kind\":\"stop\",\"id\":\"bogota:2000\",\"label\":\"Portal Norte\"}],\"go\":{\"active\":false}}'"
+```
+
+`10.0.2.2` is the emulator's route to the host; debug builds allow cleartext to
+that address only, release builds keep Android's HTTPS-only default. To put the
+tile in the carousel while developing:
+
+```bash
+adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE \
+  --es operation add-tile \
+  --ecn component com.jeronimotech.opentransit/com.jeronimotech.opentransit.wear.tile.DeparturesTileService
+```
+
+Pairing a real watch needs no extra step: install the same-package wear APK on
+the watch and the Data Layer connects itself.
+
+### Live Updates on Android
+
+GO's ongoing notification carries the same texts as the Live Activity. On
+**Android 16** it is additionally styled as a *Live Update*
+(`Notification.ProgressStyle`) and asks to be promoted to the lock screen.
+`GoNotificationBridge` owns the notification when that path is available and
+Dart falls back to `flutter_local_notifications` otherwise — the two share one
+notification id, so they can never both post.
+
+The promotion request (`setRequestPromotedOngoing`) only exists in API 36.1
+while Flutter compiles against 36, so it is called reflectively; on Android 16.0
+the notification is still a correctly styled Live Update without the lock-screen
+chip.
+
 ## Release to TestFlight
 
 `tool/testflight.sh` builds, signs, exports and uploads the iOS app using an App Store Connect API

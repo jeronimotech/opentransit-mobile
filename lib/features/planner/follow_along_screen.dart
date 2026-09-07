@@ -241,7 +241,13 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     final locale = Localizations.localeOf(context).toString();
     LocalNotifications.instance.showOngoing(
       title: l10n.goNotificationTitle,
-      body: l10n.goNotificationBody(leg.to.name, formatClock(it.endTime, locale)),
+      body: l10n.goNotificationBody(
+        leg.to.name,
+        // Same number the Live Activity shows, from the same source, so the
+        // watch, the lock screen and the app never disagree.
+        _toEnd == null ? (leg.durationSeconds / 60).round() : _minutesFor(leg, _toEnd!),
+        formatClock(it.endTime, locale),
+      ),
       progress: _legIndex + 1,
       maxProgress: it.legs.length,
     );

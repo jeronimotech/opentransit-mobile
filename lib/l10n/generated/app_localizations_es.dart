@@ -1290,8 +1290,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get goNotificationTitle => 'Viaje en curso';
 
   @override
-  String goNotificationBody(String stop, String time) {
-    return '$stop · llegas $time';
+  String goNotificationBody(String stop, int minutes, String time) {
+    return 'Bájate en $stop · $minutes min · llegas $time';
   }
 
   @override

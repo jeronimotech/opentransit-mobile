@@ -2,6 +2,22 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.8.0 — Wear OS and Android Live Updates
+
+### Added
+- **Wear OS app** (Wear OS 4+, `android/wear/`, Compose for Wear) with the same three screens as the Apple Watch app: *Cerca de ti*, *Ubica tu bus* and a GO mirror that taps the wrist when it is time to get off.
+- **Tile** with the pinned stop's next departures, one swipe from the watch face.
+- **Phone bridge for Android**: `WatchDataLayerBridge` answers the same `opentransit/watch` channel as the iOS side and writes a Wearable Data Layer data item, so `WatchSync` is now genuinely platform-agnostic instead of iOS-only.
+- The watch falls back to calling `GET /watch/summary` itself when the phone is out of range, caches the last board and always shows its age.
+- **Live Updates on Android 16**: the GO notification is styled with `Notification.ProgressStyle` and asks to be promoted to the lock screen, the platform's answer to the Live Activity.
+
+### Changed
+- The GO notification now reads like the Live Activity — "Bájate en {parada} · {n} min · llegas {hora}" — from the same numbers, so the phone, the watch and the lock screen never disagree.
+
+### Notes
+- The wear module is deliberately not a dependency of `:app`; `flutter build apk` is unaffected and the watch app is built and installed on its own.
+- `setRequestPromotedOngoing` exists only in API 36.1 while Flutter pins `compileSdk` to 36, so it is invoked reflectively rather than dragging the whole app to a newer platform for one optional flag.
+
 ## 1.7.0 — Live Activities and Apple Watch
 
 ### Added

@@ -582,11 +582,14 @@
   "goReplan": "Re-plan",
   "goDismiss": "Keep going",
   "goNotificationTitle": "Trip in progress",
-  "goNotificationBody": "{stop} · arriving {time}",
+  "goNotificationBody": "Get off at {stop} · {minutes} min · arriving {time}",
   "@goNotificationBody": {
     "placeholders": {
       "stop": {
         "type": "String"
+      },
+      "minutes": {
+        "type": "int"
       },
       "time": {
         "type": "String"

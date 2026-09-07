@@ -1287,8 +1287,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goNotificationTitle => 'Trip in progress';
 
   @override
-  String goNotificationBody(String stop, String time) {
-    return '$stop · arriving $time';
+  String goNotificationBody(String stop, int minutes, String time) {
+    return 'Get off at $stop · $minutes min · arriving $time';
   }
 
   @override

@@ -75,11 +75,17 @@ class WatchGoState {
 }
 
 /// Pushes a snapshot (city, API base, favourites, GO state) to the paired
-/// watch. Silent no-op everywhere else, including iPhones with no watch.
+/// watch. Silent no-op everywhere else, including phones with no watch.
+///
+/// Both platforms answer the same `opentransit/watch` channel: iOS pushes a
+/// WatchConnectivity application context, Android a Wearable Data Layer data
+/// item. Both are latest-wins and survive a sleeping watch, so the Dart side
+/// does not care which one is underneath.
 class WatchSync {
   WatchSync({MethodChannel? channel, bool? platformSupported})
       : _channel = channel ?? const MethodChannel('opentransit/watch'),
-        _platformSupported = platformSupported ?? (!kIsWeb && Platform.isIOS);
+        _platformSupported =
+            platformSupported ?? (!kIsWeb && (Platform.isIOS || Platform.isAndroid));
 
   static final WatchSync instance = WatchSync();
 

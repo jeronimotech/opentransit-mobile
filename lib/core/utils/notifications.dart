@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// Set by the screenshot walkthrough only, for the same reason as
@@ -78,12 +79,46 @@ class LocalNotifications {
   /// it simply keeps the latest banner updated under the same id.
   static const ongoingId = 10;
 
+  /// Android 16 promotes an ongoing notification with a progress style to a
+  /// **Live Update** — the platform's answer to the Live Activity. When the
+  /// native side takes it, it owns the notification (same id) and the plugin
+  /// path is skipped, so the two can never both post.
+  static const _liveUpdates = MethodChannel('opentransit/go_notification');
+  bool? _liveUpdatesSupported;
+
+  Future<bool> _liveUpdateAvailable() async {
+    if (_liveUpdatesSupported != null) return _liveUpdatesSupported!;
+    try {
+      _liveUpdatesSupported =
+          await _liveUpdates.invokeMethod<bool>('isSupported') ?? false;
+    } on MissingPluginException {
+      _liveUpdatesSupported = false;
+    } catch (_) {
+      _liveUpdatesSupported = false;
+    }
+    return _liveUpdatesSupported!;
+  }
+
   Future<void> showOngoing({
     required String title,
     required String body,
     int? progress,
     int? maxProgress,
   }) async {
+    if (await _liveUpdateAvailable()) {
+      try {
+        final ok = await _liveUpdates.invokeMethod<bool>('show', {
+              'title': title,
+              'body': body,
+              'progress': progress ?? 0,
+              'maxProgress': maxProgress ?? 0,
+            }) ??
+            false;
+        if (ok) return;
+      } catch (e) {
+        debugPrint('live update failed, using the plain notification: $e');
+      }
+    }
     if (!await init()) return;
     try {
       final android = AndroidNotificationDetails(
@@ -115,6 +150,14 @@ class LocalNotifications {
   }
 
   Future<void> cancelOngoing() async {
+    // Cancel both owners: whichever posted it, the id is the same, and a
+    // leftover "trip in progress" chip after arriving is the one bug a user
+    // would never forgive.
+    if (await _liveUpdateAvailable()) {
+      try {
+        await _liveUpdates.invokeMethod<bool>('cancel');
+      } catch (_) {}
+    }
     if (!_ready) return;
     try {
       await _plugin.cancel(id: ongoingId);
