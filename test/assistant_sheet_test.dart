@@ -217,6 +217,58 @@ void main() {
     });
   });
 
+  testWidgets('a new conversation clears the thread and mints a fresh session id', (tester) async {
+    final c = await _container();
+    await _warm(tester);
+    await tester.pumpWidget(_app(c, const AssistantSheet(cityId: 'bogota')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    final notifier = c.read(chatProvider.notifier);
+    // Nothing to reset yet, so the action is inert rather than misleading.
+    expect(tester.widget<IconButton>(find.byKey(const ValueKey('assistant-new'))).onPressed, isNull);
+
+    await tester.tap(find.byKey(const ValueKey('assistant-suggestion-2')));
+    await _settleStream(tester);
+    expect(c.read(chatProvider).turns, isNotEmpty);
+    final before = notifier.sessionId;
+
+    await tester.tap(find.byKey(const ValueKey('assistant-new')));
+    await tester.pumpAndSettle();
+    // Asks first: the thread lives only in memory, so clearing it is final.
+    expect(find.byKey(const ValueKey('assistant-new-confirm')), findsOneWidget);
+    await tester.tap(find.text('Empezar de nuevo'));
+    await tester.pumpAndSettle();
+
+    expect(c.read(chatProvider).turns, isEmpty);
+    expect(find.text('¿Hay desvíos hoy?'), findsOneWidget, reason: 'the suggestions come back');
+    expect(notifier.sessionId, isNot(before),
+        reason: 'reusing the id would carry the old reply quota into the new conversation');
+    await _close(tester, c);
+  });
+
+  testWidgets('cancelling the reset keeps the conversation', (tester) async {
+    final c = await _container();
+    await _warm(tester);
+    await tester.pumpWidget(_app(c, const AssistantSheet(cityId: 'bogota')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    await tester.tap(find.byKey(const ValueKey('assistant-suggestion-2')));
+    await _settleStream(tester);
+    final turns = c.read(chatProvider).turns.length;
+    final id = c.read(chatProvider.notifier).sessionId;
+
+    await tester.tap(find.byKey(const ValueKey('assistant-new')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancelar'));
+    await tester.pumpAndSettle();
+
+    expect(c.read(chatProvider).turns.length, turns);
+    expect(c.read(chatProvider.notifier).sessionId, id);
+    await _close(tester, c);
+  });
+
   group('tool labels', () {
     test('every tool the contract exposes has a sentence', () {
       final l10n = AppLocalizationsEs();

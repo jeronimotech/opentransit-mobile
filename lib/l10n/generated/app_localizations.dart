@@ -2527,6 +2527,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No pude responder ahora mismo. Intenta de nuevo.'**
   String get assistantErrUpstream;
+
+  /// No description provided for @assistantNewConversation.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva conversación'**
+  String get assistantNewConversation;
+
+  /// No description provided for @assistantNewConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Empezar una conversación nueva? Se borrará lo que has preguntado hasta ahora.'**
+  String get assistantNewConfirm;
+
+  /// No description provided for @assistantNewConfirmCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar de nuevo'**
+  String get assistantNewConfirmCta;
+
+  /// No description provided for @cancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate

@@ -64,6 +64,31 @@ class _AssistantSheetState extends ConsumerState<AssistantSheet> {
     _scrollToEnd();
   }
 
+  /// Confirms first, because the thread is only in memory: once cleared there
+  /// is nowhere to get it back from.
+  Future<void> _newConversation() async {
+    final l10n = AppLocalizations.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        key: const ValueKey('assistant-new-confirm'),
+        icon: const Icon(Icons.add_comment_rounded),
+        content: Text(l10n.assistantNewConfirm),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l10n.cancel)),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.assistantNewConfirmCta),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    _input.clear();
+    ref.read(chatProvider.notifier).newConversation();
+    _focus.unfocus();
+  }
+
   void _scrollToEnd() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_scroll.hasClients) return;
@@ -106,6 +131,14 @@ class _AssistantSheetState extends ConsumerState<AssistantSheet> {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
+                  ),
+                  IconButton(
+                    key: const ValueKey('assistant-new'),
+                    tooltip: l10n.assistantNewConversation,
+                    icon: const Icon(Icons.add_comment_outlined),
+                    // Disabled on an empty chat: there is nothing to reset, and
+                    // a live button that does nothing reads as broken.
+                    onPressed: chat.isEmpty ? null : _newConversation,
                   ),
                   IconButton(
                     tooltip: l10n.assistantClose,

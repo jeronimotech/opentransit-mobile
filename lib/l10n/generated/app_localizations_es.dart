@@ -1449,4 +1449,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get assistantErrUpstream =>
       'No pude responder ahora mismo. Intenta de nuevo.';
+
+  @override
+  String get assistantNewConversation => 'Nueva conversación';
+
+  @override
+  String get assistantNewConfirm =>
+      '¿Empezar una conversación nueva? Se borrará lo que has preguntado hasta ahora.';
+
+  @override
+  String get assistantNewConfirmCta => 'Empezar de nuevo';
+
+  @override
+  String get cancel => 'Cancelar';
 }

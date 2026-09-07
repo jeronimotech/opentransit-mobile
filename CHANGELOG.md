@@ -2,6 +2,14 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.10.1
+
+### Added
+- **"Nueva conversación"** in the chat header. The thread lives in memory and had no way out of it: a question that went sideways stayed on screen and in the context of every later answer. The button clears the turns and drops the session id so the server mints a fresh one — reusing it would have carried the old conversation's reply quota into the new one. It confirms first, because there is nowhere to recover the thread from, and it is disabled on an empty chat rather than sitting there doing nothing.
+
+### Fixed
+- **The assistant answered in English whatever you asked it** (fixed in `opentransit-api`). The system prompt keyed the reply language off the app's locale, so a Spanish question from an English phone came back in English. The question's language wins now; the device language is only the fallback for a question too short to tell, such as a bare place name.
+
 ## 1.10.0 — "Pregúntame"
 
 ### Added

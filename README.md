@@ -70,15 +70,23 @@ time in the reply is a departure time the app could have shown you itself. The
 structured result is drawn with the app's own widgets and stays tappable, which
 is the whole point: an answer that ends in prose is a dead end.
 
-| First open | A trip answer | The card leads into the app | A refusal |
-|---|---|---|---|
-| ![](docs/screenshots/chat_01_intro.png) | ![](docs/screenshots/chat_02_trip.png) | ![](docs/screenshots/chat_03_card_tap.png) | ![](docs/screenshots/chat_04_error.png) |
+| First open | A trip answer | The card leads into the app | A refusal | Starting over |
+|---|---|---|---|---|
+| ![](docs/screenshots/chat_01_intro.png) | ![](docs/screenshots/chat_02_trip.png) | ![](docs/screenshots/chat_03_card_tap.png) | ![](docs/screenshots/chat_04_error.png) | ![](docs/screenshots/chat_05_new_conversation.png) |
+
+It answers in the language you asked in, not the one the phone is set to. A
+Spanish question from an English phone comes back in Spanish; the device
+language decides only when the question is too short to tell, such as a bare
+place name. The header's second button starts a new conversation: the thread is
+only in memory, so it asks before clearing, and it drops the session id rather
+than reusing it.
 
 Against the real provider the city configured (DeepSeek in Bogotá, ~15 s for a
 trip question with two tool calls):
 [first open](docs/screenshots/live_chat_01_intro.png) ·
 [trip answer](docs/screenshots/live_chat_02_trip.png) ·
-[into the results](docs/screenshots/live_chat_03_card_tap.png). There is no live
+[into the results](docs/screenshots/live_chat_03_card_tap.png) ·
+[after a reset](docs/screenshots/live_chat_05_new_conversation.png). There is no live
 refusal shot: the walkthrough tries to trip the per-session rate limit and the
 API answered every question, so the error states are shown from the mock run
 rather than staged.

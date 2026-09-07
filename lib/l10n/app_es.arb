@@ -873,7 +873,13 @@
   "assistantClose": "Cerrar",
   "assistantThinking": "Pensando…",
   "assistantNotice": "Tus preguntas se envían a {provider} para redactar la respuesta. No enviamos tu ubicación exacta ni guardamos la conversación.",
-  "@assistantNotice": {"placeholders": {"provider": {"type": "String"}}},
+  "@assistantNotice": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
   "assistantSuggestion1": "¿Cómo llego al centro?",
   "assistantSuggestion2": "¿A qué hora pasa el próximo bus?",
   "assistantSuggestion3": "¿Hay desvíos hoy?",
@@ -890,5 +896,9 @@
   "assistantErrBudget": "El asistente alcanzó su presupuesto de hoy. Vuelve mañana o usa el planeador.",
   "assistantErrDisabled": "El asistente no está disponible en esta ciudad.",
   "assistantErrRate": "Vas muy rápido. Espera un momento y vuelve a preguntar.",
-  "assistantErrUpstream": "No pude responder ahora mismo. Intenta de nuevo."
+  "assistantErrUpstream": "No pude responder ahora mismo. Intenta de nuevo.",
+  "assistantNewConversation": "Nueva conversación",
+  "assistantNewConfirm": "¿Empezar una conversación nueva? Se borrará lo que has preguntado hasta ahora.",
+  "assistantNewConfirmCta": "Empezar de nuevo",
+  "cancel": "Cancelar"
 }

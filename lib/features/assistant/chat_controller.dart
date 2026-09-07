@@ -77,6 +77,18 @@ class ChatNotifier extends Notifier<ChatState> {
     state = ChatState(cityId: cityId);
   }
 
+  /// Clears the thread and starts a fresh conversation.
+  ///
+  /// The session id is dropped, not reused: the server counts replies per
+  /// session, so reusing it would carry the old conversation's quota into the
+  /// new one. The provider notice stays dismissed — it is once per app run, and
+  /// repeating it on every reset would only train the user to ignore it.
+  void newConversation() {
+    _stop();
+    _sessionId = null;
+    state = state.copyWith(turns: const [], busy: false);
+  }
+
   void dismissNotice() {
     if (state.noticePending) state = state.copyWith(noticePending: false);
   }

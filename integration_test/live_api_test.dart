@@ -471,6 +471,18 @@ void main() {
         print('LIVE: the API answered every question — no refusal to capture; '
             'the error states are covered by the mock walkthrough');
       }
+
+      // Starting over against the real assistant: the thread clears, the
+      // suggestions come back and the session id changes.
+      final before = container.read(chatProvider.notifier).sessionId;
+      await tester.tap(find.byKey(const ValueKey('assistant-new')));
+      await settle(tester, 20);
+      await tester.tap(find.text('Empezar de nuevo'));
+      await settle(tester, 20);
+      expect(container.read(chatProvider).turns, isEmpty);
+      expect(container.read(chatProvider.notifier).sessionId, isNot(before));
+      await shot(tester, 'live_chat_05_new_conversation');
+
       await tester.tap(find.byIcon(Icons.close_rounded));
       await settle(tester, 15);
     }

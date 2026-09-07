@@ -654,7 +654,13 @@
   "assistantClose": "Close",
   "assistantThinking": "Thinking…",
   "assistantNotice": "Your questions are sent to {provider} to write the answer. We do not send your exact location and we do not store the conversation.",
-  "@assistantNotice": {"placeholders": {"provider": {"type": "String"}}},
+  "@assistantNotice": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
   "assistantSuggestion1": "How do I get downtown?",
   "assistantSuggestion2": "When is the next bus?",
   "assistantSuggestion3": "Any disruptions today?",
@@ -671,5 +677,9 @@
   "assistantErrBudget": "The assistant reached today's budget. Come back tomorrow or use the planner.",
   "assistantErrDisabled": "The assistant is not available in this city.",
   "assistantErrRate": "That was quick. Wait a moment and ask again.",
-  "assistantErrUpstream": "I couldn't answer right now. Try again."
+  "assistantErrUpstream": "I couldn't answer right now. Try again.",
+  "assistantNewConversation": "New conversation",
+  "assistantNewConfirm": "Start a new conversation? What you have asked so far will be cleared.",
+  "assistantNewConfirmCta": "Start over",
+  "cancel": "Cancel"
 }

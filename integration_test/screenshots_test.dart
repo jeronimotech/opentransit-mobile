@@ -490,6 +490,17 @@ void main() {
     await settle(tester, 30);
     expect(find.byKey(const ValueKey('assistant-error')), findsOneWidget);
     await shot(tester, 'chat_04_error');
+
+    // Starting over: confirm first, then the thread is gone and the suggestions
+    // are back. The session id changes too, so the reply quota starts fresh.
+    await tester.tap(find.byKey(const ValueKey('assistant-new')));
+    await settle(tester, 20);
+    expect(find.byKey(const ValueKey('assistant-new-confirm')), findsOneWidget);
+    await tester.tap(find.text('Empezar de nuevo'));
+    await settle(tester, 20);
+    expect(find.byKey(const ValueKey('assistant-suggestion-0')), findsOneWidget);
+    await shot(tester, 'chat_05_new_conversation');
+
     // The sheet is a modal route: close it from its own button, not the router.
     await tester.tap(find.byIcon(Icons.close_rounded));
     await settle(tester, 20);
