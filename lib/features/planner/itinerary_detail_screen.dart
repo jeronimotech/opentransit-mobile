@@ -873,9 +873,12 @@ class _DepartureChips extends ConsumerWidget {
             spacing: 6,
             runSpacing: 6,
             children: [
-              for (final n in options)
+              // Keyed by position, not by time: two buses of the same route can
+              // be predicted for the same second, and duplicate keys crash the
+              // Wrap. Seen against the live Bogotá feed.
+              for (final (i, n) in options.indexed)
                 ChoiceChip(
-                  key: ValueKey('dep-${n.time.toIso8601String()}'),
+                  key: ValueKey('dep-$i-${n.time.toIso8601String()}'),
                   selected: isSelected(n),
                   selectedColor: color.withValues(alpha: 0.18),
                   visualDensity: VisualDensity.compact,

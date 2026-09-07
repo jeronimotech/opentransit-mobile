@@ -74,10 +74,14 @@ is the whole point: an answer that ends in prose is a dead end.
 |---|---|---|---|
 | ![](docs/screenshots/chat_01_intro.png) | ![](docs/screenshots/chat_02_trip.png) | ![](docs/screenshots/chat_03_card_tap.png) | ![](docs/screenshots/chat_04_error.png) |
 
-Against the real provider the city configured:
+Against the real provider the city configured (DeepSeek in Bogotá, ~15 s for a
+trip question with two tool calls):
 [first open](docs/screenshots/live_chat_01_intro.png) ·
 [trip answer](docs/screenshots/live_chat_02_trip.png) ·
-[into the results](docs/screenshots/live_chat_03_card_tap.png).
+[into the results](docs/screenshots/live_chat_03_card_tap.png). There is no live
+refusal shot: the walkthrough tries to trip the per-session rate limit and the
+API answered every question, so the error states are shown from the mock run
+rather than staged.
 
 **What leaves the device.** The question and the answers so far, as role and
 text; the locale; and the position *only* if it was already granted, rounded to

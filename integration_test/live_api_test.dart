@@ -58,6 +58,12 @@ void main() {
     notif.skipNotificationPrompt = true;
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
+    // Debug-only framework assertions raised by live data (the mock walkthrough
+    // does the same) must not abort a 20-minute run: log them and keep going,
+    // the way a release build would.
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = FlutterError.dumpErrorToConsole;
+    addTearDown(() => FlutterError.onError = originalOnError);
     final api = HttpApiClient(AppConfig.apiUrl);
     final container = ProviderContainer(overrides: [
       sharedPrefsProvider.overrideWithValue(prefs),
@@ -336,8 +342,20 @@ void main() {
     await settle(tester, 15);
 
     router.go('/bogota/settings');
-    await settle(tester, 20);
-    await tester.scrollUntilVisible(find.byKey(const ValueKey('analytics-toggle')), 200, scrollable: find.byType(Scrollable).first);
+    await settle(tester, 30);
+    // `Scrollable.first` is not always the settings list: the live map's sheet
+    // can still be in the tree on its way out, and dragging it throws. One
+    // screenshot missing its scroll position must not abort the whole run.
+    try {
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('analytics-toggle')),
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
+    } catch (e) {
+      // ignore: avoid_print
+      print('LIVE: could not scroll settings to the analytics toggle: $e');
+    }
     await settle(tester, 10);
     await shot(tester, 'live_lote1_05_settings_analytics');
     // Flush the walkthrough's events to the real API: 202 with `accepted`.

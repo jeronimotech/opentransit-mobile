@@ -24,7 +24,11 @@ All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://ke
 - `MockApiClient` answers chat with canned intents (trip, next bus, alerts, refusal, "I can't do that"), so the sheet and every state are reachable with no API and no key.
 
 ### Fixed
+- **Duplicate departure-chip keys.** The itinerary detail keyed its "next departures here" chips by timestamp, and the live Bogotá feed predicts two buses of the same route for the same second. Duplicate keys inside a `Wrap` throw, which took the whole screen down in debug and aborted the live walkthrough. Keyed by position now.
 - Geocoder ranking upstream (`opentransit-api`): a multi-word query now prefers an exact name match, so "Parque de la 93" no longer plans from the station "Parque".
+
+### Notes
+- The live walkthrough no longer aborts on a debug-only framework assertion, and a failure to scroll the settings screen degrades to a less precise screenshot instead of ending a 20-minute run.
 
 ## 1.9.0 — "Cerca de mí"
 
