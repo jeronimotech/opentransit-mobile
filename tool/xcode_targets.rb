@@ -127,6 +127,21 @@ TARGETS.each do |spec|
     end
   end
 
+  # An asset catalog next to the sources becomes the target's app icon. Without
+  # it the App Store rejects the upload ("No icons found for watch application"
+  # / missing CFBundleIconName), which only surfaces after a full archive.
+  assets_rel = File.join(spec[:dir], 'Assets.xcassets')
+  if File.directory?(File.join(ROOT, 'ios', assets_rel))
+    already = target.resources_build_phase.files_references.any? { |r| r&.path&.to_s&.end_with?('Assets.xcassets') }
+    unless already
+      group = project.main_group.find_subpath(spec[:dir], true)
+      group.set_source_tree('SOURCE_ROOT')
+      ref = group.files.find { |f| f.path.to_s.end_with?('Assets.xcassets') } || group.new_reference(assets_rel)
+      target.resources_build_phase.add_file_reference(ref)
+    end
+    target.build_configurations.each { |c| c.build_settings['ASSETCATALOG_COMPILER_APPICON_NAME'] = 'AppIcon' }
+  end
+
   # Point at Flutter/Generated.xcconfig directly, NOT at Runner's
   # Debug/Release.xcconfig: those also pull in the Pods xcconfig, and a watch
   # or widget target that inherits the app's framework search paths tries to

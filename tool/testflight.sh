@@ -221,33 +221,82 @@ def patch(m):
             break
     else:
         return block
+    # The indentation of `buildSettings = {` is whatever the file uses; hardcoding
+    # it made every *insertion* a silent no-op, so the app target kept Xcode's
+    # automatic signing while the companions got the distribution identity — the
+    # exact shape of "Embedded binary is not signed with the same certificate".
+    opener = re.search(r"^(\t+)buildSettings = \{\n", block, re.M)
+    if not opener:
+        return block
+    indent = opener.group(1) + "\t"
     for k, v in settings_for(profiles[bid]).items():
-        line = "\t\t\t\t%s = %s;" % (k, v)
-        pat = re.compile(r"^\t\t\t\t%s = [^;]*;$" % re.escape(k), re.M)
-        block = pat.sub(line, block) if pat.search(block) else block.replace("\t\t\t\tbuildSettings = {\n", "\t\t\t\tbuildSettings = {\n" + line + "\n", 1)
+        line = "%s%s = %s;" % (indent, k, v)
+        pat = re.compile(r"^\s*%s = [^;]*;$" % re.escape(k), re.M)
+        if pat.search(block):
+            block = pat.sub(line, block)
+        else:
+            at = re.search(r"^(\t+)buildSettings = \{\n", block, re.M).end()
+            block = block[:at] + line + "\n" + block[at:]
     n += 1
     return block
 s = re.sub(r"\t\t[0-9A-F]{24} /\* (Release|Profile) \*/ = \{\n\t\t\tisa = XCBuildConfiguration;.*?\n\t\t\};", patch, s, flags=re.S)
 open(p, "w").write(s)
 print("==> patched %d build configuration(s) for manual signing" % n)
 assert n >= 2, "expected the app and its companions in project.pbxproj"
+# A counter proves nothing: re-read the file and require that every bundle id we
+# meant to sign now carries the identity, in every Release/Profile config.
+check = open(p).read()
+ident = os.environ["SIGN_IDENTITY_PREFIX"]
+for bid in profiles:
+    for blk in re.findall(r"\t\t[0-9A-F]{24} /\* (?:Release|Profile) \*/ = \{\n\t\t\tisa = XCBuildConfiguration;.*?\n\t\t\};", check, re.S):
+        if "PRODUCT_BUNDLE_IDENTIFIER = %s;" % bid not in blk:
+            continue
+        assert 'CODE_SIGN_IDENTITY = "%s";' % ident in blk, (
+            "%s kept Xcode's default signing identity; the archive would mix certificates" % bid)
+        assert "CODE_SIGN_STYLE = Manual;" in blk, "%s is not on manual signing" % bid
 PY
   xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release \
     -destination 'generic/platform=iOS' -archivePath "$ARCHIVE" archive \
-    DEVELOPMENT_TEAM="$APPLE_TEAM_ID" OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH" | tail -n 5
+    DEVELOPMENT_TEAM="$APPLE_TEAM_ID" OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH" \
+    2>&1 | tee build/xcodebuild-archive.log | tail -n 5
+  # ${PIPESTATUS[0]} is xcodebuild's status, not tee's: without this a failed
+  # archive would sail through and only surface later as a missing .xcarchive.
+  if [[ "${PIPESTATUS[0]}" -ne 0 ]]; then
+    echo "!! archive failed; full log in build/xcodebuild-archive.log" >&2
+    grep -E "error:|is not signed with|does not support|No profile|Provisioning" build/xcodebuild-archive.log | head -20 >&2
+    exit 1
+  fi
   restore_pbxproj; trap - EXIT
   echo "==> export (manual)"
-  sed -e "s/__TEAM_ID__/$APPLE_TEAM_ID/" -e "s/__BUNDLE_ID__/$BUNDLE_ID/" \
-      -e "s/__PROFILE_NAME__/$PROFILE_NAME/" -e "s/__CERT__/$SIGN_IDENTITY_PREFIX/" \
-      ios/ExportOptions.manual.plist > "$EXPORT_PLIST"
-  # Every embedded bundle needs its own entry or the export refuses to sign it.
-  IFS=';' read -ra _pairs <<< "$COMPANION_PROFILES"
-  for _pair in "${_pairs[@]}"; do
-    _bid="${_pair%%=*}"; _name="${_pair#*=}"
-    [[ -z "$_bid" || "$_bid" == "$_pair" ]] && continue
-    plutil -replace "provisioningProfiles.$_bid" -string "$_name" "$EXPORT_PLIST"
-  done
-  [[ "$XCODE_MAJOR" -lt 15 ]] && plutil -replace method -string app-store "$EXPORT_PLIST"
+  # Written with plistlib, not `plutil -replace`: plutil reads the dots in a key
+  # path as nesting, so "provisioningProfiles.com.jeronimotech.opentransit" means
+  # four nested dictionaries, not one bundle id, and the export then refuses to
+  # sign the embedded bundles. Every embedded bundle needs its own entry.
+  EXPORT_PLIST="$EXPORT_PLIST" BUNDLE_ID="$BUNDLE_ID" PROFILE_NAME="$PROFILE_NAME" \
+  APPLE_TEAM_ID="$APPLE_TEAM_ID" SIGN_IDENTITY_PREFIX="$SIGN_IDENTITY_PREFIX" \
+  COMPANION_PROFILES="$COMPANION_PROFILES" XCODE_MAJOR="$XCODE_MAJOR" python3 - <<'PY'
+import os, plistlib
+profiles = {os.environ["BUNDLE_ID"]: os.environ["PROFILE_NAME"]}
+for pair in os.environ.get("COMPANION_PROFILES", "").split(";"):
+    pair = pair.strip()
+    if "=" in pair:
+        bid, name = pair.split("=", 1)
+        profiles[bid.strip()] = name.strip()
+opts = {
+    "method": "app-store-connect" if int(os.environ["XCODE_MAJOR"] or 0) >= 15 else "app-store",
+    "destination": "export",
+    "signingStyle": "manual",
+    "teamID": os.environ["APPLE_TEAM_ID"],
+    "signingCertificate": os.environ["SIGN_IDENTITY_PREFIX"],
+    "provisioningProfiles": profiles,
+    "uploadSymbols": True,
+    "manageAppVersionAndBuildNumber": False,
+    "stripSwiftSymbols": True,
+}
+with open(os.environ["EXPORT_PLIST"], "wb") as fh:
+    plistlib.dump(opts, fh)
+print("==> export options: %d profile(s) -> %s" % (len(profiles), ", ".join(sorted(profiles))))
+PY
   rm -rf "$EXPORT_DIR"
   xcodebuild -exportArchive -archivePath "$ARCHIVE" -exportPath "$EXPORT_DIR" \
     -exportOptionsPlist "$EXPORT_PLIST" | tail -n 3
