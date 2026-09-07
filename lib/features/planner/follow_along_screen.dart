@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/config.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/analytics/analytics.dart';
@@ -15,6 +16,8 @@ import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/location.dart';
+import '../../core/live_activity/live_activity.dart';
+import '../../core/watch/watch_sync.dart';
 import '../../core/utils/go_trip.dart';
 import '../../core/utils/notifications.dart';
 import '../../core/utils/polyline.dart';
@@ -79,6 +82,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
   final _offRoute = OffRouteDetector();
   bool _offRoutePrompt = false;
   ShareSession? _share;
+  LiveTrip? _liveTrip;
   bool _sharing = false;
   bool _shareBusy = false;
 
@@ -90,6 +94,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     if (it != null) {
       _goStartedAt = DateTime.now();
       _analytics!.track(Ev.goStart, {'durationSeconds': it.durationSeconds, 'legs': it.legs.length, 'modes': it.modesUsed});
+      _startCompanions(it);
     }
     _start();
   }
@@ -165,7 +170,64 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
       _arrived = st.arrived;
     });
     _updateOngoing(it, leg);
+    LiveActivity.instance.update(_liveUpdate(it, leg));
+    _syncWatch(it, leg);
     if (_arrived) _onArrived(it);
+  }
+
+  /// Starts the Live Activity and the watch mirror. Both are best-effort:
+  /// GO works exactly the same when neither is available.
+  Future<void> _startCompanions(Itinerary it) async {
+    final city = ref.read(cityProvider(widget.cityId)).asData?.value;
+    final plan = ref.read(plannerProvider).result?.asData?.value;
+    final origin = plan?.from.name ?? '';
+    final destination = plan?.to.name ?? it.legs.last.to.name;
+    _liveTrip = liveTripFor(
+      cityId: widget.cityId,
+      itinerary: it,
+      originName: origin.isEmpty ? it.legs.first.from.name : origin,
+      destinationName: destination,
+      city: city,
+    );
+    await LiveActivity.instance.start(_liveTrip!, _liveUpdate(it, it.legs.first));
+    await _syncWatch(it, it.legs.first);
+  }
+
+  LiveTripUpdate _liveUpdate(Itinerary it, Leg leg) => LiveTripUpdate(
+        etaAt: it.endTime,
+        minutesToNextStop: _toEnd == null ? 0 : _minutesFor(leg, _toEnd!),
+        nextStopName: leg.to.name,
+        legIndex: _legIndex,
+        totalLegs: it.legs.length,
+        state: _arrived ? LiveTripState.arrived : LiveTripState.onTime,
+      );
+
+  /// Rough minutes left on this leg from the distance still to cover, using
+  /// the leg's own average speed — the feed gives no per-position ETA.
+  int _minutesFor(Leg leg, double metersLeft) {
+    if (leg.durationSeconds <= 0 || leg.distanceMeters <= 0) return 0;
+    final speed = leg.distanceMeters / leg.durationSeconds; // m/s
+    if (speed <= 0) return 0;
+    return (metersLeft / speed / 60).round().clamp(0, 999);
+  }
+
+  Future<void> _syncWatch(Itinerary it, Leg leg) async {
+    final city = ref.read(cityProvider(widget.cityId)).asData?.value;
+    await WatchSync.instance.sync(
+      cityId: widget.cityId,
+      cityName: city?.name ?? widget.cityId,
+      apiBaseUrl: AppConfig.apiUrl,
+      favourites: const [],
+      go: WatchGoState(
+        active: !_arrived,
+        nextStopName: leg.to.name,
+        minutesToNextStop: _toEnd == null ? null : _minutesFor(leg, _toEnd!),
+        routeShortName: leg.route?.shortName,
+        routeColor: _liveTrip?.routeColor,
+        etaAt: it.endTime,
+        alight: _notified && !_arrived,
+      ),
+    );
   }
 
   /// Keeps the persistent notification in step with the trip.
@@ -187,6 +249,8 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     _arrivalHandled = true;
     await _share?.finish(ShareState.arrived);
     await LocalNotifications.instance.cancelOngoing();
+    await LiveActivity.instance.end();
+    await _syncWatch(it, it.legs.last);
     if (!mounted) return;
     await TripReceiptSheet.show(
       context,
@@ -274,6 +338,9 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     _sub?.cancel();
     _share?.dispose();
     LocalNotifications.instance.cancelAll();
+    // Fire-and-forget: `dispose` cannot await, and a leftover activity on the
+    // lock screen is worse than a redundant end call.
+    LiveActivity.instance.end();
     super.dispose();
   }
 
@@ -283,6 +350,13 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     final it = _itinerary();
     await _share?.finish(_arrived ? ShareState.arrived : ShareState.cancelled);
     await LocalNotifications.instance.cancelOngoing();
+    await LiveActivity.instance.end();
+    await WatchSync.instance.sync(
+      cityId: widget.cityId,
+      cityName: widget.cityId,
+      apiBaseUrl: AppConfig.apiUrl,
+      favourites: const [],
+    );
     if (!mounted) return;
     if (it != null && !_arrivalHandled) {
       _arrivalHandled = true;

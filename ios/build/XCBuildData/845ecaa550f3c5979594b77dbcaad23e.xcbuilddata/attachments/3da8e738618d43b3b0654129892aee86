@@ -1,0 +1,29 @@
+{
+  "" : {
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/OpenTransitWatchComplications-primary.dia",
+    "emit-module-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/OpenTransitWatchComplications-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/OpenTransitWatchComplications-primary-emit-module.dia",
+    "pch" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/OpenTransitWatchComplications-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/OpenTransitWatchComplications-primary.swiftdeps"
+  },
+  "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/OpenTransitWatch/WatchModels.swift" : {
+    "const-values" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/WatchModels.swiftconstvalues",
+    "dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/WatchModels.d",
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/WatchModels.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/WatchModels.o",
+    "llvm-bc" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/WatchModels.bc",
+    "object" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/WatchModels.o",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/WatchModels.swiftdeps",
+    "swiftmodule" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/WatchModels~partial.swiftmodule"
+  },
+  "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/OpenTransitWatchComplications/NextDepartureComplication.swift" : {
+    "const-values" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/NextDepartureComplication.swiftconstvalues",
+    "dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/NextDepartureComplication.d",
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/NextDepartureComplication.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/NextDepartureComplication.o",
+    "llvm-bc" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/NextDepartureComplication.bc",
+    "object" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/NextDepartureComplication.o",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/NextDepartureComplication.swiftdeps",
+    "swiftmodule" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/OpenTransitWatchComplications.build/Objects-normal/arm64/NextDepartureComplication~partial.swiftmodule"
+  }
+}

@@ -158,3 +158,13 @@ Color desaturate(Color c, double amount) {
   bg = ensureContrast(bg, fg);
   return (bg: bg, fg: fg);
 }
+
+/// "#RRGGBB" for a colour, for the native layers (Live Activity badge, watch
+/// complication) that take a hex string rather than a Flutter `Color`.
+String hexOfColor(Color c) {
+  int ch(double v) => (v * 255).round().clamp(0, 255);
+  return '#${ch(c.r).toRadixString(16).padLeft(2, '0')}'
+          '${ch(c.g).toRadixString(16).padLeft(2, '0')}'
+          '${ch(c.b).toRadixString(16).padLeft(2, '0')}'
+      .toUpperCase();
+}

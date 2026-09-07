@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'opentransit Watch App' in project 'Runner'
+➜ Explicit dependency on target 'OpenTransitWatchComplications' in project 'Runner'
+Target 'OpenTransitWatchComplications' in project 'Runner' (no dependencies)
