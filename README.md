@@ -51,6 +51,13 @@ Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,8
 |---|---|---|---|---|
 | ![](docs/screenshots/live_01_home.png) | ![](docs/screenshots/live_02_home_zoom.png) | ![](docs/screenshots/live_04_itinerary.png) | ![](docs/screenshots/live_05_stop_board.png) | ![](docs/screenshots/live_06_next_buses.png) |
 
+Lote 2 & 3 are exercised against the real API by `integration_test/live_api_test.dart`
+(`/plan/forecast` returns 8 options, GO runs, the receipt renders). They have no
+live screenshots: MapLibre's location component asks for authorisation natively
+once GO shows the user's position, and `flutter drive` reinstalls the app, so the
+system dialog covers the simulator from that point on. The mock screenshots above
+show the same screens.
+
 Shared bikes against the live Tembici Bogotá GBFS feed (252 stations, via the API):
 
 | Bike-only plan | Rental itinerary | Bike + bus request | Stations layer | Station sheet |

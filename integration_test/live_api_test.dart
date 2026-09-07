@@ -239,7 +239,7 @@ void main() {
         await settle(tester, 20);
         await Future<void>.delayed(const Duration(seconds: 2));
         await shot(tester, 'live_bike_07_station_sheet');
-        router.pop();
+        if (router.canPop()) router.pop();
       }
     }
 
@@ -273,7 +273,7 @@ void main() {
     if (find.byKey(const ValueKey('route-live-count')).evaluate().isNotEmpty) {
       await shot(tester, 'live_lote2_02_line_page');
     }
-    router.pop();
+    if (router.canPop()) router.pop();
     await settle(tester, 15);
 
     // ── Lote 3: GO with the real itinerary, then the receipt ──
