@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -206,6 +207,30 @@ void main() {
       expect(api.boxes[1]![0], lessThan(api.boxes[0]![0]),
           reason: 'the wider radius must ask for a wider box');
       small.close();
+    });
+  });
+
+  group('framing', () {
+    test('a wider radius frames out, never in', () {
+      expect(zoomForRadius(300), greaterThan(zoomForRadius(600)));
+      expect(zoomForRadius(600), greaterThan(zoomForRadius(1000)));
+    });
+
+    test('the ring fits the viewport at every offered radius', () {
+      // Web-mercator ground resolution at Bogotá's latitude, on a 390 pt wide
+      // phone at 3x. Guards the zoom table against a value that would put the
+      // ring — and the buses inside it — off screen.
+      const widthPt = 390.0, lat = 4.68;
+      for (final r in nearMeRadii) {
+        final z = zoomForRadius(r);
+        final metresPerPixel = 156543.03392 * math.cos(lat * math.pi / 180) / math.pow(2, z);
+        final metresAcross = widthPt * metresPerPixel;
+        // The ring must fit with margin…
+        expect(metresAcross, greaterThan(2.4 * r),
+            reason: 'the $r m ring must fit across the screen at zoom $z');
+        // …and not shrink to a dot in the middle of an empty map.
+        expect(metresAcross, lessThan(4.5 * r), reason: 'zoom $z wastes the screen for $r m');
+      }
     });
   });
 

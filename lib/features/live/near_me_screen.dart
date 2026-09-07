@@ -16,6 +16,7 @@ import '../../core/utils/colors.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/location.dart';
 import '../../core/utils/near_me.dart';
+import '../../core/utils/polyline.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -107,6 +108,9 @@ class _NearMeScreenState extends ConsumerState<NearMeScreen> {
         _anchor = first;
         _loadingFix = false;
       });
+      // Frame the radius on the first fix, so the ring and the buses inside it
+      // are both on screen from the start.
+      await _mapKey.currentState?.animateTo(first, zoom: zoomForRadius(_radius));
       _gps = Geolocator.getPositionStream(
         locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10),
       ).listen(_onPosition, onError: (_) {});
@@ -152,6 +156,12 @@ class _NearMeScreenState extends ConsumerState<NearMeScreen> {
       _anchor = _here ?? _anchor; // a new radius means a new bbox
     });
     await ref.read(preferencesProvider).setNearMeRadius(r);
+    // Re-frame: a radius you cannot see is not a radius.
+    final p = _here;
+    if (p != null) {
+      _touching = false;
+      await _mapKey.currentState?.animateTo(p, zoom: zoomForRadius(r));
+    }
   }
 
   Future<void> _toggleComponent(Component c) async {
@@ -186,6 +196,13 @@ class _NearMeScreenState extends ConsumerState<NearMeScreen> {
         : nearbyVehicles(frame.vehicles.values, here,
             radiusMeters: _radius.toDouble(), components: _components, positionOf: posOf);
 
+    // Selected bus: its route drawn faintly, so "this one" is unmistakable.
+    final selectedVehicle = _selected == null ? null : frame?.vehicles[_selected];
+    final selectedRouteId = selectedVehicle?.routeId;
+    final selectedRoute = selectedRouteId == null
+        ? null
+        : ref.watch(routeDetailProvider(CityKey(widget.cityId, selectedRouteId))).asData?.value;
+
     final health = ref.watch(healthProvider(widget.cityId)).asData?.value;
     final stale = health?.realtime.isStale ?? false;
     final sheetPeek = MediaQuery.sizeOf(context).height * 0.34;
@@ -217,9 +234,18 @@ class _NearMeScreenState extends ConsumerState<NearMeScreen> {
                     child: TransitMap(
                       key: _mapKey,
                       initialCenter: centre,
-                      initialZoom: 16,
+                      initialZoom: zoomForRadius(_radius),
                       myLocation: true,
-                      lines: here == null ? const [] : [_radiusRing(here, _radius, scheme.primary)],
+                      lines: [
+                        if (here != null) _radiusRing(here, _radius, scheme.primary),
+                        for (final p in selectedRoute?.patterns ?? const <RoutePattern>[])
+                          MapLine(
+                            id: 'near-pat-${p.id}',
+                            points: decodeGeometry(p.geometry),
+                            color: componentColor(selectedVehicle?.component, city: city).withValues(alpha: 0.35),
+                            width: 3,
+                          ),
+                      ],
                       vehicles: [
                         for (final n in nearby)
                           MapPoint(
@@ -303,9 +329,21 @@ class _NearMeScreenState extends ConsumerState<NearMeScreen> {
 
   Future<void> _onRowTap(NearbyVehicle n) async {
     setState(() => _selected = n.id);
-    // Show the bus on the map before opening its detail, so the row and the
-    // highlighted dot are unmistakably the same vehicle.
-    await _mapKey.currentState?.animateTo(n.vehicle.position, zoom: 17);
+    // Frame the user *and* the bus rather than zooming onto the bus alone:
+    // "which one is it" is a question about the space between us, and a tight
+    // zoom on the vehicle answers it by hiding half of it.
+    final me = _here;
+    final bus = n.vehicle.position;
+    final target = me == null
+        ? bus
+        : LatLng((me.lat + bus.lat) / 2, (me.lon + bus.lon) / 2);
+    final span = me == null ? _radius.toDouble() : haversineMeters(me, bus);
+    _touching = false;
+    await _mapKey.currentState?.animateTo(
+      target,
+      // A little margin so neither end sits on the screen edge.
+      zoom: zoomForRadius((span * 0.75).round().clamp(120, 4000)),
+    );
     if (!mounted) return;
     setState(() => _follow = false);
     if (mounted) context.push('/${widget.cityId}/vehicles/${Uri.encodeComponent(n.id)}');
@@ -414,23 +452,24 @@ class _NearbySheet extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        // Component filter
-        SizedBox(
-          height: 36,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+        // Component filter. Wrapped, not scrolled: a filter you cannot see is a
+        // filter you will not use — the same reason the planner's modes stopped
+        // scrolling. All five components stay reachable on a phone.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 6,
             children: [
-              for (final c in _filterable) ...[
+              for (final c in _filterable)
                 FilterChip(
                   key: ValueKey('near-comp-${c.name}'),
                   label: Text(componentLabel(c, l10n, city: city)),
                   selected: components.contains(c),
+                  visualDensity: VisualDensity.compact,
                   avatar: Icon(componentIcon(c, city: city), size: 16, color: componentColor(c, city: city)),
                   onSelected: (_) => onComponent(c),
                 ),
-                const SizedBox(width: 8),
-              ],
             ],
           ),
         ),

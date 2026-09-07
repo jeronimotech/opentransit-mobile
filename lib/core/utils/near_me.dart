@@ -120,3 +120,19 @@ int? widerRadius(int current) {
   }
   return null;
 }
+
+/// Zoom that frames the whole radius circle on a phone screen.
+///
+/// A fixed zoom is wrong here: at zoom 16 a ~390 pt screen spans 928 m, so a
+/// 600 m ring (1.2 km across) falls entirely outside the viewport and the map
+/// claims "1 bus en 600 m" while showing neither the ring nor the bus. These
+/// values put the ring at roughly 56 % of the screen width, which leaves room
+/// for the sheet without shrinking it to a dot.
+double zoomForRadius(int radiusMeters) => switch (radiusMeters) {
+      <= 150 => 16.8,
+      <= 300 => 15.8,
+      <= 600 => 14.8,
+      <= 1000 => 14.1,
+      <= 2000 => 13.1,
+      _ => 12.1,
+    };

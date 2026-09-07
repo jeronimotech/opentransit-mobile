@@ -333,7 +333,11 @@ void main() {
     expect(find.byKey(const ValueKey('nearby-rental')), findsOneWidget);
     await shot(tester, 'bike_04_home_stations');
 
-    // Station sheet via the "Cerca de ti" card.
+    // Station sheet via the "Cerca de ti" card. The card sits at the bottom of
+    // the sheet's peek, so a blind tap lands a few pixels past its edge on some
+    // devices; scroll it fully into view first, as a user would.
+    await tester.ensureVisible(find.byKey(const ValueKey('nearby-rental')));
+    await settle(tester, 10);
     await tester.tap(find.byKey(const ValueKey('nearby-rental')));
     await settle(tester, 20);
     expect(find.byKey(const ValueKey('rental-directions')), findsOneWidget);
@@ -391,6 +395,60 @@ void main() {
     expect(find.byKey(const ValueKey('analytics-clear')), findsOneWidget);
     await shot(tester, 'lote1_05_settings_analytics');
     expect(container.read(analyticsProvider).pending, isNotEmpty, reason: 'events were tracked during the walkthrough');
+
+    // v1.9 "Cerca de mí": the live map centred on the user.
+    router.go('/bogota/live');
+    await settle(tester, 40);
+    await Future<void>.delayed(const Duration(seconds: 3));
+    await settle(tester, 20);
+    await shot(tester, 'nearme_01_map');
+
+    // The full list, sheet pulled up.
+    await tester.drag(find.byKey(const ValueKey('near-radius-600')), const Offset(0, -360));
+    await settle(tester, 25);
+    await shot(tester, 'nearme_02_list');
+
+    // Selecting a bus: open its detail from the row, then come back to the map
+    // with that bus highlighted and its route drawn faintly.
+    final row = find.byWidgetPredicate(
+      (w) => w.key is ValueKey<String> && (w.key! as ValueKey<String>).value.startsWith('near-row-'),
+    );
+    if (row.evaluate().isNotEmpty) {
+      await tester.tap(row.first);
+      await settle(tester, 35);
+      router.pop();
+      await settle(tester, 35);
+      // Drop the sheet back to peek: the point of "selected" is the highlighted
+      // bus and its faint route on the map, and a raised sheet hides both.
+      await tester.drag(find.byKey(const ValueKey('near-radius-600')), const Offset(0, 420));
+      await settle(tester, 25);
+      await Future<void>.delayed(const Duration(seconds: 2));
+      await settle(tester, 15);
+    }
+    await shot(tester, 'nearme_03_selected');
+
+    // Back to me: the pill appears because selecting a bus moved the camera.
+    final recentre = find.byKey(const ValueKey('near-recentre'));
+    if (recentre.evaluate().isNotEmpty) {
+      await tester.tap(recentre);
+      await settle(tester, 20);
+    }
+
+    // Empty state: filter to a component with nothing around, and show the
+    // one-tap widen. Asserted, not hoped for — a shot named "empty" that is not
+    // empty is worse than no shot.
+    final cableChip = find.byKey(const ValueKey('near-comp-cable'));
+    await tester.ensureVisible(cableChip);
+    await settle(tester, 8);
+    await tester.tap(cableChip);
+    await settle(tester, 25);
+    expect(find.byKey(const ValueKey('near-widen')), findsOneWidget,
+        reason: 'the cable filter should leave nothing nearby, showing the empty state');
+    await shot(tester, 'nearme_04_empty');
+    await tester.tap(cableChip); // back to "all" for the shots that follow
+    await settle(tester, 12);
+    router.go('/bogota');
+    await settle(tester, 15);
 
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.dark);
     await container.read(settingsProvider.notifier).setPoiLayer(true);

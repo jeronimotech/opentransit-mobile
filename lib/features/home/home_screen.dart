@@ -683,22 +683,37 @@ class _HomeSheet extends ConsumerWidget {
               child: CommuteCard(cityId: cityId),
             ),
           // Peek row 3: "Cerca de ti", with the live-map mode one tap away.
+          // Height-bounded on purpose: the strip below has to stay inside the
+          // sheet's peek, and a taller header pushes it out of reach.
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(l10n.nearYouTitle,
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, color: scheme.onSurfaceVariant)),
-                ),
-                TextButton.icon(
-                  key: const ValueKey('home-near-me'),
-                  onPressed: () => context.push('/$cityId/live'),
-                  icon: const Icon(Icons.radar_rounded, size: 16),
-                  label: Text(l10n.nearMeEntry),
-                  style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
-                ),
-              ],
+            padding: const EdgeInsets.fromLTRB(16, 0, 10, 4),
+            child: SizedBox(
+              height: 24,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(l10n.nearYouTitle,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700, color: scheme.onSurfaceVariant)),
+                  ),
+                  InkWell(
+                    key: const ValueKey('home-near-me'),
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => context.push('/$cityId/live'),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.radar_rounded, size: 15, color: scheme.primary),
+                          const SizedBox(width: 4),
+                          Text(l10n.nearMeEntry,
+                              style: TextStyle(color: scheme.primary, fontSize: 12.5, fontWeight: FontWeight.w700)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           NearbyStrip(cityId: cityId, stops: stops, loading: loading, onTap: onNearby,
