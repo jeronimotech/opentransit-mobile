@@ -64,7 +64,11 @@ class ForecastNote {
   factory ForecastNote.fromJson(Map<String, dynamic> j) => ForecastNote(
         kind: j['kind']?.toString() ?? '',
         text: j['text']?.toString(),
-        at: parseTime(j['at']) ?? parseTime(j['atrs']),
+        // The API names the instant differently per note kind.
+        at: parseTime(j['at']) ??
+            parseTime(j['atDepartAt']) ??
+            parseTime(j['afterDepartAt']) ??
+            parseTime(j['atrs']),
       );
 }
 

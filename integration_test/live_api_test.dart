@@ -13,6 +13,7 @@ import 'package:opentransit_mobile/core/config.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/connectivity.dart';
 import 'package:opentransit_mobile/core/providers.dart';
+import 'package:opentransit_mobile/core/utils/location.dart' as loc;
 import 'package:opentransit_mobile/core/widgets/common.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
 import 'package:opentransit_mobile/features/planner/widgets/itinerary_card.dart';
@@ -49,6 +50,9 @@ void main() {
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
 
   testWidgets('live API: plan Portal Norte → Portal Sur', (tester) async {
+    // The system location prompt cannot be dismissed from Dart and would
+    // cover every screenshot taken after GO starts.
+    loc.skipLocationPrompt = true;
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final api = HttpApiClient(AppConfig.apiUrl);
@@ -239,6 +243,63 @@ void main() {
       }
     }
 
+    // ── Lote 2: "Cuándo salir" against the real forecast endpoint ──
+    router.go('/bogota/plan');
+    await settle(tester, 15);
+    planner.setFrom(const Place(name: 'Portal Norte', position: LatLng(4.7546, -74.0459)));
+    planner.setTo(const Place(name: 'Portal Sur', position: LatLng(4.5978, -74.1616)));
+    planner.setModes({TravelMode.transit, TravelMode.walk});
+    await settle(tester, 5);
+    await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+    await settle(tester, 60);
+    if (find.byKey(const ValueKey('forecast-button')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const ValueKey('forecast-button')));
+      await settle(tester, 60);
+      if (find.byKey(const ValueKey('forecast-list')).evaluate().isNotEmpty) {
+        // ignore: avoid_print
+        print('LIVE: forecast sheet rendered from /plan/forecast');
+        await shot(tester, 'live_lote2_01_when_to_leave');
+        Navigator.of(tester.element(find.byKey(const ValueKey('forecast-list')))).pop();
+        await settle(tester, 20);
+      } else {
+        // ignore: avoid_print
+        print('LIVE: /plan/forecast returned no options for this pair');
+      }
+    }
+
+    // ── Lote 2: line page with live buses on the timeline ──
+    router.push('/bogota/routes/bogota:12873');
+    await settle(tester, 60);
+    if (find.byKey(const ValueKey('route-live-count')).evaluate().isNotEmpty) {
+      await shot(tester, 'live_lote2_02_line_page');
+    }
+    router.pop();
+    await settle(tester, 15);
+
+    // ── Lote 3: GO with the real itinerary, then the receipt ──
+    router.go('/bogota/plan');
+    await settle(tester, 15);
+    await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+    await settle(tester, 60);
+    if (find.byType(ItineraryCard).evaluate().isNotEmpty) {
+      await tester.tap(find.byType(ItineraryCard).first);
+      await settle(tester, 40);
+      if (find.widgetWithText(FilledButton, 'Iniciar viaje').evaluate().isNotEmpty) {
+        await tester.tap(find.widgetWithText(FilledButton, 'Iniciar viaje'));
+        await settle(tester, 60);
+        await shot(tester, 'live_lote3_01_go_in_progress');
+        await tester.tap(find.byKey(const ValueKey('go-stop')));
+        await settle(tester, 40);
+        if (find.byKey(const ValueKey('receipt-title')).evaluate().isNotEmpty) {
+          await shot(tester, 'live_lote3_02_receipt');
+          await tester.tap(find.byKey(const ValueKey('receipt-close')));
+          await settle(tester, 20);
+        }
+      }
+    }
+    router.go('/bogota');
+    await settle(tester, 15);
+
     router.go('/bogota/settings');
     await settle(tester, 20);
     await tester.scrollUntilVisible(find.byKey(const ValueKey('analytics-toggle')), 200, scrollable: find.byType(Scrollable).first);
@@ -303,5 +364,5 @@ void main() {
       await shot(tester, 'live_ondemand_04_stop');
       planner.setOnDemand(false);
     }
-  }, timeout: const Timeout(Duration(minutes: 8)));
+  }, timeout: const Timeout(Duration(minutes: 16)));
 }

@@ -197,6 +197,18 @@ void main() {
       expect(f.options.single.routeIds, ['bogota:G12']);
       expect(f.notes.single.kind, 'long_gap');
     });
+
+    test('reads the note instant under any of the names the API uses', () {
+      final f = ForecastResponse.fromJson({
+        'options': const [],
+        'notes': [
+          {'kind': 'last_service', 'text': 'Última salida 21:50', 'atDepartAt': '2026-09-06T21:50:28-05:00'}
+        ],
+      });
+      expect(f.notes.single.at, isNotNull);
+      // Parsed as sent (offset preserved); screens localise it on display.
+      expect(f.notes.single.at!.toUtc(), DateTime.utc(2026, 9, 7, 2, 50, 28));
+    });
   });
 
   group('line page: buses on the timeline', () {
