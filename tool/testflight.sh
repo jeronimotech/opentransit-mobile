@@ -197,10 +197,16 @@ for pair in os.environ.get("COMPANION_PROFILES", "").split(";"):
         profiles[bid.strip()] = name.strip()
 
 def settings_for(profile_name):
+    # The plain key matters as much as the sdk-scoped one: a watchOS target
+    # never matches [sdk=iphoneos*], so with only that set it falls back to the
+    # empty default and Xcode rejects the archive with "Embedded binary is not
+    # signed with the same certificate as the parent app".
     return {
         "CODE_SIGN_STYLE": "Manual",
         "DEVELOPMENT_TEAM": os.environ["APPLE_TEAM_ID"],
+        "CODE_SIGN_IDENTITY": '"%s"' % os.environ["SIGN_IDENTITY_PREFIX"],
         '"CODE_SIGN_IDENTITY[sdk=iphoneos*]"': '"%s"' % os.environ["SIGN_IDENTITY_PREFIX"],
+        '"CODE_SIGN_IDENTITY[sdk=watchos*]"': '"%s"' % os.environ["SIGN_IDENTITY_PREFIX"],
         "PROVISIONING_PROFILE_SPECIFIER": '"%s"' % profile_name,
     }
 
