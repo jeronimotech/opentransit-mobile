@@ -56,4 +56,8 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      - run: flutter build ios --simulator --no-codesign --dart-define=MOCK=true
+      # A device build, not --simulator: with a watchOS companion in the project
+      # the Flutter tool refuses a simulator build without a concrete device id
+      # ("A device ID is required to build an app with a watchOS companion app").
+      # This is also the configuration we actually ship.
+      - run: flutter build ios --release --no-codesign --dart-define=MOCK=true
