@@ -240,6 +240,19 @@ def patch(m):
     n += 1
     return block
 s = re.sub(r"\t\t[0-9A-F]{24} /\* (Release|Profile) \*/ = \{\n\t\t\tisa = XCBuildConfiguration;.*?\n\t\t\};", patch, s, flags=re.S)
+
+# The project-level Release/Profile configurations still carry Flutter's
+# template default `CODE_SIGN_IDENTITY[sdk=iphoneos*] = "iPhone Developer"`.
+# A conditional at project level beats a plain key at target level, so Runner
+# resolved to "iPhone Developer" while the watch and extension targets — which
+# have no such conditional — resolved to the distribution identity. That is the
+# "Embedded binary is not signed with the same certificate as the parent app"
+# archive failure. Retarget the conditional for the configurations we archive.
+dev = re.compile(r'^(\t+)"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "iPhone Developer";$', re.M)
+s, n_dev = dev.subn(lambda m: '%s"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "%s";'
+                    % (m.group(1), os.environ["SIGN_IDENTITY_PREFIX"]), s)
+print("==> retargeted %d project-level iPhone Developer identit%s"
+      % (n_dev, "y" if n_dev == 1 else "ies"))
 open(p, "w").write(s)
 print("==> patched %d build configuration(s) for manual signing" % n)
 assert n >= 2, "expected the app and its companions in project.pbxproj"
