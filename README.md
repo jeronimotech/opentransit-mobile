@@ -318,6 +318,62 @@ Inspired by the Citymapper playbook (see the private reference analysis):
 
 `lib/core/analytics/` implements CONTRACT-analytics v1.5: `Analytics.track(type, props)` queues coarsened events (coordinates rounded to 3 decimals ≈ 110 m, no free text, no addresses) in SharedPreferences (cap 500) and flushes them every 30 s, at 20 pending events or when the app goes to background, as one `POST /v1/cities/{city}/events` batch (≤ 50 events, 24 h max age, exponential back-off). Identity is a random session id per start and a cohort id that rotates every 30 days; both are renewed by **Borrar mis estadísticas**. The toggle **Compartir estadísticas anónimas de uso** (Settings › Privacidad, default on) drops the queue and stops everything when off. Instrumented: app open, screen views, search selections, plan request/result, itinerary select, GO start/end, stop/board/route views, "Ubica tu bus" queries, provider hand-offs, rental station views, favorites, alert views, layer and mode toggles, errors. No third-party SDKs.
 
+## Wearables and Live Activities
+
+Three native targets ship inside the app. They are additive: the phone app
+behaves identically when no watch is paired, on Android, and on any iPhone
+where Live Activities are unavailable or switched off.
+
+| Target | Bundle id | What it is |
+|---|---|---|
+| `OpenTransitLiveActivity` | `com.jeronimotech.opentransit.LiveActivity` | WidgetKit + ActivityKit extension (iOS 16.2+): lock-screen card and Dynamic Island for a trip in progress |
+| `opentransit Watch App` | `com.jeronimotech.opentransit.watchkitapp` | watchOS 10+ SwiftUI app: *Cerca de ti*, *Ubica tu bus*, GO mirror |
+| `OpenTransitWatchComplications` | `com.jeronimotech.opentransit.watchkitapp.complications` | Corner / circular / rectangular / inline complications with the next departure |
+
+### Adding the targets to a fresh checkout
+
+The targets live in `ios/` as plain Swift sources; the Xcode project entries are
+generated, never hand-edited:
+
+```bash
+APPLE_TEAM_ID=6DTDJCKC8X tool/xcode_targets.rb          # add or repair
+tool/xcode_targets.rb --check                            # CI-friendly assertion
+```
+
+The script is idempotent and uses the `xcodeproj` gem that ships inside
+CocoaPods, so there is nothing extra to install. Three things it has to get
+right, each of which cost a failed build to find:
+
+- the watch app is a **plain application** target against the watchOS SDK; the
+  legacy `watchapp2` pairing type makes Xcode emit the binary twice;
+- both embed phases must run **before** Flutter's `Thin Binary` script, which
+  claims the whole bundle as its output and otherwise closes a dependency cycle;
+- the companion targets take their version from `Flutter/Generated.xcconfig`.
+  Inheriting Runner's `Debug`/`Release.xcconfig` instead drags in the Pods
+  xcconfig and the watch target tries to link MapLibre.
+
+`tool/testflight.sh` signs all four bundles: `COMPANION_PROFILES` maps each
+bundle id to its App Store profile, and the export options list every one.
+
+### How the data flows
+
+```
+GO screen ──▶ lib/core/live_activity  ──MethodChannel──▶ LiveActivityBridge.swift ──▶ ActivityKit
+          └─▶ lib/core/watch          ──MethodChannel──▶ WatchSessionBridge.swift ──▶ WatchConnectivity
+                                                                                        │
+                                        watch app ◀── application context ──────────────┘
+                                            └──▶ GET /v1/cities/{city}/watch/summary (direct, when the phone is away)
+```
+
+The phone pushes an **application context**, not messages: it survives the watch
+being asleep and only the newest board matters. The watch caches the last
+payload and shows its age, so a wrist offline says "Sin conexión · hace 3 min"
+rather than going blank.
+
+Live Activities are updated **locally** by the app. While GO runs the app holds
+a foreground location session, so no APNs key is needed for the shipped scope;
+`config.push` on the API is the seam for server-pushed updates later.
+
 ## Release to TestFlight
 
 `tool/testflight.sh` builds, signs, exports and uploads the iOS app using an App Store Connect API

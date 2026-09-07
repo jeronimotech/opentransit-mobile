@@ -2,6 +2,18 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.7.0 — Live Activities and Apple Watch
+
+### Added
+- **Live Activity + Dynamic Island** for a trip in progress: route chip, "Bájate en {parada} · {n} min", progress and ETA on the lock screen; compact, expanded and minimal Dynamic Island presentations; tapping deep-links back into the trip. Started by GO, updated locally on every leg or ETA change, ended on arrival or cancel.
+- **Apple Watch app** (watchOS 10+) with *Cerca de ti*, *Ubica tu bus* and a GO mirror that taps the wrist when it is time to get off. Data arrives from the phone over WatchConnectivity and falls back to a direct call to `/watch/summary`; the last board is cached and its age is shown.
+- **Complications** (corner, circular, rectangular, inline) counting down to the next departure of the pinned stop, refreshed through WidgetKit timelines.
+- `tool/xcode_targets.rb`: idempotent, reproducible creation of the three native targets.
+
+### Fixed
+- Watch wire models decode leniently. Swift's synthesized `Decodable` throws on a missing key even when the property has a default, so one field the phone did not send blanked the entire watch.
+- `tool/screenshots.sh` re-applies the simulator location grant during the run; `flutter drive` reinstalls the app and dropped it, leaving the system dialog on top of the screenshot.
+
 ## [Unreleased]
 
 ## [1.6.0] - 2026-09-06

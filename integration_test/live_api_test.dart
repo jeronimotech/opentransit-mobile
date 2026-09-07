@@ -14,6 +14,7 @@ import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/connectivity.dart';
 import 'package:opentransit_mobile/core/providers.dart';
 import 'package:opentransit_mobile/core/utils/location.dart' as loc;
+import 'package:opentransit_mobile/core/utils/notifications.dart' as notif;
 import 'package:opentransit_mobile/core/widgets/common.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
 import 'package:opentransit_mobile/features/planner/widgets/itinerary_card.dart';
@@ -53,6 +54,7 @@ void main() {
     // The system location prompt cannot be dismissed from Dart and would
     // cover every screenshot taken after GO starts.
     loc.skipLocationPrompt = true;
+    notif.skipNotificationPrompt = true;
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final api = HttpApiClient(AppConfig.apiUrl);

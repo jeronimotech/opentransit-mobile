@@ -5,10 +5,9 @@ import 'package:opentransit_mobile/core/watch/watch_sync.dart';
 
 /// Records what the platform side would have received.
 class _FakeChannel {
-  _FakeChannel(this.name, {this.supported = true, this.startOk = true});
+  _FakeChannel(this.name, {this.supported = true});
   final String name;
   final bool supported;
-  final bool startOk;
   final calls = <(String, Map<Object?, Object?>?)>[];
 
   MethodChannel install() {
@@ -18,7 +17,7 @@ class _FakeChannel {
       calls.add((call.method, call.arguments as Map<Object?, Object?>?));
       return switch (call.method) {
         'isSupported' => supported,
-        'start' => startOk,
+        'start' => true,
         _ => true,
       };
     });

@@ -15,6 +15,7 @@ import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/providers.dart';
 import 'package:opentransit_mobile/core/storage/favorites.dart';
 import 'package:opentransit_mobile/core/utils/location.dart' as loc;
+import 'package:opentransit_mobile/core/utils/notifications.dart' as notif;
 import 'package:opentransit_mobile/core/utils/rental.dart';
 import 'package:opentransit_mobile/core/widgets/common.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
@@ -47,6 +48,7 @@ void main() {
     // `flutter drive` reinstalls the app, resetting the simulator's location
     // authorisation; the system prompt would then cover every later shot.
     loc.skipLocationPrompt = true;
+    notif.skipNotificationPrompt = true;
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final container = ProviderContainer(overrides: [

@@ -21,6 +21,20 @@ xcrun simctl privacy "$DEVICE" grant location "$BUNDLE_ID" >/dev/null 2>&1 || tr
 xcrun simctl privacy "$DEVICE" grant location-always "$BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl location "$DEVICE" set 4.7546,-74.0459 >/dev/null 2>&1 || true
 
+# `flutter drive` reinstalls the app after the grant above, which drops it again
+# on some Xcode versions — the symptom is the system location dialog sitting on
+# top of whatever screen we were about to capture. Re-apply it for the first
+# couple of minutes and stop.
+(
+  for _ in $(seq 1 60); do
+    sleep 2
+    xcrun simctl privacy "$DEVICE" grant location "$BUNDLE_ID" >/dev/null 2>&1 || true
+    xcrun simctl privacy "$DEVICE" grant location-always "$BUNDLE_ID" >/dev/null 2>&1 || true
+  done
+) &
+REGRANT=$!
+trap 'kill $REGRANT 2>/dev/null || true' EXIT
+
 flutter drive \
   --driver=test_driver/integration_test.dart \
   --target="$TARGET" \

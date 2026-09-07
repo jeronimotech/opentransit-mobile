@@ -1,6 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+/// Set by the screenshot walkthrough only, for the same reason as
+/// [skipLocationPrompt] in `location.dart`: the iOS notification prompt is a
+/// system alert that Dart cannot dismiss, and it would sit on top of every
+/// screenshot taken from GO onwards. With this on the app never asks and
+/// simply posts nothing if authorisation was never granted.
+bool skipNotificationPrompt = false;
+
 /// Local notifications for the follow-along ("Iniciar viaje") mode.
 /// Foreground only; no push infrastructure.
 class LocalNotifications {
@@ -29,6 +36,7 @@ class LocalNotifications {
   }
 
   Future<bool> requestPermission() async {
+    if (skipNotificationPrompt) return false;
     if (!await init()) return false;
     try {
       final ios = _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
