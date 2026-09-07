@@ -91,3 +91,27 @@ in `pubspec.yaml` for releases.
 - *Associated Domains* capability missing → `tool/asc_signing.py bundle-id` enables it.
 - *altool: Unable to authenticate* → key file not at `~/.appstoreconnect/private_keys/`, or wrong issuer id.
 - *Build stuck in PROCESSING* → Apple is slow; `tool/asc_signing.py builds --wait --version <n> --timeout 40`.
+
+## Companion targets (Live Activity, Apple Watch)
+
+`tool/testflight.sh` calls `tool/xcode_targets.rb` before building, so a fresh
+checkout gets the three companion targets without anyone opening Xcode. Each
+embedded bundle needs its own App Store profile; `COMPANION_PROFILES` maps them:
+
+```
+com.jeronimotech.opentransit.LiveActivity              -> opentransit LiveActivity App Store
+com.jeronimotech.opentransit.watchkitapp               -> opentransit watchkitapp App Store
+com.jeronimotech.opentransit.watchkitapp.complications -> opentransit watch complications App Store
+```
+
+Create or refresh them the same way as the app's own profile:
+
+```bash
+set -a; source ~/.config/opentransit/apple.env; set +a
+CERT=$(BUNDLE_ID=com.jeronimotech.opentransit python3 tool/asc_signing.py \
+        certificate --csr ~/.config/opentransit/apple-dist/dist.csr | python3 -c 'import sys,json;print(json.load(sys.stdin)["id"])')
+BUNDLE_ID=com.jeronimotech.opentransit.LiveActivity \
+  python3 tool/asc_signing.py profile --cert-id "$CERT" --name "opentransit LiveActivity App Store" --install
+```
+
+If the export fails with "no profile for …", that bundle id is the one missing.
