@@ -93,7 +93,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
   void initState() {
     super.initState();
     _sheet.addListener(_onSheetMoved);
-    if (widget.focus != null) _zoom = widget.focusZoom ?? 16;
+    if (widget.focus != null) {
+      _center = widget.focus;
+      _zoom = widget.focusZoom ?? 16;
+    }
   }
 
   @override
@@ -102,6 +105,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     final f = widget.focus;
     if (f != null && (f != old.focus || widget.focusZoom != old.focusZoom)) {
       _mapKey.currentState?.animateTo(f, zoom: widget.focusZoom ?? 16);
+      // Query the destination area straight away. Waiting for the camera to
+      // settle would leave a deep link (a shared stop, a station link) showing
+      // "Cerca de ti" for wherever the map happened to be.
+      setState(() {
+        _center = f;
+        _zoom = widget.focusZoom ?? 16;
+      });
     }
   }
 
