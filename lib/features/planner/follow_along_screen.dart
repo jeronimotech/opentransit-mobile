@@ -195,7 +195,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
 
   LiveTripUpdate _liveUpdate(Itinerary it, Leg leg) => LiveTripUpdate(
         etaAt: it.endTime,
-        minutesToNextStop: _toEnd == null ? 0 : _minutesFor(leg, _toEnd!),
+        // Before the first fix there is no distance to work from; the leg's own
+        // planned duration is the honest answer. Showing 0 would read as
+        // "get off now" the moment the trip starts.
+        minutesToNextStop:
+            _toEnd == null ? (leg.durationSeconds / 60).round() : _minutesFor(leg, _toEnd!),
         nextStopName: leg.to.name,
         legIndex: _legIndex,
         totalLegs: it.legs.length,

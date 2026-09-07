@@ -355,6 +355,27 @@ right, each of which cost a failed build to find:
 `tool/testflight.sh` signs all four bundles: `COMPANION_PROFILES` maps each
 bundle id to its App Store profile, and the export options list every one.
 
+### Screenshots
+
+`docs/screenshots/watch_01_nearby.png`, `watch_02_locate.png`, `watch_03_go.png`
+(Apple Watch Series 11, against the live API) and
+`liveactivity_01_dynamic_island.png` (iPhone 17 Pro, app backgrounded mid-trip).
+
+The **lock-screen** presentation is not captured: locking a simulator needs GUI
+automation this environment cannot grant, and `simctl` has no lock command. The
+same SwiftUI view backs both presentations, so what the Dynamic Island shows is
+drawn by the code the lock screen uses.
+
+To reproduce the Live Activity shots:
+
+```bash
+flutter drive --driver=test_driver/integration_test.dart \
+  --target=integration_test/live_activity_shot_test.dart -d <iphone-udid>
+# once the log prints LIVE_ACTIVITY_READY the trip is running:
+xcrun simctl launch <iphone-udid> com.apple.Preferences   # background the app
+xcrun simctl io <iphone-udid> screenshot island.png
+```
+
 ### How the data flows
 
 ```
