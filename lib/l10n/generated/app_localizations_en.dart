@@ -1162,4 +1162,154 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Privacy policy';
+
+  @override
+  String get commuteToWork => 'Go to work';
+
+  @override
+  String get commuteToHome => 'Go home';
+
+  @override
+  String get commuteInvert => 'Invert';
+
+  @override
+  String get commuteSeeRoute => 'See route';
+
+  @override
+  String get commuteNoPlan => 'No options right now';
+
+  @override
+  String get commuteDetour => 'Route on detour · Re-plan';
+
+  @override
+  String get commuteSetup => 'Save Home and Work to see your commute here';
+
+  @override
+  String get departuresSheetTitle => 'When to leave';
+
+  @override
+  String get departuresButton => 'Departures';
+
+  @override
+  String get forecastRecommended => 'Best option';
+
+  @override
+  String forecastGap(String time) {
+    return 'Then no service until $time';
+  }
+
+  @override
+  String get forecastEmpty => 'No more departures in this window';
+
+  @override
+  String forecastArrive(String time) {
+    return 'arrives $time';
+  }
+
+  @override
+  String get forecastPickThis => 'Plan for this time';
+
+  @override
+  String get routeAlertsTitle => 'Alerts for this route';
+
+  @override
+  String get routeAlertsAlways => 'Always';
+
+  @override
+  String get routeAlertsWeekdays => 'Weekdays only';
+
+  @override
+  String get routeAlertsWorkHours => 'Work hours only';
+
+  @override
+  String get routeAlertsNever => 'Never';
+
+  @override
+  String get routeAlertsOn => 'Alerts on';
+
+  @override
+  String get routeAlertsOff => 'Alerts off';
+
+  @override
+  String routeAlertNotificationTitle(String route) {
+    return '$route: news on your route';
+  }
+
+  @override
+  String get quickGo => 'Quick GO';
+
+  @override
+  String busesOnRoute(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count buses on route',
+      one: '1 bus on route',
+      zero: 'No live buses',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get goReceiptTitle => 'Trip finished';
+
+  @override
+  String get goReceiptPlanned => 'Planned';
+
+  @override
+  String get goReceiptActual => 'Actual';
+
+  @override
+  String get goReceiptDistance => 'Distance';
+
+  @override
+  String get goReceiptModes => 'Modes';
+
+  @override
+  String get goReceiptCost => 'Estimated cost';
+
+  @override
+  String get goReceiptCo2 => 'CO₂ saved vs car';
+
+  @override
+  String get goReceiptClose => 'Done';
+
+  @override
+  String get goOffRoute => 'Looks like you left the route';
+
+  @override
+  String get goReplan => 'Re-plan';
+
+  @override
+  String get goDismiss => 'Keep going';
+
+  @override
+  String get goNotificationTitle => 'Trip in progress';
+
+  @override
+  String goNotificationBody(String stop, String time) {
+    return '$stop · arriving $time';
+  }
+
+  @override
+  String get goLocationWhy =>
+      'We use your location only during the trip, to tell you when to get off.';
+
+  @override
+  String get shareTripCreating => 'Creating link…';
+
+  @override
+  String get shareTripCopied => 'Link copied';
+
+  @override
+  String get shareTripStop => 'Stop sharing';
+
+  @override
+  String get shareTripStopped => 'The link is no longer active';
+
+  @override
+  String get shareTripFailed => 'Could not create the link';
+
+  @override
+  String get shareTripActive => 'Sharing live';
 }

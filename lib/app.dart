@@ -8,6 +8,7 @@ import 'core/analytics/analytics_event.dart';
 import 'core/providers.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/colors.dart';
+import 'core/utils/route_alert_watcher.dart';
 import 'core/widgets/connectivity_bar.dart';
 import 'features/config/config_gate.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -45,6 +46,8 @@ class _OpenTransitAppState extends ConsumerState<OpenTransitApp>
         'coldStart': true,
         'entry': entry,
       });
+      // Saved-route alerts: local notifications only, armed per route.
+      ref.read(routeAlertWatcherProvider).start();
     });
   }
 
@@ -60,6 +63,10 @@ class _OpenTransitAppState extends ConsumerState<OpenTransitApp>
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
       ref.read(analyticsProvider).onAppBackground();
+    }
+    if (state == AppLifecycleState.resumed) {
+      // Coming back is the cheapest moment to look for route alerts.
+      ref.read(routeAlertWatcherProvider).check();
     }
   }
 
@@ -98,9 +105,16 @@ class _OpenTransitAppState extends ConsumerState<OpenTransitApp>
       title: 'OpenTransit',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
-      builder: (context, child) => ConfigGate(
-        child: ConnectivityBar(child: child ?? const SizedBox.shrink()),
-      ),
+      builder: (context, child) {
+        // The watcher has no BuildContext of its own; give it the localised
+        // notification title now that one exists.
+        final l10n = AppLocalizations.of(context);
+        ref.read(routeAlertWatcherProvider).titleBuilder =
+            (route) => l10n.routeAlertNotificationTitle(route);
+        return ConfigGate(
+          child: ConnectivityBar(child: child ?? const SizedBox.shrink()),
+        );
+      },
       theme: buildTheme(seed, Brightness.light),
       darkTheme: buildTheme(seed, Brightness.dark),
       themeMode: settings.themeMode,

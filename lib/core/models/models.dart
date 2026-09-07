@@ -1,8 +1,10 @@
 export 'city.dart';
 export 'common.dart';
+export 'forecast.dart';
 export 'live.dart';
 export 'ondemand.dart';
 export 'plan.dart';
 export 'rental.dart';
+export 'share.dart';
 export 'transit.dart';
 export 'vehicle.dart';

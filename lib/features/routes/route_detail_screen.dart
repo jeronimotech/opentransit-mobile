@@ -11,6 +11,10 @@ import '../../core/storage/favorites.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/links.dart';
 import '../../core/utils/polyline.dart';
+import '../../core/utils/line_page.dart';
+import '../../core/utils/notifications.dart';
+import '../../core/utils/route_alerts.dart';
+import '../../core/theme/semantic_colors.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -64,13 +68,17 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
         final dir = patterns.isEmpty ? null : patterns[_dir.clamp(0, patterns.length - 1)];
         final trackView = TrackView(type: Ev.routeView, id: r.id, props: {'routeId': r.id, 'component': r.component?.name});
         if (dir != null) _build(dir, color);
-        final vehicles = live == null
-            ? const <MapPoint>[]
-            : [
-                for (final v in live.vehicles.values)
-                  if (v.routeId == r.id)
-                    MapPoint(id: v.id, position: v.position, color: color, radius: 9, strokeWidth: 2, label: v.routeShortName ?? ''),
-              ];
+        final onRoute = live == null
+            ? const <Vehicle>[]
+            : [for (final v in live.vehicles.values) if (v.routeId == r.id) v];
+        final vehicles = [
+          for (final v in onRoute)
+            MapPoint(id: v.id, position: v.position, color: color, radius: 9, strokeWidth: 2, label: v.routeShortName ?? ''),
+        ];
+        // Which stops of the shown direction currently have a bus on them.
+        final nearestStopIndexes = dir == null
+            ? const <int>{}
+            : nearestStopIndexesFor(onRoute, dir.stops);
 
         return Scaffold(
           appBar: AppBar(
@@ -88,6 +96,7 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                 icon: const Icon(Icons.share_outlined),
                 onPressed: () => SharePlus.instance.share(ShareParams(uri: CanonicalLinks.route(widget.cityId, r.id))),
               ),
+              _RouteAlertsButton(cityId: widget.cityId, routeId: r.id, shortName: r.shortName),
               IconButton(
                 tooltip: isFav ? l10n.removeFavorite : l10n.addFavorite,
                 icon: Icon(isFav ? Icons.star : Icons.star_border, color: isFav ? Colors.amber.shade700 : null),
@@ -154,9 +163,20 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                         ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                      child: Text(
-                        dir == null ? l10n.stops : l10n.stopsCount(dir.stops.length),
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(color: scheme.onSurfaceVariant),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              dir == null ? l10n.stops : l10n.stopsCount(dir.stops.length),
+                              style: Theme.of(context).textTheme.titleSmall?.copyWith(color: scheme.onSurfaceVariant),
+                            ),
+                          ),
+                          Text(l10n.busesOnRoute(vehicles.length),
+                              key: const ValueKey('route-live-count'),
+                              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  color: vehicles.isEmpty ? scheme.onSurfaceVariant : context.semantic.live,
+                                  fontWeight: FontWeight.w700)),
+                        ],
                       ),
                     ),
                     Expanded(
@@ -167,10 +187,13 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                               itemBuilder: (context, i) {
                                 final s = dir.stops[i];
                                 final first = i == 0, last = i == dir.stops.length - 1;
+                                // A bus is "here" when it is closer to this stop
+                                // than to any other on the pattern.
+                                final busHere = nearestStopIndexes.contains(i);
                                 return InkWell(
                                   onTap: () => context.push('/${widget.cityId}/stops/${Uri.encodeComponent(s.id)}'),
                                   child: SizedBox(
-                                    height: 44,
+                                    height: 48,
                                     child: Row(
                                       children: [
                                         const SizedBox(width: 24),
@@ -179,18 +202,31 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                                           child: Column(
                                             children: [
                                               Expanded(child: Container(width: 4, color: first ? Colors.transparent : color)),
-                                              Container(
-                                                width: 12, height: 12,
-                                                decoration: BoxDecoration(shape: BoxShape.circle, color: scheme.surface, border: Border.all(color: color, width: 3)),
-                                              ),
+                                              busHere
+                                                  ? Container(
+                                                      key: ValueKey('bus-at-$i'),
+                                                      width: 18, height: 18,
+                                                      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+                                                      child: const Icon(Icons.directions_bus_rounded, size: 11, color: Colors.white),
+                                                    )
+                                                  : Container(
+                                                      width: 12, height: 12,
+                                                      decoration: BoxDecoration(shape: BoxShape.circle, color: scheme.surface, border: Border.all(color: color, width: 3)),
+                                                    ),
                                               Expanded(child: Container(width: 4, color: last ? Colors.transparent : color)),
                                             ],
                                           ),
                                         ),
                                         const SizedBox(width: 14),
-                                        Expanded(child: Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: first || last ? FontWeight.w700 : FontWeight.w500))),
-                                        const Icon(Icons.chevron_right, size: 18),
-                                        const SizedBox(width: 12),
+                                        Expanded(child: Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: first || last || busHere ? FontWeight.w700 : FontWeight.w500))),
+                                        TextButton(
+                                          key: ValueKey('quick-go-$i'),
+                                          style: TextButton.styleFrom(visualDensity: VisualDensity.compact, minimumSize: const Size(0, 40)),
+                                          onPressed: () => context.push(
+                                              '/${widget.cityId}/locate?stop=${Uri.encodeComponent(s.id)}&route=${Uri.encodeComponent(r.id)}'),
+                                          child: Text(l10n.quickGo, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                                        ),
+                                        const SizedBox(width: 4),
                                       ],
                                     ),
                                   ),
@@ -205,6 +241,62 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+/// Bell in the route app bar: arms local alerts for this route on a schedule.
+/// Everything stays on the device — there is no push channel.
+class _RouteAlertsButton extends ConsumerWidget {
+  const _RouteAlertsButton({required this.cityId, required this.routeId, required this.shortName});
+  final String cityId;
+  final String routeId;
+  final String shortName;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final schedules = ref.watch(routeAlertSchedulesProvider);
+    final current = schedules[routeId] ?? AlertSchedule.never;
+    final on = current != AlertSchedule.never;
+
+    String label(AlertSchedule s) => switch (s) {
+          AlertSchedule.always => l10n.routeAlertsAlways,
+          AlertSchedule.weekdays => l10n.routeAlertsWeekdays,
+          AlertSchedule.workHours => l10n.routeAlertsWorkHours,
+          AlertSchedule.never => l10n.routeAlertsNever,
+        };
+
+    return PopupMenuButton<AlertSchedule>(
+      key: const ValueKey('route-alerts-menu'),
+      tooltip: l10n.routeAlertsTitle,
+      icon: Icon(on ? Icons.notifications_active : Icons.notifications_none,
+          color: on ? Theme.of(context).colorScheme.primary : null),
+      initialValue: current,
+      onSelected: (v) async {
+        await ref.read(routeAlertSchedulesProvider.notifier).set(cityId, routeId, v);
+        if (v != AlertSchedule.never) await LocalNotifications.instance.requestPermission();
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(v == AlertSchedule.never ? l10n.routeAlertsOff : l10n.routeAlertsOn),
+          duration: const Duration(seconds: 2),
+        ));
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem<AlertSchedule>(
+          enabled: false,
+          child: Text(l10n.routeAlertsTitle,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700)),
+        ),
+        const PopupMenuDivider(),
+        for (final s in AlertSchedule.values)
+          CheckedPopupMenuItem<AlertSchedule>(
+            key: ValueKey('route-alert-${s.name}'),
+            value: s,
+            checked: current == s,
+            child: Text(label(s)),
+          ),
+      ],
     );
   }
 }

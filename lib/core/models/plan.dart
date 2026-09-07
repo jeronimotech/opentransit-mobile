@@ -302,6 +302,7 @@ class Itinerary {
     this.modesUsed = const [],
     this.source,
     this.retimed = false,
+    this.raw,
   });
   final String id;
   final DateTime startTime;
@@ -326,6 +327,11 @@ class Itinerary {
   /// side; never comes from the API).
   final bool retimed;
 
+  /// The JSON the API sent, kept verbatim so the itinerary can be re-published
+  /// (shared ETA) without a hand-written serialiser that could drift from the
+  /// contract. Null for itineraries built in code (tests, fixtures).
+  final Map<String, dynamic>? raw;
+
   Itinerary copyWith({
     List<Leg>? legs,
     DateTime? startTime,
@@ -349,9 +355,11 @@ class Itinerary {
         modesUsed: modesUsed,
         source: source,
         retimed: retimed ?? this.retimed,
+        raw: raw,
       );
 
   factory Itinerary.fromJson(Map<String, dynamic> j) => Itinerary(
+        raw: j,
         id: j['id']?.toString() ?? '',
         startTime: parseTime(j['startTime']) ?? DateTime.now(),
         endTime: parseTime(j['endTime']) ?? DateTime.now(),
@@ -369,6 +377,38 @@ class Itinerary {
         modesUsed: asStrings(j['modesUsed']),
         source: j['source']?.toString(),
       );
+
+  /// What to publish when sharing. Prefers the API's own JSON; falls back to
+  /// a summary that is enough for the public page to render a timeline.
+  Map<String, dynamic> toJson() =>
+      raw ??
+      {
+        'id': id,
+        'startTime': startTime.toIso8601String(),
+        'endTime': endTime.toIso8601String(),
+        'durationSeconds': durationSeconds,
+        'walkDistanceMeters': walkDistanceMeters,
+        'walkTimeSeconds': walkTimeSeconds,
+        'waitingTimeSeconds': waitingTimeSeconds,
+        'transfers': transfers,
+        'modesUsed': modesUsed,
+        if (source != null) 'source': source,
+        'legs': [
+          for (final l in legs)
+            {
+              'mode': l.mode.wire,
+              'transit': l.transit,
+              'startTime': l.startTime.toIso8601String(),
+              'endTime': l.endTime.toIso8601String(),
+              'durationSeconds': l.durationSeconds,
+              'distanceMeters': l.distanceMeters,
+              'from': {'name': l.from.name, 'lat': l.from.position.lat, 'lon': l.from.position.lon},
+              'to': {'name': l.to.name, 'lat': l.to.position.lat, 'lon': l.to.position.lon},
+              if (l.route != null) 'route': {'id': l.route!.id, 'shortName': l.route!.shortName, 'color': l.route!.color},
+              if (l.headsign != null) 'headsign': l.headsign,
+            },
+        ],
+      };
 
   Iterable<Leg> get transitLegs => legs.where((l) => l.transit);
   Iterable<Leg> get rentalLegList => legs.where((l) => l.isRental);

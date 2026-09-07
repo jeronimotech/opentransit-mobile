@@ -517,5 +517,87 @@
   "analyticsExplain": "Helps improve your city's transit: only anonymous, aggregated data, never your exact location.",
   "analyticsClear": "Delete my statistics",
   "analyticsCleared": "Statistics deleted and identifier renewed",
-  "privacyPolicy": "Privacy policy"
+  "privacyPolicy": "Privacy policy",
+  "commuteToWork": "Go to work",
+  "commuteToHome": "Go home",
+  "commuteInvert": "Invert",
+  "commuteSeeRoute": "See route",
+  "commuteNoPlan": "No options right now",
+  "commuteDetour": "Route on detour · Re-plan",
+  "commuteSetup": "Save Home and Work to see your commute here",
+  "departuresSheetTitle": "When to leave",
+  "departuresButton": "Departures",
+  "forecastRecommended": "Best option",
+  "forecastGap": "Then no service until {time}",
+  "@forecastGap": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "forecastEmpty": "No more departures in this window",
+  "forecastArrive": "arrives {time}",
+  "@forecastArrive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "forecastPickThis": "Plan for this time",
+  "routeAlertsTitle": "Alerts for this route",
+  "routeAlertsAlways": "Always",
+  "routeAlertsWeekdays": "Weekdays only",
+  "routeAlertsWorkHours": "Work hours only",
+  "routeAlertsNever": "Never",
+  "routeAlertsOn": "Alerts on",
+  "routeAlertsOff": "Alerts off",
+  "routeAlertNotificationTitle": "{route}: news on your route",
+  "@routeAlertNotificationTitle": {
+    "placeholders": {
+      "route": {
+        "type": "String"
+      }
+    }
+  },
+  "quickGo": "Quick GO",
+  "busesOnRoute": "{count, plural, =0{No live buses} =1{1 bus on route} other{{count} buses on route}}",
+  "@busesOnRoute": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goReceiptTitle": "Trip finished",
+  "goReceiptPlanned": "Planned",
+  "goReceiptActual": "Actual",
+  "goReceiptDistance": "Distance",
+  "goReceiptModes": "Modes",
+  "goReceiptCost": "Estimated cost",
+  "goReceiptCo2": "CO₂ saved vs car",
+  "goReceiptClose": "Done",
+  "goOffRoute": "Looks like you left the route",
+  "goReplan": "Re-plan",
+  "goDismiss": "Keep going",
+  "goNotificationTitle": "Trip in progress",
+  "goNotificationBody": "{stop} · arriving {time}",
+  "@goNotificationBody": {
+    "placeholders": {
+      "stop": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "goLocationWhy": "We use your location only during the trip, to tell you when to get off.",
+  "shareTripCreating": "Creating link…",
+  "shareTripCopied": "Link copied",
+  "shareTripStop": "Stop sharing",
+  "shareTripStopped": "The link is no longer active",
+  "shareTripFailed": "Could not create the link",
+  "shareTripActive": "Sharing live"
 }

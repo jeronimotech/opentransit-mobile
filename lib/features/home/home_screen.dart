@@ -19,6 +19,7 @@ import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../favorites/save_favorite_sheet.dart';
+import 'widgets/commute_card.dart';
 import '../planner/planner_state.dart';
 import '../rental/rental_station_sheet.dart';
 import 'widgets/action_chips.dart';
@@ -652,7 +653,13 @@ class _HomeSheet extends ConsumerWidget {
             child: HomeActionChips(actions: actions, onTap: onAction),
           ),
           const SizedBox(height: 10),
-          // Peek row 2: "Cerca de ti".
+          // Peek row 2: the commute card, when both ends are saved.
+          if (home != null && work != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+              child: CommuteCard(cityId: cityId),
+            ),
+          // Peek row 3: "Cerca de ti".
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
             child: Text(l10n.nearYouTitle,

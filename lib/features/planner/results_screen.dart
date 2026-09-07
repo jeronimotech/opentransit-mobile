@@ -14,6 +14,7 @@ import '../../core/utils/scenarios.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'planner_state.dart';
+import 'widgets/forecast_sheet.dart';
 import 'widgets/itinerary_card.dart';
 
 /// Flat sort orders offered in the "Ordenar" menu; `null` = grouped by
@@ -108,6 +109,16 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
               ref.read(plannerProvider.notifier).swap();
               await _replan();
             },
+          ),
+          IconButton(
+            key: const ValueKey('forecast-button'),
+            tooltip: l10n.departuresButton,
+            icon: const Icon(Icons.schedule_rounded),
+            onPressed: () => ForecastSheet.show(context, widget.cityId, (departAt) async {
+              ref.read(plannerProvider.notifier).setTime(departAt);
+              ref.read(plannerProvider.notifier).setArriveBy(false);
+              await _replan();
+            }),
           ),
           PopupMenuButton<ItinerarySort?>(
             key: const ValueKey('sort-menu'),

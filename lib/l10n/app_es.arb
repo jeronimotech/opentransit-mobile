@@ -736,5 +736,87 @@
   "analyticsExplain": "Ayuda a mejorar el transporte de tu ciudad: solo datos anónimos y agregados, nunca tu ubicación exacta.",
   "analyticsClear": "Borrar mis estadísticas",
   "analyticsCleared": "Estadísticas borradas y identificador renovado",
-  "privacyPolicy": "Política de privacidad"
+  "privacyPolicy": "Política de privacidad",
+  "commuteToWork": "Ir al trabajo",
+  "commuteToHome": "Ir a casa",
+  "commuteInvert": "Invertir",
+  "commuteSeeRoute": "Ver ruta",
+  "commuteNoPlan": "Sin opciones ahora",
+  "commuteDetour": "Ruta con desvío · Replanear",
+  "commuteSetup": "Guarda Casa y Trabajo para ver tu trayecto aquí",
+  "departuresSheetTitle": "Cuándo salir",
+  "departuresButton": "Salidas",
+  "forecastRecommended": "Mejor opción",
+  "forecastGap": "Después no hay servicio hasta las {time}",
+  "@forecastGap": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "forecastEmpty": "No hay más salidas en esta franja",
+  "forecastArrive": "llega {time}",
+  "@forecastArrive": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "forecastPickThis": "Planear a esta hora",
+  "routeAlertsTitle": "Avisos de esta ruta",
+  "routeAlertsAlways": "Siempre",
+  "routeAlertsWeekdays": "Solo días hábiles",
+  "routeAlertsWorkHours": "Solo horario laboral",
+  "routeAlertsNever": "Nunca",
+  "routeAlertsOn": "Avisos activados",
+  "routeAlertsOff": "Avisos desactivados",
+  "routeAlertNotificationTitle": "{route}: novedad en tu ruta",
+  "@routeAlertNotificationTitle": {
+    "placeholders": {
+      "route": {
+        "type": "String"
+      }
+    }
+  },
+  "quickGo": "GO rápido",
+  "busesOnRoute": "{count, plural, =0{Sin buses en vivo} =1{1 bus en ruta} other{{count} buses en ruta}}",
+  "@busesOnRoute": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "goReceiptTitle": "Viaje terminado",
+  "goReceiptPlanned": "Planeado",
+  "goReceiptActual": "Real",
+  "goReceiptDistance": "Distancia",
+  "goReceiptModes": "Modos",
+  "goReceiptCost": "Costo estimado",
+  "goReceiptCo2": "CO₂ evitado vs carro",
+  "goReceiptClose": "Listo",
+  "goOffRoute": "Parece que te saliste de la ruta",
+  "goReplan": "Replanear",
+  "goDismiss": "Seguir igual",
+  "goNotificationTitle": "Viaje en curso",
+  "goNotificationBody": "{stop} · llegas {time}",
+  "@goNotificationBody": {
+    "placeholders": {
+      "stop": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "goLocationWhy": "Usamos tu ubicación solo mientras dure el viaje, para avisarte cuándo bajarte.",
+  "shareTripCreating": "Creando enlace…",
+  "shareTripCopied": "Enlace copiado",
+  "shareTripStop": "Dejar de compartir",
+  "shareTripStopped": "El enlace ya no está activo",
+  "shareTripFailed": "No se pudo crear el enlace",
+  "shareTripActive": "Compartiendo en vivo"
 }

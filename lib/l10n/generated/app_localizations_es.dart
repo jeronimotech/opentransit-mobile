@@ -1165,4 +1165,154 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get privacyPolicy => 'Política de privacidad';
+
+  @override
+  String get commuteToWork => 'Ir al trabajo';
+
+  @override
+  String get commuteToHome => 'Ir a casa';
+
+  @override
+  String get commuteInvert => 'Invertir';
+
+  @override
+  String get commuteSeeRoute => 'Ver ruta';
+
+  @override
+  String get commuteNoPlan => 'Sin opciones ahora';
+
+  @override
+  String get commuteDetour => 'Ruta con desvío · Replanear';
+
+  @override
+  String get commuteSetup => 'Guarda Casa y Trabajo para ver tu trayecto aquí';
+
+  @override
+  String get departuresSheetTitle => 'Cuándo salir';
+
+  @override
+  String get departuresButton => 'Salidas';
+
+  @override
+  String get forecastRecommended => 'Mejor opción';
+
+  @override
+  String forecastGap(String time) {
+    return 'Después no hay servicio hasta las $time';
+  }
+
+  @override
+  String get forecastEmpty => 'No hay más salidas en esta franja';
+
+  @override
+  String forecastArrive(String time) {
+    return 'llega $time';
+  }
+
+  @override
+  String get forecastPickThis => 'Planear a esta hora';
+
+  @override
+  String get routeAlertsTitle => 'Avisos de esta ruta';
+
+  @override
+  String get routeAlertsAlways => 'Siempre';
+
+  @override
+  String get routeAlertsWeekdays => 'Solo días hábiles';
+
+  @override
+  String get routeAlertsWorkHours => 'Solo horario laboral';
+
+  @override
+  String get routeAlertsNever => 'Nunca';
+
+  @override
+  String get routeAlertsOn => 'Avisos activados';
+
+  @override
+  String get routeAlertsOff => 'Avisos desactivados';
+
+  @override
+  String routeAlertNotificationTitle(String route) {
+    return '$route: novedad en tu ruta';
+  }
+
+  @override
+  String get quickGo => 'GO rápido';
+
+  @override
+  String busesOnRoute(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count buses en ruta',
+      one: '1 bus en ruta',
+      zero: 'Sin buses en vivo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get goReceiptTitle => 'Viaje terminado';
+
+  @override
+  String get goReceiptPlanned => 'Planeado';
+
+  @override
+  String get goReceiptActual => 'Real';
+
+  @override
+  String get goReceiptDistance => 'Distancia';
+
+  @override
+  String get goReceiptModes => 'Modos';
+
+  @override
+  String get goReceiptCost => 'Costo estimado';
+
+  @override
+  String get goReceiptCo2 => 'CO₂ evitado vs carro';
+
+  @override
+  String get goReceiptClose => 'Listo';
+
+  @override
+  String get goOffRoute => 'Parece que te saliste de la ruta';
+
+  @override
+  String get goReplan => 'Replanear';
+
+  @override
+  String get goDismiss => 'Seguir igual';
+
+  @override
+  String get goNotificationTitle => 'Viaje en curso';
+
+  @override
+  String goNotificationBody(String stop, String time) {
+    return '$stop · llegas $time';
+  }
+
+  @override
+  String get goLocationWhy =>
+      'Usamos tu ubicación solo mientras dure el viaje, para avisarte cuándo bajarte.';
+
+  @override
+  String get shareTripCreating => 'Creando enlace…';
+
+  @override
+  String get shareTripCopied => 'Enlace copiado';
+
+  @override
+  String get shareTripStop => 'Dejar de compartir';
+
+  @override
+  String get shareTripStopped => 'El enlace ya no está activo';
+
+  @override
+  String get shareTripFailed => 'No se pudo crear el enlace';
+
+  @override
+  String get shareTripActive => 'Compartiendo en vivo';
 }

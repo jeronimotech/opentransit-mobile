@@ -19,6 +19,9 @@ import 'connectivity.dart';
 import 'models/models.dart';
 import 'storage/favorites.dart';
 import 'storage/preferences.dart';
+import 'storage/route_alerts_store.dart';
+import 'utils/commute.dart';
+import 'utils/route_alerts.dart';
 
 /// Overridden in `main()` once SharedPreferences is ready.
 final sharedPrefsProvider = Provider<SharedPreferences>(
@@ -341,6 +344,31 @@ class AlertImpressionsNotifier extends Notifier<Set<String>> {
 final alertImpressionsProvider =
     NotifierProvider<AlertImpressionsNotifier, Set<String>>(AlertImpressionsNotifier.new);
 
+final routeAlertsRepositoryProvider = Provider<RouteAlertsRepository>(
+    (ref) => RouteAlertsRepository(ref.watch(sharedPrefsProvider)));
+
+/// Per-route alert schedules for the selected city, keyed by route id.
+class RouteAlertSchedulesNotifier extends Notifier<Map<String, AlertSchedule>> {
+  RouteAlertsRepository get _repo => ref.read(routeAlertsRepositoryProvider);
+
+  @override
+  Map<String, AlertSchedule> build() {
+    final cityId = ref.watch(settingsProvider).cityId;
+    return cityId == null ? const {} : _repo.schedules(cityId);
+  }
+
+  AlertSchedule of(String routeId) => state[routeId] ?? AlertSchedule.never;
+
+  Future<void> set(String cityId, String routeId, AlertSchedule schedule) async {
+    await _repo.setSchedule(cityId, routeId, schedule);
+    state = _repo.schedules(cityId);
+  }
+}
+
+final routeAlertSchedulesProvider =
+    NotifierProvider<RouteAlertSchedulesNotifier, Map<String, AlertSchedule>>(
+        RouteAlertSchedulesNotifier.new);
+
 // ───────────────────────── data ─────────────────────────
 
 class NearbyQuery {
@@ -434,6 +462,85 @@ final routesProvider = FutureProvider.autoDispose.family<List<RouteRef>, String>
 
 final alertsProvider = FutureProvider.autoDispose.family<List<TransitAlert>, String>(
     (ref, cityId) => ref.watch(apiClientProvider).alerts(cityId));
+
+/// A "Cuándo salir" query — the planner inputs that change the forecast.
+class ForecastQuery {
+  const ForecastQuery({
+    required this.cityId,
+    required this.from,
+    required this.to,
+    required this.modes,
+    this.onDemand = false,
+    this.windowMinutes = 90,
+  });
+  final String cityId;
+  final Place from;
+  final Place to;
+  final Set<TravelMode> modes;
+  final bool onDemand;
+  final int windowMinutes;
+
+  @override
+  bool operator ==(Object other) =>
+      other is ForecastQuery &&
+      other.cityId == cityId &&
+      other.from.position == from.position &&
+      other.to.position == to.position &&
+      other.onDemand == onDemand &&
+      other.windowMinutes == windowMinutes &&
+      other.modes.length == modes.length &&
+      other.modes.containsAll(modes);
+  @override
+  int get hashCode => Object.hash(cityId, from.position, to.position, onDemand, windowMinutes,
+      Object.hashAllUnordered(modes));
+}
+
+final forecastProvider =
+    FutureProvider.autoDispose.family<ForecastResponse, ForecastQuery>((ref, q) {
+  final settings = ref.read(settingsProvider);
+  return ref.watch(apiClientProvider).planForecast(
+        q.cityId,
+        PlanRequest(
+          from: q.from,
+          to: q.to,
+          modes: q.modes.toList(),
+          wheelchair: settings.wheelchair,
+          onDemand: q.onDemand,
+          locale: settings.locale?.languageCode ?? 'es',
+        ),
+        windowMinutes: q.windowMinutes,
+      );
+});
+
+/// One planned commute (Casa ⇄ Trabajo) for the Home card.
+class CommuteQuery {
+  const CommuteQuery(this.cityId, this.from, this.to, this.direction);
+  final String cityId;
+  final Place from;
+  final Place to;
+  final CommuteDirection direction;
+  @override
+  bool operator ==(Object other) =>
+      other is CommuteQuery &&
+      other.cityId == cityId &&
+      other.direction == direction &&
+      other.from.position == from.position &&
+      other.to.position == to.position;
+  @override
+  int get hashCode => Object.hash(cityId, direction, from.position, to.position);
+}
+
+/// The next viable departure for the commute, refreshed every two minutes so
+/// the countdown on the card stays honest without hammering the router.
+final commutePlanProvider =
+    FutureProvider.autoDispose.family<PlanResponse, CommuteQuery>((ref, q) {
+  final timer = Timer(const Duration(minutes: 2), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  return ref.watch(apiClientProvider).plan(
+        q.cityId,
+        PlanRequest(from: q.from, to: q.to, numItineraries: 3),
+      );
+});
 
 final vehicleDetailProvider = FutureProvider.autoDispose.family<VehicleDetail, CityKey>(
     (ref, k) => ref.watch(apiClientProvider).vehicle(k.cityId, k.id));

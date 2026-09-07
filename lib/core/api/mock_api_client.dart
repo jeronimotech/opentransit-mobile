@@ -490,6 +490,69 @@ class MockApiClient implements ApiClient {
     );
   }
 
+  // ── v1.7 forecast + shared ETA ──
+
+  @override
+  Future<ForecastResponse> planForecast(String cityId, PlanRequest request,
+      {int windowMinutes = 90, int maxOptions = 8}) async {
+    // The fixture plan carries a handful of departures; spread extra ones
+    // across the window so the sheet shows a realistic timeline with a gap.
+    final base = await plan(cityId, request);
+    final anchor = request.time ?? now;
+    final its = <Itinerary>[...base.itineraries];
+    for (var step = 1; its.length < maxOptions && step <= 6; step++) {
+      final minutes = step * 12 + (step >= 4 ? 25 : 0); // a long gap after the 3rd
+      for (final it in base.itineraries) {
+        if (its.length >= maxOptions) break;
+        final shift = Duration(minutes: minutes);
+        its.add(it.copyWith(
+          startTime: it.startTime.add(shift),
+          endTime: it.endTime.add(shift),
+        ));
+      }
+    }
+    its.sort((a, b) => a.startTime.compareTo(b.startTime));
+    final within = its
+        .where((i) => !i.startTime.isBefore(anchor.subtract(const Duration(minutes: 2))))
+        .where((i) => i.startTime.isBefore(anchor.add(Duration(minutes: windowMinutes))))
+        .take(maxOptions)
+        .toList();
+    return ForecastResponse.fromItineraries(within);
+  }
+
+  /// Shares created by the fixture client (inspectable in tests).
+  final List<Map<String, dynamic>> shares = [];
+
+  @override
+  Future<SharedTrip> createShare(String cityId, Itinerary itinerary,
+      {String? label, DateTime? startedAt}) async {
+    final token = 'mock${shares.length}${itinerary.id}'.padRight(22, 'x');
+    shares.add({'token': token, 'itinerary': itinerary.toJson(), 'label': label, 'revoked': false});
+    return SharedTrip(
+      token: token,
+      url: 'https://opentransit.example/$cityId/eta/$token',
+      writeKey: 'wk-$token',
+      expiresAt: now.add(const Duration(hours: 3)),
+    );
+  }
+
+  @override
+  Future<void> patchShare(String cityId, String token, String writeKey, ShareProgress progress) async {
+    final s = shares.where((e) => e['token'] == token).firstOrNull;
+    if (s == null) throw ApiException('NOT_FOUND', 'no share $token', status: 404);
+    if (writeKey != 'wk-$token') throw ApiException('UNAUTHORIZED', 'bad key', status: 401);
+    (s['patches'] ??= <Map<String, dynamic>>[]) as List;
+    (s['patches'] as List).add(progress.toJson());
+  }
+
+  @override
+  Future<void> revokeShare(String cityId, String token, String writeKey) async {
+    final s = shares.where((e) => e['token'] == token).firstOrNull;
+    if (s == null) throw ApiException('NOT_FOUND', 'no share $token', status: 404);
+    if (writeKey != 'wk-$token') throw ApiException('UNAUTHORIZED', 'bad key', status: 401);
+    s['revoked'] = true;
+  }
+
   /// Events accepted by the fixture client (inspectable in tests).
   final List<Map<String, dynamic>> sentBatches = [];
 

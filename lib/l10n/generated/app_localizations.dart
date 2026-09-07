@@ -2041,6 +2041,270 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Política de privacidad'**
   String get privacyPolicy;
+
+  /// No description provided for @commuteToWork.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir al trabajo'**
+  String get commuteToWork;
+
+  /// No description provided for @commuteToHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a casa'**
+  String get commuteToHome;
+
+  /// No description provided for @commuteInvert.
+  ///
+  /// In es, this message translates to:
+  /// **'Invertir'**
+  String get commuteInvert;
+
+  /// No description provided for @commuteSeeRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver ruta'**
+  String get commuteSeeRoute;
+
+  /// No description provided for @commuteNoPlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin opciones ahora'**
+  String get commuteNoPlan;
+
+  /// No description provided for @commuteDetour.
+  ///
+  /// In es, this message translates to:
+  /// **'Ruta con desvío · Replanear'**
+  String get commuteDetour;
+
+  /// No description provided for @commuteSetup.
+  ///
+  /// In es, this message translates to:
+  /// **'Guarda Casa y Trabajo para ver tu trayecto aquí'**
+  String get commuteSetup;
+
+  /// No description provided for @departuresSheetTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuándo salir'**
+  String get departuresSheetTitle;
+
+  /// No description provided for @departuresButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Salidas'**
+  String get departuresButton;
+
+  /// No description provided for @forecastRecommended.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejor opción'**
+  String get forecastRecommended;
+
+  /// No description provided for @forecastGap.
+  ///
+  /// In es, this message translates to:
+  /// **'Después no hay servicio hasta las {time}'**
+  String forecastGap(String time);
+
+  /// No description provided for @forecastEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay más salidas en esta franja'**
+  String get forecastEmpty;
+
+  /// No description provided for @forecastArrive.
+  ///
+  /// In es, this message translates to:
+  /// **'llega {time}'**
+  String forecastArrive(String time);
+
+  /// No description provided for @forecastPickThis.
+  ///
+  /// In es, this message translates to:
+  /// **'Planear a esta hora'**
+  String get forecastPickThis;
+
+  /// No description provided for @routeAlertsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos de esta ruta'**
+  String get routeAlertsTitle;
+
+  /// No description provided for @routeAlertsAlways.
+  ///
+  /// In es, this message translates to:
+  /// **'Siempre'**
+  String get routeAlertsAlways;
+
+  /// No description provided for @routeAlertsWeekdays.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo días hábiles'**
+  String get routeAlertsWeekdays;
+
+  /// No description provided for @routeAlertsWorkHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo horario laboral'**
+  String get routeAlertsWorkHours;
+
+  /// No description provided for @routeAlertsNever.
+  ///
+  /// In es, this message translates to:
+  /// **'Nunca'**
+  String get routeAlertsNever;
+
+  /// No description provided for @routeAlertsOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos activados'**
+  String get routeAlertsOn;
+
+  /// No description provided for @routeAlertsOff.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos desactivados'**
+  String get routeAlertsOff;
+
+  /// No description provided for @routeAlertNotificationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'{route}: novedad en tu ruta'**
+  String routeAlertNotificationTitle(String route);
+
+  /// No description provided for @quickGo.
+  ///
+  /// In es, this message translates to:
+  /// **'GO rápido'**
+  String get quickGo;
+
+  /// No description provided for @busesOnRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =0{Sin buses en vivo} =1{1 bus en ruta} other{{count} buses en ruta}}'**
+  String busesOnRoute(int count);
+
+  /// No description provided for @goReceiptTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Viaje terminado'**
+  String get goReceiptTitle;
+
+  /// No description provided for @goReceiptPlanned.
+  ///
+  /// In es, this message translates to:
+  /// **'Planeado'**
+  String get goReceiptPlanned;
+
+  /// No description provided for @goReceiptActual.
+  ///
+  /// In es, this message translates to:
+  /// **'Real'**
+  String get goReceiptActual;
+
+  /// No description provided for @goReceiptDistance.
+  ///
+  /// In es, this message translates to:
+  /// **'Distancia'**
+  String get goReceiptDistance;
+
+  /// No description provided for @goReceiptModes.
+  ///
+  /// In es, this message translates to:
+  /// **'Modos'**
+  String get goReceiptModes;
+
+  /// No description provided for @goReceiptCost.
+  ///
+  /// In es, this message translates to:
+  /// **'Costo estimado'**
+  String get goReceiptCost;
+
+  /// No description provided for @goReceiptCo2.
+  ///
+  /// In es, this message translates to:
+  /// **'CO₂ evitado vs carro'**
+  String get goReceiptCo2;
+
+  /// No description provided for @goReceiptClose.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get goReceiptClose;
+
+  /// No description provided for @goOffRoute.
+  ///
+  /// In es, this message translates to:
+  /// **'Parece que te saliste de la ruta'**
+  String get goOffRoute;
+
+  /// No description provided for @goReplan.
+  ///
+  /// In es, this message translates to:
+  /// **'Replanear'**
+  String get goReplan;
+
+  /// No description provided for @goDismiss.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir igual'**
+  String get goDismiss;
+
+  /// No description provided for @goNotificationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Viaje en curso'**
+  String get goNotificationTitle;
+
+  /// No description provided for @goNotificationBody.
+  ///
+  /// In es, this message translates to:
+  /// **'{stop} · llegas {time}'**
+  String goNotificationBody(String stop, String time);
+
+  /// No description provided for @goLocationWhy.
+  ///
+  /// In es, this message translates to:
+  /// **'Usamos tu ubicación solo mientras dure el viaje, para avisarte cuándo bajarte.'**
+  String get goLocationWhy;
+
+  /// No description provided for @shareTripCreating.
+  ///
+  /// In es, this message translates to:
+  /// **'Creando enlace…'**
+  String get shareTripCreating;
+
+  /// No description provided for @shareTripCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace copiado'**
+  String get shareTripCopied;
+
+  /// No description provided for @shareTripStop.
+  ///
+  /// In es, this message translates to:
+  /// **'Dejar de compartir'**
+  String get shareTripStop;
+
+  /// No description provided for @shareTripStopped.
+  ///
+  /// In es, this message translates to:
+  /// **'El enlace ya no está activo'**
+  String get shareTripStopped;
+
+  /// No description provided for @shareTripFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo crear el enlace'**
+  String get shareTripFailed;
+
+  /// No description provided for @shareTripActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartiendo en vivo'**
+  String get shareTripActive;
 }
 
 class _AppLocalizationsDelegate

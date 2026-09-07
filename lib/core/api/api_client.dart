@@ -144,6 +144,37 @@ abstract class ApiClient {
     String platform = 'web',
   });
 
+  // ── v1.7 departure forecast ("Cuándo salir") ──
+
+  /// Candidate departures across [windowMinutes]. Implementations fall back
+  /// to deriving options from a plain plan when the endpoint is missing.
+  Future<ForecastResponse> planForecast(
+    String cityId,
+    PlanRequest request, {
+    int windowMinutes = 90,
+    int maxOptions = 8,
+  });
+
+  // ── v1.7 shared ETA ──
+
+  /// Publishes [itinerary] behind a random token; the write key stays on the
+  /// device and authorises [patchShare] / [revokeShare].
+  Future<SharedTrip> createShare(
+    String cityId,
+    Itinerary itinerary, {
+    String? label,
+    DateTime? startedAt,
+  });
+
+  Future<void> patchShare(
+    String cityId,
+    String token,
+    String writeKey,
+    ShareProgress progress,
+  );
+
+  Future<void> revokeShare(String cityId, String token, String writeKey);
+
   // ── v1.5 first-party analytics ──
 
   /// Posts one batch of anonymous events (`POST /v1/cities/{city}/events`).

@@ -376,4 +376,75 @@ class HttpApiClient implements ApiClient {
         'fromLat': from.lat, 'fromLon': from.lon, 'toLat': to.lat, 'toLon': to.lon,
         'fromName': ?fromName, 'toName': ?toName, 'platform': platform,
       }));
+
+  // ── v1.7 forecast + shared ETA ──
+
+  @override
+  Future<ForecastResponse> planForecast(String cityId, PlanRequest request,
+      {int windowMinutes = 90, int maxOptions = 8}) async {
+    try {
+      return ForecastResponse.fromJson(await _get('${_c(cityId)}/plan/forecast', query: {
+        ...request.toQuery(),
+        'windowMinutes': windowMinutes,
+        'maxOptions': maxOptions,
+      }));
+    } on ApiException catch (e) {
+      // Older API without /plan/forecast: derive the options from a plan that
+      // asks for as many itineraries as the sheet can show.
+      if (!e.isNotFound) rethrow;
+      final p = await plan(cityId, request);
+      return ForecastResponse.fromItineraries(p.itineraries);
+    }
+  }
+
+  @override
+  Future<SharedTrip> createShare(String cityId, Itinerary itinerary,
+      {String? label, DateTime? startedAt}) async {
+    try {
+      final r = await _dio.post<dynamic>('${_c(cityId)}/share/eta', data: {
+        'itinerary': itinerary.toJson(),
+        'startedAt': (startedAt ?? DateTime.now()).toIso8601String(),
+        'label': ?label,
+      });
+      onStatus?.call(true);
+      final body = r.data;
+      if (body is Map) return SharedTrip.fromJson(Map<String, dynamic>.from(body));
+      throw const ApiException('BAD_RESPONSE', 'Unexpected body for share/eta');
+    } on DioException catch (e) {
+      final ex = _toApiException(e);
+      onStatus?.call(!ex.isNetwork);
+      throw ex;
+    }
+  }
+
+  @override
+  Future<void> patchShare(String cityId, String token, String writeKey, ShareProgress progress) async {
+    try {
+      await _dio.patch<dynamic>(
+        '${_c(cityId)}/share/eta/${Uri.encodeComponent(token)}',
+        data: {'progress': progress.toJson()},
+        options: Options(headers: {'X-Share-Key': writeKey}),
+      );
+      onStatus?.call(true);
+    } on DioException catch (e) {
+      final ex = _toApiException(e);
+      onStatus?.call(!ex.isNetwork);
+      throw ex;
+    }
+  }
+
+  @override
+  Future<void> revokeShare(String cityId, String token, String writeKey) async {
+    try {
+      await _dio.delete<dynamic>(
+        '${_c(cityId)}/share/eta/${Uri.encodeComponent(token)}',
+        options: Options(headers: {'X-Share-Key': writeKey}),
+      );
+      onStatus?.call(true);
+    } on DioException catch (e) {
+      final ex = _toApiException(e);
+      onStatus?.call(!ex.isNetwork);
+      throw ex;
+    }
+  }
 }
