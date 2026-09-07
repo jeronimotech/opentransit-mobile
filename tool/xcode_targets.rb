@@ -82,15 +82,18 @@ app = project.targets.find { |t| t.name == 'Runner' } or abort 'Runner target no
 created = []
 
 TARGETS.each do |spec|
-  next if project.targets.any? { |t| t.name == spec[:name] }
+  existing = project.targets.find { |t| t.name == spec[:name] }
+  target = existing
 
-  target = project.new_target(spec[:type], spec[:name], spec[:platform], spec[:deployment], nil, :swift)
+  unless existing
+    target = project.new_target(spec[:type], spec[:name], spec[:platform], spec[:deployment], nil, :swift)
 
-  group = project.main_group.find_subpath(spec[:dir], true)
-  group.set_source_tree('SOURCE_ROOT')
-  swift_files(spec).each do |path|
-    ref = group.new_reference(path)
-    target.add_file_references([ref])
+    group = project.main_group.find_subpath(spec[:dir], true)
+    group.set_source_tree('SOURCE_ROOT')
+    swift_files(spec).each do |path|
+      ref = group.new_reference(path)
+      target.add_file_references([ref])
+    end
   end
 
   plist = File.join('ios', spec[:dir], 'Info.plist')
@@ -100,7 +103,13 @@ TARGETS.each do |spec|
     s['PRODUCT_NAME'] = spec[:name]
     s['INFOPLIST_FILE'] = File.join(spec[:dir], 'Info.plist') if File.exist?(File.join(ROOT, plist))
     s['SWIFT_VERSION'] = '5.0'
-    s['CODE_SIGN_STYLE'] = 'Automatic'
+    # Manual with nothing specified: `flutter build ios --no-codesign` runs
+    # before the release script patches in the real profiles, and an Automatic
+    # companion target fails that pass looking for a development profile it
+    # will never have. testflight.sh fills these in for the archive.
+    s['CODE_SIGN_STYLE'] = 'Manual'
+    s['CODE_SIGN_IDENTITY'] = ''
+    s['PROVISIONING_PROFILE_SPECIFIER'] = ''
     s['DEVELOPMENT_TEAM'] = TEAM_ID if TEAM_ID
     # Version has to come from Flutter, not from a self-reference: an empty
     # CFBundleShortVersionString makes the simulator reject the bundle with
@@ -127,7 +136,7 @@ TARGETS.each do |spec|
               project.main_group.find_subpath('Flutter', true).new_reference('Flutter/Generated.xcconfig')
   target.build_configurations.each { |config| config.base_configuration_reference ||= generated }
 
-  created << spec[:name]
+  created << spec[:name] unless existing
 end
 
 # Embed order matters: the watch app carries its complications, the phone app

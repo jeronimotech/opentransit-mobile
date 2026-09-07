@@ -184,7 +184,8 @@ if [[ "$SIGNING" == "manual" ]]; then
   restore_pbxproj() { [[ -f build/project.pbxproj.bak ]] && mv build/project.pbxproj.bak "$PBXPROJ"; }
   trap restore_pbxproj EXIT
   PBXPROJ="$PBXPROJ" BUNDLE_ID="$BUNDLE_ID" APPLE_TEAM_ID="$APPLE_TEAM_ID" \
-  SIGN_IDENTITY_PREFIX="$SIGN_IDENTITY_PREFIX" PROFILE_NAME="$PROFILE_NAME" python3 - <<'PY'
+  SIGN_IDENTITY_PREFIX="$SIGN_IDENTITY_PREFIX" PROFILE_NAME="$PROFILE_NAME" \
+  COMPANION_PROFILES="$COMPANION_PROFILES" python3 - <<'PY'
 import os, re
 p = os.environ["PBXPROJ"]; s = open(p).read()
 # bundle id -> profile name, app first then every embedded companion.
