@@ -1,0 +1,59 @@
+{
+  "" : {
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/opentransit Watch App-primary.dia",
+    "emit-module-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/opentransit Watch App-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/opentransit Watch App-primary-emit-module.dia",
+    "pch" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/opentransit Watch App-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/opentransit Watch App-primary.swiftdeps"
+  },
+  "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/OpenTransitWatch/ComplicationRefresher.swift" : {
+    "const-values" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/ComplicationRefresher.swiftconstvalues",
+    "dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/ComplicationRefresher.d",
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/ComplicationRefresher.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/ComplicationRefresher.o",
+    "llvm-bc" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/ComplicationRefresher.bc",
+    "object" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/ComplicationRefresher.o",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/ComplicationRefresher.swiftdeps",
+    "swiftmodule" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/ComplicationRefresher~partial.swiftmodule"
+  },
+  "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/OpenTransitWatch/OpenTransitWatchApp.swift" : {
+    "const-values" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/OpenTransitWatchApp.swiftconstvalues",
+    "dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/OpenTransitWatchApp.d",
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/OpenTransitWatchApp.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/OpenTransitWatchApp.o",
+    "llvm-bc" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/OpenTransitWatchApp.bc",
+    "object" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/OpenTransitWatchApp.o",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/OpenTransitWatchApp.swiftdeps",
+    "swiftmodule" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/OpenTransitWatchApp~partial.swiftmodule"
+  },
+  "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/OpenTransitWatch/WatchModels.swift" : {
+    "const-values" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchModels.swiftconstvalues",
+    "dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchModels.d",
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchModels.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchModels.o",
+    "llvm-bc" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchModels.bc",
+    "object" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchModels.o",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchModels.swiftdeps",
+    "swiftmodule" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchModels~partial.swiftmodule"
+  },
+  "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/OpenTransitWatch/WatchStore.swift" : {
+    "const-values" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchStore.swiftconstvalues",
+    "dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchStore.d",
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchStore.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchStore.o",
+    "llvm-bc" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchStore.bc",
+    "object" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchStore.o",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchStore.swiftdeps",
+    "swiftmodule" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchStore~partial.swiftmodule"
+  },
+  "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/OpenTransitWatch/WatchViews.swift" : {
+    "const-values" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchViews.swiftconstvalues",
+    "dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchViews.d",
+    "diagnostics" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchViews.dia",
+    "index-unit-output-path" : "/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchViews.o",
+    "llvm-bc" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchViews.bc",
+    "object" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchViews.o",
+    "swift-dependencies" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchViews.swiftdeps",
+    "swiftmodule" : "/Users/luisjavier/dev/projects/open-public-tp/opentransit-mobile/ios/build/Runner.build/Debug-watchsimulator/opentransit Watch App.build/Objects-normal/arm64/WatchViews~partial.swiftmodule"
+  }
+}

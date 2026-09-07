@@ -7,37 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0F4901AB477673275BD8AFC3 /* OpenTransitLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 829128A579514864E18CC038 /* OpenTransitLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		06DD7F46FCF7024956605193 /* OpenTransitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FB0CEB94663929AD9FA27A /* OpenTransitWatchApp.swift */; };
+		0866FA2495820B9B84B9959D /* OpenTransitLiveActivityBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93906A0D6780DE20859156A /* OpenTransitLiveActivityBundle.swift */; };
+		13AC6D31ABE67D1E20EF0FC5 /* OpenTransitActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3175CAD8E8A0BC797B87984 /* OpenTransitActivityAttributes.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		24EA99C91D338170BE7BF912 /* OpenTransitActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D8426D24D41C701C1D193B /* OpenTransitActivityAttributes.swift */; };
+		2F332B3619E60E0A64FAC509 /* OpenTransitWatchComplications.appex in Embed Watch Complications */ = {isa = PBXBuildFile; fileRef = 13939A8EA6303FAF6D05C6F2 /* OpenTransitWatchComplications.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		327AE267008FE54EE82CBA4C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75477E9EF546828FDCCE2CCF /* Foundation.framework */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
-		33471B9D6B3CDC31A7FB392E /* WatchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC55CC9CCE3B4BA2CF7F4AA /* WatchModels.swift */; };
-		35FA7EC36037F248D3E1AFD8 /* OpenTransitWatchComplications.appex in Embed Watch Complications */ = {isa = PBXBuildFile; fileRef = 00F532A133373320D69CAB29 /* OpenTransitWatchComplications.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		4A2A12450E4509B0CCE05730 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB0C52EE85CEFBCFFB9BAAC5 /* Pods_Runner.framework */; };
-		4EE55381FAB1E219C23AD209 /* WatchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBB0E0F41FC9554397389FF4 /* WatchStore.swift */; };
-		59042282952CBC924A61C1A8 /* OpenTransitActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15477633863E3932FFEE82E9 /* OpenTransitActivityAttributes.swift */; };
-		5E32970D03118B9B392F270D /* OpenTransitLiveActivityBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E455266B0F336FD540CDB5EA /* OpenTransitLiveActivityBundle.swift */; };
-		7082CA5F426243559C0BF18C /* OpenTransitLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542C89A1CCE16481B644CBEE /* OpenTransitLiveActivity.swift */; };
+		56343B99D3880039728F251D /* WatchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ABBD96DBB1798E5BD030438 /* WatchStore.swift */; };
+		58E8E3730F5B954DE1C69D58 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75477E9EF546828FDCCE2CCF /* Foundation.framework */; };
+		598D8B8C2AFE584540589855 /* NextDepartureComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1D2AE77C590C4C93603A96 /* NextDepartureComplication.swift */; };
+		5DD4ADE084392FEF0187F763 /* opentransit Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 8841BD1A8692F9B82A7C6231 /* opentransit Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5F1B5C675CB6CCA491B19B31 /* ComplicationRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 332AD47BBB03ACB1B96D9367 /* ComplicationRefresher.swift */; };
+		62C33ADF041EB93F4D797E11 /* WatchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC48D195290B46853C7B9B05 /* WatchModels.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
-		80188BAEA903DE5E35990420 /* RouteBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77E3C8061A47A0A625102AD9 /* RouteBadge.swift */; };
-		8532B45CD0EECB5A79ECB857 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F3E2AA6BF5E5DFEAE685B68 /* Foundation.framework */; };
-		8AB803B2FC8BCBE6FDA65CCA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F3E2AA6BF5E5DFEAE685B68 /* Foundation.framework */; };
-		9016D1A6D099F1BA92CB069C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22D8F710659D4A1B02724072 /* Foundation.framework */; };
-		90E4AAD8C2768A87094CDF0B /* OpenTransitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CDEEC112BDD3A8808AD7EF /* OpenTransitWatchApp.swift */; };
+		9015B7A72BD981635B9EF773 /* RouteBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8557148FAC10EEF26AA785 /* RouteBadge.swift */; };
+		90C2131A4430DCB129BD7B1F /* WatchViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD490DA9A9C3FF40026A86 /* WatchViews.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		9A1C0FF1A0B2C3D4E5F60002 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9A1C0FF1A0B2C3D4E5F60001 /* PrivacyInfo.xcprivacy */; };
-		ABDA0189394463E1A3328218 /* OpenTransitActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07C66478FC8C726A6B780A6A /* OpenTransitActivityAttributes.swift */; };
-		AE5A8B8B52DD2A80208244B6 /* NextDepartureComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244A3C83C8286C8168B0D62F /* NextDepartureComplication.swift */; };
-		B2F3528FDBB2B205E0F29B14 /* opentransit Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 4A4F28EC8E60662BCE22AB6B /* opentransit Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AC470295C090FF7EE73F9F33 /* WatchSessionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9D5B33AAEEB1573E912762 /* WatchSessionBridge.swift */; };
+		B034AA68E866CE66874F7FB7 /* OpenTransitLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68ED2BD9523F4B4C7F1FB27 /* OpenTransitLiveActivity.swift */; };
+		B17575891798D11A5B6B9978 /* LiveActivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */; };
 		CB1F70D9273ACA734C8EED15 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4680D3E851D9A1B248C38824 /* Pods_RunnerTests.framework */; };
-		D0F31A3E033AECFA7677A327 /* WatchSessionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C872A9A1B2E01F49ADE9B65 /* WatchSessionBridge.swift */; };
-		D7F0A582F4745DC2B5815AF8 /* ComplicationRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B857E3FD0F12BB17F2A13B /* ComplicationRefresher.swift */; };
-		DC8AB8475422B6269931ADD9 /* WatchViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F9BBAA86396C9E781B24B9 /* WatchViews.swift */; };
-		F66959CFE1A4CD1E7EA54178 /* WatchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48ED81214AA25CDC55E7B348 /* WatchModels.swift */; };
-		FEB475D2C650C160577B31BB /* LiveActivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7AEA97E73424AE5C122B7F /* LiveActivityBridge.swift */; };
+		D54D384E35A70428CE51BB90 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E6D00FCE15668099898D41 /* Foundation.framework */; };
+		D78FF2C2C69C670D66A501CE /* OpenTransitLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D8006E67C636B503942B3CE3 /* WatchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDDB11305BF6EF97508B444 /* WatchModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,48 +48,48 @@
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
 		};
-		7961143C20623F53FD5AE7BD /* PBXContainerItemProxy */ = {
+		3DA31CE319E6C31997FF0349 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = EA49F1A9569E6DEFB9262E8B;
-			remoteInfo = OpenTransitWatchComplications;
-		};
-		B3FA953F819DDDA25F671D03 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CE5DB8C29C829D974FF41606;
+			remoteGlobalIDString = 1E24DA40AC40AED1FE2C11D6;
 			remoteInfo = "opentransit Watch App";
 		};
-		F496C7A1FE044153321607B6 /* PBXContainerItemProxy */ = {
+		CA03C9637E13CC16ADF2624D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C53FA062213D673ECEF0C7F9;
+			remoteGlobalIDString = 211933ABA3D5BC7CCB217A7A;
 			remoteInfo = OpenTransitLiveActivity;
+		};
+		DF15A366D9DCF92F98A78DD0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 988023F22B49DA182C96612C;
+			remoteInfo = OpenTransitWatchComplications;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0AD76773AC1A49B09BEB90E5 /* Embed Watch Complications */ = {
+		0D70D2B7CC4CC66D62167330 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstSubfolderSpec = 1;
 			files = (
-				35FA7EC36037F248D3E1AFD8 /* OpenTransitWatchComplications.appex in Embed Watch Complications */,
+				5DD4ADE084392FEF0187F763 /* opentransit Watch App.app in Embed Watch Content */,
 			);
-			name = "Embed Watch Complications";
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3B2782EF66D443D81F5D8CA0 /* Embed App Extensions */ = {
+		3554BEAA10CFD60D97D39499 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				0F4901AB477673275BD8AFC3 /* OpenTransitLiveActivity.appex in Embed App Extensions */,
+				D78FF2C2C69C670D66A501CE /* OpenTransitLiveActivity.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -104,47 +104,43 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E89419C105D5F2CB18C77D62 /* Embed Watch Content */ = {
+		AEA432A3B9F9F79F69AD97AC /* Embed Watch Complications */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 1;
+			dstSubfolderSpec = 13;
 			files = (
-				B2F3528FDBB2B205E0F29B14 /* opentransit Watch App.app in Embed Watch Content */,
+				2F332B3619E60E0A64FAC509 /* OpenTransitWatchComplications.appex in Embed Watch Complications */,
 			);
-			name = "Embed Watch Content";
+			name = "Embed Watch Complications";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		00F532A133373320D69CAB29 /* OpenTransitWatchComplications.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OpenTransitWatchComplications.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		07C66478FC8C726A6B780A6A /* OpenTransitActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitActivityAttributes.swift; path = Shared/OpenTransitActivityAttributes.swift; sourceTree = "<group>"; };
+		0D1D2AE77C590C4C93603A96 /* NextDepartureComplication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NextDepartureComplication.swift; path = OpenTransitWatchComplications/NextDepartureComplication.swift; sourceTree = "<group>"; };
+		0D9D5B33AAEEB1573E912762 /* WatchSessionBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchSessionBridge.swift; sourceTree = "<group>"; };
+		13939A8EA6303FAF6D05C6F2 /* OpenTransitWatchComplications.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OpenTransitWatchComplications.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
-		15477633863E3932FFEE82E9 /* OpenTransitActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitActivityAttributes.swift; path = Shared/OpenTransitActivityAttributes.swift; sourceTree = "<group>"; };
+		18E6D00FCE15668099898D41 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		1E2960E90DA430FF05482450 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
-		22D8F710659D4A1B02724072 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		244A3C83C8286C8168B0D62F /* NextDepartureComplication.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NextDepartureComplication.swift; path = OpenTransitWatchComplications/NextDepartureComplication.swift; sourceTree = "<group>"; };
-		2C872A9A1B2E01F49ADE9B65 /* WatchSessionBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WatchSessionBridge.swift; sourceTree = "<group>"; };
-		2D7AEA97E73424AE5C122B7F /* LiveActivityBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityBridge.swift; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		332AD47BBB03ACB1B96D9367 /* ComplicationRefresher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ComplicationRefresher.swift; path = OpenTransitWatch/ComplicationRefresher.swift; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		4680D3E851D9A1B248C38824 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		48ED81214AA25CDC55E7B348 /* WatchModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchModels.swift; path = OpenTransitWatch/WatchModels.swift; sourceTree = "<group>"; };
-		4A4F28EC8E60662BCE22AB6B /* opentransit Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "opentransit Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		542C89A1CCE16481B644CBEE /* OpenTransitLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitLiveActivity.swift; path = OpenTransitLiveActivity/OpenTransitLiveActivity.swift; sourceTree = "<group>"; };
+		4CDDB11305BF6EF97508B444 /* WatchModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchModels.swift; path = OpenTransitWatch/WatchModels.swift; sourceTree = "<group>"; };
 		57E8F128A24E161FE160F6B4 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
-		5F3E2AA6BF5E5DFEAE685B68 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		60F9BBAA86396C9E781B24B9 /* WatchViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchViews.swift; path = OpenTransitWatch/WatchViews.swift; sourceTree = "<group>"; };
-		69CDEEC112BDD3A8808AD7EF /* OpenTransitWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitWatchApp.swift; path = OpenTransitWatch/OpenTransitWatchApp.swift; sourceTree = "<group>"; };
+		62CD490DA9A9C3FF40026A86 /* WatchViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchViews.swift; path = OpenTransitWatch/WatchViews.swift; sourceTree = "<group>"; };
+		653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityBridge.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		77E3C8061A47A0A625102AD9 /* RouteBadge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RouteBadge.swift; path = OpenTransitLiveActivity/RouteBadge.swift; sourceTree = "<group>"; };
+		75477E9EF546828FDCCE2CCF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		7ABBD96DBB1798E5BD030438 /* WatchStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchStore.swift; path = OpenTransitWatch/WatchStore.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
-		829128A579514864E18CC038 /* OpenTransitLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OpenTransitLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8841BD1A8692F9B82A7C6231 /* opentransit Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "opentransit Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,23 +149,43 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9A1C0FF1A0B2C3D4E5F60001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		9E8557148FAC10EEF26AA785 /* RouteBadge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RouteBadge.swift; path = OpenTransitLiveActivity/RouteBadge.swift; sourceTree = "<group>"; };
+		9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OpenTransitLiveActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC48D195290B46853C7B9B05 /* WatchModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchModels.swift; path = OpenTransitWatch/WatchModels.swift; sourceTree = "<group>"; };
 		ACAE3A709B368BB303A0C3EF /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
-		B3B857E3FD0F12BB17F2A13B /* ComplicationRefresher.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ComplicationRefresher.swift; path = OpenTransitWatch/ComplicationRefresher.swift; sourceTree = "<group>"; };
+		B0D8426D24D41C701C1D193B /* OpenTransitActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitActivityAttributes.swift; path = Shared/OpenTransitActivityAttributes.swift; sourceTree = "<group>"; };
 		BB0C52EE85CEFBCFFB9BAAC5 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C620802AF81C1761070E54FB /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
-		CBB0E0F41FC9554397389FF4 /* WatchStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchStore.swift; path = OpenTransitWatch/WatchStore.swift; sourceTree = "<group>"; };
 		D0DB935EA01C6C5F2829428A /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
-		DDC55CC9CCE3B4BA2CF7F4AA /* WatchModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchModels.swift; path = OpenTransitWatch/WatchModels.swift; sourceTree = "<group>"; };
-		E455266B0F336FD540CDB5EA /* OpenTransitLiveActivityBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitLiveActivityBundle.swift; path = OpenTransitLiveActivity/OpenTransitLiveActivityBundle.swift; sourceTree = "<group>"; };
+		E3175CAD8E8A0BC797B87984 /* OpenTransitActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitActivityAttributes.swift; path = Shared/OpenTransitActivityAttributes.swift; sourceTree = "<group>"; };
+		E3FB0CEB94663929AD9FA27A /* OpenTransitWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitWatchApp.swift; path = OpenTransitWatch/OpenTransitWatchApp.swift; sourceTree = "<group>"; };
 		F1B8A3875749A1D3834B413F /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		F68ED2BD9523F4B4C7F1FB27 /* OpenTransitLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitLiveActivity.swift; path = OpenTransitLiveActivity/OpenTransitLiveActivity.swift; sourceTree = "<group>"; };
+		F93906A0D6780DE20859156A /* OpenTransitLiveActivityBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitLiveActivityBundle.swift; path = OpenTransitLiveActivity/OpenTransitLiveActivityBundle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		40C46D35E38B78E8FE6ADF2B /* Frameworks */ = {
+		01E8482F8C0062D8AE43F5E6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8532B45CD0EECB5A79ECB857 /* Foundation.framework in Frameworks */,
+				327AE267008FE54EE82CBA4C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		502EF942BEE3064A05D7F901 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D54D384E35A70428CE51BB90 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5A48FF208CD411BA699F6978 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				58E8E3730F5B954DE1C69D58 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,27 +197,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A36C2B7615934933F08F28AA /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8AB803B2FC8BCBE6FDA65CCA /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D5686ACCD21AAF115BF7B4BA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CB1F70D9273ACA734C8EED15 /* Pods_RunnerTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E2A062F21A8BCBCDABCB4022 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9016D1A6D099F1BA92CB069C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,18 +213,10 @@
 			children = (
 				BB0C52EE85CEFBCFFB9BAAC5 /* Pods_Runner.framework */,
 				4680D3E851D9A1B248C38824 /* Pods_RunnerTests.framework */,
-				17D13CF66131DF2F5328322B /* iOS */,
-				C42CDD0AE483D4120425E0BA /* watchOS */,
+				BA3C5E9C29334CBB0D609B8E /* iOS */,
+				B476A7F77E277A6A45BD9A17 /* watchOS */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		17D13CF66131DF2F5328322B /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				22D8F710659D4A1B02724072 /* Foundation.framework */,
-			);
-			name = iOS;
 			sourceTree = "<group>";
 		};
 		331C8082294A63A400263BE5 /* RunnerTests */ = {
@@ -235,13 +227,12 @@
 			path = RunnerTests;
 			sourceTree = "<group>";
 		};
-		39B58A330BA12683E49839F6 /* OpenTransitWatchComplications */ = {
+		35DA60EEC74B5AD3444754A9 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				244A3C83C8286C8168B0D62F /* NextDepartureComplication.swift */,
-				DDC55CC9CCE3B4BA2CF7F4AA /* WatchModels.swift */,
+				E3175CAD8E8A0BC797B87984 /* OpenTransitActivityAttributes.swift */,
 			);
-			name = OpenTransitWatchComplications;
+			name = Shared;
 			sourceTree = SOURCE_ROOT;
 		};
 		4407D451A1A5930C4CAC5A24 /* Pods */ = {
@@ -258,16 +249,36 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		4A3AA12D80F52A108BB844BF /* OpenTransitWatch */ = {
+		53B2E7496E120CCDC29A689A /* OpenTransitWatch */ = {
 			isa = PBXGroup;
 			children = (
-				B3B857E3FD0F12BB17F2A13B /* ComplicationRefresher.swift */,
-				69CDEEC112BDD3A8808AD7EF /* OpenTransitWatchApp.swift */,
-				48ED81214AA25CDC55E7B348 /* WatchModels.swift */,
-				CBB0E0F41FC9554397389FF4 /* WatchStore.swift */,
-				60F9BBAA86396C9E781B24B9 /* WatchViews.swift */,
+				332AD47BBB03ACB1B96D9367 /* ComplicationRefresher.swift */,
+				E3FB0CEB94663929AD9FA27A /* OpenTransitWatchApp.swift */,
+				4CDDB11305BF6EF97508B444 /* WatchModels.swift */,
+				7ABBD96DBB1798E5BD030438 /* WatchStore.swift */,
+				62CD490DA9A9C3FF40026A86 /* WatchViews.swift */,
 			);
 			name = OpenTransitWatch;
+			sourceTree = SOURCE_ROOT;
+		};
+		69CAAC79AEBFBDA06FB79D4F /* OpenTransitWatchComplications */ = {
+			isa = PBXGroup;
+			children = (
+				0D1D2AE77C590C4C93603A96 /* NextDepartureComplication.swift */,
+				AC48D195290B46853C7B9B05 /* WatchModels.swift */,
+			);
+			name = OpenTransitWatchComplications;
+			sourceTree = SOURCE_ROOT;
+		};
+		84A5CD1AAE30A656C4CF2045 /* OpenTransitLiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				F93906A0D6780DE20859156A /* OpenTransitLiveActivityBundle.swift */,
+				F68ED2BD9523F4B4C7F1FB27 /* OpenTransitLiveActivity.swift */,
+				9E8557148FAC10EEF26AA785 /* RouteBadge.swift */,
+				B0D8426D24D41C701C1D193B /* OpenTransitActivityAttributes.swift */,
+			);
+			name = OpenTransitLiveActivity;
 			sourceTree = SOURCE_ROOT;
 		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
@@ -290,10 +301,10 @@
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				4407D451A1A5930C4CAC5A24 /* Pods */,
 				0FC62CC683A8E3FAF11C3708 /* Frameworks */,
-				CDC86965BCC4B108FC9F3517 /* OpenTransitLiveActivity */,
-				4A3AA12D80F52A108BB844BF /* OpenTransitWatch */,
-				39B58A330BA12683E49839F6 /* OpenTransitWatchComplications */,
-				A1B4EA21DEF36FDF591DB39D /* Shared */,
+				84A5CD1AAE30A656C4CF2045 /* OpenTransitLiveActivity */,
+				53B2E7496E120CCDC29A689A /* OpenTransitWatch */,
+				69CAAC79AEBFBDA06FB79D4F /* OpenTransitWatchComplications */,
+				35DA60EEC74B5AD3444754A9 /* Shared */,
 			);
 			sourceTree = "<group>";
 		};
@@ -302,9 +313,9 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
-				829128A579514864E18CC038 /* OpenTransitLiveActivity.appex */,
-				4A4F28EC8E60662BCE22AB6B /* opentransit Watch App.app */,
-				00F532A133373320D69CAB29 /* OpenTransitWatchComplications.appex */,
+				9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */,
+				8841BD1A8692F9B82A7C6231 /* opentransit Watch App.app */,
+				13939A8EA6303FAF6D05C6F2 /* OpenTransitWatchComplications.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -322,42 +333,67 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
-				2D7AEA97E73424AE5C122B7F /* LiveActivityBridge.swift */,
-				2C872A9A1B2E01F49ADE9B65 /* WatchSessionBridge.swift */,
+				653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */,
+				0D9D5B33AAEEB1573E912762 /* WatchSessionBridge.swift */,
 			);
 			path = Runner;
 			sourceTree = SOURCE_ROOT;
 		};
-		A1B4EA21DEF36FDF591DB39D /* Shared */ = {
+		B476A7F77E277A6A45BD9A17 /* watchOS */ = {
 			isa = PBXGroup;
 			children = (
-				07C66478FC8C726A6B780A6A /* OpenTransitActivityAttributes.swift */,
-			);
-			name = Shared;
-			sourceTree = SOURCE_ROOT;
-		};
-		C42CDD0AE483D4120425E0BA /* watchOS */ = {
-			isa = PBXGroup;
-			children = (
-				5F3E2AA6BF5E5DFEAE685B68 /* Foundation.framework */,
+				75477E9EF546828FDCCE2CCF /* Foundation.framework */,
 			);
 			name = watchOS;
 			sourceTree = "<group>";
 		};
-		CDC86965BCC4B108FC9F3517 /* OpenTransitLiveActivity */ = {
+		BA3C5E9C29334CBB0D609B8E /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				E455266B0F336FD540CDB5EA /* OpenTransitLiveActivityBundle.swift */,
-				542C89A1CCE16481B644CBEE /* OpenTransitLiveActivity.swift */,
-				77E3C8061A47A0A625102AD9 /* RouteBadge.swift */,
-				15477633863E3932FFEE82E9 /* OpenTransitActivityAttributes.swift */,
+				18E6D00FCE15668099898D41 /* Foundation.framework */,
 			);
-			name = OpenTransitLiveActivity;
-			sourceTree = SOURCE_ROOT;
+			name = iOS;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1E24DA40AC40AED1FE2C11D6 /* opentransit Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EACEF0E4EAC48102FC818E34 /* Build configuration list for PBXNativeTarget "opentransit Watch App" */;
+			buildPhases = (
+				C03C7083F19CCA0F2CE1012B /* Sources */,
+				5A48FF208CD411BA699F6978 /* Frameworks */,
+				5598B88B3C121F324E0C37D7 /* Resources */,
+				AEA432A3B9F9F79F69AD97AC /* Embed Watch Complications */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F2FF0C8D3A345638BA934116 /* PBXTargetDependency */,
+			);
+			name = "opentransit Watch App";
+			productName = "opentransit Watch App";
+			productReference = 8841BD1A8692F9B82A7C6231 /* opentransit Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		211933ABA3D5BC7CCB217A7A /* OpenTransitLiveActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0ED9AA5192E6B4D9A12BC3C2 /* Build configuration list for PBXNativeTarget "OpenTransitLiveActivity" */;
+			buildPhases = (
+				ED13440DBB64ACEB445275AC /* Sources */,
+				502EF942BEE3064A05D7F901 /* Frameworks */,
+				BC78CC4404CF4D979CADB928 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenTransitLiveActivity;
+			productName = OpenTransitLiveActivity;
+			productReference = 9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		331C8080294A63A400263BE5 /* RunnerTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 331C8087294A63A400263BE5 /* Build configuration list for PBXNativeTarget "RunnerTests" */;
@@ -387,65 +423,29 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
-				E89419C105D5F2CB18C77D62 /* Embed Watch Content */,
-				3B2782EF66D443D81F5D8CA0 /* Embed App Extensions */,
+				0D70D2B7CC4CC66D62167330 /* Embed Watch Content */,
+				3554BEAA10CFD60D97D39499 /* Embed App Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				D3E84922D6609020555981EF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				48F1E7A8CA3037E088CBEE2A /* PBXTargetDependency */,
-				E113D45548A2454D3F609DC9 /* PBXTargetDependency */,
+				7B79B17D23B78475DB43507A /* PBXTargetDependency */,
+				AF2BBC1FFADC37DFBABADA54 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C53FA062213D673ECEF0C7F9 /* OpenTransitLiveActivity */ = {
+		988023F22B49DA182C96612C /* OpenTransitWatchComplications */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 77585ECA3FAF89E455024BD1 /* Build configuration list for PBXNativeTarget "OpenTransitLiveActivity" */;
+			buildConfigurationList = DDB9D8EE1EE5730091CF87E6 /* Build configuration list for PBXNativeTarget "OpenTransitWatchComplications" */;
 			buildPhases = (
-				68EB1D382D6501458D721A10 /* Sources */,
-				E2A062F21A8BCBCDABCB4022 /* Frameworks */,
-				B3E4E2742307B870EA3A845D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = OpenTransitLiveActivity;
-			productName = OpenTransitLiveActivity;
-			productReference = 829128A579514864E18CC038 /* OpenTransitLiveActivity.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		CE5DB8C29C829D974FF41606 /* opentransit Watch App */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D2221BF4D5B6040E11A435BC /* Build configuration list for PBXNativeTarget "opentransit Watch App" */;
-			buildPhases = (
-				79136C41139AFE2DD05B1285 /* Sources */,
-				40C46D35E38B78E8FE6ADF2B /* Frameworks */,
-				23EBA41CD79BE8B9DD443CE8 /* Resources */,
-				0AD76773AC1A49B09BEB90E5 /* Embed Watch Complications */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				277E95DE94D9D1ACB70ACF84 /* PBXTargetDependency */,
-			);
-			name = "opentransit Watch App";
-			productName = "opentransit Watch App";
-			productReference = 4A4F28EC8E60662BCE22AB6B /* opentransit Watch App.app */;
-			productType = "com.apple.product-type.application";
-		};
-		EA49F1A9569E6DEFB9262E8B /* OpenTransitWatchComplications */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E17D4D2D44395B5F86D9941C /* Build configuration list for PBXNativeTarget "OpenTransitWatchComplications" */;
-			buildPhases = (
-				BE75A0C2E318E6AC41ABFDF4 /* Sources */,
-				A36C2B7615934933F08F28AA /* Frameworks */,
-				40D14FFB16E636ECCBD3D327 /* Resources */,
+				1E47A52F49679B814A79451F /* Sources */,
+				01E8482F8C0062D8AE43F5E6 /* Frameworks */,
+				941B22D2939C830B2F2C1F16 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -453,7 +453,7 @@
 			);
 			name = OpenTransitWatchComplications;
 			productName = OpenTransitWatchComplications;
-			productReference = 00F532A133373320D69CAB29 /* OpenTransitWatchComplications.appex */;
+			productReference = 13939A8EA6303FAF6D05C6F2 /* OpenTransitWatchComplications.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -491,21 +491,14 @@
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
-				C53FA062213D673ECEF0C7F9 /* OpenTransitLiveActivity */,
-				CE5DB8C29C829D974FF41606 /* opentransit Watch App */,
-				EA49F1A9569E6DEFB9262E8B /* OpenTransitWatchComplications */,
+				211933ABA3D5BC7CCB217A7A /* OpenTransitLiveActivity */,
+				1E24DA40AC40AED1FE2C11D6 /* opentransit Watch App */,
+				988023F22B49DA182C96612C /* OpenTransitWatchComplications */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		23EBA41CD79BE8B9DD443CE8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		331C807F294A63A400263BE5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -513,7 +506,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		40D14FFB16E636ECCBD3D327 /* Resources */ = {
+		5598B88B3C121F324E0C37D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		941B22D2939C830B2F2C1F16 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -532,7 +532,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B3E4E2742307B870EA3A845D /* Resources */ = {
+		BC78CC4404CF4D979CADB928 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -637,34 +637,20 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1E47A52F49679B814A79451F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				598D8B8C2AFE584540589855 /* NextDepartureComplication.swift in Sources */,
+				62C33ADF041EB93F4D797E11 /* WatchModels.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		331C807D294A63A400263BE5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		68EB1D382D6501458D721A10 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5E32970D03118B9B392F270D /* OpenTransitLiveActivityBundle.swift in Sources */,
-				7082CA5F426243559C0BF18C /* OpenTransitLiveActivity.swift in Sources */,
-				80188BAEA903DE5E35990420 /* RouteBadge.swift in Sources */,
-				59042282952CBC924A61C1A8 /* OpenTransitActivityAttributes.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		79136C41139AFE2DD05B1285 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D7F0A582F4745DC2B5815AF8 /* ComplicationRefresher.swift in Sources */,
-				90E4AAD8C2768A87094CDF0B /* OpenTransitWatchApp.swift in Sources */,
-				F66959CFE1A4CD1E7EA54178 /* WatchModels.swift in Sources */,
-				4EE55381FAB1E219C23AD209 /* WatchStore.swift in Sources */,
-				DC8AB8475422B6269931ADD9 /* WatchViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,46 +661,60 @@
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
-				FEB475D2C650C160577B31BB /* LiveActivityBridge.swift in Sources */,
-				D0F31A3E033AECFA7677A327 /* WatchSessionBridge.swift in Sources */,
-				ABDA0189394463E1A3328218 /* OpenTransitActivityAttributes.swift in Sources */,
+				B17575891798D11A5B6B9978 /* LiveActivityBridge.swift in Sources */,
+				AC470295C090FF7EE73F9F33 /* WatchSessionBridge.swift in Sources */,
+				13AC6D31ABE67D1E20EF0FC5 /* OpenTransitActivityAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BE75A0C2E318E6AC41ABFDF4 /* Sources */ = {
+		C03C7083F19CCA0F2CE1012B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE5A8B8B52DD2A80208244B6 /* NextDepartureComplication.swift in Sources */,
-				33471B9D6B3CDC31A7FB392E /* WatchModels.swift in Sources */,
+				5F1B5C675CB6CCA491B19B31 /* ComplicationRefresher.swift in Sources */,
+				06DD7F46FCF7024956605193 /* OpenTransitWatchApp.swift in Sources */,
+				D8006E67C636B503942B3CE3 /* WatchModels.swift in Sources */,
+				56343B99D3880039728F251D /* WatchStore.swift in Sources */,
+				90C2131A4430DCB129BD7B1F /* WatchViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED13440DBB64ACEB445275AC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0866FA2495820B9B84B9959D /* OpenTransitLiveActivityBundle.swift in Sources */,
+				B034AA68E866CE66874F7FB7 /* OpenTransitLiveActivity.swift in Sources */,
+				9015B7A72BD981635B9EF773 /* RouteBadge.swift in Sources */,
+				24EA99C91D338170BE7BF912 /* OpenTransitActivityAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		277E95DE94D9D1ACB70ACF84 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = OpenTransitWatchComplications;
-			target = EA49F1A9569E6DEFB9262E8B /* OpenTransitWatchComplications */;
-			targetProxy = 7961143C20623F53FD5AE7BD /* PBXContainerItemProxy */;
-		};
 		331C8086294A63A400263BE5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
 		};
-		48F1E7A8CA3037E088CBEE2A /* PBXTargetDependency */ = {
+		7B79B17D23B78475DB43507A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "opentransit Watch App";
-			target = CE5DB8C29C829D974FF41606 /* opentransit Watch App */;
-			targetProxy = B3FA953F819DDDA25F671D03 /* PBXContainerItemProxy */;
+			target = 1E24DA40AC40AED1FE2C11D6 /* opentransit Watch App */;
+			targetProxy = 3DA31CE319E6C31997FF0349 /* PBXContainerItemProxy */;
 		};
-		E113D45548A2454D3F609DC9 /* PBXTargetDependency */ = {
+		AF2BBC1FFADC37DFBABADA54 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = OpenTransitLiveActivity;
-			target = C53FA062213D673ECEF0C7F9 /* OpenTransitLiveActivity */;
-			targetProxy = F496C7A1FE044153321607B6 /* PBXContainerItemProxy */;
+			target = 211933ABA3D5BC7CCB217A7A /* OpenTransitLiveActivity */;
+			targetProxy = CA03C9637E13CC16ADF2624D /* PBXContainerItemProxy */;
+		};
+		F2FF0C8D3A345638BA934116 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OpenTransitWatchComplications;
+			target = 988023F22B49DA182C96612C /* OpenTransitWatchComplications */;
+			targetProxy = DF15A366D9DCF92F98A78DD0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -738,45 +738,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		0C4B19458965FA01E72ED5D7 /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitLiveActivity/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.LiveActivity;
-				PRODUCT_NAME = OpenTransitLiveActivity;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Profile;
-		};
-		1FD349275E13DF6FAF0A9840 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitWatchComplications/Info.plist;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp.complications;
-				PRODUCT_NAME = OpenTransitWatchComplications;
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "watchsimulator watchos";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 10.0;
-			};
-			name = Debug;
-		};
 		249021D3217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -851,20 +812,17 @@
 			};
 			name = Profile;
 		};
-		2937A079A3E392DA88F821F3 /* Release */ = {
+		2ACC9C55C83683C62E37D7B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitWatch/Info.plist;
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jeronimotech.opentransit;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp;
-				PRODUCT_NAME = "opentransit Watch App";
+				INFOPLIST_FILE = OpenTransitWatchComplications/Info.plist;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp.complications;
+				PRODUCT_NAME = OpenTransitWatchComplications;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
@@ -873,7 +831,7 @@
 				VALIDATE_PRODUCT = YES;
 				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
-			name = Release;
+			name = Profile;
 		};
 		331C8088294A63A400263BE5 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -925,39 +883,17 @@
 			};
 			name = Profile;
 		};
-		5D050EA558293DA475E85389 /* Debug */ = {
+		7C4AF31B6E21B8F32F29A370 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitLiveActivity/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.LiveActivity;
-				PRODUCT_NAME = OpenTransitLiveActivity;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		8CC89A7D07B45AAE312C81FE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitWatch/Info.plist;
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jeronimotech.opentransit;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp;
-				PRODUCT_NAME = "opentransit Watch App";
+				INFOPLIST_FILE = OpenTransitWatchComplications/Info.plist;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp.complications;
+				PRODUCT_NAME = OpenTransitWatchComplications;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchsimulator watchos";
@@ -1123,78 +1059,19 @@
 			};
 			name = Release;
 		};
-		CC6B38A619328E7BF9EF64CC /* Profile */ = {
+		B5160A074CDA3ED5735B3C38 /* Profile */ = {
 			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitWatchComplications/Info.plist;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp.complications;
-				PRODUCT_NAME = OpenTransitWatchComplications;
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "watchsimulator watchos";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 10.0;
-			};
-			name = Profile;
-		};
-		E2E017EF610FBD46A1D00DDE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitWatchComplications/Info.plist;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp.complications;
-				PRODUCT_NAME = OpenTransitWatchComplications;
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "watchsimulator watchos";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 10.0;
-			};
-			name = Release;
-		};
-		F16111FCAEB83C826507992B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitLiveActivity/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.LiveActivity;
-				PRODUCT_NAME = OpenTransitLiveActivity;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		F6E369355AB8BB42167BE4E3 /* Profile */ = {
-			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = "$(CURRENT_PROJECT_VERSION)";
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 6DTDJCKC8X;
 				INFOPLIST_FILE = OpenTransitWatch/Info.plist;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jeronimotech.opentransit;
-				MARKETING_VERSION = "$(MARKETING_VERSION)";
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp;
 				PRODUCT_NAME = "opentransit Watch App";
 				SDKROOT = watchos;
@@ -1207,25 +1084,157 @@
 			};
 			name = Profile;
 		};
+		BFFD36A3D8E1DD37BD6A3C8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitLiveActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.LiveActivity;
+				PRODUCT_NAME = OpenTransitLiveActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CFDD16B32745D028CCD2F12A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitLiveActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.LiveActivity;
+				PRODUCT_NAME = OpenTransitLiveActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D3F2362F5C96B766C4E0B473 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitWatchComplications/Info.plist;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp.complications;
+				PRODUCT_NAME = OpenTransitWatchComplications;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		D605E4F8D9EC5B5CDC7F28F1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitWatch/Info.plist;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jeronimotech.opentransit;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp;
+				PRODUCT_NAME = "opentransit Watch App";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		EA2880FCF9C00DC6301CC2A5 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitLiveActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.LiveActivity;
+				PRODUCT_NAME = OpenTransitLiveActivity;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		F003FB82DBAB43B3D9AAF10E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitWatch/Info.plist;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.jeronimotech.opentransit;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.watchkitapp;
+				PRODUCT_NAME = "opentransit Watch App";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0ED9AA5192E6B4D9A12BC3C2 /* Build configuration list for PBXNativeTarget "OpenTransitLiveActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFDD16B32745D028CCD2F12A /* Release */,
+				BFFD36A3D8E1DD37BD6A3C8D /* Debug */,
+				EA2880FCF9C00DC6301CC2A5 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		331C8087294A63A400263BE5 /* Build configuration list for PBXNativeTarget "RunnerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				331C8088294A63A400263BE5 /* Debug */,
 				331C8089294A63A400263BE5 /* Release */,
 				331C808A294A63A400263BE5 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		77585ECA3FAF89E455024BD1 /* Build configuration list for PBXNativeTarget "OpenTransitLiveActivity" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F16111FCAEB83C826507992B /* Release */,
-				5D050EA558293DA475E85389 /* Debug */,
-				0C4B19458965FA01E72ED5D7 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1250,22 +1259,22 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D2221BF4D5B6040E11A435BC /* Build configuration list for PBXNativeTarget "opentransit Watch App" */ = {
+		DDB9D8EE1EE5730091CF87E6 /* Build configuration list for PBXNativeTarget "OpenTransitWatchComplications" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2937A079A3E392DA88F821F3 /* Release */,
-				8CC89A7D07B45AAE312C81FE /* Debug */,
-				F6E369355AB8BB42167BE4E3 /* Profile */,
+				D3F2362F5C96B766C4E0B473 /* Release */,
+				7C4AF31B6E21B8F32F29A370 /* Debug */,
+				2ACC9C55C83683C62E37D7B9 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E17D4D2D44395B5F86D9941C /* Build configuration list for PBXNativeTarget "OpenTransitWatchComplications" */ = {
+		EACEF0E4EAC48102FC818E34 /* Build configuration list for PBXNativeTarget "opentransit Watch App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E2E017EF610FBD46A1D00DDE /* Release */,
-				1FD349275E13DF6FAF0A9840 /* Debug */,
-				CC6B38A619328E7BF9EF64CC /* Profile */,
+				D605E4F8D9EC5B5CDC7F28F1 /* Release */,
+				F003FB82DBAB43B3D9AAF10E /* Debug */,
+				B5160A074CDA3ED5735B3C38 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -53,6 +53,12 @@ BUNDLE_ID="${BUNDLE_ID:-$(grep -oE 'PRODUCT_BUNDLE_IDENTIFIER = [^;]+' ios/Runne
   | grep -v RunnerTests | head -n 1 | sed 's/.*= //')}"
 export BUNDLE_ID
 PROFILE_NAME="${PROFILE_NAME:-opentransit App Store}"
+# Companion targets ship inside the app, so each needs its own bundle id and
+# App Store profile. Keep in step with tool/xcode_targets.rb.
+COMPANION_PROFILES="${COMPANION_PROFILES:-\
+${BUNDLE_ID}.LiveActivity=opentransit LiveActivity App Store;\
+${BUNDLE_ID}.watchkitapp=opentransit watchkitapp App Store;\
+${BUNDLE_ID}.watchkitapp.complications=opentransit watch complications App Store}"
 DIST_DIR="${DIST_DIR:-$HOME/.config/opentransit/apple-dist}"
 KEYCHAIN_NAME="${KEYCHAIN_NAME:-opentransit-signing}"
 KEYCHAIN_ENV="${KEYCHAIN_ENV:-$HOME/.config/opentransit/keychain.env}"
@@ -172,19 +178,34 @@ if [[ "$SIGNING" == "manual" ]]; then
   SIGN_IDENTITY_PREFIX="$SIGN_IDENTITY_PREFIX" PROFILE_NAME="$PROFILE_NAME" python3 - <<'PY'
 import os, re
 p = os.environ["PBXPROJ"]; s = open(p).read()
-want = {
-    "CODE_SIGN_STYLE": "Manual",
-    "DEVELOPMENT_TEAM": os.environ["APPLE_TEAM_ID"],
-    '"CODE_SIGN_IDENTITY[sdk=iphoneos*]"': '"%s"' % os.environ["SIGN_IDENTITY_PREFIX"],
-    "PROVISIONING_PROFILE_SPECIFIER": '"%s"' % os.environ["PROFILE_NAME"],
-}
+# bundle id -> profile name, app first then every embedded companion.
+profiles = {os.environ["BUNDLE_ID"]: os.environ["PROFILE_NAME"]}
+for pair in os.environ.get("COMPANION_PROFILES", "").split(";"):
+    pair = pair.strip()
+    if "=" in pair:
+        bid, name = pair.split("=", 1)
+        profiles[bid.strip()] = name.strip()
+
+def settings_for(profile_name):
+    return {
+        "CODE_SIGN_STYLE": "Manual",
+        "DEVELOPMENT_TEAM": os.environ["APPLE_TEAM_ID"],
+        '"CODE_SIGN_IDENTITY[sdk=iphoneos*]"': '"%s"' % os.environ["SIGN_IDENTITY_PREFIX"],
+        "PROVISIONING_PROFILE_SPECIFIER": '"%s"' % profile_name,
+    }
+
 n = 0
 def patch(m):
     global n
     block = m.group(0)
-    if "PRODUCT_BUNDLE_IDENTIFIER = %s;" % os.environ["BUNDLE_ID"] not in block: return block
     if not re.search(r"name = (Release|Profile);", block): return block
-    for k, v in want.items():
+    # Longest id first: the app's own id is a prefix of every companion's.
+    for bid in sorted(profiles, key=len, reverse=True):
+        if "PRODUCT_BUNDLE_IDENTIFIER = %s;" % bid in block:
+            break
+    else:
+        return block
+    for k, v in settings_for(profiles[bid]).items():
         line = "\t\t\t\t%s = %s;" % (k, v)
         pat = re.compile(r"^\t\t\t\t%s = [^;]*;$" % re.escape(k), re.M)
         block = pat.sub(line, block) if pat.search(block) else block.replace("\t\t\t\tbuildSettings = {\n", "\t\t\t\tbuildSettings = {\n" + line + "\n", 1)
@@ -192,8 +213,8 @@ def patch(m):
     return block
 s = re.sub(r"\t\t[0-9A-F]{24} /\* (Release|Profile) \*/ = \{\n\t\t\tisa = XCBuildConfiguration;.*?\n\t\t\};", patch, s, flags=re.S)
 open(p, "w").write(s)
-print("==> patched %d Runner build configuration(s) for manual signing" % n)
-assert n >= 1, "Runner Release configuration not found in project.pbxproj"
+print("==> patched %d build configuration(s) for manual signing" % n)
+assert n >= 2, "expected the app and its companions in project.pbxproj"
 PY
   xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release \
     -destination 'generic/platform=iOS' -archivePath "$ARCHIVE" archive \
@@ -203,6 +224,13 @@ PY
   sed -e "s/__TEAM_ID__/$APPLE_TEAM_ID/" -e "s/__BUNDLE_ID__/$BUNDLE_ID/" \
       -e "s/__PROFILE_NAME__/$PROFILE_NAME/" -e "s/__CERT__/$SIGN_IDENTITY_PREFIX/" \
       ios/ExportOptions.manual.plist > "$EXPORT_PLIST"
+  # Every embedded bundle needs its own entry or the export refuses to sign it.
+  IFS=';' read -ra _pairs <<< "$COMPANION_PROFILES"
+  for _pair in "${_pairs[@]}"; do
+    _bid="${_pair%%=*}"; _name="${_pair#*=}"
+    [[ -z "$_bid" || "$_bid" == "$_pair" ]] && continue
+    plutil -replace "provisioningProfiles.$_bid" -string "$_name" "$EXPORT_PLIST"
+  done
   [[ "$XCODE_MAJOR" -lt 15 ]] && plutil -replace method -string app-store "$EXPORT_PLIST"
   rm -rf "$EXPORT_DIR"
   xcodebuild -exportArchive -archivePath "$ARCHIVE" -exportPath "$EXPORT_DIR" \

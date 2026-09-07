@@ -88,12 +88,16 @@ class LiveTripUpdate {
 /// 16.2, and when the user has Live Activities switched off — GO must never
 /// depend on it.
 class LiveActivity {
-  LiveActivity({MethodChannel? channel})
-      : _channel = channel ?? const MethodChannel('opentransit/live_activity');
+  LiveActivity({MethodChannel? channel, bool? platformSupported})
+      : _channel = channel ?? const MethodChannel('opentransit/live_activity'),
+        // Injectable so the bridge itself is testable off-device; production
+        // always uses the real platform check.
+        _platformSupported = platformSupported ?? (!kIsWeb && Platform.isIOS);
 
   static final LiveActivity instance = LiveActivity();
 
   final MethodChannel _channel;
+  final bool _platformSupported;
   bool _running = false;
   LiveTripUpdate? _last;
 
@@ -101,7 +105,7 @@ class LiveActivity {
 
   /// True only where an activity can actually be shown.
   Future<bool> isSupported() async {
-    if (kIsWeb || !Platform.isIOS) return false;
+    if (!_platformSupported) return false;
     return await _invoke<bool>('isSupported') ?? false;
   }
 

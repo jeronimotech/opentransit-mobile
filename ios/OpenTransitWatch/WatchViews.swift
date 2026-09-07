@@ -208,11 +208,16 @@ struct GoView: View {
 // MARK: - Root
 
 struct WatchRootView: View {
+  /// Screenshot hook: `simctl launch … -watchInitialTab 1` opens a given tab.
+  /// Launch arguments land in UserDefaults, so this costs nothing at runtime
+  /// and defaults to the first tab for real users.
+  @State private var tab = UserDefaults.standard.integer(forKey: "watchInitialTab")
+
   var body: some View {
-    TabView {
-      NavigationStack { NearbyView() }
-      NavigationStack { LocateView() }
-      NavigationStack { GoView() }
+    TabView(selection: $tab) {
+      NavigationStack { NearbyView() }.tag(0)
+      NavigationStack { LocateView() }.tag(1)
+      NavigationStack { GoView() }.tag(2)
     }
     .tabViewStyle(.verticalPage)
   }

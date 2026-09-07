@@ -102,8 +102,11 @@ TARGETS.each do |spec|
     s['SWIFT_VERSION'] = '5.0'
     s['CODE_SIGN_STYLE'] = 'Automatic'
     s['DEVELOPMENT_TEAM'] = TEAM_ID if TEAM_ID
-    s['MARKETING_VERSION'] = '$(MARKETING_VERSION)'
-    s['CURRENT_PROJECT_VERSION'] = '$(CURRENT_PROJECT_VERSION)'
+    # Version has to come from Flutter, not from a self-reference: an empty
+    # CFBundleShortVersionString makes the simulator reject the bundle with
+    # "Invalid placeholder attributes" and the App Store reject the upload.
+    s['MARKETING_VERSION'] = '$(FLUTTER_BUILD_NAME)'
+    s['CURRENT_PROJECT_VERSION'] = '$(FLUTTER_BUILD_NUMBER)'
     s['SKIP_INSTALL'] = 'YES'
     s['TARGETED_DEVICE_FAMILY'] = spec[:platform] == :watchos ? '4' : '1,2'
     if spec[:platform] == :watchos
@@ -114,6 +117,15 @@ TARGETS.each do |spec|
       s['IPHONEOS_DEPLOYMENT_TARGET'] = spec[:deployment]
     end
   end
+
+  # Point at Flutter/Generated.xcconfig directly, NOT at Runner's
+  # Debug/Release.xcconfig: those also pull in the Pods xcconfig, and a watch
+  # or widget target that inherits the app's framework search paths tries to
+  # link MapLibre and fails. Generated.xcconfig only carries the build
+  # name/number the version fields need.
+  generated = project.files.find { |f| f.path.to_s.end_with?('Flutter/Generated.xcconfig') } ||
+              project.main_group.find_subpath('Flutter', true).new_reference('Flutter/Generated.xcconfig')
+  target.build_configurations.each { |config| config.base_configuration_reference ||= generated }
 
   created << spec[:name]
 end

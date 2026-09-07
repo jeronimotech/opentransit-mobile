@@ -77,16 +77,18 @@ class WatchGoState {
 /// Pushes a snapshot (city, API base, favourites, GO state) to the paired
 /// watch. Silent no-op everywhere else, including iPhones with no watch.
 class WatchSync {
-  WatchSync({MethodChannel? channel})
-      : _channel = channel ?? const MethodChannel('opentransit/watch');
+  WatchSync({MethodChannel? channel, bool? platformSupported})
+      : _channel = channel ?? const MethodChannel('opentransit/watch'),
+        _platformSupported = platformSupported ?? (!kIsWeb && Platform.isIOS);
 
   static final WatchSync instance = WatchSync();
 
   final MethodChannel _channel;
+  final bool _platformSupported;
   String? _lastPayload;
 
   Future<bool> isSupported() async {
-    if (kIsWeb || !Platform.isIOS) return false;
+    if (!_platformSupported) return false;
     return await _invoke<bool>('isSupported') ?? false;
   }
 
