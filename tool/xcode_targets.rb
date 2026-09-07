@@ -141,7 +141,7 @@ end
 
 # Embed order matters: the watch app carries its complications, the phone app
 # carries the watch app and the Live Activity extension.
-def embed(project, host_name, child_name, phase_name, dst_subfolder)
+def embed(project, host_name, child_name, phase_name, dst_subfolder, dst_path = '')
   host = project.targets.find { |t| t.name == host_name }
   child = project.targets.find { |t| t.name == child_name }
   return unless host && child
@@ -150,8 +150,12 @@ def embed(project, host_name, child_name, phase_name, dst_subfolder)
   phase = host.copy_files_build_phases.find { |p| p.name == phase_name }
   phase ||= host.new_copy_files_build_phase(phase_name).tap do |p|
     p.symbol_dst_subfolder_spec = dst_subfolder
-    p.dst_path = ''
+    p.dst_path = dst_path
   end
+  # Repair a phase created before the destination was right: a watch app copied
+  # to the bundle root instead of Watch/ fails ValidateEmbeddedBinary.
+  phase.dst_path = dst_path
+  phase.symbol_dst_subfolder_spec = dst_subfolder
   return if phase.files_references.any? { |r| r.path.to_s.include?(child_name) }
 
   phase.add_file_reference(child.product_reference).tap do |f|
@@ -182,7 +186,7 @@ RUNNER_SOURCES.each do |rel|
 end
 
 embed(project, 'opentransit Watch App', 'OpenTransitWatchComplications', 'Embed Watch Complications', :plug_ins)
-embed(project, 'Runner', 'opentransit Watch App', 'Embed Watch Content', :wrapper)
+embed(project, 'Runner', 'opentransit Watch App', 'Embed Watch Content', :wrapper, 'Watch')
 embed(project, 'Runner', 'OpenTransitLiveActivity', 'Embed App Extensions', :plug_ins)
 
 # Flutter's "Thin Binary" script declares the whole app bundle as its output,

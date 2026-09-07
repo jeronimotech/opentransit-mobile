@@ -75,7 +75,7 @@
 		0D70D2B7CC4CC66D62167330 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "";
+			dstPath = Watch;
 			dstSubfolderSpec = 1;
 			files = (
 				5DD4ADE084392FEF0187F763 /* opentransit Watch App.app in Embed Watch Content */,
