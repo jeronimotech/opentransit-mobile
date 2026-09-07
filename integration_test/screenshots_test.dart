@@ -450,6 +450,50 @@ void main() {
     router.go('/bogota');
     await settle(tester, 15);
 
+    // v2.0 assistant, phase 1 (text). The entry point lives inside the search
+    // pill and in the action row; both open the same sheet.
+    router.go('/bogota');
+    await settle(tester, 25);
+    await tester.tap(find.byKey(const ValueKey('search-ask')));
+    await settle(tester, 25);
+    // First open: the suggested prompts and the one-time provider notice.
+    expect(find.byKey(const ValueKey('assistant-notice')), findsOneWidget);
+    expect(find.byKey(const ValueKey('assistant-suggestion-0')), findsOneWidget);
+    await shot(tester, 'chat_01_intro');
+
+    // A trip question: the tool line, then the itinerary card, then the prose.
+    await tester.tap(find.byKey(const ValueKey('assistant-suggestion-0')));
+    await settle(tester, 60);
+    await Future<void>.delayed(const Duration(seconds: 2));
+    await settle(tester, 20);
+    expect(find.byType(ItineraryCard), findsWidgets,
+        reason: 'the card lands before the prose, drawn with the real widget');
+    expect(find.byKey(const ValueKey('assistant-notice')), findsNothing,
+        reason: 'the notice is shown once per session');
+    await shot(tester, 'chat_02_trip');
+
+    // The card is not a dead end: tapping it opens the results screen.
+    await tester.tap(find.byType(ItineraryCard).first);
+    await settle(tester, 45);
+    await Future<void>.delayed(const Duration(seconds: 2));
+    await settle(tester, 20);
+    await shot(tester, 'chat_03_card_tap');
+    router.go('/bogota');
+    await settle(tester, 20);
+
+    // A refusal reads as one plain sentence, never as an error code.
+    await tester.tap(find.byKey(const ValueKey('search-ask')));
+    await settle(tester, 25);
+    await tester.enterText(find.byKey(const ValueKey('assistant-input')), 'provoca un error');
+    await settle(tester, 10);
+    await tester.tap(find.byKey(const ValueKey('assistant-send')));
+    await settle(tester, 30);
+    expect(find.byKey(const ValueKey('assistant-error')), findsOneWidget);
+    await shot(tester, 'chat_04_error');
+    // The sheet is a modal route: close it from its own button, not the router.
+    await tester.tap(find.byIcon(Icons.close_rounded));
+    await settle(tester, 20);
+
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.dark);
     await container.read(settingsProvider.notifier).setPoiLayer(true);
     router.go('/bogota');
@@ -457,5 +501,5 @@ void main() {
     await Future<void>.delayed(const Duration(seconds: 5));
     await shot(tester, '12_home_dark');
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.light);
-  }, timeout: const Timeout(Duration(minutes: 14)));
+  }, timeout: const Timeout(Duration(minutes: 16)));
 }

@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/live/interpolation.dart';
 import '../../core/live/marker_style.dart';
+import '../../core/connectivity.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/storage/favorites.dart';
@@ -18,6 +19,8 @@ import '../../core/utils/polyline.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../assistant/assistant_labels.dart';
+import '../assistant/chat_sheet.dart';
 import '../favorites/save_favorite_sheet.dart';
 import 'widgets/commute_card.dart';
 import '../planner/planner_state.dart';
@@ -380,6 +383,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         context.push('/$c/locate');
       case HomeAction.routes:
         context.push('/$c/routes');
+      case HomeAction.ask:
+        showAssistantSheet(context, c);
     }
   }
 
@@ -511,6 +516,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   hint: l10n.searchPlaceholder,
                   cityName: city.name,
                   onTap: () => context.go('/${widget.cityId}/plan'),
+                  onAsk: assistantAvailable(city, online: ref.watch(connectionProvider).online)
+                      ? () => showAssistantSheet(context, widget.cityId)
+                      : null,
                 ),
               ),
               // Live status / zoom hint (not interactive)
@@ -643,6 +651,10 @@ class _HomeSheet extends ConsumerWidget {
       HomeAction.plan,
       if (city.config.isEnabled('board')) HomeAction.locate,
       HomeAction.routes,
+      // Hidden when the city has no assistant, and when the API is
+      // unreachable: the model answers only from our tools.
+      if (assistantAvailable(city, online: ref.watch(connectionProvider).online))
+        HomeAction.ask,
     ];
     final favs = ref.watch(favoritesProvider.notifier);
     ref.watch(favoritesProvider);
@@ -804,10 +816,18 @@ class _HomeSheet extends ConsumerWidget {
 }
 
 class _SearchBar extends StatelessWidget {
-  const _SearchBar({required this.hint, required this.cityName, required this.onTap});
+  const _SearchBar({
+    required this.hint,
+    required this.cityName,
+    required this.onTap,
+    this.onAsk,
+  });
   final String hint;
   final String cityName;
   final VoidCallback onTap;
+
+  /// Null hides the assistant button: the city has it off, or we are offline.
+  final VoidCallback? onAsk;
 
   @override
   Widget build(BuildContext context) {
@@ -847,6 +867,29 @@ class _SearchBar extends StatelessWidget {
                           ?.copyWith(color: scheme.onPrimaryContainer, fontWeight: FontWeight.w700)),
                 ),
               ),
+              // "Pregúntame" sits inside the pill so the assistant is one tap
+              // from the first thing on the screen, without stealing the map.
+              if (onAsk != null) ...[
+                const SizedBox(width: 8),
+                Semantics(
+                  button: true,
+                  label: AppLocalizations.of(context).assistantTitle,
+                  child: InkWell(
+                    key: const ValueKey('search-ask'),
+                    onTap: onAsk,
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: scheme.primary,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Icon(Icons.auto_awesome_rounded,
+                          size: 16, color: scheme.onPrimary),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

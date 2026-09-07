@@ -2377,6 +2377,156 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Volver a mi ubicación'**
   String get backToMyLocation;
+
+  /// No description provided for @assistantTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregúntame'**
+  String get assistantTitle;
+
+  /// No description provided for @assistantIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Respondo con los datos de la ciudad: planeo viajes, miro próximas salidas y reviso desvíos. Si no tengo cómo saberlo, te lo digo.'**
+  String get assistantIntro;
+
+  /// No description provided for @assistantPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Pregunta por una ruta o un bus'**
+  String get assistantPlaceholder;
+
+  /// No description provided for @assistantSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get assistantSend;
+
+  /// No description provided for @assistantStop.
+  ///
+  /// In es, this message translates to:
+  /// **'Detener'**
+  String get assistantStop;
+
+  /// No description provided for @assistantClose.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get assistantClose;
+
+  /// No description provided for @assistantThinking.
+  ///
+  /// In es, this message translates to:
+  /// **'Pensando…'**
+  String get assistantThinking;
+
+  /// No description provided for @assistantNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus preguntas se envían a {provider} para redactar la respuesta. No enviamos tu ubicación exacta ni guardamos la conversación.'**
+  String assistantNotice(String provider);
+
+  /// No description provided for @assistantSuggestion1.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo llego al centro?'**
+  String get assistantSuggestion1;
+
+  /// No description provided for @assistantSuggestion2.
+  ///
+  /// In es, this message translates to:
+  /// **'¿A qué hora pasa el próximo bus?'**
+  String get assistantSuggestion2;
+
+  /// No description provided for @assistantSuggestion3.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Hay desvíos hoy?'**
+  String get assistantSuggestion3;
+
+  /// No description provided for @assistantToolPlanTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando rutas…'**
+  String get assistantToolPlanTrip;
+
+  /// No description provided for @assistantToolFindPlace.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando el lugar…'**
+  String get assistantToolFindPlace;
+
+  /// No description provided for @assistantToolNextDepartures.
+  ///
+  /// In es, this message translates to:
+  /// **'Consultando próximas salidas…'**
+  String get assistantToolNextDepartures;
+
+  /// No description provided for @assistantToolLocateBus.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubicando el bus…'**
+  String get assistantToolLocateBus;
+
+  /// No description provided for @assistantToolServiceAlerts.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisando desvíos…'**
+  String get assistantToolServiceAlerts;
+
+  /// No description provided for @assistantToolFareEstimate.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculando la tarifa…'**
+  String get assistantToolFareEstimate;
+
+  /// No description provided for @assistantToolNearbyStops.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando paradas cerca…'**
+  String get assistantToolNearbyStops;
+
+  /// No description provided for @assistantToolBikeStations.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando bicis…'**
+  String get assistantToolBikeStations;
+
+  /// No description provided for @assistantToolVehiclesNear.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando buses cerca…'**
+  String get assistantToolVehiclesNear;
+
+  /// No description provided for @assistantToolRouteInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Consultando la ruta…'**
+  String get assistantToolRouteInfo;
+
+  /// No description provided for @assistantErrBudget.
+  ///
+  /// In es, this message translates to:
+  /// **'El asistente alcanzó su presupuesto de hoy. Vuelve mañana o usa el planeador.'**
+  String get assistantErrBudget;
+
+  /// No description provided for @assistantErrDisabled.
+  ///
+  /// In es, this message translates to:
+  /// **'El asistente no está disponible en esta ciudad.'**
+  String get assistantErrDisabled;
+
+  /// No description provided for @assistantErrRate.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas muy rápido. Espera un momento y vuelve a preguntar.'**
+  String get assistantErrRate;
+
+  /// No description provided for @assistantErrUpstream.
+  ///
+  /// In es, this message translates to:
+  /// **'No pude responder ahora mismo. Intenta de nuevo.'**
+  String get assistantErrUpstream;
 }
 
 class _AppLocalizationsDelegate

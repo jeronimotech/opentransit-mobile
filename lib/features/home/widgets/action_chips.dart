@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/generated/app_localizations.dart';
 
-enum HomeAction { plan, locate, routes }
+enum HomeAction { plan, locate, routes, ask }
 
-/// The three compact actions in the home sheet's peek row (UX audit §A):
-/// Planear viaje · Ubica tu bus · Buscar ruta. Everything else lives in the
-/// bottom nav or on the map itself.
+/// The compact actions in the home sheet's peek row (UX audit §A):
+/// Planear viaje · Ubica tu bus · Buscar ruta, plus Pregúntame where the city
+/// has the assistant on. Everything else lives in the bottom nav or on the map
+/// itself. Labels shrink to fit, so a fourth chip narrows the row rather than
+/// making it scroll.
 class HomeActionChips extends StatelessWidget {
   const HomeActionChips({super.key, required this.actions, required this.onTap});
   final List<HomeAction> actions;
@@ -39,12 +41,14 @@ class HomeActionChips extends StatelessWidget {
         HomeAction.plan => Icons.alt_route_rounded,
         HomeAction.locate => Icons.directions_bus_rounded,
         HomeAction.routes => Icons.route_rounded,
+        HomeAction.ask => Icons.auto_awesome_rounded,
       };
 
   static String _label(HomeAction a, AppLocalizations l10n) => switch (a) {
         HomeAction.plan => l10n.actionPlan,
         HomeAction.locate => l10n.actionLocate,
         HomeAction.routes => l10n.actionRoutes,
+        HomeAction.ask => l10n.assistantTitle,
       };
 }
 

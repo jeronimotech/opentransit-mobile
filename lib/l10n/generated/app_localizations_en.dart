@@ -1364,4 +1364,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backToMyLocation => 'Back to my location';
+
+  @override
+  String get assistantTitle => 'Ask me';
+
+  @override
+  String get assistantIntro =>
+      'I answer from the city\'s data: I plan trips, check next departures and look up disruptions. If I have no way to know, I say so.';
+
+  @override
+  String get assistantPlaceholder => 'Ask about a route or a bus';
+
+  @override
+  String get assistantSend => 'Send';
+
+  @override
+  String get assistantStop => 'Stop';
+
+  @override
+  String get assistantClose => 'Close';
+
+  @override
+  String get assistantThinking => 'Thinking…';
+
+  @override
+  String assistantNotice(String provider) {
+    return 'Your questions are sent to $provider to write the answer. We do not send your exact location and we do not store the conversation.';
+  }
+
+  @override
+  String get assistantSuggestion1 => 'How do I get downtown?';
+
+  @override
+  String get assistantSuggestion2 => 'When is the next bus?';
+
+  @override
+  String get assistantSuggestion3 => 'Any disruptions today?';
+
+  @override
+  String get assistantToolPlanTrip => 'Finding routes…';
+
+  @override
+  String get assistantToolFindPlace => 'Looking up the place…';
+
+  @override
+  String get assistantToolNextDepartures => 'Checking next departures…';
+
+  @override
+  String get assistantToolLocateBus => 'Locating the bus…';
+
+  @override
+  String get assistantToolServiceAlerts => 'Checking disruptions…';
+
+  @override
+  String get assistantToolFareEstimate => 'Working out the fare…';
+
+  @override
+  String get assistantToolNearbyStops => 'Finding stops nearby…';
+
+  @override
+  String get assistantToolBikeStations => 'Finding bikes…';
+
+  @override
+  String get assistantToolVehiclesNear => 'Finding buses nearby…';
+
+  @override
+  String get assistantToolRouteInfo => 'Looking up the route…';
+
+  @override
+  String get assistantErrBudget =>
+      'The assistant reached today\'s budget. Come back tomorrow or use the planner.';
+
+  @override
+  String get assistantErrDisabled =>
+      'The assistant is not available in this city.';
+
+  @override
+  String get assistantErrRate => 'That was quick. Wait a moment and ask again.';
+
+  @override
+  String get assistantErrUpstream => 'I couldn\'t answer right now. Try again.';
 }

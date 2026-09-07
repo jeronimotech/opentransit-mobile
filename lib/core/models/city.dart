@@ -1,3 +1,4 @@
+import 'assistant.dart';
 import 'common.dart';
 import 'ondemand.dart';
 import 'rental.dart';
@@ -127,6 +128,7 @@ class CityConfig {
     this.minAppVersionIos,
     this.minAppVersionAndroid,
     this.maintenance = const MaintenanceState(),
+    this.assistant = const AssistantPublic(),
   });
   final int vehiclePollSeconds;
   final int departuresRefreshSeconds;
@@ -137,6 +139,9 @@ class CityConfig {
   final String? minAppVersionIos;
   final String? minAppVersionAndroid;
   final MaintenanceState maintenance;
+
+  /// Public slice only — the provider key never reaches the app.
+  final AssistantPublic assistant;
 
   bool isEnabled(String feature) => features[feature] ?? true;
 
@@ -157,6 +162,11 @@ class CityConfig {
       maintenance: MaintenanceState.fromJson(
         j['maintenance'] is Map
             ? Map<String, dynamic>.from(j['maintenance'] as Map)
+            : null,
+      ),
+      assistant: AssistantPublic.fromJson(
+        j['assistant'] is Map
+            ? Map<String, dynamic>.from(j['assistant'] as Map)
             : null,
       ),
     );

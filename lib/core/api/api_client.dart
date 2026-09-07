@@ -175,6 +175,18 @@ abstract class ApiClient {
 
   Future<void> revokeShare(String cityId, String token, String writeKey);
 
+  // ── assistant (v2.0) ───────────────────────────────────────────────────────
+
+  /// Streams one reply. [messages] is the conversation so far (role + text);
+  /// [context] carries locale and, only when the user already granted it, the
+  /// current position. Never prompt for location just to chat.
+  Stream<ChatEvent> chat(
+    String cityId, {
+    required String sessionId,
+    required List<Map<String, String>> messages,
+    required Map<String, dynamic> context,
+  });
+
   // ── v1.5 first-party analytics ──
 
   /// Posts one batch of anonymous events (`POST /v1/cities/{city}/events`).

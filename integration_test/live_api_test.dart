@@ -16,6 +16,7 @@ import 'package:opentransit_mobile/core/providers.dart';
 import 'package:opentransit_mobile/core/utils/location.dart' as loc;
 import 'package:opentransit_mobile/core/utils/notifications.dart' as notif;
 import 'package:opentransit_mobile/core/widgets/common.dart';
+import 'package:opentransit_mobile/features/assistant/chat_controller.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
 import 'package:opentransit_mobile/features/planner/widgets/itinerary_card.dart';
 import 'package:opentransit_mobile/router.dart';
@@ -398,5 +399,62 @@ void main() {
       await shot(tester, 'live_ondemand_04_stop');
       planner.setOnDemand(false);
     }
-  }, timeout: const Timeout(Duration(minutes: 16)));
+
+    // ── v2.0 assistant, phase 1, against the city's real provider ──
+    router.go('/bogota');
+    await settle(tester, 20);
+    final askButton = find.byKey(const ValueKey('search-ask'));
+    if (askButton.evaluate().isEmpty) {
+      // ignore: avoid_print
+      print('LIVE: the assistant is off for this city — skipping the chat shots');
+    } else {
+      const input = ValueKey('assistant-input');
+      const send = ValueKey('assistant-send');
+      await tester.tap(askButton);
+      await settle(tester, 25);
+      await shot(tester, 'live_chat_01_intro');
+
+      await tester.enterText(
+          find.byKey(input), '¿Cómo llego de Portal Norte a Parque de la 93?');
+      await settle(tester, 10);
+      await tester.tap(find.byKey(send));
+      // Two tool calls and a written answer take the real provider ~15 s.
+      await waitFor(tester, find.byType(ItineraryCard), seconds: 90);
+      await settle(tester, 30);
+      await shot(tester, 'live_chat_02_trip');
+
+      // The card leads into the real screen instead of ending the answer.
+      await tester.tap(find.byType(ItineraryCard).first);
+      await settle(tester, 45);
+      await Future<void>.delayed(const Duration(seconds: 3));
+      await settle(tester, 20);
+      await shot(tester, 'live_chat_03_card_tap');
+      router.go('/bogota');
+      await settle(tester, 20);
+
+      // A real refusal. The per-session rate limit is the one the server can
+      // produce on demand, and it costs nothing upstream to trip.
+      await tester.tap(askButton);
+      await settle(tester, 25);
+      final errorShown = find.byKey(const ValueKey('assistant-error'));
+      for (var i = 0; i < 9 && errorShown.evaluate().isEmpty; i++) {
+        await tester.enterText(find.byKey(input), '¿Hay desvíos hoy?');
+        await settle(tester, 5);
+        await tester.tap(find.byKey(send));
+        await settle(tester, 20);
+        if (errorShown.evaluate().isNotEmpty) break;
+        container.read(chatProvider.notifier).cancel();
+        await settle(tester, 8);
+      }
+      if (errorShown.evaluate().isNotEmpty) {
+        await shot(tester, 'live_chat_04_error');
+      } else {
+        // ignore: avoid_print
+        print('LIVE: the API answered every question — no refusal to capture; '
+            'the error states are covered by the mock walkthrough');
+      }
+      await tester.tap(find.byIcon(Icons.close_rounded));
+      await settle(tester, 15);
+    }
+  }, timeout: const Timeout(Duration(minutes: 20)));
 }

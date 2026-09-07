@@ -71,5 +71,9 @@ abstract final class Ev {
   static const alertView = 'alert_view';
   static const layerToggle = 'layer_toggle';
   static const modeToggle = 'mode_toggle';
+
+  /// The assistant's only event: which tools ran, how long it took, whether
+  /// it worked. Never the question (CONTRACT-assistant.md).
+  static const assistantQuery = 'assistant_query';
   static const error = 'error';
 }

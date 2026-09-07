@@ -140,6 +140,11 @@
     "maintenance": {
      "active": false,
      "message": null
+    },
+    "assistant": {
+     "enabled": true,
+     "provider": "deepseek",
+     "model": null
     }
    },
    "links": {
@@ -464,6 +469,11 @@
     "maintenance": {
      "active": false,
      "message": null
+    },
+    "assistant": {
+     "enabled": true,
+     "provider": "deepseek",
+     "model": null
     }
    },
    "links": {

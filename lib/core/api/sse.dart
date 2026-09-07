@@ -69,3 +69,63 @@ Stream<Map<String, dynamic>> parseSse(Stream<List<int>> bytes) {
   controller.onCancel = () => sub.cancel();
   return controller.stream;
 }
+
+/// One raw SSE frame: the `event:` name (when present) and the joined `data:`.
+class SseFrame {
+  const SseFrame(this.event, this.data);
+  final String? event;
+  final String data;
+}
+
+/// Like [parseSse], but keeps the `event:` name.
+///
+/// The chat stream carries the frame's type there rather than inside the JSON
+/// (`event: token` + `data: {"text":"…"}`), so a decoder that only reads
+/// `data:` — as [parseSse] does for the vehicle feed — cannot tell a token from
+/// a card. Frames are emitted in order; a malformed one is skipped rather than
+/// killing the stream, and a body split across chunk boundaries is buffered
+/// until its blank line arrives.
+Stream<SseFrame> parseSseFrames(Stream<List<int>> bytes) {
+  final controller = StreamController<SseFrame>();
+  final data = <String>[];
+  String? event;
+  late StreamSubscription<String> sub;
+
+  void flush() {
+    if (data.isEmpty && event == null) return;
+    final text = data.join('\n');
+    final name = event;
+    data.clear();
+    event = null;
+    if (text.isEmpty && name == null) return;
+    if (!controller.isClosed) controller.add(SseFrame(name, text));
+  }
+
+  sub = bytes
+      .cast<List<int>>()
+      .transform(utf8.decoder)
+      .transform(const LineSplitter())
+      .listen(
+    (line) {
+      if (line.isEmpty) {
+        flush();
+      } else if (line.startsWith(':')) {
+        // keep-alive comment
+      } else if (line.startsWith('data:')) {
+        data.add(line.substring(5).trimLeft());
+      } else if (line.startsWith('event:')) {
+        event = line.substring(6).trim();
+      }
+      // 'id:' and 'retry:' are ignored.
+    },
+    onError: controller.addError,
+    onDone: () {
+      flush();
+      controller.close();
+    },
+    cancelOnError: false,
+  );
+
+  controller.onCancel = () => sub.cancel();
+  return controller.stream;
+}

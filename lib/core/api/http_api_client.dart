@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
 import '../models/models.dart';
 import '../utils/geo.dart';
 import 'api_client.dart';
+import 'chat_events.dart';
 import 'sse.dart';
 
 /// Dio-backed implementation of the opentransit-api v1 contract.
@@ -234,6 +236,75 @@ class HttpApiClient implements ApiClient {
         'routeId': ?routeId,
         'bbox': ?bbox?.join(','),
       }));
+
+  @override
+  Stream<ChatEvent> chat(
+    String cityId, {
+    required String sessionId,
+    required List<Map<String, String>> messages,
+    required Map<String, dynamic> context,
+  }) async* {
+    final cancel = CancelToken();
+    Response<ResponseBody> r;
+    try {
+      r = await _dio.post<ResponseBody>(
+        '${_c(cityId)}/chat',
+        data: {'sessionId': sessionId, 'messages': messages, 'context': context},
+        cancelToken: cancel,
+        options: Options(
+          responseType: ResponseType.stream,
+          receiveTimeout: Duration.zero,
+          headers: const {'Accept': 'text/event-stream'},
+          // The endpoint answers 4xx/5xx with a JSON error envelope; letting it
+          // through turns a refusal into a typed error event instead of an
+          // exception the sheet would have to translate twice.
+          validateStatus: (_) => true,
+        ),
+      );
+    } on DioException catch (e) {
+      throw _toApiException(e);
+    }
+    final body = r.data;
+    if (body == null) return;
+
+    final status = r.statusCode ?? 200;
+    if (status >= 400) {
+      yield await _errorFromBody(body, status);
+      cancel.cancel();
+      return;
+    }
+
+    try {
+      await for (final frame in parseSseFrames(body.stream)) {
+        final ev = chatEventFrom(frame);
+        if (ev != null) yield ev;
+      }
+    } finally {
+      cancel.cancel();
+    }
+  }
+
+  /// A non-2xx chat response carries `{"error":{"code","message"}}`; anything
+  /// else becomes an upstream error so the sheet always has something to say.
+  Future<ChatError> _errorFromBody(ResponseBody body, int status) async {
+    try {
+      final chunks = <int>[];
+      await for (final c in body.stream) {
+        chunks.addAll(c);
+      }
+      final decoded = jsonDecode(utf8.decode(chunks));
+      if (decoded is Map && decoded['error'] is Map) {
+        final e = Map<String, dynamic>.from(decoded['error'] as Map);
+        return ChatError(
+          e['code']?.toString() ?? 'ASSISTANT_UPSTREAM',
+          e['message']?.toString() ?? '',
+        );
+      }
+    } catch (_) {
+      // fall through
+    }
+    return ChatError('ASSISTANT_UPSTREAM', 'HTTP $status');
+  }
 
   @override
   Stream<Map<String, dynamic>> vehicleEvents(String cityId,

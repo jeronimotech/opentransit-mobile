@@ -2,6 +2,30 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.10.0 — "Pregúntame"
+
+### Added
+- **Conversational assistant, phase 1 (text)** — a chat sheet reachable from the search pill and from the home action row. Ask "¿cómo llego al centro?" or "¿hay desvíos hoy?" and the answer comes back as prose *and* as the app's own widgets: an itinerary card you can tap into the results screen, an arrival board, an alert, a stop, a route chip. The model never answers from memory; the API makes it call our tools and write from what they return.
+- Cards land **before** the prose, as the contract requires, so something useful is on screen while the sentence is still being written.
+- A "pensando…" line that names the tool in words — "buscando rutas…", "revisando desvíos…" — never a function name. An unknown tool falls back to the plain wording rather than leaking `plan_trip` into the UI.
+- Suggested prompts on first open, deliberately city-neutral: nothing in the shipped strings names one city's stations.
+- A one-time notice per session naming the provider the city configured, read from the city payload.
+- Plain sentences for every refusal the endpoint documents (budget exhausted, rate limited, provider down, assistant off). The code itself is never shown.
+- A stop button: a reply in flight can be abandoned, keeping the prose that already arrived.
+
+### Privacy
+- **Chat text never enters analytics.** The only event is `assistant_query` with `{toolsUsed, latencyMs, ok}`; a failure emits `error` with its code and the screen. Neither the question nor where it was asked can be reconstructed from either.
+- Only role and text go back up with the next question. Cards, ids and errors stay on the device.
+- The assistant **never raises a location prompt**: it uses the position only if the user already granted it, and rounds it to three decimals (~110 m) first, which is what makes the notice's promise true.
+- The conversation lives in memory only. Closing the sheet keeps it, closing the app loses it, and changing city starts a new one.
+
+### Changed
+- The home action row gains a fourth chip, "Pregúntame", and the search pill a small button. Both are hidden when the city has the assistant off **or** the device is offline — the model answers only from our tools, so a chat with no API is a dead end.
+- `MockApiClient` answers chat with canned intents (trip, next bus, alerts, refusal, "I can't do that"), so the sheet and every state are reachable with no API and no key.
+
+### Fixed
+- Geocoder ranking upstream (`opentransit-api`): a multi-word query now prefers an exact name match, so "Parque de la 93" no longer plans from the station "Parque".
+
 ## 1.9.0 — "Cerca de mí"
 
 ### Added

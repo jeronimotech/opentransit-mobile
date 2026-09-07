@@ -32,3 +32,30 @@ Future<LatLng> currentPosition() async {
   );
   return LatLng(pos.latitude, pos.longitude);
 }
+
+/// The device position, but only when the user has *already* granted it.
+///
+/// The assistant may enrich a question with "from here", and a question is
+/// never a good reason to raise a system permission prompt: if the app does
+/// not have location yet, the model simply plans from a named place instead.
+/// Returns null on any refusal, timeout or platform error.
+Future<LatLng?> grantedPosition() async {
+  try {
+    if (!await Geolocator.isLocationServiceEnabled()) return null;
+    final p = await Geolocator.checkPermission();
+    if (p != LocationPermission.always && p != LocationPermission.whileInUse) {
+      return null;
+    }
+    final last = await Geolocator.getLastKnownPosition();
+    if (last != null) return LatLng(last.latitude, last.longitude);
+    final pos = await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.medium,
+        timeLimit: Duration(seconds: 5),
+      ),
+    );
+    return LatLng(pos.latitude, pos.longitude);
+  } catch (_) {
+    return null;
+  }
+}

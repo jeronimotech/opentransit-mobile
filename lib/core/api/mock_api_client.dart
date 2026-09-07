@@ -317,6 +317,83 @@ class MockApiClient implements ApiClient {
     );
   }
 
+  @override
+  Stream<ChatEvent> chat(
+    String cityId, {
+    required String sessionId,
+    required List<Map<String, String>> messages,
+    required Map<String, dynamic> context,
+  }) async* {
+    final q = messages.isEmpty ? '' : messages.last['content']!.toLowerCase();
+
+    // A canned reply per intent, streamed the way the server streams it: the
+    // tool first, its card as soon as it "returns", then the prose. Anything
+    // unrecognised gets the honest "no puedo con eso" path so the empty and
+    // error states are reachable in mock mode too.
+    if (q.contains('error') || q.contains('falla')) {
+      yield const ChatError('ASSISTANT_UPSTREAM', 'el proveedor no respondió');
+      return;
+    }
+
+    if (q.contains('portal sur') || q.contains('llego') || q.contains('cómo voy')) {
+      yield const ChatToolStarted('find_place', args: {'query': 'Portal Sur'});
+      await _beat();
+      yield ChatCardEvent('place', {
+        'name': 'Portal Sur',
+        'label': 'Estación · troncal',
+        'lat': 4.5974,
+        'lon': -74.1693,
+        'stopId': 'bogota:52150',
+      });
+      yield const ChatToolStarted('plan_trip');
+      await _beat();
+      yield ChatCardEvent('itineraries', await _map('plan'));
+      for (final w in 'La opción más rápida sale en 6 minutos y tarda 1 h 12 min con un transbordo.'.split(' ')) {
+        await _beat(ms: 40);
+        yield ChatToken('$w ');
+      }
+      yield const ChatDone(
+        toolsUsed: ['find_place', 'plan_trip'],
+        latencyMs: 1800,
+        costUsd: 0.0102,
+      );
+      return;
+    }
+
+    if (q.contains('bus') || q.contains('pasa') || q.contains('llega')) {
+      yield const ChatToolStarted('next_departures', args: {'stopQuery': 'Portal Norte'});
+      await _beat();
+      yield ChatCardEvent('board', await _map('board'));
+      for (final w in 'En Portal Norte el próximo es el B10 en 2 minutos, en vivo.'.split(' ')) {
+        await _beat(ms: 40);
+        yield ChatToken('$w ');
+      }
+      yield const ChatDone(toolsUsed: ['next_departures'], latencyMs: 1200, costUsd: 0.006);
+      return;
+    }
+
+    if (q.contains('desvío') || q.contains('desvio') || q.contains('alerta')) {
+      yield const ChatToolStarted('service_alerts');
+      await _beat();
+      yield ChatCardEvent('alerts', await _map('alerts'));
+      for (final w in 'Hay desvíos activos hoy; te dejo el detalle arriba.'.split(' ')) {
+        await _beat(ms: 40);
+        yield ChatToken('$w ');
+      }
+      yield const ChatDone(toolsUsed: ['service_alerts'], latencyMs: 900, costUsd: 0.004);
+      return;
+    }
+
+    for (final w in 'No tengo cómo responder eso todavía. Puedo planear un viaje, decirte cuándo pasa un bus o si hay desvíos.'.split(' ')) {
+      await _beat(ms: 40);
+      yield ChatToken('$w ');
+    }
+    yield const ChatDone(toolsUsed: [], latencyMs: 500, costUsd: 0.001);
+  }
+
+  Future<void> _beat({int ms = 220}) =>
+      Future<void>.delayed(Duration(milliseconds: ms));
+
   /// Emits the full frame, then a delta every 4 s nudging vehicles along the
   /// route they are on (using the network shapes) so the map visibly moves.
   @override

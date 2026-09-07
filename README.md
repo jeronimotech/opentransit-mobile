@@ -62,6 +62,34 @@ Against the real feed at Portal Norte: 29 buses within 600 m, 56 within 1 km
 approaching/leaving arrows there: Bogotá's GTFS-RT does not publish a bearing,
 and the mode says nothing rather than guessing a direction.
 
+### Pregúntame (v1.10)
+
+The assistant, phase 1: text. It does not answer from the model's memory — the
+API makes it call our own tools and write from what they return, so a departure
+time in the reply is a departure time the app could have shown you itself. The
+structured result is drawn with the app's own widgets and stays tappable, which
+is the whole point: an answer that ends in prose is a dead end.
+
+| First open | A trip answer | The card leads into the app | A refusal |
+|---|---|---|---|
+| ![](docs/screenshots/chat_01_intro.png) | ![](docs/screenshots/chat_02_trip.png) | ![](docs/screenshots/chat_03_card_tap.png) | ![](docs/screenshots/chat_04_error.png) |
+
+Against the real provider the city configured:
+[first open](docs/screenshots/live_chat_01_intro.png) ·
+[trip answer](docs/screenshots/live_chat_02_trip.png) ·
+[into the results](docs/screenshots/live_chat_03_card_tap.png).
+
+**What leaves the device.** The question and the answers so far, as role and
+text; the locale; and the position *only* if it was already granted, rounded to
+three decimals (~110 m) first. Never a card, never an id, never an exact fix.
+The assistant does not raise a location prompt — a question is not a reason to
+ask for someone's position. Nothing typed here reaches analytics: the one event
+is `assistant_query` with `{toolsUsed, latencyMs, ok}`.
+
+The entry points (the button in the search pill, the "Pregúntame" chip) are
+hidden when the city has the assistant off and when the device is offline. The
+key lives on the server and is never part of the city payload the app reads.
+
 More: [city picker](docs/screenshots/01_city_picker.png) · [route detail](docs/screenshots/09_route_detail.png) · [alerts](docs/screenshots/11_alerts.png) · [forced update](docs/screenshots/12_forced_update.png) · [commute inverted](docs/screenshots/lote2_02_commute_inverted.png) · [route alert schedule](docs/screenshots/lote2_05_route_alerts.png) · [share menu](docs/screenshots/lote3_01_share_menu.png) · [v1.1 hub screens](docs/screenshots/v1.1/) · [v1 screens](docs/screenshots/v1/)
 
 Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,800 buses):
@@ -220,6 +248,7 @@ lib/
     utils/     fare · service_window · eta · version · links (canonical https) · notifications · polyline · geo · colors · format · location
     widgets/   transit_map.dart (MapLibre + GeoJSON overlays incl. POIs) · common.dart (RouteChip, ComponentBadge, FreshnessLabel, ServiceHint, FareText…)
   features/
+    assistant/                              chat sheet, card renderer, conversation state (contract v2.0, phase 1)
     rental/                                 station sheet (availability, "Cómo llegar", app hand-off)
     home/ (hub tiles, alert carousel) · locate/ (Ubica tu bus) · planner/ (plan, results + sorting, itinerary + fare, follow-along)
     stops/ (board) · routes/ (list, detail) · live/ · alerts/ · favorites/ (typed, save sheet) · settings/ · config/ (gate) · cities/

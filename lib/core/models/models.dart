@@ -1,3 +1,4 @@
+export 'assistant.dart';
 export 'city.dart';
 export 'common.dart';
 export 'forecast.dart';
