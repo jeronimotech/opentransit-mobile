@@ -500,16 +500,16 @@ class MockApiClient implements ApiClient {
     final base = await plan(cityId, request);
     final anchor = request.time ?? now;
     final its = <Itinerary>[...base.itineraries];
-    for (var step = 1; its.length < maxOptions && step <= 6; step++) {
-      final minutes = step * 12 + (step >= 4 ? 25 : 0); // a long gap after the 3rd
-      for (final it in base.itineraries) {
-        if (its.length >= maxOptions) break;
-        final shift = Duration(minutes: minutes);
-        its.add(it.copyWith(
-          startTime: it.startTime.add(shift),
-          endTime: it.endTime.add(shift),
-        ));
-      }
+    // One departure per step, alternating which itinerary it is built from, so
+    // the timeline reads like a real timetable rather than a repeated triple.
+    for (var step = 1; its.length < maxOptions && step <= 8; step++) {
+      final minutes = step * 9 + (step >= 4 ? 26 : 0); // a long gap after the 3rd
+      final it = base.itineraries[step % base.itineraries.length];
+      final shift = Duration(minutes: minutes);
+      its.add(it.copyWith(
+        startTime: it.startTime.add(shift),
+        endTime: it.endTime.add(shift),
+      ));
     }
     its.sort((a, b) => a.startTime.compareTo(b.startTime));
     final within = its

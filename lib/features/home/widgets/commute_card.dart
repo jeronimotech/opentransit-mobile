@@ -98,7 +98,7 @@ class _CommuteCardState extends ConsumerState<CommuteCard> {
                   Icon(icon, size: 18, color: scheme.primary),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text('$title · ${ends.to.name}',
+                    child: Text(_titleFor(title, ends.to.name),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context)
@@ -174,6 +174,15 @@ class _CommuteCardState extends ConsumerState<CommuteCard> {
       ),
     );
   }
+}
+
+/// "Ir a casa" when the favourite is just called "Casa"; "Ir a casa · Casa de
+/// mamá" when the name actually says something the label does not.
+String _titleFor(String label, String destination) {
+  final d = destination.trim();
+  if (d.isEmpty) return label;
+  final normalised = label.toLowerCase();
+  return normalised.endsWith(d.toLowerCase()) ? label : '$label · $d';
 }
 
 class _CommuteSkeleton extends StatelessWidget {

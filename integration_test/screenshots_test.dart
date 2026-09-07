@@ -14,6 +14,7 @@ import 'package:opentransit_mobile/core/connectivity.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/providers.dart';
 import 'package:opentransit_mobile/core/storage/favorites.dart';
+import 'package:opentransit_mobile/core/utils/location.dart' as loc;
 import 'package:opentransit_mobile/core/utils/rental.dart';
 import 'package:opentransit_mobile/core/widgets/common.dart';
 import 'package:opentransit_mobile/features/planner/planner_state.dart';
@@ -43,6 +44,9 @@ void main() {
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
 
   testWidgets('walk through the app', (tester) async {
+    // `flutter drive` reinstalls the app, resetting the simulator's location
+    // authorisation; the system prompt would then cover every later shot.
+    loc.skipLocationPrompt = true;
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final container = ProviderContainer(overrides: [
@@ -195,6 +199,90 @@ void main() {
     await settle(tester, 20);
     await shot(tester, '11_alerts');
 
+    // ── Lote 2 ──
+    // Casa ⇄ Trabajo card: needs both ends saved, then it plans by itself.
+    await favs.put(Favorite.place('bogota', const Place(name: 'Cl 57 Sur # 75-10', position: LatLng(4.5990, -74.1600)), kind: FavoriteKind.work, icon: 'work', name: 'Trabajo'));
+    router.go('/bogota');
+    await settle(tester, 30);
+    await Future<void>.delayed(const Duration(seconds: 5));
+    expect(find.byKey(const ValueKey('commute-card')), findsOneWidget);
+    await shot(tester, 'lote2_01_commute_card');
+    // Inverting swaps the direction by hand.
+    await tester.tap(find.byKey(const ValueKey('commute-invert')));
+    await settle(tester, 20);
+    await Future<void>.delayed(const Duration(seconds: 3));
+    await shot(tester, 'lote2_02_commute_inverted');
+
+    // "Cuándo salir": the forecast timeline on the results screen.
+    router.go('/bogota/plan');
+    await settle(tester, 15);
+    planner.setFrom(const Place(name: 'Portal Norte', position: LatLng(4.7546, -74.0459), stopId: 'bogota:PN'));
+    planner.setTo(const Place(name: 'Portal Sur', position: LatLng(4.5978, -74.1616), stopId: 'bogota:PS'));
+    planner.setModes({TravelMode.transit, TravelMode.walk});
+    await settle(tester, 5);
+    await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+    await settle(tester, 30);
+    await tester.tap(find.byKey(const ValueKey('forecast-button')));
+    await settle(tester, 30);
+    expect(find.byKey(const ValueKey('forecast-list')), findsOneWidget);
+    expect(find.byKey(const ValueKey('forecast-recommended')), findsWidgets);
+    await Future<void>.delayed(const Duration(seconds: 2));
+    await shot(tester, 'lote2_03_when_to_leave');
+    // Picking a departure closes the sheet and re-plans at that time.
+    await tester.tap(find.byKey(const ValueKey('forecast-row-1')));
+    await settle(tester, 30);
+    expect(find.byKey(const ValueKey('forecast-list')), findsNothing);
+    expect(container.read(plannerProvider).time, isNotNull);
+
+    // Line page: live buses on the timeline and the "GO rápido" shortcut.
+    router.push('/bogota/routes/bogota:B10');
+    await settle(tester, 30);
+    await Future<void>.delayed(const Duration(seconds: 4));
+    expect(find.byKey(const ValueKey('route-live-count')), findsOneWidget);
+    expect(find.byKey(const ValueKey('quick-go-0')), findsWidgets);
+    await shot(tester, 'lote2_04_line_page');
+    // Saved-route alerts: schedule menu on the same page.
+    await tester.tap(find.byKey(const ValueKey('route-alerts-menu')));
+    await settle(tester, 15);
+    expect(find.byKey(const ValueKey('route-alert-weekdays')), findsOneWidget);
+    await shot(tester, 'lote2_05_route_alerts');
+    await tester.tap(find.byKey(const ValueKey('route-alert-weekdays')));
+    await settle(tester, 15);
+    router.pop();
+    await settle(tester, 10);
+
+    // ── Lote 3: GO ──
+    router.go('/bogota/plan');
+    await settle(tester, 15);
+    await tester.tap(find.widgetWithText(FilledButton, 'Buscar'));
+    await settle(tester, 30);
+    await tester.tap(find.byType(ItineraryCard).first);
+    await settle(tester, 30);
+    // "Compartir en vivo" lives in the share menu on the itinerary.
+    await tester.tap(find.byKey(const ValueKey('itinerary-share')));
+    await settle(tester, 15);
+    expect(find.byKey(const ValueKey('share-live')), findsOneWidget);
+    await shot(tester, 'lote3_01_share_menu');
+    Navigator.of(tester.element(find.byKey(const ValueKey('share-live')))).pop();
+    await settle(tester, 15);
+    // Start the trip: ongoing progress, current leg and the share button.
+    await tester.tap(find.widgetWithText(FilledButton, 'Iniciar viaje'));
+    await settle(tester, 40);
+    await Future<void>.delayed(const Duration(seconds: 4));
+    expect(find.byKey(const ValueKey('go-stop')), findsOneWidget);
+    expect(find.byKey(const ValueKey('go-share')), findsOneWidget);
+    await shot(tester, 'lote3_02_go_in_progress');
+    // Stopping shows the receipt.
+    await tester.tap(find.byKey(const ValueKey('go-stop')));
+    await settle(tester, 30);
+    expect(find.byKey(const ValueKey('receipt-title')), findsOneWidget);
+    await Future<void>.delayed(const Duration(seconds: 2));
+    await shot(tester, 'lote3_03_receipt');
+    await tester.tap(find.byKey(const ValueKey('receipt-close')));
+    await settle(tester, 20);
+    router.go('/bogota');
+    await settle(tester, 10);
+
     // ── v1.2 shared bikes ──
     // Planner with "Bici pública" on (chip in the network colour).
     router.go('/bogota/plan');
@@ -231,9 +319,15 @@ void main() {
     await shot(tester, 'bike_03_itinerary');
 
     // Home at street zoom in Chapinero: the stations layer with counts.
+    // Leave the home branch first: returning to `/bogota` with new focus
+    // params reuses the live HomeScreen, so the camera has to animate and the
+    // nearby-station query only refreshes once the map settles.
+    router.go('/bogota/favorites');
+    await settle(tester, 15);
     router.go('/bogota?lat=4.6772&lon=-74.0500&zoom=15.6');
-    await settle(tester, 30);
-    await Future<void>.delayed(const Duration(seconds: 5));
+    await settle(tester, 40);
+    await Future<void>.delayed(const Duration(seconds: 8));
+    await settle(tester, 20);
     expect(find.byKey(const ValueKey('nearby-rental')), findsOneWidget);
     await shot(tester, 'bike_04_home_stations');
 
@@ -303,5 +397,5 @@ void main() {
     await Future<void>.delayed(const Duration(seconds: 5));
     await shot(tester, '12_home_dark');
     await container.read(settingsProvider.notifier).setThemeMode(ThemeMode.light);
-  }, timeout: const Timeout(Duration(minutes: 8)));
+  }, timeout: const Timeout(Duration(minutes: 14)));
 }

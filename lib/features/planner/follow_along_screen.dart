@@ -9,10 +9,12 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/analytics/analytics.dart';
 import '../../core/analytics/analytics_event.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
+import '../../core/utils/location.dart';
 import '../../core/utils/go_trip.dart';
 import '../../core/utils/notifications.dart';
 import '../../core/utils/polyline.dart';
@@ -69,6 +71,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
 
   DateTime? _goStartedAt;
 
+  /// `ref` must not be touched once the element is unmounted, so everything
+  /// `dispose` reports is captured while the widget is alive.
+  Analytics? _analytics;
+  Itinerary? _lastItinerary;
+
   final _offRoute = OffRouteDetector();
   bool _offRoutePrompt = false;
   ShareSession? _share;
@@ -78,10 +85,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
   @override
   void initState() {
     super.initState();
+    _analytics = ref.read(analyticsProvider);
     final it = _itinerary();
     if (it != null) {
       _goStartedAt = DateTime.now();
-      ref.read(analyticsProvider).track(Ev.goStart, {'durationSeconds': it.durationSeconds, 'legs': it.legs.length, 'modes': it.modesUsed});
+      _analytics!.track(Ev.goStart, {'durationSeconds': it.durationSeconds, 'legs': it.legs.length, 'modes': it.modesUsed});
     }
     _start();
   }
@@ -90,7 +98,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     await LocalNotifications.instance.requestPermission();
     try {
       var perm = await Geolocator.checkPermission();
-      if (perm == LocationPermission.denied) {
+      if (perm == LocationPermission.denied && !skipLocationPrompt) {
         // Explain before the system prompt: GO is the only place we ask.
         if (mounted) {
           final l10n = AppLocalizations.of(context);
@@ -246,16 +254,17 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
   }
 
   Itinerary? _itinerary() {
+    if (!mounted) return _lastItinerary;
     final plan = ref.read(plannerProvider).result?.asData?.value;
-    if (plan == null || widget.index >= plan.itineraries.length) return null;
-    return plan.itineraries[widget.index];
+    if (plan == null || widget.index >= plan.itineraries.length) return _lastItinerary;
+    return _lastItinerary = plan.itineraries[widget.index];
   }
 
   @override
   void dispose() {
-    final it = _itinerary();
+    final it = _lastItinerary;
     if (it != null && _goStartedAt != null) {
-      ref.read(analyticsProvider).track(Ev.goEnd, {
+      _analytics?.track(Ev.goEnd, {
         'durationSeconds': it.durationSeconds,
         'elapsedSeconds': DateTime.now().difference(_goStartedAt!).inSeconds,
         'completed': _arrived,

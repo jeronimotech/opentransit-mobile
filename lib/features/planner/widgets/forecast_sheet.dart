@@ -68,6 +68,7 @@ class ForecastSheet extends ConsumerWidget {
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
                       itemCount: f.options.length,
                       itemBuilder: (context, i) => _ForecastRow(
+                        key: ValueKey('forecast-row-$i'),
                         option: f.options[i],
                         first: i == 0,
                         last: i == f.options.length - 1,
@@ -100,7 +101,7 @@ class ForecastSheet extends ConsumerWidget {
 }
 
 class _ForecastRow extends StatelessWidget {
-  const _ForecastRow({required this.option, required this.first, required this.last, required this.onTap});
+  const _ForecastRow({super.key, required this.option, required this.first, required this.last, required this.onTap});
   final ForecastOption option;
   final bool first;
   final bool last;

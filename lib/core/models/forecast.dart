@@ -90,7 +90,17 @@ class ForecastResponse {
   /// options from itineraries we already have, marking the fastest as
   /// recommended and computing the gaps between consecutive departures.
   factory ForecastResponse.fromItineraries(List<Itinerary> its) {
-    final sorted = [...its]..sort((a, b) => a.startTime.compareTo(b.startTime));
+    // The sheet answers "when should I leave?", so it lists departure times,
+    // not itineraries: several options leaving the same minute collapse to the
+    // one that arrives first. Picking a time re-plans and shows them all.
+    final byMinute = <DateTime, Itinerary>{};
+    for (final it in its) {
+      final minute = DateTime(it.startTime.year, it.startTime.month, it.startTime.day,
+          it.startTime.hour, it.startTime.minute);
+      final kept = byMinute[minute];
+      if (kept == null || it.endTime.isBefore(kept.endTime)) byMinute[minute] = it;
+    }
+    final sorted = byMinute.values.toList()..sort((a, b) => a.startTime.compareTo(b.startTime));
     if (sorted.isEmpty) return const ForecastResponse(options: []);
     final fastest = sorted.map((i) => i.durationSeconds).reduce((a, b) => a < b ? a : b);
     // "Fastest quartile" degrades to "within 10 % of the fastest" on a

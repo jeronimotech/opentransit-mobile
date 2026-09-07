@@ -1,7 +1,7 @@
 name: opentransit_mobile
 description: Open-source, multi-city, multimodal public transport trip planner (mobile app).
 publish_to: 'none'
-version: 1.5.0+7
+version: 1.6.0+8
 
 environment:
   sdk: ^3.11.0
@@ -30,12 +30,31 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
 
 flutter:
   uses-material-design: true
   generate: true
   assets:
     - assets/fixtures/
+
+# Native launch screen: the app glyph on the brand red, no text. Drawn by the
+# platform before Flutter starts, so it costs no frames of its own.
+flutter_native_splash:
+  color: "#B71C1C"
+  color_dark: "#1A0708"
+  image: assets/icon/splash_glyph.png
+  image_dark: assets/icon/splash_glyph.png
+  android: true
+  ios: true
+  web: false
+  android_12:
+    color: "#B71C1C"
+    color_dark: "#1A0708"
+    image: assets/icon/splash_glyph.png
+    image_dark: assets/icon/splash_glyph.png
+    icon_background_color: "#B71C1C"
+    icon_background_color_dark: "#1A0708"
 
 flutter_launcher_icons:
   android: true

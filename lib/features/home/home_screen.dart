@@ -46,6 +46,11 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 /// Sheet snap points (§F).
 const double kSheetPeek = 0.24;
+
+/// Peek used when the Casa ⇄ Trabajo card is on screen: it needs roughly one
+/// extra row, and pushing "Cerca de ti" out of the peek would trade a useful
+/// strip for a card the user can already reach from Favoritos.
+const double kSheetPeekWithCommute = 0.34;
 const double kSheetHalf = 0.55;
 const double kSheetFull = 0.92;
 
@@ -438,6 +443,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         final layers = MapLayers(live: settings.liveVehicles, pois: settings.poiLayer, network: settings.networkLayer,
             zonal: settings.zonalLayer, rental: settings.rentalLayer);
         final liveHint = settings.liveVehicles && liveAllowed && !style.visible;
+        // The commute card only exists when both ends are saved; when it does,
+        // the peek grows so it and "Cerca de ti" both fit.
+        final favs = ref.watch(favoritesProvider.notifier);
+        ref.watch(favoritesProvider);
+        final hasCommute = favs.ofKind(widget.cityId, FavoriteKind.home) != null &&
+            favs.ofKind(widget.cityId, FavoriteKind.work) != null;
+        final peek = hasCommute ? kSheetPeekWithCommute : kSheetPeek;
 
         return Scaffold(
           body: Stack(
@@ -453,7 +465,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   pois: _poisToPoints(pois),
                   rentalStations: _rentalToPoints(rentalStations, city, _zoom),
                   myLocation: _showMyLocation,
-                  attributionBottomInset: MediaQuery.sizeOf(context).height * kSheetPeek + 4,
+                  attributionBottomInset: MediaQuery.sizeOf(context).height * peek + 4,
                   onLongPress: _onLongPress,
                   onStopTap: (id) => context.push('/${widget.cityId}/stops/${Uri.encodeComponent(id)}'),
                   onVehicleTap: (id) => context.push('/${widget.cityId}/vehicles/${Uri.encodeComponent(id)}'),
@@ -527,7 +539,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
               // 2 + 3. Layers and locate, above the sheet's peek edge.
               Positioned(
                 right: 16,
-                bottom: MediaQuery.sizeOf(context).height * kSheetPeek + 16,
+                bottom: MediaQuery.sizeOf(context).height * peek + 16,
                 child: Column(
                   children: [
                     LayersButton(
@@ -559,11 +571,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
               // 4. Bottom sheet
               DraggableScrollableSheet(
                 controller: _sheet,
-                initialChildSize: kSheetPeek,
-                minChildSize: kSheetPeek,
+                initialChildSize: peek,
+                minChildSize: peek,
                 maxChildSize: kSheetFull,
                 snap: true,
-                snapSizes: const [kSheetPeek, kSheetHalf, kSheetFull],
+                snapSizes: [peek, kSheetHalf, kSheetFull],
                 builder: (context, controller) => _HomeSheet(
                   cityId: widget.cityId,
                   city: city,

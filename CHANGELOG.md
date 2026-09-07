@@ -4,6 +4,14 @@ All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://ke
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-09-06
+### Added
+- Lote 2: Casa ⇄ Trabajo card on Home (direction by hour, manual invert, leave-by countdown, route chip, "Ruta con desvío · Replanear" when an active alert names a route the trip uses); "Cuándo salir" sheet fed by `GET /plan/forecast` (one row per departure time, recommended option highlighted, long gaps called out) with a client-side fallback for older APIs; per-route alert schedules (Siempre · Solo días hábiles · Solo horario laboral · Nunca) raising local notifications, deduped by (route, alert) and capped at three per route per day; line page with live buses snapped to the stop timeline, a live count and "GO rápido" from any stop.
+- Lote 3: GO keeps a persistent, silent notification with the current leg and arrival time, vibrates on "bájate en la próxima", detects going off route (>150 m from the leg's shape for 45 s) and offers a re-plan from the current position, and ends with a receipt (planned vs actual, distance, estimated cost, CO₂ saved vs driving); "Compartir viaje" publishes the itinerary behind a random token and pushes progress every 30 s while GO runs, with coordinates coarsened to ~110 m before they leave the device and a write key that never does.
+- Native splash screen on both platforms (brand red with a dark variant, app glyph, no text; Android 12+ SplashScreen API and an iOS LaunchScreen storyboard), handed over on the first frame so it costs no startup time.
+### Fixed
+- GO no longer touches Riverpod's `ref` while unmounting: the analytics summary is captured while the screen is alive, which also stopped a "Using ref when a widget is about to or has been unmounted" crash after the receipt.
+
 ## [1.5.0] - 2026-09-06
 ### Added
 - Lote 1 (Citymapper playbook): leave-by countdown on result cards ("Sal en 4 min / Sal ahora / Ya salió") with departed options demoted and an "Actualizar" chip; results grouped by scenario (Más rápido · Menos caminata · Menos transbordos · Más barato · En bici · Taxi / app) with the flat sorts moved to an "Ordenar" menu; the next live departures of each transit leg as tappable chips that re-time the itinerary client-side ("Re-temporizado"); Citymapper-style board rows ("y en 13, 23 min"), contextual empty states and a slim offline/stale/back-online bar; one semantic palette (live green, walk blue, disruption orange, severe red) as a theme extension.

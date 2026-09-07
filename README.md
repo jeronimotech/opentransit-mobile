@@ -33,7 +33,17 @@ nearest station in "Cerca de ti".
 |---|---|---|---|---|
 | ![](docs/screenshots/bike_01_plan_form.png) | ![](docs/screenshots/bike_02_results.png) | ![](docs/screenshots/bike_03_itinerary.png) | ![](docs/screenshots/bike_04_home_stations.png) | ![](docs/screenshots/bike_05_station_sheet.png) |
 
-More: [city picker](docs/screenshots/01_city_picker.png) · [route detail](docs/screenshots/09_route_detail.png) · [alerts](docs/screenshots/11_alerts.png) · [forced update](docs/screenshots/12_forced_update.png) · [v1.1 hub screens](docs/screenshots/v1.1/) · [v1 screens](docs/screenshots/v1/)
+**v1.6 — Lote 2 & 3 (Citymapper playbook) and a native splash.** The commute
+you actually make is one tap from Home; "Cuándo salir" answers the question the
+results list cannot; saved routes can warn you on your own schedule; and GO
+follows the trip properly — persistent notification, "bájate en la próxima",
+off-route re-plan, an end-of-trip receipt and a live link you can share.
+
+| Casa ⇄ Trabajo | Cuándo salir | Line page + GO rápido | GO in progress | Trip receipt |
+|---|---|---|---|---|
+| ![](docs/screenshots/lote2_01_commute_card.png) | ![](docs/screenshots/lote2_03_when_to_leave.png) | ![](docs/screenshots/lote2_04_line_page.png) | ![](docs/screenshots/lote3_02_go_in_progress.png) | ![](docs/screenshots/lote3_03_receipt.png) |
+
+More: [city picker](docs/screenshots/01_city_picker.png) · [route detail](docs/screenshots/09_route_detail.png) · [alerts](docs/screenshots/11_alerts.png) · [forced update](docs/screenshots/12_forced_update.png) · [commute inverted](docs/screenshots/lote2_02_commute_inverted.png) · [route alert schedule](docs/screenshots/lote2_05_route_alerts.png) · [share menu](docs/screenshots/lote3_01_share_menu.png) · [v1.1 hub screens](docs/screenshots/v1.1/) · [v1 screens](docs/screenshots/v1/)
 
 Against the real Bogotá API (`opentransit-api` on port 8001, live GTFS-RT, ~5,800 buses):
 
