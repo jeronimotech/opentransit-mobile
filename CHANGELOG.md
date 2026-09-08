@@ -2,6 +2,13 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.11.1
+
+### Fixed
+- **Shared links carried the wrong host.** A trip shared from the app pointed at `opentransit.example.org` (the App Links placeholder, replaced in source but still baked into the installed build) and a shared live trip pointed at the sandbox web host, because `tool/testflight.sh` defaulted `API_URL` to sandbox and the API builds the share link from the deployment it is running as. TestFlight builds now default to production. Reported from a real device.
+- This app's own privacy policy is reachable from Settings, at `/{city}/privacy`; the transit operator's policy stays, labelled as theirs.
+- Geocode results ask for the reader's language, so a stop reads "Station" in an English build instead of "Estación" — that word comes from the API, which is why it was not in the ARBs.
+
 ## 1.11.0
 
 ### Added
