@@ -22,57 +22,62 @@ void main() {
   // The city's own centre, so nothing here is a hardcoded Bogotá coordinate.
   late LatLng near;
 
-  setUpAll(() async {
-    near = (await api.city(_city)).center;
-  });
+  // The skip lives on the group, not on each test: `setUpAll` runs even when
+  // every test in the file is skipped, so a per-test skip still reached for the
+  // network and failed the whole file on CI, where no API is running.
+  group('live API', () {
+    setUpAll(() async {
+      near = (await api.city(_city)).center;
+    });
 
-  test('geocode returns places, not only GTFS stops', () async {
-    final res = await api.geocode(_city, 'Calle 85', near: near);
-    expect(res, isNotEmpty);
-    expect(res.where((r) => r.source == 'photon'), isNotEmpty);
-    expect(res.where((r) => r.isStop), isNotEmpty);
-    for (final r in res) {
-      expect(['station', 'stop', 'address', 'street', 'poi', 'place'],
-          contains(r.type));
-      expect(['gtfs', 'photon'], contains(r.source));
-      expect(r.name, isNotEmpty);
-    }
-  }, skip: _skip);
+    test('geocode returns places, not only GTFS stops', () async {
+      final res = await api.geocode(_city, 'Calle 85', near: near);
+      expect(res, isNotEmpty);
+      expect(res.where((r) => r.source == 'photon'), isNotEmpty);
+      expect(res.where((r) => r.isStop), isNotEmpty);
+      for (final r in res) {
+        expect(['station', 'stop', 'address', 'street', 'poi', 'place'],
+            contains(r.type));
+        expect(['gtfs', 'photon'], contains(r.source));
+        expect(r.name, isNotEmpty);
+      }
+    });
 
-  test('a query with a house number ranks addresses', () async {
-    final res = await api.geocode(_city, 'Carrera 7 # 71-21', near: near);
-    expect(res.where((r) => r.type == 'address'), isNotEmpty);
-  }, skip: _skip);
+    test('a query with a house number ranks addresses', () async {
+      final res = await api.geocode(_city, 'Carrera 7 # 71-21', near: near);
+      expect(res.where((r) => r.type == 'address'), isNotEmpty);
+    });
 
-  test('reverse geocoding answers with a name for an arbitrary point',
-      () async {
-    final p = await api.reverse(_city, near);
-    expect(p.name.trim(), isNotEmpty);
-    expect(p.position.lat, closeTo(near.lat, 0.001));
-  }, skip: _skip);
+    test('reverse geocoding answers with a name for an arbitrary point',
+        () async {
+      final p = await api.reverse(_city, near);
+      expect(p.name.trim(), isNotEmpty);
+      expect(p.position.lat, closeTo(near.lat, 0.001));
+    });
 
-  test('any geocode result is a valid endpoint, in either direction', () async {
-    final res = await api.geocode(_city, 'Calle 85', near: near);
-    final place = res.firstWhere((r) => !r.isStop);
-    final stop = res.firstWhere((r) => r.isStop);
+    test('any geocode result is a valid endpoint, in either direction', () async {
+      final res = await api.geocode(_city, 'Calle 85', near: near);
+      final place = res.firstWhere((r) => !r.isStop);
+      final stop = res.firstWhere((r) => r.isStop);
 
-    for (final pair in [
-      (place.toPlace(), stop.toPlace()),
-      (stop.toPlace(), place.toPlace()),
-    ]) {
-      final req = PlanRequest(from: pair.$1, to: pair.$2);
-      // The labels the client sends are what makes the itinerary readable.
-      expect(req.toQuery()['fromName'], pair.$1.name);
-      expect(req.toQuery()['toName'], pair.$2.name);
-      final plan = await api.plan(_city, req);
-      expect(plan.itineraries, isNotEmpty);
-      // …and they come back on the plan, not a coordinate pair.
-      expect(plan.itineraries.first.legs, isNotEmpty);
-    }
-  }, skip: _skip);
+      for (final pair in [
+        (place.toPlace(), stop.toPlace()),
+        (stop.toPlace(), place.toPlace()),
+      ]) {
+        final req = PlanRequest(from: pair.$1, to: pair.$2);
+        // The labels the client sends are what makes the itinerary readable.
+        expect(req.toQuery()['fromName'], pair.$1.name);
+        expect(req.toQuery()['toName'], pair.$2.name);
+        final plan = await api.plan(_city, req);
+        expect(plan.itineraries, isNotEmpty);
+        // …and they come back on the plan, not a coordinate pair.
+        expect(plan.itineraries.first.legs, isNotEmpty);
+      }
+    });
 
-  test('the router is up, so a failing plan above is the planner not the API',
-      () async {
-    expect((await api.health(_city)).routerUp, isTrue);
+    test('the router is up, so a failing plan above is the planner not the API',
+        () async {
+      expect((await api.health(_city)).routerUp, isTrue);
+    });
   }, skip: _skip);
 }
