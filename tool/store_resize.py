@@ -10,8 +10,11 @@ than as a letterbox.
 
     tool/store_resize.py <in-dir> <out-dir> 1080x1920
 
-Apple, by contrast, wants the device's native pixel size, so nothing here is
-used for the iOS folders.
+Apple wants the device's native pixel size, so the iOS folders are not scaled —
+but both stores refuse an alpha channel and `simctl io … screenshot` writes
+RGBA, so pass `keep` as the size to flatten a folder to 24-bit PNG in place:
+
+    tool/store_resize.py docs/store/ios/es docs/store/ios/es keep
 """
 import sys
 from pathlib import Path
@@ -29,8 +32,9 @@ def main() -> int:
     if len(sys.argv) != 4:
         print(__doc__)
         return 2
-    src, dst, size = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3]
-    tw, th = (int(x) for x in size.lower().split("x"))
+    src, dst, size = Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3].lower()
+    keep = size == "keep"
+    tw, th = (0, 0) if keep else (int(x) for x in size.split("x"))
     dst.mkdir(parents=True, exist_ok=True)
 
     files = sorted(p for p in src.iterdir() if p.suffix.lower() == ".png")
@@ -39,6 +43,10 @@ def main() -> int:
         return 1
     for p in files:
         im = Image.open(p).convert("RGB")
+        if keep:
+            im.save(dst / p.name, "PNG", optimize=True)
+            print(f"{p.name}: {im.width}x{im.height} flattened to 24-bit")
+            continue
         scale = min(tw / im.width, th / im.height)
         w, h = round(im.width * scale), round(im.height * scale)
         canvas = Image.new("RGB", (tw, th), edge_colour(im))

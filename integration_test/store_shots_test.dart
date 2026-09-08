@@ -113,15 +113,34 @@ void main() {
     await settle(tester, 20);
     await shot(tester, '01_home_map');
 
-    // 2 ── Planning a trip from an address.
+    // 2 ── Planning a trip from an address: the real geocoder answering a
+    // half-typed Bogotá address. (The empty planner form is the same journey
+    // with none of the map or data on screen, so it is not the shot we ship.)
     final planner = container.read(plannerProvider.notifier);
+    planner.setTo(_to);
+    router.go('/bogota/plan');
+    await settle(tester, 20);
+    router.push('/bogota/search?field=from');
+    await settle(tester, 25);
+    await tester.enterText(find.byType(TextField).first, 'Avenida Carrera 7 # 32');
+    await settle(tester, 30);
+    await waitFor(tester, find.byKey(const ValueKey('result-0')), seconds: 30);
+    // Drop focus before the capture: the field autofocuses, and iOS answers
+    // with the software keyboard (plus, on a fresh simulator, its bilingual
+    // "Type español e inglés" tutorial card) covering half the frame. A user
+    // scrolling the results sees exactly this state.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await settle(tester, 20);
+    await Future<void>.delayed(const Duration(seconds: 3));
+    await settle(tester, 15);
+    await shot(tester, '02_search_address');
+    router.go('/bogota/plan');
+    await settle(tester, 20);
+
     planner.setFrom(_from);
     planner.setTo(_to);
     planner.setModes({TravelMode.transit, TravelMode.walk});
-    router.go('/bogota/plan');
-    await settle(tester, 25);
-    await Future<void>.delayed(const Duration(seconds: 2));
-    await shot(tester, '02_plan_from_address');
+    await settle(tester, 10);
 
     // 3 ── Results. Driven through the notifier rather than the localised CTA.
     final plan = await planner.plan('bogota');

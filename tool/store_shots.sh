@@ -72,6 +72,15 @@ mkdir -p "$(dirname "$PREFS")"
 xcrun simctl boot "$UDID" >/dev/null 2>&1 || true
 xcrun simctl bootstatus "$UDID" -b >/dev/null 2>&1 || true
 
+# Best-effort: mark the keyboard's one-time tutorials as already seen, so a
+# fresh simulator cannot slide "Type español e inglés" over a capture. The
+# walkthrough also drops focus before shooting the search screen, which is the
+# reliable half of this belt-and-braces.
+for k in DidShowContinuousPathIntroduction DidShowGestureKeyboardIntroduction \
+         DidShowMultilingualTypingIntroduction; do
+  xcrun simctl spawn "$UDID" defaults write com.apple.keyboard.preferences "$k" -bool true >/dev/null 2>&1 || true
+done
+
 # A clean marketing status bar (Apple's own screenshots use 9:41).
 xcrun simctl status_bar "$UDID" override \
   --time "9:41" \

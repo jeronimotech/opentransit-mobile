@@ -24,7 +24,16 @@ ADB="$(command -v adb || echo "$SDK/platform-tools/adb")"
 mkdir -p "$OUT_DIR"
 
 STARTED_EMULATOR=0
-SERIAL="$("$ADB" devices | awk '/^emulator-/{print $1; exit}')"
+# Only reuse an emulator that is actually up: a serial can linger in
+# `adb devices` for a few seconds after `emu kill`, and reusing that ghost makes
+# `flutter drive` fail with "No supported devices found".
+SERIAL=""
+for cand in $("$ADB" devices | awk '/^emulator-/{print $1}'); do
+  if [[ "$("$ADB" -s "$cand" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; then
+    SERIAL="$cand"
+    break
+  fi
+done
 if [[ -z "$SERIAL" ]]; then
   echo ">>> booting $AVD"
   "$EMULATOR" -avd "$AVD" -no-snapshot-save -no-boot-anim -gpu auto >/dev/null 2>&1 &
@@ -39,18 +48,33 @@ cleanup() {
   if [[ "$STARTED_EMULATOR" == "1" ]]; then
     echo ">>> shutting $SERIAL down"
     "$ADB" -s "$SERIAL" emu kill >/dev/null 2>&1 || true
+    # Wait for the serial to leave `adb devices`, so a run started right after
+    # this one does not latch onto the dying emulator.
+    for _ in $(seq 1 30); do
+      "$ADB" devices | grep -q "^$SERIAL" || break
+      sleep 1
+    done
   fi
 }
 trap cleanup EXIT
 
 # A clean demo status bar (the Android equivalent of simctl status_bar).
+# SystemUI drops demo mode whenever something it owns changes — the app asking
+# for location is enough — so this is re-applied immediately before every
+# capture rather than only once at boot.
 "$ADB" -s "$SERIAL" shell settings put global sysui_demo_allowed 1 >/dev/null 2>&1 || true
-"$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command enter >/dev/null 2>&1 || true
-"$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 0941 >/dev/null 2>&1 || true
-"$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command network -e wifi show -e level 4 >/dev/null 2>&1 || true
-"$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e datatype lte -e level 4 >/dev/null 2>&1 || true
-"$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false -e level 100 >/dev/null 2>&1 || true
-"$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false >/dev/null 2>&1 || true
+demo() {
+  "$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command enter >/dev/null 2>&1 || true
+  "$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 0941 >/dev/null 2>&1 || true
+  # `fully true` is what clears the "!" the emulator paints on the Wi-Fi icon
+  # when Android has not validated the connection.
+  "$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command network -e wifi show -e level 4 -e fully true >/dev/null 2>&1 || true
+  "$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e datatype lte -e level 4 -e fully true >/dev/null 2>&1 || true
+  "$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false -e level 100 >/dev/null 2>&1 || true
+  "$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command status -e volume hide -e bluetooth hide -e location hide -e alarm hide -e mute hide >/dev/null 2>&1 || true
+  "$ADB" -s "$SERIAL" shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false >/dev/null 2>&1 || true
+}
+demo
 
 # Park the device at Portal Norte and pre-grant location, like the iOS script.
 "$ADB" -s "$SERIAL" emu geo fix -74.0459 4.7546 >/dev/null 2>&1 || true
@@ -75,6 +99,7 @@ flutter drive \
     if [[ "$line" == *"SCREENSHOT:"* ]]; then
       name="${line##*SCREENSHOT:}"
       name="${name%%[[:space:]]*}"
+      demo
       sleep 1.5
       "$ADB" -s "$SERIAL" exec-out screencap -p > "$OUT_DIR/$name.png" && echo ">>> saved $OUT_DIR/$name.png"
     fi

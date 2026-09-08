@@ -49,3 +49,7 @@ app.*.map.json
 
 # private venv created by tool/asc_signing.py
 tool/.venv-asc/
+
+# Intermediate emulator captures the Play folder is derived from (12 MB, one command
+# to regenerate — see docs/store/README.md). The fitted 1080x1920 set is committed.
+docs/store/android-raw/
