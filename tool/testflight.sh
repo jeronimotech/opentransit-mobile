@@ -21,7 +21,8 @@
 #   KEYCHAIN_NAME     dedicated keychain (default opentransit-signing)
 #   KEYCHAIN_PW       its password; read from $KEYCHAIN_ENV when unset, generated on first creation
 #   KEYCHAIN_ENV      file holding KEYCHAIN_PW / DIST_P12_PASSWORD (default ~/.config/opentransit/keychain.env)
-#   API_URL           opentransit API baked into the build (default https://api-sandbox-622d.up.railway.app)
+#   API_URL           opentransit API baked into the build (default: production, https://api.opentransit.tech).
+#                     Override to https://api-sandbox-622d.up.railway.app to test against sandbox.
 #   WEB_HOST          web host for Universal Links
 #   BUILD_NUMBER      CFBundleVersion (default: minutes since epoch — always increasing)
 #   BUILD_NAME        CFBundleShortVersionString (default: version from pubspec.yaml)
@@ -63,7 +64,9 @@ DIST_DIR="${DIST_DIR:-$HOME/.config/opentransit/apple-dist}"
 KEYCHAIN_NAME="${KEYCHAIN_NAME:-opentransit-signing}"
 KEYCHAIN_ENV="${KEYCHAIN_ENV:-$HOME/.config/opentransit/keychain.env}"
 KEYCHAIN_PATH="$HOME/Library/Keychains/$KEYCHAIN_NAME.keychain-db"
-API_URL="${API_URL:-https://api-sandbox-622d.up.railway.app}"
+# Production by default. This defaulted to sandbox, so a tester's build talked to
+# sandbox and a shared trip carried a sandbox link to whoever received it.
+API_URL="${API_URL:-https://api.opentransit.tech}"
 WEB_HOST="${WEB_HOST:-}"
 BUILD_NUMBER="${BUILD_NUMBER:-$(( $(date +%s) / 60 ))}"
 BUILD_NAME="${BUILD_NAME:-$(sed -n 's/^version: *\([0-9.]*\).*/\1/p' pubspec.yaml)}"
