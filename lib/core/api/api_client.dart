@@ -32,6 +32,8 @@ abstract class ApiClient {
     String cityId,
     String query, {
     LatLng? near,
+    /// The reader's language, so a stop's label reads "Station" and not "Estación".
+    String? locale,
     int limit = 8,
   });
   Future<Place> reverse(String cityId, LatLng position);

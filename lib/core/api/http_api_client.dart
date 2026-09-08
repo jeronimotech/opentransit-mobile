@@ -100,12 +100,15 @@ class HttpApiClient implements ApiClient {
 
   @override
   Future<List<GeocodeResult>> geocode(String cityId, String query,
-      {LatLng? near, int limit = 8}) async {
+      {LatLng? near, int limit = 8, String? locale}) async {
     final j = await _get('${_c(cityId)}/geocode', query: {
       'q': query,
       'lat': ?near?.lat,
       'lon': ?near?.lon,
       'limit': limit,
+      // A stop's label carries one word of UI text; without this the API answers
+      // in the city's language whoever is reading.
+      'locale': ?locale,
     });
     return asList(j['results'], GeocodeResult.fromJson);
   }

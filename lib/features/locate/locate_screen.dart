@@ -123,9 +123,12 @@ class _StopPickerState extends ConsumerState<_StopPicker> {
       return;
     }
     setState(() => _loading = true);
+    // Read before the first await: a BuildContext is not valid across an async gap.
+    final locale = Localizations.localeOf(context).languageCode;
     try {
       final city = await ref.read(cityProvider(widget.cityId).future);
-      final r = await ref.read(apiClientProvider).geocode(widget.cityId, q, near: _here ?? city.center, limit: 12);
+      final r = await ref.read(apiClientProvider).geocode(widget.cityId, q,
+          near: _here ?? city.center, limit: 12, locale: locale);
       if (!mounted) return;
       setState(() {
         _results = r.where((x) => x.stopId != null).toList();

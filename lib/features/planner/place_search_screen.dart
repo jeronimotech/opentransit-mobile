@@ -104,9 +104,12 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
       _loading = true;
       _error = null;
     });
+    // Read before the first await: a BuildContext is not valid across an async gap.
+    final locale = Localizations.localeOf(context).languageCode;
     try {
       final city = await ref.read(cityProvider(widget.cityId).future);
-      final r = await ref.read(apiClientProvider).geocode(widget.cityId, q, near: _here ?? city.center);
+      final r = await ref.read(apiClientProvider).geocode(widget.cityId, q,
+          near: _here ?? city.center, locale: locale);
       if (seq != _seq || !mounted) return;
       setState(() {
         _results = r;

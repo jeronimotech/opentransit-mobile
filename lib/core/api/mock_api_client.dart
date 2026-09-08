@@ -131,7 +131,7 @@ class MockApiClient implements ApiClient {
 
   @override
   Future<List<GeocodeResult>> geocode(String cityId, String query,
-      {LatLng? near, int limit = 8}) async {
+      {LatLng? near, int limit = 8, String? locale}) async {
     final all = asList((await _map('geocode'))['results'], GeocodeResult.fromJson);
     final q = _norm(query.trim());
     if (q.isEmpty) return all.take(limit).toList();
