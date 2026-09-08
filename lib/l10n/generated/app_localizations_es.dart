@@ -1167,6 +1167,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get privacyPolicy => 'Política de privacidad';
 
   @override
+  String get agencyPrivacyPolicy => 'Política de privacidad de la entidad';
+
+  @override
   String get commuteToWork => 'Ir al trabajo';
 
   @override

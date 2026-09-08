@@ -737,6 +737,10 @@
   "analyticsClear": "Borrar mis estadísticas",
   "analyticsCleared": "Estadísticas borradas y identificador renovado",
   "privacyPolicy": "Política de privacidad",
+  "agencyPrivacyPolicy": "Política de privacidad de la entidad",
+  "@agencyPrivacyPolicy": {
+    "description": "Link to the transit operator's own policy, distinct from this app's"
+  },
   "commuteToWork": "Ir al trabajo",
   "commuteToHome": "Ir a casa",
   "commuteInvert": "Invertir",

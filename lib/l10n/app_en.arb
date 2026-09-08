@@ -518,6 +518,10 @@
   "analyticsClear": "Delete my statistics",
   "analyticsCleared": "Statistics deleted and identifier renewed",
   "privacyPolicy": "Privacy policy",
+  "agencyPrivacyPolicy": "Transit agency privacy policy",
+  "@agencyPrivacyPolicy": {
+    "description": "Link to the transit operator's own policy, distinct from this app's"
+  },
   "commuteToWork": "Go to work",
   "commuteToHome": "Go home",
   "commuteInvert": "Invert",

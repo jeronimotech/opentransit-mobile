@@ -18,6 +18,9 @@ class CanonicalLinks {
   static Uri route(String cityId, String routeId) => _u('/$cityId/routes/$routeId');
   static Uri live(String cityId) => _u('/$cityId/live');
   static Uri alerts(String cityId) => _u('/$cityId/alerts');
+  /// This app's own privacy policy. The agency's policy (`city.links.privacy`)
+  /// describes the transit operator, not this app, so it cannot stand in for it.
+  static Uri privacy(String cityId) => _u('/$cityId/privacy');
   static Uri locate(String cityId, {String? stopId, String? routeId}) =>
       _u('/$cityId/locate', {'stop': ?stopId, 'route': ?routeId});
 

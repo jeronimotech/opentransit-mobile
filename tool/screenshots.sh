@@ -11,7 +11,8 @@ DEVICE="${1:-}"
 DEVICE="${DEVICE:-$(xcrun simctl list devices booted -j | python3 -c 'import sys,json;d=json.load(sys.stdin)["devices"];print(next(x["udid"] for v in d.values() for x in v if x["state"]=="Booted"))')}"
 TARGET="${2:-integration_test/screenshots_test.dart}"
 shift $(( $# > 2 ? 2 : $# ))
-OUT=docs/screenshots
+# Where the PNGs land. Override with `OUT=docs/store/ios/es tool/screenshots.sh …`.
+OUT="${OUT:-docs/screenshots}"
 mkdir -p "$OUT"
 
 # Pre-grant location so the system prompt never covers the app, and park the

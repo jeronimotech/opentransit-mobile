@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/config.dart';
 import '../../core/providers.dart';
 import '../../core/widgets/common.dart';
+import '../../core/utils/links.dart';
 import '../../l10n/generated/app_localizations.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -134,10 +135,20 @@ class SettingsScreen extends ConsumerWidget {
               }
             },
           ),
-          if (city?.links.privacy != null)
+          // This app's own policy comes first. `links.privacy` is the transit
+          // operator's, which says nothing about what this app collects, so it
+          // cannot stand in for ours -- both stores ask for the app's own.
+          if (city != null)
             ListTile(
               leading: const Icon(Icons.privacy_tip_outlined),
               title: Text(l10n.privacyPolicy),
+              trailing: const Icon(Icons.open_in_new, size: 18),
+              onTap: () => _open(CanonicalLinks.privacy(city.id).toString()),
+            ),
+          if (city?.links.privacy != null)
+            ListTile(
+              leading: const Icon(Icons.account_balance_outlined),
+              title: Text(l10n.agencyPrivacyPolicy),
               trailing: const Icon(Icons.open_in_new, size: 18),
               onTap: () => _open(city!.links.privacy!),
             ),

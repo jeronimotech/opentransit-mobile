@@ -2042,6 +2042,12 @@ abstract class AppLocalizations {
   /// **'Política de privacidad'**
   String get privacyPolicy;
 
+  /// Link to the transit operator's own policy, distinct from this app's
+  ///
+  /// In es, this message translates to:
+  /// **'Política de privacidad de la entidad'**
+  String get agencyPrivacyPolicy;
+
   /// No description provided for @commuteToWork.
   ///
   /// In es, this message translates to:
