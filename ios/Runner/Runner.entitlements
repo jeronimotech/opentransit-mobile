@@ -7,7 +7,7 @@
 	     serve /.well-known/apple-app-site-association there. -->
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:opentransit.example.org</string>
+		<string>applinks:bogota.opentransit.tech</string>
 	</array>
 </dict>
 </plist>

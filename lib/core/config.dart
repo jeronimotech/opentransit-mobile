@@ -39,6 +39,6 @@ class AppConfig {
   /// `ios/Runner/Runner.entitlements`.
   static const String webHost = String.fromEnvironment(
     'WEB_HOST',
-    defaultValue: 'opentransit.example.org',
+    defaultValue: 'bogota.opentransit.tech',
   );
 }
