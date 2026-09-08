@@ -599,6 +599,12 @@ void _goNavigationGuards() {
       expect(map, contains('MyLocationRenderMode.gps'));
       // Refitting bounds every fix would fight the follow camera.
       expect(map, contains('if (!widget.navigating &&'));
+      // Pitch is what makes it read as 3D: it looks along the way ahead rather
+      // than straight down, and the basemap's building extrusions come with it.
+      expect(map, contains('CameraUpdate.tiltTo(widget.navigationTilt)'));
+      expect(map, contains('CameraUpdate.zoomTo(widget.navigationZoom)'));
+      // Leaving navigation flattens the camera again for the overview.
+      expect(map, contains('CameraUpdate.tiltTo(0)'));
       // Tracking resumes only when the screen asks, never on its own.
       expect(map, contains('widget.recenterSignal != oldWidget.recenterSignal'));
     });

@@ -129,6 +129,8 @@ class TransitMap extends StatefulWidget {
     this.fitPadding = const EdgeInsets.fromLTRB(40, 120, 40, 260),
     this.myLocation = false,
     this.navigating = false,
+    this.navigationTilt = 55,
+    this.navigationZoom = 17.5,
     this.recenterSignal = 0,
     this.onTrackingDismissed,
     this.onLongPress,
@@ -174,6 +176,14 @@ class TransitMap extends StatefulWidget {
   /// travel is up, the way a turn-by-turn view does. [fitTo] is ignored while this
   /// is on — refitting bounds on every fix is an overview, not navigation.
   final bool navigating;
+
+  /// Camera pitch while navigating, in degrees. A pitched camera is what makes a
+  /// navigation view read as 3D: it looks along the road ahead instead of straight
+  /// down. MapLibre clamps this to what the current zoom allows.
+  final double navigationTilt;
+
+  /// Street-level zoom while navigating. The overview zoom is useless for walking.
+  final double navigationZoom;
 
   /// Bumping this resumes following after the person panned the map away. The map
   /// must never fight a gesture, so tracking is only restored on request.
@@ -239,6 +249,14 @@ class TransitMapState extends State<TransitMap> {
     }
   }
 
+  /// Pitch and zoom for navigation. Tracking keeps the target and the bearing
+  /// current; pitch and zoom are ours to set and the map preserves them, so this
+  /// runs when navigation starts and whenever the person asks to be re-centred.
+  void _applyNavigationCamera(ml.MapLibreMapController c) {
+    c.animateCamera(ml.CameraUpdate.zoomTo(widget.navigationZoom));
+    c.animateCamera(ml.CameraUpdate.tiltTo(widget.navigationTilt));
+  }
+
   Future<void> fitBounds(List<LatLng> pts, {EdgeInsets? padding}) async {
     final c = _c;
     final b = boundsOf(pts);
@@ -280,7 +298,9 @@ class TransitMapState extends State<TransitMap> {
     _ready = true;
     await _syncAll();
     await _syncDraggable();
-    if (!widget.navigating && widget.fitTo != null && widget.fitTo!.isNotEmpty) {
+    if (widget.navigating) {
+      _applyNavigationCamera(c);
+    } else if (widget.fitTo != null && widget.fitTo!.isNotEmpty) {
       await fitBounds(widget.fitTo!);
     }
     widget.onMapReady?.call();
@@ -589,6 +609,15 @@ class TransitMapState extends State<TransitMap> {
     // camera back from a gesture on its own.
     if (widget.navigating && widget.recenterSignal != oldWidget.recenterSignal) {
       c.updateMyLocationTrackingMode(ml.MyLocationTrackingMode.trackingGps);
+      _applyNavigationCamera(c);
+    }
+    if (widget.navigating != oldWidget.navigating) {
+      if (widget.navigating) {
+        _applyNavigationCamera(c);
+      } else {
+        // Back to an overview: flat, so the whole trip reads at a glance.
+        c.animateCamera(ml.CameraUpdate.tiltTo(0));
+      }
     }
     if (!identical(oldWidget.lines, widget.lines)) {
       _setSource(_srcLines, _lineFc(widget.lines));
