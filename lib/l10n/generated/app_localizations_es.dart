@@ -1462,4 +1462,44 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cancel => 'Cancelar';
+
+  @override
+  String get pickOnMapHint => 'Mueve el mapa para elegir el punto';
+
+  @override
+  String get pickOnMapSearching => 'Buscando dirección…';
+
+  @override
+  String get pickOnMapConfirmOrigin => 'Confirmar origen';
+
+  @override
+  String get pickOnMapConfirmDestination => 'Confirmar destino';
+
+  @override
+  String get dragPinsHint =>
+      'Arrastra los pines para mover el origen o el destino';
+
+  @override
+  String get replanning => 'Recalculando el viaje…';
+
+  @override
+  String get replanFailed => 'No se pudo recalcular el viaje';
+
+  @override
+  String get placeTypeStation => 'Estación';
+
+  @override
+  String get placeTypeStop => 'Parada';
+
+  @override
+  String get placeTypeAddress => 'Dirección';
+
+  @override
+  String get placeTypeStreet => 'Calle';
+
+  @override
+  String get placeTypePlace => 'Lugar';
+
+  @override
+  String get placeOptions => 'Opciones del lugar';
 }

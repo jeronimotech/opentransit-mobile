@@ -13,6 +13,7 @@ import '../../core/utils/rental.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/mode_grid.dart';
 import '../../l10n/generated/app_localizations.dart';
+import 'planner_actions.dart';
 import 'planner_state.dart';
 
 /// Trip planning form (UX audit §C): one origin/destination block, one time
@@ -29,7 +30,8 @@ class PlanScreen extends ConsumerStatefulWidget {
 }
 
 class _PlanScreenState extends ConsumerState<PlanScreen> {
-  bool _locating = false;
+  /// Which field is waiting for a location fix, if any.
+  PlaceField? _locating;
 
   @override
   void initState() {
@@ -59,27 +61,15 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     if (changed && ref.read(plannerProvider).canPlan) _submit();
   }
 
-  Future<void> _submit() async {
-    final s = ref.read(plannerProvider);
-    if (s.from != null && s.to != null) {
-      // Remember the O/D pair for one-tap replanning (last 10, local only).
-      await ref.read(recentTripsProvider.notifier).add(RecentTrip(
-          cityId: widget.cityId, from: s.from!, to: s.to!, at: DateTime.now()));
-    }
-    final res = await ref.read(plannerProvider.notifier).plan(widget.cityId);
-    if (!mounted) return;
-    // Navigate even on error so the results screen shows the retry state.
-    if (res != null || ref.read(plannerProvider).result != null) {
-      context.push('/${widget.cityId}/results');
-    }
-  }
+  Future<void> _submit() => runPlan(ref, GoRouter.of(context), widget.cityId);
 
-  Future<void> _useMyLocation() async {
-    setState(() => _locating = true);
+  /// "Mi ubicación", available for the origin *and* the destination.
+  Future<void> _useMyLocation(PlaceField field) async {
+    setState(() => _locating = field);
     try {
       final p = await currentPosition();
       if (!mounted) return;
-      ref.read(plannerProvider.notifier).setFrom(
+      assignPlace(ref, field,
           Place(name: AppLocalizations.of(context).myLocation, position: p));
     } on LocationDenied {
       if (mounted) {
@@ -89,8 +79,20 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     } catch (_) {
       // ignore transient location failures
     } finally {
-      if (mounted) setState(() => _locating = false);
+      if (mounted) setState(() => _locating = null);
     }
+  }
+
+  /// Full-screen map picker for [field], opened on whatever it already holds.
+  void _chooseOnMap(PlaceField field) => context.push(pickOnMapLocation(
+      widget.cityId, field,
+      at: placeOf(ref.read(plannerProvider), field)?.position));
+
+  /// Swaps the two ends. Works with one of them empty (the empty one simply
+  /// moves across); re-plans only when both are set.
+  void _swap() {
+    ref.read(plannerProvider.notifier).swap();
+    if (ref.read(plannerProvider).canPlan) _submit();
   }
 
   /// Single time control: a sheet with *Salir a las / Llegar antes de* and
@@ -269,32 +271,44 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                 Expanded(
                   child: Column(
                     children: [
+                      // Both ends carry the same three affordances: type,
+                      // "mi ubicación", "elegir en el mapa" (contract v2.1).
                       _PlaceField(
+                        fieldKey: const ValueKey('field-from'),
                         label: l10n.fromLabel,
                         place: s.from,
-                        trailing: IconButton(
-                          tooltip: l10n.myLocation,
-                          onPressed: _locating ? null : _useMyLocation,
-                          icon: _locating
-                              ? const SizedBox(
-                                  width: 18, height: 18,
-                                  child: CircularProgressIndicator(strokeWidth: 2))
-                              : const Icon(Icons.my_location, size: 20),
-                        ),
+                        locating: _locating == PlaceField.from,
+                        onMyLocation: _locating != null
+                            ? null
+                            : () => _useMyLocation(PlaceField.from),
+                        onChooseOnMap: () => _chooseOnMap(PlaceField.from),
+                        myLocationTooltip: l10n.myLocation,
+                        mapTooltip: l10n.chooseOnMap,
                         onTap: () => context.push('/${widget.cityId}/search?field=from'),
                       ),
                       const Divider(height: 8),
                       _PlaceField(
+                        fieldKey: const ValueKey('field-to'),
                         label: l10n.toLabel,
                         place: s.to,
+                        locating: _locating == PlaceField.to,
+                        onMyLocation: _locating != null
+                            ? null
+                            : () => _useMyLocation(PlaceField.to),
+                        onChooseOnMap: () => _chooseOnMap(PlaceField.to),
+                        myLocationTooltip: l10n.myLocation,
+                        mapTooltip: l10n.chooseOnMap,
                         onTap: () => context.push('/${widget.cityId}/search?field=to'),
                       ),
                     ],
                   ),
                 ),
                 IconButton(
+                  key: const ValueKey('swap-places'),
                   tooltip: l10n.swap,
-                  onPressed: () => ref.read(plannerProvider.notifier).swap(),
+                  // Enabled with one field empty: swapping a half-filled form
+                  // is exactly when it is most useful.
+                  onPressed: s.from == null && s.to == null ? null : _swap,
                   icon: const Icon(Icons.swap_vert),
                 ),
               ],
@@ -461,16 +475,32 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
 }
 
 class _PlaceField extends StatelessWidget {
-  const _PlaceField({required this.label, required this.place, required this.onTap, this.trailing});
+  const _PlaceField({
+    required this.label,
+    required this.place,
+    required this.onTap,
+    required this.onMyLocation,
+    required this.onChooseOnMap,
+    required this.myLocationTooltip,
+    required this.mapTooltip,
+    this.locating = false,
+    this.fieldKey,
+  });
   final String label;
   final Place? place;
   final VoidCallback onTap;
-  final Widget? trailing;
+  final VoidCallback? onMyLocation;
+  final VoidCallback onChooseOnMap;
+  final String myLocationTooltip;
+  final String mapTooltip;
+  final bool locating;
+  final Key? fieldKey;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return InkWell(
+      key: fieldKey,
       borderRadius: BorderRadius.circular(12),
       onTap: onTap,
       child: ConstrainedBox(
@@ -497,7 +527,20 @@ class _PlaceField extends StatelessWidget {
                   ],
                 ),
               ),
-              ?trailing,
+              IconButton(
+                tooltip: myLocationTooltip,
+                onPressed: onMyLocation,
+                icon: locating
+                    ? const SizedBox(
+                        width: 18, height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.my_location, size: 20),
+              ),
+              IconButton(
+                tooltip: mapTooltip,
+                onPressed: onChooseOnMap,
+                icon: const Icon(Icons.map_outlined, size: 20),
+              ),
             ],
           ),
         ),

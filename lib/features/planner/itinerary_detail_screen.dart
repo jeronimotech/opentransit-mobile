@@ -22,6 +22,7 @@ import '../ondemand/provider_picker.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
+import 'planner_actions.dart';
 import 'planner_state.dart';
 
 class ItineraryDetailScreen extends ConsumerStatefulWidget {
@@ -37,7 +38,9 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
   List<MapLine>? _lines;
   List<MapPoint>? _stops;
   List<MapPoint>? _markers;
+  List<MapPoint>? _pins;
   List<LatLng>? _fit;
+  bool _replanning = false;
   Itinerary? _built;
 
   /// Client-side re-timed copy after the user picked another live departure.
@@ -94,11 +97,49 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
     final last = it.legs.last.to.position;
     _lines = lines;
     _stops = stops;
-    _markers = [
-      MapPoint(id: 'origin', position: first, color: const Color(0xFF2E7D32), radius: 9, strokeWidth: 3),
-      MapPoint(id: 'dest', position: last, color: const Color(0xFFC62828), radius: 9, strokeWidth: 3),
+    // The two endpoints are draggable annotations, not part of the plain
+    // marker source: dropping one re-plans from the new point (contract v2.1).
+    _markers = const [];
+    // A drag must *begin* on the circle, so these are touch targets, not just
+    // dots: r=14 plus the stroke is ~34 pt across. Still under Apple's 44 pt
+    // guideline, which a larger circle would meet at the cost of hiding the
+    // route under it -- worth revisiting on a device.
+    _pins = [
+      MapPoint(id: 'origin', position: first, color: const Color(0xFF2E7D32), radius: 14, strokeWidth: 3),
+      MapPoint(id: 'dest', position: last, color: const Color(0xFFC62828), radius: 14, strokeWidth: 3),
     ];
     _fit = all.isEmpty ? [first, last] : all;
+  }
+
+  /// A pin was dropped: label the new point by reverse geocoding, write it into
+  /// the planner and re-plan from there. The label falls back to the
+  /// coordinates so a nameless drop still produces a usable itinerary.
+  Future<void> _onPinDropped(String id, LatLng at) async {
+    if (_replanning) return;
+    final field = id == 'origin' ? PlaceField.from : PlaceField.to;
+    setState(() => _replanning = true);
+    final api = ref.read(apiClientProvider);
+    String name;
+    try {
+      final p = await api.reverse(widget.cityId, at);
+      name = p.name.trim().isEmpty ? at.toString() : p.name.trim();
+    } catch (_) {
+      name = at.toString();
+    }
+    if (!mounted) return;
+    assignPlace(ref, field, Place(name: name, position: at));
+    // A re-plan invalidates any live-departure re-timing of the old itinerary.
+    // `_built` is deliberately kept: it is what the screen shows while the new
+    // plan is in flight, so the map and sheet do not blink to "sin rutas".
+    _chosen.clear();
+    _retimed = null;
+    final res = await ref.read(plannerProvider.notifier).plan(widget.cityId);
+    if (!mounted) return;
+    setState(() => _replanning = false);
+    if (res == null || res.itineraries.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context).replanFailed)));
+    }
   }
 
   /// Canonical https URL (App Link / Universal Link) shared via the OS sheet.
@@ -109,9 +150,16 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
     final l10n = AppLocalizations.of(context);
     final s = ref.watch(plannerProvider);
     final city = ref.watch(cityProvider(widget.cityId)).asData?.value;
-    final fare = planFare(s, widget.index, city);
     final plan = s.result?.asData?.value;
-    final base = plan != null && widget.index < plan.itineraries.length ? plan.itineraries[widget.index] : null;
+    // A re-plan (dragged pin) can return fewer itineraries than before, so the
+    // index is clamped rather than falling through to the empty view.
+    final count = plan?.itineraries.length ?? 0;
+    final index = widget.index < count ? widget.index : 0;
+    // While a dropped pin is being re-planned the result is `loading`, which
+    // carries no data: keep showing the itinerary already on screen instead of
+    // tearing the map down and flashing the empty view.
+    final base = count == 0 ? (_replanning ? _built : null) : plan!.itineraries[index];
+    final fare = planFare(s, index, city);
     final it = base != null && _retimed != null && _retimed!.id == base.id ? _retimed! : base;
     if (it == null || base == null) {
       return Scaffold(
@@ -134,6 +182,8 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
               lines: _lines!,
               stops: _stops!,
               markers: _markers!,
+              draggableMarkers: _pins!,
+              onMarkerDragEnd: _onPinDropped,
               fitTo: _fit,
               fitPadding: const EdgeInsets.fromLTRB(40, 120, 40, 360),
               onStopTap: (id) {
@@ -153,6 +203,47 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
             top: MediaQuery.paddingOf(context).top + 8,
             left: 8,
             child: _CircleButton(icon: Icons.arrow_back, onTap: () => context.pop()),
+          ),
+          // Tells the user the pins move, and what is happening when one does.
+          Positioned(
+            top: MediaQuery.paddingOf(context).top + 60,
+            left: 16,
+            right: 16,
+            child: IgnorePointer(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  key: const ValueKey('drag-pins-hint'),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: scheme.surface.withValues(alpha: 0.92),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_replanning)
+                        const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 2))
+                      else
+                        Icon(Icons.open_with, size: 14, color: scheme.onSurfaceVariant),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          _replanning ? l10n.replanning : l10n.dragPinsHint,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
           Positioned(
             top: MediaQuery.paddingOf(context).top + 8,

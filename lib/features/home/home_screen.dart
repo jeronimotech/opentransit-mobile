@@ -23,6 +23,7 @@ import '../assistant/assistant_labels.dart';
 import '../assistant/chat_sheet.dart';
 import '../favorites/save_favorite_sheet.dart';
 import 'widgets/commute_card.dart';
+import '../planner/planner_actions.dart';
 import '../planner/planner_state.dart';
 import '../rental/rental_station_sheet.dart';
 import 'widgets/action_chips.dart';
@@ -355,6 +356,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
               title: Text(l10n.saveFavorite),
               onTap: () => Navigator.pop(ctx, 'fav'),
             ),
+            // Second entry point to the full-screen picker (contract v2.1):
+            // long-press, then fine-tune the exact point under the crosshair.
+            ListTile(
+              leading: const Icon(Icons.map_outlined),
+              title: Text(l10n.chooseOnMap),
+              onTap: () => Navigator.pop(ctx, 'pick'),
+            ),
             const SizedBox(height: 8),
           ],
         ),
@@ -365,12 +373,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
       await showSaveFavoriteSheet(context, ref, widget.cityId, place);
       return;
     }
-    final planner = ref.read(plannerProvider.notifier);
-    if (choice == 'from') {
-      planner.setFrom(place);
-    } else {
-      planner.setTo(place);
+    if (choice == 'pick') {
+      // Fill whichever end is still empty, defaulting to the destination.
+      final field = implicitTarget(ref.read(plannerProvider), PlaceField.to);
+      context.push(pickOnMapLocation(widget.cityId, field, at: p));
+      return;
     }
+    assignPlace(ref, PlaceField.parse(choice), place);
     context.go('/${widget.cityId}/plan');
   }
 

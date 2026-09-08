@@ -681,5 +681,18 @@
   "assistantNewConversation": "New conversation",
   "assistantNewConfirm": "Start a new conversation? What you have asked so far will be cleared.",
   "assistantNewConfirmCta": "Start over",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "pickOnMapHint": "Move the map to pick a point",
+  "pickOnMapSearching": "Looking up the address…",
+  "pickOnMapConfirmOrigin": "Confirm origin",
+  "pickOnMapConfirmDestination": "Confirm destination",
+  "dragPinsHint": "Drag the pins to move the origin or destination",
+  "replanning": "Re-planning the trip…",
+  "replanFailed": "Could not re-plan the trip",
+  "placeTypeStation": "Station",
+  "placeTypeStop": "Stop",
+  "placeTypeAddress": "Address",
+  "placeTypeStreet": "Street",
+  "placeTypePlace": "Place",
+  "placeOptions": "Place options"
 }

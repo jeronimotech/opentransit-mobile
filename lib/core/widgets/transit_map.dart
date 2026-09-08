@@ -121,6 +121,8 @@ class TransitMap extends StatefulWidget {
     this.stops = const [],
     this.vehicles = const [],
     this.markers = const [],
+    this.draggableMarkers = const [],
+    this.onMarkerDragEnd,
     this.pois = const [],
     this.rentalStations = const [],
     this.fitTo,
@@ -142,6 +144,16 @@ class TransitMap extends StatefulWidget {
   final List<MapPoint> stops;
   final List<MapPoint> vehicles;
   final List<MapPoint> markers;
+
+  /// Markers the user can pick up and drop somewhere else.
+  ///
+  /// Unlike every other overlay these are native *annotations* (the only thing
+  /// MapLibre lets the user drag), so they are opted into per screen: the
+  /// annotation manager is only created when this list is non-empty on the
+  /// first build. [onMarkerDragEnd] fires once, with the [MapPoint.id] of the
+  /// marker and its final position.
+  final List<MapPoint> draggableMarkers;
+  final void Function(String id, LatLng position)? onMarkerDragEnd;
 
   /// Points of interest (station services); `label` is drawn inside.
   final List<MapPoint> pois;
@@ -177,6 +189,15 @@ class TransitMapState extends State<TransitMap> {
   static const _srcMarkers = 'ot-markers';
   static const _srcPois = 'ot-pois';
   static const _srcRental = 'ot-rental';
+
+  /// Circle annotation id → the [MapPoint.id] it stands for.
+  final _dragIds = <String, String>{};
+
+  /// Whether this map instance carries draggable annotations. Decided once, on
+  /// the first build: `annotationOrder` cannot change after the platform view
+  /// is created, and every other screen keeps the plain no-annotation setup.
+  late final bool _draggable =
+      widget.draggableMarkers.isNotEmpty && widget.onMarkerDragEnd != null;
 
   /// Current visible bounds `[minLon, minLat, maxLon, maxLat]`, if known.
   Future<List<double>?> visibleBounds() async {
@@ -240,8 +261,10 @@ class TransitMapState extends State<TransitMap> {
       return; // map disposed mid-setup
     }
     c.onFeatureTapped.add(_onFeatureTapped);
+    if (_draggable) c.onFeatureDrag.add(_onFeatureDrag);
     _ready = true;
     await _syncAll();
+    await _syncDraggable();
     if (widget.fitTo != null && widget.fitTo!.isNotEmpty) {
       await fitBounds(widget.fitTo!);
     }
@@ -466,6 +489,52 @@ class TransitMapState extends State<TransitMap> {
     }
   }
 
+  /// Creates the draggable circle annotations, or moves the existing ones when
+  /// the caller pushed new positions (e.g. after a re-plan).
+  Future<void> _syncDraggable() async {
+    final c = _c;
+    if (!_draggable || c == null || !_ready || !mounted) return;
+    try {
+      if (_dragIds.isEmpty) {
+        for (final p in widget.draggableMarkers) {
+          final circle = await c.addCircle(ml.CircleOptions(
+            geometry: ml.LatLng(p.position.lat, p.position.lon),
+            circleRadius: p.radius,
+            circleColor: _hex(p.color),
+            circleStrokeColor: _hex(p.strokeColor),
+            circleStrokeWidth: p.strokeWidth,
+            draggable: true,
+          ));
+          _dragIds[circle.id] = p.id;
+        }
+        return;
+      }
+      for (final p in widget.draggableMarkers) {
+        final entry = _dragIds.entries.where((e) => e.value == p.id).firstOrNull;
+        if (entry == null) continue;
+        final circle = c.circleManager?.byId(entry.key);
+        if (circle == null) continue;
+        await c.updateCircle(
+            circle,
+            ml.CircleOptions(
+                geometry: ml.LatLng(p.position.lat, p.position.lon)));
+      }
+    } on PlatformException {
+      // style gone or annotation manager not up: the markers layer stays as is
+    } catch (_) {
+      // addCircle throws a plain Exception when the manager is not initialised
+    }
+  }
+
+  void _onFeatureDrag(Point<double> point, ml.LatLng origin, ml.LatLng current,
+      ml.LatLng delta, String id, ml.Annotation? annotation, ml.DragEventType type) {
+    if (type != ml.DragEventType.end) return;
+    final markerId = _dragIds[id];
+    if (markerId == null) return;
+    widget.onMarkerDragEnd?.call(
+        markerId, LatLng(current.latitude, current.longitude));
+  }
+
   void _onFeatureTapped(Point<double> point, ml.LatLng coords, String id,
       String layerId, ml.Annotation? annotation) {
     if (layerId == 'ot-stops-layer') widget.onStopTap?.call(id);
@@ -519,6 +588,9 @@ class TransitMapState extends State<TransitMap> {
     if (!identical(oldWidget.rentalStations, widget.rentalStations)) {
       _setSource(_srcRental, _pointFc(widget.rentalStations));
     }
+    if (!identical(oldWidget.draggableMarkers, widget.draggableMarkers)) {
+      _syncDraggable();
+    }
     if (!identical(oldWidget.fitTo, widget.fitTo) &&
         widget.fitTo != null &&
         widget.fitTo!.isNotEmpty) {
@@ -529,6 +601,7 @@ class TransitMapState extends State<TransitMap> {
   @override
   void dispose() {
     _c?.onFeatureTapped.remove(_onFeatureTapped);
+    _c?.onFeatureDrag.remove(_onFeatureDrag);
     super.dispose();
   }
 
@@ -543,8 +616,11 @@ class TransitMapState extends State<TransitMap> {
       ),
       onMapCreated: (c) => _c = c,
       // No managed annotations: every overlay is a GeoJSON source + layer.
-      // This also avoids the plugin's own source setup racing a dispose.
-      annotationOrder: const [],
+      // This also avoids the plugin's own source setup racing a dispose. The
+      // one exception is the circle manager, opted into by a screen that needs
+      // draggable pins — dragging is the only thing annotations can do that a
+      // plain source cannot.
+      annotationOrder: _draggable ? const [ml.AnnotationType.circle] : const [],
       onStyleLoadedCallback: _onStyleLoaded,
       trackCameraPosition: true,
       compassEnabled: false,

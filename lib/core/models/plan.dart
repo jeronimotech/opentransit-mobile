@@ -499,6 +499,10 @@ class PlanRequest {
         'maxWalkDistance': maxWalkDistance.toString(),
         'locale': locale,
         if (onDemand) 'onDemand': 'true',
+        // Labels: the router echoes them back so the itinerary reads
+        // "Calle 85" instead of a coordinate pair (contract v2.1).
+        if (from.name.trim().isNotEmpty) 'fromName': from.name,
+        if (to.name.trim().isNotEmpty) 'toName': to.name,
       };
 }
 
@@ -512,17 +516,30 @@ class GeocodeResult {
     this.stopId,
     this.component,
     required this.source,
+    this.distanceMeters,
   });
   final String id;
   final String name;
   final String? label;
   final LatLng position;
 
-  /// `station | stop | address | poi | street`
+  /// `station | stop | address | poi | street | place`.
+  ///
+  /// Only `station`/`stop` come from the GTFS feed; the rest are geocoded
+  /// places and must never be presented as transit stops.
   final String type;
   final String? stopId;
   final Component? component;
+
+  /// `gtfs` or `photon` (the address provider).
   final String source;
+
+  /// Distance from the `lat`/`lon` passed to the geocoder, when it sent one.
+  final int? distanceMeters;
+
+  /// True for GTFS stops and stations. The live API leaves `component` null on
+  /// `station` rows, so the id — not the colour — is what decides this.
+  bool get isStop => stopId != null || type == 'stop' || type == 'station';
 
   factory GeocodeResult.fromJson(Map<String, dynamic> j) => GeocodeResult(
         id: j['id'].toString(),
@@ -533,6 +550,7 @@ class GeocodeResult {
         stopId: j['stopId']?.toString(),
         component: Component.parse(j['component']),
         source: j['source']?.toString() ?? '',
+        distanceMeters: asInt(j['distanceMeters']),
       );
 
   Place toPlace() => Place(

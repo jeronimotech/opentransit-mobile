@@ -900,5 +900,18 @@
   "assistantNewConversation": "Nueva conversación",
   "assistantNewConfirm": "¿Empezar una conversación nueva? Se borrará lo que has preguntado hasta ahora.",
   "assistantNewConfirmCta": "Empezar de nuevo",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "pickOnMapHint": "Mueve el mapa para elegir el punto",
+  "pickOnMapSearching": "Buscando dirección…",
+  "pickOnMapConfirmOrigin": "Confirmar origen",
+  "pickOnMapConfirmDestination": "Confirmar destino",
+  "dragPinsHint": "Arrastra los pines para mover el origen o el destino",
+  "replanning": "Recalculando el viaje…",
+  "replanFailed": "No se pudo recalcular el viaje",
+  "placeTypeStation": "Estación",
+  "placeTypeStop": "Parada",
+  "placeTypeAddress": "Dirección",
+  "placeTypeStreet": "Calle",
+  "placeTypePlace": "Lugar",
+  "placeOptions": "Opciones del lugar"
 }

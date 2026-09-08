@@ -197,6 +197,54 @@
    "stopId": null,
    "component": null,
    "source": "photon"
+  },
+  {
+   "id": "photon:W90708869",
+   "name": "Calle 85",
+   "label": "Localidad Barrios Unidos, Bogotá",
+   "lat": 4.6818705,
+   "lon": -74.0749344,
+   "type": "street",
+   "stopId": null,
+   "component": null,
+   "source": "photon",
+   "distanceMeters": null
+  },
+  {
+   "id": "photon:N1001",
+   "name": "Carrera 71B",
+   "label": "Carrera 71B, 71-21, Localidad Engativá, Bogotá",
+   "lat": 4.6919,
+   "lon": -74.1035,
+   "type": "address",
+   "stopId": null,
+   "component": null,
+   "source": "photon",
+   "distanceMeters": null
+  },
+  {
+   "id": "photon:N2002",
+   "name": "Museo del Oro",
+   "label": "Calle 16, La Veracruz, Bogotá",
+   "lat": 4.6018,
+   "lon": -74.0721,
+   "type": "poi",
+   "stopId": null,
+   "component": null,
+   "source": "photon",
+   "distanceMeters": null
+  },
+  {
+   "id": "photon:N3003",
+   "name": "Titán Plaza",
+   "label": "Avenida Calle 80, Localidad Engativá, Bogotá",
+   "lat": 4.6884,
+   "lon": -74.1004,
+   "type": "poi",
+   "stopId": null,
+   "component": null,
+   "source": "photon",
+   "distanceMeters": null
   }
  ]
 }

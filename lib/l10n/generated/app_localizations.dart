@@ -2551,6 +2551,84 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cancelar'**
   String get cancel;
+
+  /// No description provided for @pickOnMapHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Mueve el mapa para elegir el punto'**
+  String get pickOnMapHint;
+
+  /// No description provided for @pickOnMapSearching.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando dirección…'**
+  String get pickOnMapSearching;
+
+  /// No description provided for @pickOnMapConfirmOrigin.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar origen'**
+  String get pickOnMapConfirmOrigin;
+
+  /// No description provided for @pickOnMapConfirmDestination.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar destino'**
+  String get pickOnMapConfirmDestination;
+
+  /// No description provided for @dragPinsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Arrastra los pines para mover el origen o el destino'**
+  String get dragPinsHint;
+
+  /// No description provided for @replanning.
+  ///
+  /// In es, this message translates to:
+  /// **'Recalculando el viaje…'**
+  String get replanning;
+
+  /// No description provided for @replanFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo recalcular el viaje'**
+  String get replanFailed;
+
+  /// No description provided for @placeTypeStation.
+  ///
+  /// In es, this message translates to:
+  /// **'Estación'**
+  String get placeTypeStation;
+
+  /// No description provided for @placeTypeStop.
+  ///
+  /// In es, this message translates to:
+  /// **'Parada'**
+  String get placeTypeStop;
+
+  /// No description provided for @placeTypeAddress.
+  ///
+  /// In es, this message translates to:
+  /// **'Dirección'**
+  String get placeTypeAddress;
+
+  /// No description provided for @placeTypeStreet.
+  ///
+  /// In es, this message translates to:
+  /// **'Calle'**
+  String get placeTypeStreet;
+
+  /// No description provided for @placeTypePlace.
+  ///
+  /// In es, this message translates to:
+  /// **'Lugar'**
+  String get placeTypePlace;
+
+  /// No description provided for @placeOptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Opciones del lugar'**
+  String get placeOptions;
 }
 
 class _AppLocalizationsDelegate

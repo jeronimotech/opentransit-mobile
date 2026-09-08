@@ -15,8 +15,10 @@ import 'features/live/vehicle_detail_screen.dart';
 import 'features/locate/locate_screen.dart';
 import 'features/planner/follow_along_screen.dart';
 import 'features/planner/itinerary_detail_screen.dart';
+import 'features/planner/pick_on_map_screen.dart';
 import 'features/planner/place_search_screen.dart';
 import 'features/planner/plan_screen.dart';
+import 'features/planner/planner_actions.dart';
 import 'features/planner/results_screen.dart';
 import 'features/routes/route_detail_screen.dart';
 import 'features/routes/routes_screen.dart';
@@ -42,7 +44,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (segs.isEmpty) return cityId == null ? '/cities' : '/$cityId';
       if (segs.first == 'cities') return null;
       // Host-less deep link (`/plan?...`) → prefix with the remembered city.
-      const known = {'plan', 'search', 'results', 'stops', 'routes', 'alerts', 'favorites', 'settings', 'vehicles', 'itinerary', 'locate', 'live'};
+      const known = {'plan', 'search', 'pick', 'results', 'stops', 'routes', 'alerts', 'favorites', 'settings', 'vehicles', 'itinerary', 'locate', 'live'};
       if (known.contains(segs.first)) {
         if (cityId == null) return '/cities';
         return Uri(path: '/$cityId${uri.path}', queryParameters: uri.queryParameters.isEmpty ? null : uri.queryParameters).toString();
@@ -86,8 +88,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                   builder: (_, s) => PlaceSearchScreen(
                     cityId: s.pathParameters['city']!,
                     field: s.uri.queryParameters['field'] ?? 'to',
+                    implicit: s.uri.queryParameters['field'] == null,
                     saveAs: s.uri.queryParameters['saveAs'],
                   ),
+                ),
+                // Full-screen "choose on map" picker, for either field.
+                GoRoute(
+                  path: 'pick',
+                  builder: (_, s) {
+                    final q = s.uri.queryParameters;
+                    final lat = double.tryParse(q['lat'] ?? '');
+                    final lon = double.tryParse(q['lon'] ?? '');
+                    return PickOnMapScreen(
+                      cityId: s.pathParameters['city']!,
+                      field: PlaceField.parse(q['field']),
+                      initial: lat != null && lon != null ? LatLng(lat, lon) : null,
+                    );
+                  },
                 ),
                 GoRoute(
                   path: 'results',

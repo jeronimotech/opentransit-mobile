@@ -2,6 +2,25 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.11.0
+
+### Added
+- **Every place can be either end of the trip** (contract addendum v2.1). A search result fills the field the screen was opened for; its menu always offers the other end too. "Mi ubicación" and "Elegir en el mapa" carry the same second action, named ("Origen" / "Destino") rather than iconic: a tooltip only appears on a long press, so the ring that used to sit there told nobody the other end was reachable. A bare `/{city}/search` link now fills the *empty* end instead of overwriting the full one.
+- **"Elegir en el mapa" for both fields**, as a screen of its own: full-bleed map, fixed centre crosshair, the centre reverse geocoded (debounced) and shown in the confirm bar, coordinates as the fallback. A nameless point still confirms and still travels as `fromName`/`toName`. Reachable from either field and from the home map's long press. Route `/{city}/pick`.
+- **Draggable origin and destination pins** on the itinerary map: drop one and the trip re-plans from where it landed, then re-labels itself. The previous itinerary stays on screen during the re-plan rather than flashing the empty view.
+- Swap works with one field empty, and re-plans when both survive.
+- Results tell a stop from a street: a filled badge for stops and stations, a bordered circle for addresses, streets and POIs, each with the API's own `label`. 13 new strings in es and en.
+
+### Fixed
+- `PlanRequest` never sent `fromName`/`toName`, so an itinerary planned from a picked point showed coordinates where a name belonged.
+- Choosing a place for a trip that already had both ends did not re-plan, although dragging a pin did, and the web client does. Replacing an end now re-plans as well; the two clients must not disagree about this.
+- The draggable pins were 22 pt across. A drag has to *begin* on the circle, so they are touch targets, not dots: ~34 pt now, still short of Apple's 44 pt.
+
+### Notes
+- Verified against the live API on `localhost:8001` (`test/live/live_api_test.dart`, run with `--dart-define=OT_LIVE=1`): geocode returns Photon and GTFS rows together, a house-number query ranks addresses first, and a plan succeeds address→stop and stop→address with both names echoed back. The geocode fixture was rebuilt from a live response.
+- Verified on an iOS simulator: the picker renders map-first and named the point it was centred on, and the search rows show both ends.
+- **Not verified at runtime: the pin drag.** The chain was checked against the maplibre_gl 0.27 sources — `annotationOrder` must name circles for the manager to exist, `annotationConsumeTapEvents` must name them for it to listen (its default does, so overriding it would break drag silently), iOS hit-tests the feature's `draggable` attribute, and the flag is decided on first build so the map must be built with pins in hand. All four hold and a test pins them, but no touch has been simulated. It needs a pass on a device.
+
 ## 1.10.1
 
 ### Added

@@ -1457,4 +1457,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get pickOnMapHint => 'Move the map to pick a point';
+
+  @override
+  String get pickOnMapSearching => 'Looking up the address…';
+
+  @override
+  String get pickOnMapConfirmOrigin => 'Confirm origin';
+
+  @override
+  String get pickOnMapConfirmDestination => 'Confirm destination';
+
+  @override
+  String get dragPinsHint => 'Drag the pins to move the origin or destination';
+
+  @override
+  String get replanning => 'Re-planning the trip…';
+
+  @override
+  String get replanFailed => 'Could not re-plan the trip';
+
+  @override
+  String get placeTypeStation => 'Station';
+
+  @override
+  String get placeTypeStop => 'Stop';
+
+  @override
+  String get placeTypeAddress => 'Address';
+
+  @override
+  String get placeTypeStreet => 'Street';
+
+  @override
+  String get placeTypePlace => 'Place';
+
+  @override
+  String get placeOptions => 'Place options';
 }
