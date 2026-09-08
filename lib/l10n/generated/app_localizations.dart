@@ -2252,6 +2252,18 @@ abstract class AppLocalizations {
   /// **'Replanear'**
   String get goReplan;
 
+  /// Resumes the navigation camera after the user panned the map
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a mi ubicación'**
+  String get goRecenter;
+
+  /// Shown when a replan during GO returns nothing; the previous route stays
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo recalcular. Sigues en la ruta anterior.'**
+  String get goReplanFailed;
+
   /// No description provided for @goDismiss.
   ///
   /// In es, this message translates to:

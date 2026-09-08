@@ -128,6 +128,9 @@ class TransitMap extends StatefulWidget {
     this.fitTo,
     this.fitPadding = const EdgeInsets.fromLTRB(40, 120, 40, 260),
     this.myLocation = false,
+    this.navigating = false,
+    this.recenterSignal = 0,
+    this.onTrackingDismissed,
     this.onLongPress,
     this.onStopTap,
     this.onVehicleTap,
@@ -166,6 +169,18 @@ class TransitMap extends StatefulWidget {
   final List<LatLng>? fitTo;
   final EdgeInsets fitPadding;
   final bool myLocation;
+
+  /// Navigation camera: the map follows the device and turns so the direction of
+  /// travel is up, the way a turn-by-turn view does. [fitTo] is ignored while this
+  /// is on — refitting bounds on every fix is an overview, not navigation.
+  final bool navigating;
+
+  /// Bumping this resumes following after the person panned the map away. The map
+  /// must never fight a gesture, so tracking is only restored on request.
+  final int recenterSignal;
+
+  /// Fired when a gesture breaks the follow, so the screen can offer to resume.
+  final VoidCallback? onTrackingDismissed;
   final void Function(LatLng)? onLongPress;
   final void Function(String id)? onStopTap;
   final void Function(String id)? onVehicleTap;
@@ -265,7 +280,7 @@ class TransitMapState extends State<TransitMap> {
     _ready = true;
     await _syncAll();
     await _syncDraggable();
-    if (widget.fitTo != null && widget.fitTo!.isNotEmpty) {
+    if (!widget.navigating && widget.fitTo != null && widget.fitTo!.isNotEmpty) {
       await fitBounds(widget.fitTo!);
     }
     widget.onMapReady?.call();
@@ -570,6 +585,11 @@ class TransitMapState extends State<TransitMap> {
     super.didUpdateWidget(oldWidget);
     final c = _c;
     if (c == null || !_ready) return;
+    // Resume following only when the screen asks: the map must never take the
+    // camera back from a gesture on its own.
+    if (widget.navigating && widget.recenterSignal != oldWidget.recenterSignal) {
+      c.updateMyLocationTrackingMode(ml.MyLocationTrackingMode.trackingGps);
+    }
     if (!identical(oldWidget.lines, widget.lines)) {
       _setSource(_srcLines, _lineFc(widget.lines));
     }
@@ -591,7 +611,10 @@ class TransitMapState extends State<TransitMap> {
     if (!identical(oldWidget.draggableMarkers, widget.draggableMarkers)) {
       _syncDraggable();
     }
-    if (!identical(oldWidget.fitTo, widget.fitTo) &&
+    // Refitting bounds on every fix is an overview; while navigating the camera
+    // belongs to the follow mode.
+    if (!widget.navigating &&
+        !identical(oldWidget.fitTo, widget.fitTo) &&
         widget.fitTo != null &&
         widget.fitTo!.isNotEmpty) {
       fitBounds(widget.fitTo!);
@@ -624,7 +647,14 @@ class TransitMapState extends State<TransitMap> {
       onStyleLoadedCallback: _onStyleLoaded,
       trackCameraPosition: true,
       compassEnabled: false,
-      myLocationEnabled: widget.myLocation,
+      myLocationEnabled: widget.myLocation || widget.navigating,
+      myLocationTrackingMode: widget.navigating
+          ? ml.MyLocationTrackingMode.trackingGps
+          : ml.MyLocationTrackingMode.none,
+      myLocationRenderMode: widget.navigating
+          ? ml.MyLocationRenderMode.gps
+          : ml.MyLocationRenderMode.normal,
+      onCameraTrackingDismissed: widget.onTrackingDismissed,
       attributionButtonPosition: ml.AttributionButtonPosition.bottomLeft,
       attributionButtonMargins:
           Point<num>(8, 8 + widget.attributionBottomInset),

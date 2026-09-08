@@ -60,6 +60,7 @@ Widget _app(ProviderContainer c, Widget child, {Locale locale = const Locale('es
     );
 
 void main() {
+  _goNavigationGuards();
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('both ends are reachable', () {
@@ -566,6 +567,40 @@ void main() {
       // would disable dragging for the life of the screen.
       expect(screen.indexOf('_pins = ['), lessThan(screen.indexOf('draggableMarkers: _pins!')));
       expect(screen, contains('onMarkerDragEnd: _onPinDropped'));
+    });
+  });
+}
+
+// GO: recalculating must keep you navigating, and the camera must behave like a
+// navigation view rather than an overview that refits on every GPS fix.
+void _goNavigationGuards() {
+  group('GO navigation', () {
+    String read(String path) => File(path).readAsStringSync();
+
+    test('a replan keeps following instead of ejecting you', () {
+      final go = read('lib/features/planner/follow_along_screen.dart');
+      // It used to `context.pop()` after replanning, which threw someone mid-walk
+      // back to the itinerary screen and read as "it did not recalculate".
+      expect(go, contains("router.pushReplacement('/\${widget.cityId}/itinerary/0/go')"));
+      expect(go, isNot(contains('await planner.plan(widget.cityId);\n    if (mounted) context.pop();')));
+      // A failed replan leaves the current trip on screen rather than nothing.
+      expect(go, contains('goReplanFailed'));
+    });
+
+    test('the map navigates and yields the camera to a gesture', () {
+      final go = read('lib/features/planner/follow_along_screen.dart');
+      expect(go, contains('navigating: !_denied && !_arrived'));
+      expect(go, contains('onTrackingDismissed'));
+      expect(go, contains("ValueKey('go-recenter')"));
+
+      final map = read('lib/core/widgets/transit_map.dart');
+      // Following the device with the heading up is what makes it a navigation view.
+      expect(map, contains('MyLocationTrackingMode.trackingGps'));
+      expect(map, contains('MyLocationRenderMode.gps'));
+      // Refitting bounds every fix would fight the follow camera.
+      expect(map, contains('if (!widget.navigating &&'));
+      // Tracking resumes only when the screen asks, never on its own.
+      expect(map, contains('widget.recenterSignal != oldWidget.recenterSignal'));
     });
   });
 }

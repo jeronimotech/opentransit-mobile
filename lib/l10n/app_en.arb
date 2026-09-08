@@ -584,6 +584,14 @@
   "goReceiptClose": "Done",
   "goOffRoute": "Looks like you left the route",
   "goReplan": "Re-plan",
+  "goRecenter": "Recenter",
+  "@goRecenter": {
+    "description": "Resumes the navigation camera after the user panned the map"
+  },
+  "goReplanFailed": "Could not recalculate. You are still on the previous route.",
+  "@goReplanFailed": {
+    "description": "Shown when a replan during GO returns nothing; the previous route stays"
+  },
   "goDismiss": "Keep going",
   "goNotificationTitle": "Trip in progress",
   "goNotificationBody": "Get off at {stop} · {minutes} min · arriving {time}",

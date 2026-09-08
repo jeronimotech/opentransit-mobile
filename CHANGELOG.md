@@ -2,6 +2,14 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.12.0
+
+### Fixed
+- **Recalculating during a trip did nothing visible.** It replanned and then popped back to the itinerary screen, so someone mid-walk was thrown out of navigation and reasonably read it as "it did not recalculate". It now replans from where you actually are and keeps following, on the new best itinerary. A replan that returns nothing leaves the trip you are on rather than leaving you with nothing.
+
+### Changed
+- **The map navigates while you travel.** It follows the device and turns so the way ahead is up, instead of refitting the bounds between you and the end of the leg on every GPS fix — an overview of the walk rather than a view for walking it. A pan hands the camera back to you and offers "Volver a mi ubicación"; the camera never takes it back on its own. On arrival it returns to the overview, which is the useful view then.
+
 ## 1.11.1
 
 ### Fixed

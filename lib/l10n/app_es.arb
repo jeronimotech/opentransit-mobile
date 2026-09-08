@@ -803,6 +803,14 @@
   "goReceiptClose": "Listo",
   "goOffRoute": "Parece que te saliste de la ruta",
   "goReplan": "Replanear",
+  "goRecenter": "Volver a mi ubicación",
+  "@goRecenter": {
+    "description": "Resumes the navigation camera after the user panned the map"
+  },
+  "goReplanFailed": "No se pudo recalcular. Sigues en la ruta anterior.",
+  "@goReplanFailed": {
+    "description": "Shown when a replan during GO returns nothing; the previous route stays"
+  },
   "goDismiss": "Seguir igual",
   "goNotificationTitle": "Viaje en curso",
   "goNotificationBody": "Bájate en {stop} · {minutes} min · llegas {time}",

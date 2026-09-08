@@ -1284,6 +1284,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goReplan => 'Re-plan';
 
   @override
+  String get goRecenter => 'Recenter';
+
+  @override
+  String get goReplanFailed =>
+      'Could not recalculate. You are still on the previous route.';
+
+  @override
   String get goDismiss => 'Keep going';
 
   @override

@@ -81,6 +81,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
 
   final _offRoute = OffRouteDetector();
   bool _offRoutePrompt = false;
+  bool _replanning = false;
+  /// Whether the camera is still following; a pan sets this false.
+  bool _following = true;
+  /// Bumped to ask the map to resume following.
+  int _recenter = 0;
   ShareSession? _share;
   LiveTrip? _liveTrip;
   bool _sharing = false;
@@ -315,16 +320,36 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     }
   }
 
+  /// Recalculate from where the person actually is, and keep following.
+  ///
+  /// This used to pop back to the itinerary screen, which threw someone mid-walk
+  /// out of navigation and looked, reasonably, like nothing had been recalculated.
+  /// A fresh plan is ordered best-first, so it continues on itinerary 0.
   Future<void> _replan() async {
+    if (_replanning) return;
     final planner = ref.read(plannerProvider.notifier);
+    final l10n = AppLocalizations.of(context);
+    final router = GoRouter.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     _offRoute.reset();
-    setState(() => _offRoutePrompt = false);
+    setState(() {
+      _offRoutePrompt = false;
+      _replanning = true;
+    });
     if (_here != null) {
-      final l10n = AppLocalizations.of(context);
       planner.setFrom(Place(name: l10n.myLocation, position: _here!));
     }
-    await planner.plan(widget.cityId);
-    if (mounted) context.pop();
+    final res = await planner.plan(widget.cityId);
+    if (!mounted) return;
+    setState(() => _replanning = false);
+    if (res == null || res.itineraries.isEmpty) {
+      // Stay in the trip that is still on screen: leaving someone with nothing
+      // mid-journey is worse than an unchanged route.
+      messenger.showSnackBar(SnackBar(content: Text(l10n.goReplanFailed)));
+      return;
+    }
+    _lastItinerary = null;
+    router.pushReplacement('/${widget.cityId}/itinerary/0/go');
   }
 
   Itinerary? _itinerary() {
@@ -434,10 +459,48 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
               lines: lines,
               markers: markers,
               myLocation: !_denied,
+              // Navigation camera: follows the device, turned so the way ahead is up.
+              // It used to refit the bounds between you and the leg's end on every
+              // fix, which is an overview of the walk, not a view for walking it.
+              // Off once arrived: the overview is the useful view then.
+              navigating: !_denied && !_arrived,
+              recenterSignal: _recenter,
+              onTrackingDismissed: () {
+                if (mounted) setState(() => _following = false);
+              },
               fitTo: _here == null ? decodeGeometry(leg.geometry) : [_here!, leg.to.position],
               fitPadding: const EdgeInsets.fromLTRB(40, 120, 40, 300),
             ),
           ),
+          // Offered only when a gesture broke the follow, so it never sits there
+          // competing with the map.
+          if (!_following && !_denied && !_arrived)
+            Positioned(
+              top: MediaQuery.paddingOf(context).top + 8,
+              right: 8,
+              child: Material(
+                key: const ValueKey('go-recenter'),
+                color: scheme.surface,
+                borderRadius: BorderRadius.circular(22),
+                elevation: 4,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(22),
+                  onTap: () => setState(() {
+                    _following = true;
+                    _recenter++;
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(Icons.navigation_rounded, size: 18, color: scheme.primary),
+                      const SizedBox(width: 6),
+                      Text(l10n.goRecenter,
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700)),
+                    ]),
+                  ),
+                ),
+              ),
+            ),
           Positioned(
             top: MediaQuery.paddingOf(context).top + 8,
             left: 8,

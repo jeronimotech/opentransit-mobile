@@ -1287,6 +1287,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get goReplan => 'Replanear';
 
   @override
+  String get goRecenter => 'Volver a mi ubicación';
+
+  @override
+  String get goReplanFailed =>
+      'No se pudo recalcular. Sigues en la ruta anterior.';
+
+  @override
   String get goDismiss => 'Seguir igual';
 
   @override
