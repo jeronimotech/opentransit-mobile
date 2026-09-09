@@ -278,6 +278,45 @@ void main() {
     });
   });
 
+  group('live eta', () {
+    // A tester 1 km from his stop at 7:30 was still shown 7:59: the arrival the router predicted
+    // before he set off, which never moved for the whole trip. He got there around 7:35.
+    test('re-estimates from where you are, instead of repeating the plan', () {
+      final it = plan.itineraries.first; // walk → B10 → walk
+      final now = DateTime.parse('2026-09-04T07:30:00-05:00');
+      final bus = it.legs[1];
+
+      // most of the bus leg still to go: close to the plan's own remaining time
+      final far = liveEta(it, legIndex: 1, metersToLegEnd: bus.distanceMeters.toDouble(), now: now);
+      expect(far.difference(now).inSeconds,
+          bus.durationSeconds + it.legs[2].durationSeconds);
+
+      // almost there: the estimate has to come down with the distance, which endTime never did
+      final near = liveEta(it, legIndex: 1, metersToLegEnd: bus.distanceMeters * 0.1, now: now);
+      expect(near.isBefore(far), isTrue);
+      expect(near.difference(now).inSeconds,
+          lessThan(bus.durationSeconds + it.legs[2].durationSeconds));
+
+      // and the legs still ahead are still counted: it is not just "this leg"
+      expect(near.difference(now).inSeconds, greaterThanOrEqualTo(it.legs[2].durationSeconds));
+    });
+
+    test('before the first fix it falls back to the plan, not to zero', () {
+      final it = plan.itineraries.first;
+      final now = DateTime.parse('2026-09-04T07:30:00-05:00');
+      final planned = it.legs[1].durationSeconds + it.legs[2].durationSeconds;
+      expect(liveEta(it, legIndex: 1, metersToLegEnd: null, now: now).difference(now).inSeconds, planned);
+    });
+
+    test('on the last leg, at its end, the answer is now', () {
+      final it = plan.itineraries.first;
+      final now = DateTime.parse('2026-09-04T07:30:00-05:00');
+      expect(liveEta(it, legIndex: it.legs.length - 1, metersToLegEnd: 0, now: now), now);
+      // an out-of-range index is clamped rather than thrown
+      expect(liveEta(it, legIndex: 99, metersToLegEnd: 0, now: now), now);
+    });
+  });
+
   group('follow along', () {
     test('advances legs as their ends are reached and detects arrival', () {
       final it = plan.itineraries.first; // walk → B10 → walk

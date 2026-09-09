@@ -69,6 +69,30 @@ bool boardedTransitLeg(Leg leg, LatLng? here, {required bool wasBoarded}) {
   return wasBoarded ? d > boardingWaitMeters : d > boardingRideMeters;
 }
 
+/// Arrival time as it looks from where you are now.
+///
+/// `itinerary.endTime` is what the router predicted before you set off and never moves: a tester
+/// 1 km from his stop at 7:30 was still being told 7:59, twenty-four minutes of a bus that had
+/// already made up the time. The current leg is re-estimated from the distance still to cover at
+/// that leg's own average speed — the same arithmetic the lock screen already used for "minutes to
+/// your stop" — and the legs after it keep their planned durations, which is the best we have for
+/// a bus that has not come yet.
+DateTime liveEta(Itinerary it, {required int legIndex, required double? metersToLegEnd, required DateTime now}) {
+  final i = legIndex.clamp(0, it.legs.length - 1);
+  final leg = it.legs[i];
+  var seconds = 0.0;
+  if (metersToLegEnd == null) {
+    // No fix yet: the leg's planned duration is the honest answer.
+    seconds += leg.durationSeconds.toDouble();
+  } else if (leg.distanceMeters > 0 && leg.durationSeconds > 0) {
+    seconds += metersToLegEnd / (leg.distanceMeters / leg.durationSeconds);
+  }
+  for (var j = i + 1; j < it.legs.length; j++) {
+    seconds += it.legs[j].durationSeconds;
+  }
+  return now.add(Duration(seconds: seconds.round().clamp(0, 24 * 3600)));
+}
+
 class FollowAlongScreen extends ConsumerStatefulWidget {
   const FollowAlongScreen({super.key, required this.cityId, required this.index});
   final String cityId;
@@ -219,8 +243,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     await _syncWatch(it, it.legs.first);
   }
 
+  DateTime _eta(Itinerary it) =>
+      liveEta(it, legIndex: _legIndex, metersToLegEnd: _toEnd, now: DateTime.now());
+
   LiveTripUpdate _liveUpdate(Itinerary it, Leg leg) => LiveTripUpdate(
-        etaAt: it.endTime,
+        etaAt: _eta(it),
         // Before the first fix there is no distance to work from; the leg's own
         // planned duration is the honest answer. Showing 0 would read as
         // "get off now" the moment the trip starts.
@@ -254,7 +281,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
         minutesToNextStop: _toEnd == null ? null : _minutesFor(leg, _toEnd!),
         routeShortName: leg.route?.shortName,
         routeColor: _liveTrip?.routeColor,
-        etaAt: it.endTime,
+        etaAt: _eta(it),
         alight: _notified && !_arrived,
       ),
     );
@@ -272,7 +299,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
         // Same number the Live Activity shows, from the same source, so the
         // watch, the lock screen and the app never disagree.
         _toEnd == null ? (leg.durationSeconds / 60).round() : _minutesFor(leg, _toEnd!),
-        formatClock(it.endTime, locale),
+        formatClock(_eta(it), locale),
       ),
       progress: _legIndex + 1,
       maxProgress: it.legs.length,
@@ -302,14 +329,17 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
   ShareProgress _shareProgress() {
     final it = _itinerary();
     final here = _here;
+    // Whoever is following the link sees the same arrival time as the traveller, not the one the
+    // router guessed before the trip started.
+    final eta = it == null ? null : _eta(it);
     return here == null
-        ? ShareProgress(legIndex: _legIndex, etaAt: it?.endTime, state: _arrived ? ShareState.arrived : ShareState.onTime)
+        ? ShareProgress(legIndex: _legIndex, etaAt: eta, state: _arrived ? ShareState.arrived : ShareState.onTime)
         : ShareProgress.at(
             legIndex: _legIndex,
             latitude: here.lat,
             longitude: here.lon,
             atStopId: it == null ? null : it.legs[_legIndex.clamp(0, it.legs.length - 1)].to.stopId,
-            etaAt: it?.endTime,
+            etaAt: eta,
             state: _arrived ? ShareState.arrived : ShareState.onTime,
           );
   }
@@ -556,7 +586,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                       Text(l10n.progressLabel(_legIndex + 1, it.legs.length),
                           style: Theme.of(context).textTheme.labelLarge?.copyWith(color: scheme.onSurfaceVariant)),
                       const Spacer(),
-                      Text(formatClock(it.endTime, locale), style: Theme.of(context).textTheme.labelLarge),
+                      Text(formatClock(_eta(it), locale), style: Theme.of(context).textTheme.labelLarge),
                     ],
                   ),
                   const SizedBox(height: 6),
