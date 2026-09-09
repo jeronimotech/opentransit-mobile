@@ -117,6 +117,8 @@
   "componentZonal": "Zonal",
   "componentCable": "Cable",
   "componentRail": "Rail",
+  "componentTram": "Streetcar",
+  "componentBus": "Bus",
   "componentOther": "Other",
   "modeWalk": "Walk",
   "modeBus": "Bus",
@@ -352,8 +354,8 @@
   "viewOnMapAction": "View on map",
   "noNearbyStops": "No stops near this point",
   "done": "Done",
-  "layerNetworkZonal": "Zonal routes",
-  "layerNetworkHint": "Trunk and cable; zonal routes overlap heavily",
+  "layerNetworkHint": "Main network route shapes",
+  "layerNetworkZonalHint": "Hundreds of overlapping shapes",
   "thenTimes": "then {times} min",
   "@thenTimes": {
     "placeholders": {

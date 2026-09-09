@@ -57,6 +57,8 @@ IconData componentIcon(Component? c, {City? city}) {
     Component.zonal => Icons.directions_bus_outlined,
     Component.cable => Icons.cable,
     Component.rail => Icons.train,
+    Component.tram => Icons.tram,
+    Component.bus => Icons.directions_bus_outlined,
     _ => Icons.directions_transit,
   };
 }

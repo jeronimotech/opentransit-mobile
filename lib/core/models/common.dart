@@ -51,6 +51,17 @@ enum Component {
   bus,
   other;
 
+  /// Which of the two network layers a component is drawn in. The backbone is the handful of
+  /// high-capacity lines a rider can name; the rest are hundreds of shapes overlapping the same
+  /// corridors, which is why they are a separate toggle that is off by default.
+  ///
+  /// Every component belongs to exactly one group: leaving one out (as `tram` and `bus` were)
+  /// means its shapes are never drawn, on either toggle.
+  bool get isBackbone => switch (this) {
+        Component.trunk || Component.cable || Component.rail || Component.tram => true,
+        Component.feeder || Component.dual || Component.zonal || Component.bus || Component.other => false,
+      };
+
   static Component? parse(Object? v) {
     if (v == null) return null;
     final s = v.toString();

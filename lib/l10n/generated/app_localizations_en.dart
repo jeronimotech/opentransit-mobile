@@ -353,6 +353,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get componentRail => 'Rail';
 
   @override
+  String get componentTram => 'Streetcar';
+
+  @override
+  String get componentBus => 'Bus';
+
+  @override
   String get componentOther => 'Other';
 
   @override
@@ -825,11 +831,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get done => 'Done';
 
   @override
-  String get layerNetworkZonal => 'Zonal routes';
+  String get layerNetworkHint => 'Main network route shapes';
 
   @override
-  String get layerNetworkHint =>
-      'Trunk and cable; zonal routes overlap heavily';
+  String get layerNetworkZonalHint => 'Hundreds of overlapping shapes';
 
   @override
   String thenTimes(String times) {

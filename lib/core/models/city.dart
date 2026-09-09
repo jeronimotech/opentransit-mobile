@@ -393,6 +393,23 @@ class City {
       p.lon <= bbox[2] &&
       p.lat <= bbox[3];
 
+  /// The city's components, in the order it declares them, falling back to the ones its agencies use.
+  /// Empty only for a city with no agencies at all.
+  List<Component> get componentIds {
+    if (components.isNotEmpty) return [for (final c in components) c.id];
+    final seen = <Component>[];
+    for (final a in agencies) {
+      if (!seen.contains(a.component)) seen.add(a.component);
+    }
+    return seen;
+  }
+
+  /// The components drawn in one network layer. The layer is named after these, so Bogotá reads
+  /// "Troncal · TransMiCable" and Toronto "Subway · Streetcar" instead of one city's vocabulary
+  /// being shown to the other. Empty means the layer has nothing to draw and should not be offered.
+  List<Component> layerComponents({required bool backbone}) =>
+      [for (final c in componentIds) if (c.isBackbone == backbone) c];
+
   /// Component style from `components[]`, falling back to the agencies list.
   CityComponent? componentStyle(Component? c) {
     if (c == null) return null;

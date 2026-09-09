@@ -400,7 +400,11 @@ class _NearbySheet extends StatelessWidget {
   final void Function(Component) onComponent;
   final void Function(NearbyVehicle) onTap;
 
-  static const _filterable = [Component.trunk, Component.zonal, Component.feeder, Component.dual, Component.cable];
+  /// The chips offer the city's own components: this was Bogotá's five, so in Toronto there was no
+  /// way to filter by subway, streetcar or bus. `other` is dropped — it is the bucket for vehicles
+  /// whose route we could not resolve, not something a rider would ask for by name.
+  List<Component> get _filterable =>
+      [for (final c in city?.componentIds ?? const <Component>[]) if (c != Component.other) c];
 
   @override
   Widget build(BuildContext context) {

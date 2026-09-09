@@ -34,8 +34,9 @@ class _RoutesScreenState extends ConsumerState<RoutesScreen> {
     final routes = ref.watch(routesProvider(widget.cityId));
     final city = ref.watch(currentCityProvider);
     final q = _norm(_q.text.trim());
-    final components = city?.components.map((c) => c.id).toList() ??
-        const [Component.trunk, Component.feeder, Component.dual, Component.zonal, Component.cable];
+    // The city's own components, falling back to the ones its agencies use. Never a fixed list:
+    // it used to fall back to Bogotá's five, which is not what Toronto runs.
+    final components = city?.componentIds ?? const <Component>[];
 
     return Scaffold(
       appBar: AppBar(

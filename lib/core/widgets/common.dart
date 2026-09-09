@@ -416,6 +416,8 @@ String componentLabel(Component? c, AppLocalizations l10n, {City? city}) {
     Component.zonal => l10n.componentZonal,
     Component.cable => l10n.componentCable,
     Component.rail => l10n.componentRail,
+    Component.tram => l10n.componentTram,
+    Component.bus => l10n.componentBus,
     _ => l10n.componentOther,
   };
 }

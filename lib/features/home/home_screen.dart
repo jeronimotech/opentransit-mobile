@@ -188,10 +188,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     ];
   }
 
-  /// Network layer: trunk/cable/rail backbone (2.5 px, 50 %) from zoom 12; the
-  /// much denser zonal/feeder/dual shapes (1.5 px, 18 %) only when the user
-  /// turns them on and from zoom 14. Widths are screen pixels and never grow
-  /// with zoom. Neon feed colours fall back to the component colour (§B/§E).
+  /// Network layer: the city's backbone (2.5 px, 50 %) from zoom 12; the much
+  /// denser rest (1.5 px, 18 %) only when the user turns them on and from zoom
+  /// 14. Which components are which is `Component.isBackbone`, so a TTC
+  /// streetcar is backbone and its buses are not, the same split the layer
+  /// names are built from. Widths are screen pixels and never grow with zoom.
+  /// Neon feed colours fall back to the component colour (§B/§E).
   String _shapesKey = '';
   List<MapLine> _shapesToLines(List<NetworkShape> shapes, City city, double zoom, {required bool zonal}) {
     final detail = zonal && zoom >= 14;
@@ -199,16 +201,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     if (identical(shapes, _lastShapes) && key == _shapesKey) return _networkLines;
     _lastShapes = shapes;
     _shapesKey = key;
-    const backbone = {Component.trunk, Component.cable, Component.rail};
     return _networkLines = [
       for (final s in shapes)
-        if (detail || backbone.contains(s.component))
+        // a shape whose component the feed never resolved is not backbone: it draws with the rest
+        if (detail || (s.component?.isBackbone ?? false))
           MapLine(
             id: 'net:${s.id}',
             points: decodeGeometry(s.geometry),
             color: networkLineColor(s.color, componentColor(s.component, city: city),
-                backbone: backbone.contains(s.component)),
-            width: backbone.contains(s.component) ? 2.5 : 1.5,
+                backbone: s.component?.isBackbone ?? false),
+            width: (s.component?.isBackbone ?? false) ? 2.5 : 1.5,
           ),
     ];
   }
@@ -417,6 +419,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     } catch (_) {}
   }
 
+  /// Name of a network layer: the city's own component labels, e.g. "Troncal · TransMiCable" or
+  /// "Subway · Streetcar". Null when the city has nothing in that group, so the toggle is dropped
+  /// rather than drawing an empty layer.
+  static String? _layerLabel(City city, AppLocalizations l10n, {required bool backbone}) {
+    final ids = city.layerComponents(backbone: backbone);
+    if (ids.isEmpty) return null;
+    return ids.map((c) => componentLabel(c, l10n, city: city)).join(' · ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -575,6 +586,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                       poisAvailable: poisAllowed,
                       rentalAvailable: city.bikeShareEnabled,
                       rentalLabel: city.mobility.bikeShare.map((n) => n.name).join(' · '),
+                      networkLabel: _layerLabel(city, l10n, backbone: true),
+                      zonalLabel: _layerLabel(city, l10n, backbone: false),
                       onNearMe: () => context.push('/${widget.cityId}/live'),
                       onChanged: (next) {
                         final n = ref.read(settingsProvider.notifier);

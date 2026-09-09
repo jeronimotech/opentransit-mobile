@@ -680,6 +680,18 @@ abstract class AppLocalizations {
   /// **'Tren'**
   String get componentRail;
 
+  /// No description provided for @componentTram.
+  ///
+  /// In es, this message translates to:
+  /// **'Tranvía'**
+  String get componentTram;
+
+  /// No description provided for @componentBus.
+  ///
+  /// In es, this message translates to:
+  /// **'Bus'**
+  String get componentBus;
+
   /// No description provided for @componentOther.
   ///
   /// In es, this message translates to:
@@ -1550,17 +1562,17 @@ abstract class AppLocalizations {
   /// **'Listo'**
   String get done;
 
-  /// No description provided for @layerNetworkZonal.
-  ///
-  /// In es, this message translates to:
-  /// **'Rutas zonales'**
-  String get layerNetworkZonal;
-
   /// No description provided for @layerNetworkHint.
   ///
   /// In es, this message translates to:
-  /// **'Troncales y cable; las zonales se superponen mucho'**
+  /// **'Trazados de la red principal'**
   String get layerNetworkHint;
+
+  /// No description provided for @layerNetworkZonalHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Cientos de trazados superpuestos'**
+  String get layerNetworkZonalHint;
 
   /// No description provided for @thenTimes.
   ///

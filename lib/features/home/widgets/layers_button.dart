@@ -31,6 +31,8 @@ class LayersButton extends StatelessWidget {
     this.poisAvailable = true,
     this.rentalAvailable = false,
     this.rentalLabel,
+    this.networkLabel,
+    this.zonalLabel,
     this.onNearMe,
   });
   final MapLayers layers;
@@ -43,6 +45,12 @@ class LayersButton extends StatelessWidget {
 
   /// Network name(s) shown under the toggle, from the city config.
   final String? rentalLabel;
+
+  /// Titles of the two network layers, built from the city's own components ("Troncal ·
+  /// TransMiCable", "Subway · Streetcar"). Null hides the toggle: the city has nothing to draw
+  /// in that group, and a hardcoded name here would be one city's vocabulary shown to another.
+  final String? networkLabel;
+  final String? zonalLabel;
 
   /// Opens "Cerca de mí"; hidden when null. The live layer answers "what runs
   /// here", the mode answers "what is near me" — different questions, so the
@@ -89,76 +97,84 @@ class LayersButton extends StatelessWidget {
             setSheet(() {});
           }
 
+          // The sheet grows with the city: live, shared bikes, one or two network layers, services
+          // and "near me" are each optional, and a bottom sheet is capped at a fraction of the
+          // screen. Scroll rather than overflow on a short phone with all of them on.
           return SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.layers, style: Theme.of(ctx).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-                  if (liveAvailable)
-                    SwitchListTile(
-                      key: const ValueKey('layer-live'),
-                      contentPadding: EdgeInsets.zero,
-                      secondary: const Icon(Icons.directions_bus_rounded),
-                      title: Text(l10n.layerLive),
-                      subtitle: Text(l10n.layerLiveHint),
-                      value: cur.live,
-                      onChanged: (v) => update(cur.copyWith(live: v)),
-                    ),
-                  if (rentalAvailable)
-                    SwitchListTile(
-                      key: const ValueKey('layer-rental'),
-                      contentPadding: EdgeInsets.zero,
-                      secondary: const Icon(Icons.pedal_bike_rounded),
-                      title: Text(l10n.layerBikeShare),
-                      subtitle: Text(rentalLabel == null ? l10n.layerBikeShareHint : '$rentalLabel · ${l10n.layerBikeShareHint}'),
-                      value: cur.rental,
-                      onChanged: (v) => update(cur.copyWith(rental: v)),
-                    ),
-                  if (poisAvailable)
-                    SwitchListTile(
-                      key: const ValueKey('layer-pois'),
-                      contentPadding: EdgeInsets.zero,
-                      secondary: const Icon(Icons.local_convenience_store_outlined),
-                      title: Text(l10n.layerPois),
-                      value: cur.pois,
-                      onChanged: (v) => update(cur.copyWith(pois: v)),
-                    ),
-                  SwitchListTile(
-                    key: const ValueKey('layer-network'),
-                    contentPadding: EdgeInsets.zero,
-                    secondary: const Icon(Icons.timeline_rounded),
-                    title: Text(l10n.layerNetwork),
-                    subtitle: Text(l10n.layerNetworkHint),
-                    value: cur.network,
-                    onChanged: (v) => update(cur.copyWith(network: v)),
-                  ),
-                  SwitchListTile(
-                    key: const ValueKey('layer-zonal'),
-                    contentPadding: EdgeInsets.zero,
-                    secondary: const Icon(Icons.alt_route_rounded),
-                    title: Text(l10n.layerNetworkZonal),
-                    value: cur.zonal,
-                    onChanged: cur.network ? (v) => update(cur.copyWith(zonal: v)) : null,
-                  ),
-                  if (onNearMe != null) ...[
-                    const Divider(height: 12),
-                    ListTile(
-                      key: const ValueKey('layer-near-me'),
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.radar_rounded),
-                      title: Text(l10n.nearMeTitle),
-                      subtitle: Text(l10n.nearMeEntry),
-                      trailing: const Icon(Icons.chevron_right_rounded),
-                      onTap: () {
-                        Navigator.of(ctx).pop();
-                        onNearMe!();
-                      },
-                    ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.layers, style: Theme.of(ctx).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                    if (liveAvailable)
+                      SwitchListTile(
+                        key: const ValueKey('layer-live'),
+                        contentPadding: EdgeInsets.zero,
+                        secondary: const Icon(Icons.directions_bus_rounded),
+                        title: Text(l10n.layerLive),
+                        subtitle: Text(l10n.layerLiveHint),
+                        value: cur.live,
+                        onChanged: (v) => update(cur.copyWith(live: v)),
+                      ),
+                    if (rentalAvailable)
+                      SwitchListTile(
+                        key: const ValueKey('layer-rental'),
+                        contentPadding: EdgeInsets.zero,
+                        secondary: const Icon(Icons.pedal_bike_rounded),
+                        title: Text(l10n.layerBikeShare),
+                        subtitle: Text(rentalLabel == null ? l10n.layerBikeShareHint : '$rentalLabel · ${l10n.layerBikeShareHint}'),
+                        value: cur.rental,
+                        onChanged: (v) => update(cur.copyWith(rental: v)),
+                      ),
+                    if (poisAvailable)
+                      SwitchListTile(
+                        key: const ValueKey('layer-pois'),
+                        contentPadding: EdgeInsets.zero,
+                        secondary: const Icon(Icons.local_convenience_store_outlined),
+                        title: Text(l10n.layerPois),
+                        value: cur.pois,
+                        onChanged: (v) => update(cur.copyWith(pois: v)),
+                      ),
+                    if (networkLabel != null)
+                      SwitchListTile(
+                        key: const ValueKey('layer-network'),
+                        contentPadding: EdgeInsets.zero,
+                        secondary: const Icon(Icons.timeline_rounded),
+                        title: Text(networkLabel!),
+                        subtitle: Text(l10n.layerNetworkHint),
+                        value: cur.network,
+                        onChanged: (v) => update(cur.copyWith(network: v)),
+                      ),
+                    if (zonalLabel != null)
+                      SwitchListTile(
+                        key: const ValueKey('layer-zonal'),
+                        contentPadding: EdgeInsets.zero,
+                        secondary: const Icon(Icons.alt_route_rounded),
+                        title: Text(zonalLabel!),
+                        subtitle: Text(l10n.layerNetworkZonalHint),
+                        value: cur.zonal,
+                        onChanged: cur.network ? (v) => update(cur.copyWith(zonal: v)) : null,
+                      ),
+                    if (onNearMe != null) ...[
+                      const Divider(height: 12),
+                      ListTile(
+                        key: const ValueKey('layer-near-me'),
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.radar_rounded),
+                        title: Text(l10n.nearMeTitle),
+                        subtitle: Text(l10n.nearMeEntry),
+                        trailing: const Icon(Icons.chevron_right_rounded),
+                        onTap: () {
+                          Navigator.of(ctx).pop();
+                          onNearMe!();
+                        },
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           );

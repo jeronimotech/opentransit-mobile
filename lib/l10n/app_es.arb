@@ -232,6 +232,8 @@
   "componentZonal": "Zonal",
   "componentCable": "Cable",
   "componentRail": "Tren",
+  "componentTram": "Tranvía",
+  "componentBus": "Bus",
   "componentOther": "Otro",
   "modeWalk": "A pie",
   "modeBus": "Bus",
@@ -467,8 +469,8 @@
   "viewOnMapAction": "Ver en mapa",
   "noNearbyStops": "No hay paradas cerca de este punto",
   "done": "Listo",
-  "layerNetworkZonal": "Rutas zonales",
-  "layerNetworkHint": "Troncales y cable; las zonales se superponen mucho",
+  "layerNetworkHint": "Trazados de la red principal",
+  "layerNetworkZonalHint": "Cientos de trazados superpuestos",
   "thenTimes": "luego {times} min",
   "@thenTimes": {
     "placeholders": {

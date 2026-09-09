@@ -354,6 +354,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get componentRail => 'Tren';
 
   @override
+  String get componentTram => 'Tranvía';
+
+  @override
+  String get componentBus => 'Bus';
+
+  @override
   String get componentOther => 'Otro';
 
   @override
@@ -826,11 +832,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get done => 'Listo';
 
   @override
-  String get layerNetworkZonal => 'Rutas zonales';
+  String get layerNetworkHint => 'Trazados de la red principal';
 
   @override
-  String get layerNetworkHint =>
-      'Troncales y cable; las zonales se superponen mucho';
+  String get layerNetworkZonalHint => 'Cientos de trazados superpuestos';
 
   @override
   String thenTimes(String times) {
