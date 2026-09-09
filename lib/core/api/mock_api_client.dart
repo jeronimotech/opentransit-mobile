@@ -191,7 +191,7 @@ class MockApiClient implements ApiClient {
     final base = DeparturesResponse.fromJson(j);
     final detail = await stop(cityId, stopId);
     // Re-anchor so the first departure is a few minutes from now on every call.
-    final shift = now.add(const Duration(minutes: 2)).difference(base.departures.first.scheduledTime);
+    final shift = now.add(const Duration(minutes: 2)).difference(base.departures.first.effectiveTime);
     final shifted = DeparturesResponse.fromJson(
         Map<String, dynamic>.from(rebaseTimes(j, shift) as Map));
     final horizon = now.add(Duration(minutes: minutes));

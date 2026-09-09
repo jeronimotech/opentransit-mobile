@@ -214,18 +214,22 @@ class Departure {
     required this.route,
     this.headsign,
     this.tripId,
-    required this.scheduledTime,
+    this.scheduledTime,
     this.realtimeTime,
     required this.realtime,
     this.delaySeconds,
     this.canceled = false,
     this.vehicleId,
     this.stopSequence,
+    this.realtimeSource,
   });
   final RouteRef route;
   final String? headsign;
   final String? tripId;
-  final DateTime scheduledTime;
+  /// Null when a predicted arrival was never paired with a scheduled one — a feed
+  /// whose trip ids are not the schedule's can still say a bus is coming. The API
+  /// guarantees [realtimeTime] in that case, so [effectiveTime] always has one.
+  final DateTime? scheduledTime;
   final DateTime? realtimeTime;
   final bool realtime;
   final int? delaySeconds;
@@ -233,19 +237,24 @@ class Departure {
   final String? vehicleId;
   final int? stopSequence;
 
-  DateTime get effectiveTime => realtimeTime ?? scheduledTime;
+  /// "trip" when the feed's trip matched the schedule, "stop" when it was paired by
+  /// stop and route instead. The two are not equally certain.
+  final String? realtimeSource;
+
+  DateTime get effectiveTime => realtimeTime ?? scheduledTime ?? DateTime.now();
 
   factory Departure.fromJson(Map<String, dynamic> j) => Departure(
         route: RouteRef.fromJson(Map<String, dynamic>.from(j['route'] as Map)),
         headsign: j['headsign']?.toString(),
         tripId: j['tripId']?.toString(),
-        scheduledTime: parseTime(j['scheduledTime']) ?? DateTime.now(),
+        scheduledTime: parseTime(j['scheduledTime']),
         realtimeTime: parseTime(j['realtimeTime']),
         realtime: asBool(j['realtime']),
         delaySeconds: asInt(j['delaySeconds']),
         canceled: asBool(j['canceled']),
         vehicleId: j['vehicleId']?.toString(),
         stopSequence: asInt(j['stopSequence']),
+        realtimeSource: j['realtimeSource']?.toString(),
       );
 }
 

@@ -96,7 +96,7 @@ void main() {
       final live = r.departures.first;
       expect(live.realtime, isTrue);
       expect(live.delaySeconds, 120);
-      expect(live.effectiveTime.difference(live.scheduledTime).inSeconds, 120);
+      expect(live.effectiveTime.difference(live.scheduledTime!).inSeconds, 120);
       expect(r.departures.where((d) => d.canceled), hasLength(1));
       final sched = r.departures[2];
       expect(sched.realtime, isFalse);
