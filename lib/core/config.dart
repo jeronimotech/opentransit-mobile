@@ -39,7 +39,7 @@ class AppConfig {
   /// remember to edit is a value that will be wrong again.
   static const String appVersion = String.fromEnvironment(
     'APP_VERSION',
-    defaultValue: '1.14.2',
+    defaultValue: '1.14.3',
   );
   static const String deepLinkScheme = 'opentransit';
 
