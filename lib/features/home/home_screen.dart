@@ -419,15 +419,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
     } catch (_) {}
   }
 
-  /// Name of a network layer: the city's own component labels, e.g. "Troncal · TransMiCable" or
-  /// "Subway · Streetcar". Null when the city has nothing in that group, so the toggle is dropped
-  /// rather than drawing an empty layer.
-  static String? _layerLabel(City city, AppLocalizations l10n, {required bool backbone}) {
-    final ids = city.layerComponents(backbone: backbone);
-    if (ids.isEmpty) return null;
-    return ids.map((c) => componentLabel(c, l10n, city: city)).join(' · ');
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -586,8 +577,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                       poisAvailable: poisAllowed,
                       rentalAvailable: city.bikeShareEnabled,
                       rentalLabel: city.mobility.bikeShare.map((n) => n.name).join(' · '),
-                      networkLabel: _layerLabel(city, l10n, backbone: true),
-                      zonalLabel: _layerLabel(city, l10n, backbone: false),
+                      networkLabel: networkLayerLabel(city, l10n, backbone: true),
+                      zonalLabel: networkLayerLabel(city, l10n, backbone: false),
                       onNearMe: () => context.push('/${widget.cityId}/live'),
                       onChanged: (next) {
                         final n = ref.read(settingsProvider.notifier);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opentransit_mobile/core/models/models.dart';
+import 'package:opentransit_mobile/core/widgets/common.dart';
 import 'package:opentransit_mobile/features/home/widgets/layers_button.dart';
 import 'package:opentransit_mobile/l10n/generated/app_localizations.dart';
 
@@ -61,6 +62,72 @@ void main() {
       final city = City.fromJson(json);
       expect(city.componentIds, contains(Component.trunk));
       expect(city.layerComponents(backbone: true), contains(Component.trunk));
+    });
+  });
+
+  group('networkLayerLabel', () {
+    testWidgets('joins the city\'s own component labels', (tester) async {
+      late AppLocalizations l10n;
+      await tester.pumpWidget(MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(builder: (ctx) {
+          l10n = AppLocalizations.of(ctx);
+          return const SizedBox();
+        }),
+      ));
+
+      final toronto = City.fromJson({
+        ...Map<String, dynamic>.from(loadFixture('cities')['cities'][0] as Map),
+        'components': [
+          {'id': 'rail', 'label': 'Subway', 'color': '#DA291C'},
+          {'id': 'tram', 'label': 'Streetcar', 'color': '#0054A6'},
+          {'id': 'bus', 'label': 'Bus', 'color': '#DA291C'},
+        ],
+      });
+      expect(networkLayerLabel(toronto, l10n, backbone: true), 'Subway · Streetcar');
+      expect(networkLayerLabel(toronto, l10n, backbone: false), 'Bus');
+
+      // a city that declares no label for tram/bus still gets a real word, not "Other"
+      final bare = City.fromJson({
+        ...Map<String, dynamic>.from(loadFixture('cities')['cities'][0] as Map),
+        'components': [
+          {'id': 'tram', 'label': '', 'color': '#000000'},
+          {'id': 'bus', 'label': '', 'color': '#000000'},
+        ],
+      });
+      expect(networkLayerLabel(bare, l10n, backbone: true), 'Streetcar');
+      expect(networkLayerLabel(bare, l10n, backbone: false), 'Bus');
+    });
+
+    testWidgets('is null for a group the city has nothing in', (tester) async {
+      late AppLocalizations l10n;
+      await tester.pumpWidget(MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(builder: (ctx) {
+          l10n = AppLocalizations.of(ctx);
+          return const SizedBox();
+        }),
+      ));
+      final busOnly = City.fromJson({
+        ...Map<String, dynamic>.from(loadFixture('cities')['cities'][0] as Map),
+        'components': [
+          {'id': 'bus', 'label': 'Bus', 'color': '#000000'},
+        ],
+      });
+      expect(networkLayerLabel(busOnly, l10n, backbone: true), isNull);
+      expect(networkLayerLabel(busOnly, l10n, backbone: false), 'Bus');
     });
   });
 

@@ -422,6 +422,15 @@ String componentLabel(Component? c, AppLocalizations l10n, {City? city}) {
   };
 }
 
+/// Name of a network map layer: the city's own component labels, e.g. "Troncal · TransMiCable" or
+/// "Subway · Streetcar". Null when the city has nothing in that group, so the toggle is dropped
+/// rather than offering one that draws an empty layer.
+String? networkLayerLabel(City city, AppLocalizations l10n, {required bool backbone}) {
+  final ids = city.layerComponents(backbone: backbone);
+  if (ids.isEmpty) return null;
+  return ids.map((c) => componentLabel(c, l10n, city: city)).join(' · ');
+}
+
 String modeLabel(TravelMode m, AppLocalizations l10n) => switch (m) {
       TravelMode.walk => l10n.modeWalk,
       TravelMode.bus => l10n.modeBus,
