@@ -15,6 +15,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseCity => 'Choose your city';
 
   @override
+  String get detectCity => 'Detect my city';
+
+  @override
+  String get detectingCity => 'Finding your city…';
+
+  @override
+  String cityDetected(String city) {
+    return 'You are in $city';
+  }
+
+  @override
+  String get cityNotCovered =>
+      'We do not cover your area yet. Pick a city from the list.';
+
+  @override
+  String get cityDetectFailed =>
+      'We could not use your location. Pick a city from the list.';
+
+  @override
   String get chooseCitySubtitle =>
       'Plan public transport trips with open, real-time data.';
 

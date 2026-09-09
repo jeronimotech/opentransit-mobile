@@ -2,6 +2,31 @@
   "@@locale": "es",
   "appTitle": "OpenTransit",
   "chooseCity": "Elige tu ciudad",
+  "detectCity": "Detectar mi ciudad",
+  "@detectCity": {
+    "description": "City auto-detection on the picker"
+  },
+  "detectingCity": "Buscando tu ciudad…",
+  "@detectingCity": {
+    "description": "City auto-detection on the picker"
+  },
+  "cityDetected": "Estás en {city}",
+  "@cityDetected": {
+    "description": "City auto-detection on the picker",
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+  "cityNotCovered": "Todavía no cubrimos tu zona. Elige una ciudad de la lista.",
+  "@cityNotCovered": {
+    "description": "City auto-detection on the picker"
+  },
+  "cityDetectFailed": "No pudimos usar tu ubicación. Elige una ciudad de la lista.",
+  "@cityDetectFailed": {
+    "description": "City auto-detection on the picker"
+  },
   "chooseCitySubtitle": "Planea viajes en transporte público con datos abiertos y en tiempo real.",
   "searchPlaceholder": "¿A dónde vas?",
   "planTrip": "Planear viaje",

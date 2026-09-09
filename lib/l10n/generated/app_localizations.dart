@@ -110,6 +110,36 @@ abstract class AppLocalizations {
   /// **'Elige tu ciudad'**
   String get chooseCity;
 
+  /// City auto-detection on the picker
+  ///
+  /// In es, this message translates to:
+  /// **'Detectar mi ciudad'**
+  String get detectCity;
+
+  /// City auto-detection on the picker
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando tu ciudad…'**
+  String get detectingCity;
+
+  /// City auto-detection on the picker
+  ///
+  /// In es, this message translates to:
+  /// **'Estás en {city}'**
+  String cityDetected(String city);
+
+  /// City auto-detection on the picker
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no cubrimos tu zona. Elige una ciudad de la lista.'**
+  String get cityNotCovered;
+
+  /// City auto-detection on the picker
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos usar tu ubicación. Elige una ciudad de la lista.'**
+  String get cityDetectFailed;
+
   /// No description provided for @chooseCitySubtitle.
   ///
   /// In es, this message translates to:

@@ -5,12 +5,23 @@ import 'package:go_router/go_router.dart';
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
 import '../../core/utils/colors.dart';
+import '../../core/utils/location.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../planner/planner_state.dart';
+import 'city_for_position.dart';
 
-class CityPickerScreen extends ConsumerWidget {
+class CityPickerScreen extends ConsumerStatefulWidget {
   const CityPickerScreen({super.key});
+
+  @override
+  ConsumerState<CityPickerScreen> createState() => _CityPickerScreenState();
+}
+
+class _CityPickerScreenState extends ConsumerState<CityPickerScreen> {
+  bool _detecting = false;
+  String? _detectNote;
+  bool _autoTried = false;
 
   Future<void> _choose(BuildContext context, WidgetRef ref, City c) async {
     await ref.read(settingsProvider.notifier).setCity(c.id);
@@ -18,8 +29,41 @@ class CityPickerScreen extends ConsumerWidget {
     if (context.mounted) context.go('/${c.id}');
   }
 
+  /// Pick the city the device is standing in.
+  ///
+  /// [ask] is false on the automatic pass: arriving at a fresh install with a system
+  /// permission dialog before anything has been shown is not a welcome. When the
+  /// permission is already there, this just works and nobody is asked anything.
+  Future<void> _detect(List<City> list, {required bool ask}) async {
+    if (_detecting) return;
+    setState(() {
+      _detecting = true;
+      _detectNote = null;
+    });
+    final l10n = AppLocalizations.of(context);
+    LatLng? at;
+    try {
+      at = ask ? await currentPosition() : await grantedPosition();
+    } catch (_) {
+      at = null;
+    }
+    if (!mounted) return;
+    final found = at == null ? null : cityForPosition(list, at);
+    if (found != null) {
+      await _choose(context, ref, found);
+      return;
+    }
+    if (!mounted) return;
+    setState(() {
+      _detecting = false;
+      // Only say something when the person asked. A silent automatic attempt that
+      // found nothing should leave the list exactly as it was.
+      _detectNote = ask ? (at == null ? l10n.cityDetectFailed : l10n.cityNotCovered) : null;
+    });
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cities = ref.watch(citiesProvider);
     final scheme = Theme.of(context).colorScheme;
@@ -64,6 +108,26 @@ class CityPickerScreen extends ConsumerWidget {
                           .textTheme
                           .bodyLarge
                           ?.copyWith(color: scheme.onSurfaceVariant)),
+                  const SizedBox(height: 14),
+                  cities.maybeWhen(
+                    data: (list) => Align(
+                      alignment: Alignment.centerLeft,
+                      child: OutlinedButton.icon(
+                        key: const ValueKey('city-detect'),
+                        onPressed: _detecting ? null : () => _detect(list, ask: true),
+                        icon: _detecting
+                            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                            : const Icon(Icons.my_location, size: 18),
+                        label: Text(_detecting ? l10n.detectingCity : l10n.detectCity),
+                      ),
+                    ),
+                    orElse: () => const SizedBox.shrink(),
+                  ),
+                  if (_detectNote != null) ...[
+                    const SizedBox(height: 8),
+                    Text(_detectNote!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+                  ],
                 ],
               ),
             ),
@@ -74,7 +138,16 @@ class CityPickerScreen extends ConsumerWidget {
                   error: e,
                   onRetry: () => ref.invalidate(citiesProvider),
                 ),
-                data: (list) => ListView.separated(
+                data: (list) {
+                  // One silent attempt per visit, and only where a choice has not
+                  // already been made — nothing here overrides a person's decision.
+                  if (!_autoTried && ref.read(settingsProvider).cityId == null) {
+                    _autoTried = true;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (mounted) _detect(list, ask: false);
+                    });
+                  }
+                  return ListView.separated(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
                   itemCount: list.length,
                   separatorBuilder: (_, _) => const SizedBox(height: 12),
@@ -82,7 +155,8 @@ class CityPickerScreen extends ConsumerWidget {
                     city: list[i],
                     onTap: () => _choose(context, ref, list[i]),
                   ),
-                ),
+                );
+                },
               ),
             ),
           ],
