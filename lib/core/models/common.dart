@@ -45,6 +45,10 @@ enum Component {
   zonal,
   cable,
   rail,
+  // An operator that runs several modes itself needs these: the TTC is one agency
+  // with a subway, streetcars and buses, so the component comes from the GTFS mode.
+  tram,
+  bus,
   other;
 
   static Component? parse(Object? v) {

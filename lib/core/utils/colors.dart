@@ -20,6 +20,8 @@ Color _defaultComponentColor(Component? c) => switch (c) {
       Component.zonal => const Color(0xFF1565C0),
       Component.cable => const Color(0xFFEF6C00),
       Component.rail => const Color(0xFF00838F),
+      Component.tram => const Color(0xFF0054A6),
+      Component.bus => const Color(0xFFD32F2F),
       _ => const Color(0xFF607D8B),
     };
 
