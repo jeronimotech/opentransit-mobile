@@ -60,6 +60,7 @@ Widget _app(ProviderContainer c, Widget child, {Locale locale = const Locale('es
     );
 
 void main() {
+  _forcedUpdateGuards();
   _goNavigationGuards();
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -607,6 +608,42 @@ void _goNavigationGuards() {
       expect(map, contains('CameraUpdate.tiltTo(0)'));
       // Tracking resumes only when the screen asks, never on its own.
       expect(map, contains('widget.recenterSignal != oldWidget.recenterSignal'));
+    });
+  });
+}
+
+// The forced-update screen is only as good as where its button goes. It used to open
+// the transit operator's support page — or nothing at all when that was unset.
+void _forcedUpdateGuards() {
+  group('forced update', () {
+    String read(String p) => File(p).readAsStringSync();
+
+    test('the destination comes from the city, not from the build', () {
+      final gate = read('lib/features/config/config_gate.dart');
+      // A blocked build cannot be given new code, only new data, so the URL is config.
+      expect(gate, contains('updateUrlFor'));
+      expect(gate, contains('c.updateUrlIos'));
+      expect(gate, contains('c.updateUrlAndroid'));
+      // ...and it must no longer reach for the operator's support link.
+      expect(gate, isNot(contains('city.links.support')));
+    });
+
+    test('a city that configured nothing still lands on a real store', () {
+      final gate = read('lib/features/config/config_gate.dart');
+      expect(gate, contains('apps.apple.com/app/id'));
+      expect(gate, contains('play.google.com/store/apps/details?id='));
+    });
+
+    test('a button that cannot open anything says so', () {
+      // There is no way off this screen, so failing silently strands the person.
+      expect(read('lib/features/config/config_gate.dart'), contains('updateOpenFailed'));
+    });
+
+    test('the config carries the URLs the API sends', () {
+      final city = read('lib/core/models/city.dart');
+      expect(city, contains("j['updateUrls']"));
+      expect(city, contains("upd['ios']"));
+      expect(city, contains("upd['android']"));
     });
   });
 }

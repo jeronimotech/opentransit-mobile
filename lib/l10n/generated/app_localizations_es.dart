@@ -591,6 +591,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get updateAction => 'Actualizar';
 
   @override
+  String get updateOpenFailed =>
+      'No se pudo abrir la tienda. Búscanos como «opentransit» para actualizar.';
+
+  @override
   String get maintenanceTitle => 'En mantenimiento';
 
   @override

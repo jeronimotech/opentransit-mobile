@@ -590,6 +590,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateAction => 'Update';
 
   @override
+  String get updateOpenFailed =>
+      'Could not open the store. Search for \"opentransit\" to update.';
+
+  @override
   String get maintenanceTitle => 'Under maintenance';
 
   @override

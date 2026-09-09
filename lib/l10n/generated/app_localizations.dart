@@ -1124,6 +1124,12 @@ abstract class AppLocalizations {
   /// **'Actualizar'**
   String get updateAction;
 
+  /// Shown when the forced-update button cannot open the store
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir la tienda. Búscanos como «opentransit» para actualizar.'**
+  String get updateOpenFailed;
+
   /// No description provided for @maintenanceTitle.
   ///
   /// In es, this message translates to:

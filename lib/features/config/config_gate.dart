@@ -23,6 +23,27 @@ class ConfigGate extends ConsumerWidget {
     return null;
   }
 
+  /// Where this platform gets the update.
+  ///
+  /// The city's own value wins, because the destination has to be changeable
+  /// without a release: a build that is blocked cannot be handed new code. The
+  /// fallback is the platform's store for our own bundle id, so a city that never
+  /// configured one still sends people somewhere real instead of nowhere — which is
+  /// what happened when this opened the transit operator's support page.
+  static String? updateUrlFor(CityConfigLike c) {
+    if (kIsWeb) return null;
+    if (Platform.isIOS) {
+      return _clean(c.updateUrlIos) ?? "https://apps.apple.com/app/id${AppConfig.appStoreId}";
+    }
+    if (Platform.isAndroid) {
+      return _clean(c.updateUrlAndroid) ??
+          "https://play.google.com/store/apps/details?id=${AppConfig.packageName}";
+    }
+    return null;
+  }
+
+  static String? _clean(String? v) => (v == null || v.trim().isEmpty) ? null : v.trim();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final city = ref.watch(currentCityProvider);
@@ -50,11 +71,18 @@ class ConfigGate extends ConsumerWidget {
         body: l10n.updateRequiredBody,
         action: l10n.updateAction,
         onAction: () async {
-          final url = city.links.support;
+          final url = updateUrlFor(
+              CityConfigLike(cfg.minAppVersionIos, cfg.minAppVersionAndroid, cfg.updateUrlIos, cfg.updateUrlAndroid));
           if (url == null) return;
+          final messenger = ScaffoldMessenger.maybeOf(context);
           try {
-            await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-          } catch (_) {}
+            final ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+            if (ok) return;
+          } catch (_) {
+            // fall through to the message
+          }
+          // A dead button on a screen you cannot leave is the worst outcome here.
+          messenger?.showSnackBar(SnackBar(content: Text(l10n.updateOpenFailed)));
         },
       );
     }
@@ -64,9 +92,12 @@ class ConfigGate extends ConsumerWidget {
 
 /// Tiny value holder so [ConfigGate.minVersionFor] is testable without dart:io.
 class CityConfigLike {
-  const CityConfigLike(this.minAppVersionIos, this.minAppVersionAndroid);
+  const CityConfigLike(this.minAppVersionIos, this.minAppVersionAndroid,
+      [this.updateUrlIos, this.updateUrlAndroid]);
   final String? minAppVersionIos;
   final String? minAppVersionAndroid;
+  final String? updateUrlIos;
+  final String? updateUrlAndroid;
 }
 
 class _Blocker extends StatelessWidget {

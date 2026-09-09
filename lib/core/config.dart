@@ -36,6 +36,17 @@ class AppConfig {
   /// Host of the web app whose `https://<host>/{city}/...` URLs this app
   /// claims (App Links / Universal Links) and emits when sharing. Keep in sync
   /// with `android/app/src/main/AndroidManifest.xml` and
+  /// Identity used to build a store link when a city configured none. Both are
+  /// build-time facts about *this* app, unlike the city's own update URL.
+  static const String packageName = String.fromEnvironment(
+    'PACKAGE_NAME',
+    defaultValue: 'com.jeronimotech.opentransit',
+  );
+  static const String appStoreId = String.fromEnvironment(
+    'APP_STORE_ID',
+    defaultValue: '6809010622',
+  );
+
   /// `ios/Runner/Runner.entitlements`.
   static const String webHost = String.fromEnvironment(
     'WEB_HOST',

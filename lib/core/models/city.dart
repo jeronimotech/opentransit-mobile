@@ -127,6 +127,8 @@ class CityConfig {
     this.features = const {},
     this.minAppVersionIos,
     this.minAppVersionAndroid,
+    this.updateUrlIos,
+    this.updateUrlAndroid,
     this.maintenance = const MaintenanceState(),
     this.assistant = const AssistantPublic(),
   });
@@ -138,6 +140,12 @@ class CityConfig {
   final Map<String, bool> features;
   final String? minAppVersionIos;
   final String? minAppVersionAndroid;
+
+  /// Where a build that is too old goes to update. Server-side on purpose: a blocked
+  /// build cannot be given new code, only new data — and it lets iOS move from
+  /// TestFlight to the App Store without shipping anything.
+  final String? updateUrlIos;
+  final String? updateUrlAndroid;
   final MaintenanceState maintenance;
 
   /// Public slice only — the provider key never reaches the app.
@@ -150,6 +158,9 @@ class CityConfig {
     final min = j['minAppVersion'] is Map
         ? Map<String, dynamic>.from(j['minAppVersion'] as Map)
         : const <String, dynamic>{};
+    final upd = j['updateUrls'] is Map
+        ? Map<String, dynamic>.from(j['updateUrls'] as Map)
+        : const <String, dynamic>{};
     final feats = j['features'] is Map
         ? Map<String, dynamic>.from(j['features'] as Map)
         : const <String, dynamic>{};
@@ -159,6 +170,8 @@ class CityConfig {
       features: {for (final e in feats.entries) e.key: asBool(e.value, fallback: true)},
       minAppVersionIos: min['ios']?.toString(),
       minAppVersionAndroid: min['android']?.toString(),
+      updateUrlIos: upd['ios']?.toString(),
+      updateUrlAndroid: upd['android']?.toString(),
       maintenance: MaintenanceState.fromJson(
         j['maintenance'] is Map
             ? Map<String, dynamic>.from(j['maintenance'] as Map)

@@ -321,6 +321,10 @@
   "updateRequired": "Actualiza la app",
   "updateRequiredBody": "Esta versión ya no es compatible. Actualiza para seguir usando OpenTransit.",
   "updateAction": "Actualizar",
+  "updateOpenFailed": "No se pudo abrir la tienda. Búscanos como «opentransit» para actualizar.",
+  "@updateOpenFailed": {
+    "description": "Shown when the forced-update button cannot open the store"
+  },
   "maintenanceTitle": "En mantenimiento",
   "maintenanceBody": "Estamos haciendo mejoras. Vuelve a intentarlo en unos minutos.",
   "checkAgain": "Volver a intentar",
