@@ -244,6 +244,40 @@ void main() {
     });
   });
 
+  group('waiting for the bus', () {
+    // A tester standing at the stop was told "Bájate en Compensar CUR · 4.9 km a tu parada": the
+    // instruction for the ride, and the distance to the stop where he gets *off*, while what he
+    // needed was when his bus arrives. The leg advances to the bus the moment the walk ends, so the
+    // screen has to tell the two phases apart on its own.
+    test('you are waiting until you are well clear of the boarding stop', () {
+      final it = plan.itineraries.first; // walk → B10 → walk
+      final bus = it.legs[1];
+      final stop = bus.from.position;
+      expect(boardedTransitLeg(bus, stop, wasBoarded: false), isFalse, reason: 'standing at the stop');
+      expect(boardedTransitLeg(bus, _metersNorth(stop, 100), wasBoarded: false), isFalse,
+          reason: 'GPS wander at the kerb is not boarding');
+      expect(boardedTransitLeg(bus, _metersNorth(stop, 300), wasBoarded: false), isTrue,
+          reason: 'well clear of the stop → on board');
+    });
+
+    test('does not flip back and forth while you stand still', () {
+      final bus = plan.itineraries.first.legs[1];
+      final stop = bus.from.position;
+      // once boarded it takes coming back to the stop to be waiting again, not just drifting near it
+      expect(boardedTransitLeg(bus, _metersNorth(stop, 200), wasBoarded: true), isTrue);
+      expect(boardedTransitLeg(bus, _metersNorth(stop, 60), wasBoarded: true), isFalse);
+    });
+
+    test('a leg you cannot board is never "waiting"', () {
+      final walk = plan.itineraries.first.legs[0];
+      expect(walk.transit, isFalse);
+      expect(boardedTransitLeg(walk, walk.from.position, wasBoarded: false), isTrue);
+      // no fix yet: keep whatever we knew rather than guessing
+      expect(boardedTransitLeg(plan.itineraries.first.legs[1], null, wasBoarded: true), isTrue);
+      expect(boardedTransitLeg(plan.itineraries.first.legs[1], null, wasBoarded: false), isFalse);
+    });
+  });
+
   group('follow along', () {
     test('advances legs as their ends are reached and detects arrival', () {
       final it = plan.itineraries.first; // walk → B10 → walk
@@ -275,3 +309,6 @@ void main() {
     });
   });
 }
+
+/// A point [meters] due north of [p], for thresholds that are about distance and not direction.
+LatLng _metersNorth(LatLng p, double meters) => LatLng(p.lat + meters / 111320.0, p.lon);

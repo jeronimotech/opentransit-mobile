@@ -4,8 +4,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opentransit_mobile/core/api/mock_api_client.dart';
+import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/providers.dart';
 import 'package:opentransit_mobile/features/home/widgets/action_chips.dart';
+import 'package:opentransit_mobile/features/planner/follow_along_screen.dart';
 import 'package:opentransit_mobile/features/stops/widgets/board_view.dart';
 import 'package:opentransit_mobile/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -88,5 +90,39 @@ void main() {
     // timer is cancelled before the framework checks for pending timers.
     await tester.pumpWidget(const SizedBox());
     c.dispose();
+  });
+
+  group('waiting for the bus, in GO', () {
+    testWidgets('shows when this route reaches this stop, and keeps the exit in view', (tester) async {
+      final c = await _container();
+      final bus = PlanResponse.fromJson(loadFixture('plan')).itineraries.first.legs[1];
+      // Warm the provider first: the mock reads fixtures off disk, which no amount of pumping
+      // inside a widget test will complete on its own.
+      final key = StopRouteKey('bogota', bus.from.stopId!, bus.route!.id);
+      // runAsync, because the mock reads its fixtures off disk and real I/O does not advance
+      // under the widget tester's fake clock — pumping alone waits forever.
+      await tester.runAsync(() => c.read(nextBusesProvider(key).future));
+
+      await tester.pumpWidget(_app(
+        c,
+        WaitingForBus(
+          cityId: 'bogota',
+          stopId: bus.from.stopId!,
+          routeId: bus.route!.id,
+          getOff: bus.to.name,
+        ),
+      ));
+      await tester.pump();
+
+      // the wait, not the distance to the stop where you get off
+      expect(find.textContaining('min'), findsWidgets);
+      expect(find.byKey(const ValueKey('go-eta-0')), findsOneWidget);
+      // where this leg ends stays visible, one line, muted
+      expect(find.textContaining(bus.to.name), findsOneWidget);
+
+      // the arrivals refresh on a timer; unmount and dispose so it does not outlive the test
+      await tester.pumpWidget(const SizedBox());
+      c.dispose();
+    });
   });
 }

@@ -13,6 +13,7 @@ import '../../core/providers.dart';
 import '../../core/analytics/analytics.dart';
 import '../../core/analytics/analytics_event.dart';
 import '../../core/utils/colors.dart';
+import '../../core/utils/eta.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
 import '../../core/utils/location.dart';
@@ -53,6 +54,21 @@ FollowAlongState followAlongStep(Itinerary it, LatLng here, {int previous = 0, d
   return FollowAlongState(legIndex: idx, metersToLegEnd: d, arrived: arrived);
 }
 
+/// A transit leg has two phases the screen used to collapse into one. Waiting at the boarding stop,
+/// where the only thing that matters is when the bus comes; and riding, where it is where to get
+/// off. GPS at a kerb wanders tens of metres, so the two thresholds differ: you are only counted as
+/// boarded once you are well clear of the stop, and only counted as waiting again if you come back
+/// to it. Without that the card flips between "sube" and "bájate" while you stand still.
+const boardingWaitMeters = 120.0;
+const boardingRideMeters = 250.0;
+
+bool boardedTransitLeg(Leg leg, LatLng? here, {required bool wasBoarded}) {
+  if (!leg.transit) return true;
+  if (here == null) return wasBoarded;
+  final d = haversineMeters(here, leg.from.position);
+  return wasBoarded ? d > boardingWaitMeters : d > boardingRideMeters;
+}
+
 class FollowAlongScreen extends ConsumerStatefulWidget {
   const FollowAlongScreen({super.key, required this.cityId, required this.index});
   final String cityId;
@@ -68,6 +84,8 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
   int _legIndex = 0;
   double? _toEnd;
   bool _arrived = false;
+  /// False while standing at the boarding stop of a transit leg; see [boardedTransitLeg].
+  bool _boarded = false;
   bool _notified = false;
   bool _denied = false;
   static const _alertMeters = 300.0;
@@ -146,9 +164,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     final leg = it.legs[st.legIndex];
     if (st.legIndex != _legIndex) {
       _notified = false;
+      _boarded = false;
       _offRoute.reset();
       _offRoutePrompt = false;
     }
+    final boarded = boardedTransitLeg(leg, here, wasBoarded: _boarded);
     final l10n = AppLocalizations.of(context);
     if ((leg.transit || leg.isRental) && !_notified && st.metersToLegEnd <= _alertMeters) {
       _notified = true;
@@ -173,6 +193,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
       _legIndex = st.legIndex;
       _toEnd = st.metersToLegEnd;
       _arrived = st.arrived;
+      _boarded = boarded;
     });
     _updateOngoing(it, leg);
     LiveActivity.instance.update(_liveUpdate(it, leg));
@@ -570,7 +591,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                         Expanded(
                           child: Text(
                             leg.transit
-                                ? l10n.getOffAt(leg.to.name)
+                                ? (_boarded ? l10n.getOffAt(leg.to.name) : l10n.boardAt(leg.from.name))
                                 : leg.isRental
                                     ? l10n.rentalDropoff(leg.rental?.dropoff?.name ?? leg.to.name)
                                     : leg.isOnDemand
@@ -584,12 +605,24 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      _denied
-                          ? l10n.followAlongLocationNeeded
-                          : (_toEnd == null ? l10n.followAlongHint : l10n.distanceToStop(formatDistance(_toEnd!.round()))),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _denied ? scheme.error : scheme.onSurfaceVariant),
-                    ),
+                    // While waiting for the bus, "4.9 km to your stop" is the distance to where you
+                    // get *off* — a number that reads as if the bus stop were 4.9 km away. What the
+                    // rider needs there is the wait, so the arrivals take that line instead.
+                    if (leg.transit && !_boarded && leg.route != null && leg.from.stopId != null)
+                      WaitingForBus(
+                        key: const ValueKey('go-waiting'),
+                        cityId: widget.cityId,
+                        stopId: leg.from.stopId!,
+                        routeId: leg.route!.id,
+                        getOff: leg.to.name,
+                      )
+                    else
+                      Text(
+                        _denied
+                            ? l10n.followAlongLocationNeeded
+                            : (_toEnd == null ? l10n.followAlongHint : l10n.distanceToStop(formatDistance(_toEnd!.round()))),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _denied ? scheme.error : scheme.onSurfaceVariant),
+                      ),
                     // "Pide tu vehículo": the provider picker inline (top 3).
                     if (leg.isOnDemand)
                       Builder(builder: (context) {
@@ -682,6 +715,89 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The wait at the boarding stop: when the leg's own route reaches this stop, live where the feed
+/// says so. Falls back to naming the stop when the API has nothing, because "no data" is a better
+/// answer than the distance to a stop you have not reached yet.
+class WaitingForBus extends ConsumerWidget {
+  const WaitingForBus({
+    super.key,
+    required this.cityId,
+    required this.stopId,
+    required this.routeId,
+    required this.getOff,
+  });
+  final String cityId;
+  final String stopId;
+  final String routeId;
+
+  /// Where this leg ends: kept in view so the destination is never lost while waiting.
+  final String getOff;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final data = ref.watch(nextBusesProvider(StopRouteKey(cityId, stopId, routeId))).asData?.value;
+    final next = (data?.next ?? const <NextBus>[]).take(3).toList();
+    final muted = Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (next.isEmpty)
+          Text(data == null ? l10n.followAlongHint : l10n.noBuses, style: muted)
+        else ...[
+          Row(
+            children: [
+              Text(l10n.nextDeparturesHere,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: scheme.onSurfaceVariant, fontWeight: FontWeight.w700)),
+              const SizedBox(width: 8),
+              // Same three words the arrivals board uses, so "en vivo" means the same everywhere.
+              Text(
+                next.first.isLive
+                    ? l10n.sourceLive
+                    : (next.first.isEstimated ? l10n.sourceEstimated : l10n.sourceScheduled),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: next.first.isLive
+                          ? context.semantic.live
+                          : (next.first.isEstimated ? context.semantic.disruption : scheme.outline),
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              // Keyed by position: two buses of the same route can be predicted for the same
+              // second, and duplicate keys crash the Wrap (seen against the live Bogotá feed).
+              for (final (i, n) in next.indexed)
+                Container(
+                  key: ValueKey('go-eta-$i'),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: etaColor(etaBucket(n.minutes)).withValues(alpha: i == 0 ? 0.18 : 0.10),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    n.minutes <= 0 ? l10n.arrivingNow : l10n.inMinutes(n.minutes),
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        fontWeight: i == 0 ? FontWeight.w800 : FontWeight.w600),
+                  ),
+                ),
+            ],
+          ),
+        ],
+        const SizedBox(height: 6),
+        Text(l10n.getOffAt(getOff), style: muted, maxLines: 1, overflow: TextOverflow.ellipsis),
+      ],
     );
   }
 }
