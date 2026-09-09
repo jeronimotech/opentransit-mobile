@@ -167,7 +167,9 @@ if command -v ruby >/dev/null 2>&1; then
     GEM_HOME="${GEM_HOME_PODS:-$GEM_HOME}" ruby tool/xcode_targets.rb || {
       echo "!! could not ensure the companion Xcode targets" >&2; exit 1; }
 fi
-DEFINES=(--dart-define="API_URL=$API_URL")
+# The app must report the version it actually is: a hand-maintained constant drifted
+# six releases behind and every build blocked itself against its own minimum.
+DEFINES=(--dart-define="API_URL=$API_URL" --dart-define="APP_VERSION=$BUILD_NAME")
 [[ -n "$WEB_HOST" ]] && DEFINES+=(--dart-define="WEB_HOST=$WEB_HOST")
 flutter build ios --release --no-codesign "${DEFINES[@]}" --build-name="$BUILD_NAME" --build-number="$BUILD_NUMBER"
 

@@ -30,7 +30,17 @@ class AppConfig {
     defaultValue: 'https://tiles.openfreemap.org/styles/dark',
   );
 
-  static const String appVersion = '1.8.0';
+  /// This build's version.
+  ///
+  /// It was a hand-written constant and drifted six releases behind pubspec, so every
+  /// build reported 1.8.0 and blocked itself the moment a minimum version was set
+  /// above that. The release script now passes the real one; the default exists for
+  /// `flutter run` and is pinned to pubspec by a test, because a value a human has to
+  /// remember to edit is a value that will be wrong again.
+  static const String appVersion = String.fromEnvironment(
+    'APP_VERSION',
+    defaultValue: '1.14.1',
+  );
   static const String deepLinkScheme = 'opentransit';
 
   /// Host of the web app whose `https://<host>/{city}/...` URLs this app
