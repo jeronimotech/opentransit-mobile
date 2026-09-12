@@ -79,5 +79,5 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     // Phone half of the watch link (WatchDataLayerBridge). Degrades to "no
     // watch" on devices without Play Services rather than failing to start.
-    implementation("com.google.android.gms:play-services-wearable:18.2.0")
+    implementation("com.google.android.gms:play-services-wearable:20.0.1")
 }
