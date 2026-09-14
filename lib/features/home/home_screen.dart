@@ -26,6 +26,7 @@ import 'widgets/commute_card.dart';
 import '../planner/planner_actions.dart';
 import '../planner/planner_state.dart';
 import '../rental/rental_station_sheet.dart';
+import '../parking/curb_zone_sheet.dart';
 import 'widgets/action_chips.dart';
 import 'widgets/alert_carousel.dart';
 import 'widgets/layers_button.dart';
@@ -78,6 +79,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
   List<NetworkShape>? _lastShapes;
   List<MapLine> _networkLines = const [];
   List<RentalStation>? _lastRental;
+  List<CurbZone>? _lastCurbs;
+  String _curbsKey = '';
+  List<MapPoint> _curbPoints = const [];
   String _rentalKey = '';
   List<MapPoint> _rentalPoints = const [];
 
@@ -184,6 +188,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
           strokeWidth: style.strokeWidth,
           radius: style.radius,
           label: style.showCount ? '${st.vehiclesAvailable ?? '·'}' : '',
+        ),
+    ];
+  }
+
+  /// Paid parking zones as rings in the colour of what a driver will find
+  /// (green with spaces, amber running low, red full, grey unknown, faint when
+  /// parking is not allowed now), the free count inside from zoom 15 — the
+  /// same zoom rules as the bike stations, so the two layers read alike.
+  List<MapPoint> _parkingToPoints(List<CurbZone> zones, double zoom) {
+    final style = rentalMarkerStyle(zoom);
+    final key = '${identityHashCode(zones)}|${style.radius}|${style.showCount}';
+    if (identical(zones, _lastCurbs) && key == _curbsKey) return _curbPoints;
+    _lastCurbs = zones;
+    _curbsKey = key;
+    return _curbPoints = [
+      for (final z in zones)
+        MapPoint(
+          id: 'parking:${z.id}',
+          position: z.position,
+          color: Colors.white,
+          strokeColor: parkingColor(z.tone),
+          strokeWidth: style.strokeWidth,
+          radius: style.radius,
+          opacity: z.tone == ParkingTone.closed ? 0.55 : 1,
+          label: style.showCount ? (z.availableSpaces?.toString() ?? 'P') : '',
         ),
     ];
   }
@@ -462,12 +491,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         final nearbyRental = city.bikeShareEnabled
             ? (ref.watch(nearbyRentalProvider(NearbyQuery(widget.cityId, center, radius: 900))).asData?.value ?? const <RentalStation>[])
             : const <RentalStation>[];
+        final showParking = settings.parkingLayer && city.curbsEnabled && rentalStyle.visible && _bounds != null;
+        final curbs = showParking
+            ? (ref.watch(curbsProvider(BboxQuery(widget.cityId, _bounds!))).asData?.value ?? const <CurbZone>[])
+            : const <CurbZone>[];
         final showNetwork = settings.networkLayer && _zoom >= 12;
         final shapes = showNetwork
             ? (ref.watch(networkProvider(widget.cityId)).asData?.value ?? const <NetworkShape>[])
             : const <NetworkShape>[];
         final layers = MapLayers(live: settings.liveVehicles, pois: settings.poiLayer, network: settings.networkLayer,
-            zonal: settings.zonalLayer, rental: settings.rentalLayer);
+            zonal: settings.zonalLayer, rental: settings.rentalLayer, parking: settings.parkingLayer);
         final liveHint = settings.liveVehicles && liveAllowed && !style.visible;
         // The commute card only exists when both ends are saved; when it does,
         // the peek grows so it and "Cerca de ti" both fit.
@@ -490,6 +523,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   vehicles: _vehiclePoints,
                   pois: _poisToPoints(pois),
                   rentalStations: _rentalToPoints(rentalStations, city, _zoom),
+                  parkingZones: _parkingToPoints(curbs, _zoom),
                   myLocation: _showMyLocation,
                   attributionBottomInset: MediaQuery.sizeOf(context).height * peek + 4,
                   onLongPress: _onLongPress,
@@ -498,6 +532,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   onRentalTap: (id) {
                     final st = rentalStations.where((x) => 'rental:${x.id}' == id).firstOrNull;
                     if (st != null) showRentalStationSheet(context, ref, widget.cityId, st);
+                  },
+                  onParkingTap: (id) {
+                    final z = curbs.where((x) => 'parking:${x.id}' == id).firstOrNull;
+                    if (z != null) showCurbZoneSheet(context, ref, widget.cityId, z);
                   },
                   onPoiTap: (id) {
                     final p = pois.where((x) => 'poi:${x.id}' == id).firstOrNull;
@@ -577,6 +615,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                       poisAvailable: poisAllowed,
                       rentalAvailable: city.bikeShareEnabled,
                       rentalLabel: city.mobility.bikeShare.map((n) => n.name).join(' · '),
+                      parkingAvailable: city.curbsEnabled,
                       networkLabel: networkLayerLabel(city, l10n, backbone: true),
                       zonalLabel: networkLayerLabel(city, l10n, backbone: false),
                       onNearMe: () => context.push('/${widget.cityId}/live'),
@@ -584,6 +623,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                         final n = ref.read(settingsProvider.notifier);
                         if (next.live != settings.liveVehicles) n.setLiveVehicles(next.live);
                         if (next.rental != settings.rentalLayer) n.setRentalLayer(next.rental);
+                        if (next.parking != settings.parkingLayer) n.setParkingLayer(next.parking);
                         if (next.pois != settings.poiLayer) n.setPoiLayer(next.pois);
                         if (next.network != settings.networkLayer) n.setNetworkLayer(next.network);
                         if (next.zonal != settings.zonalLayer) n.setZonalLayer(next.zonal);

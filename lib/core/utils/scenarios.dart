@@ -3,7 +3,7 @@ import 'fare.dart';
 
 /// Result sections in the order they are shown (Lote 1, Citymapper-style):
 /// every itinerary belongs to exactly one scenario.
-enum Scenario { fastest, lessWalking, fewerTransfers, cheapest, bike, onDemand }
+enum Scenario { fastest, lessWalking, fewerTransfers, cheapest, bike, parkRide, onDemand }
 
 class ScenarioGroup {
   const ScenarioGroup({required this.scenario, required this.best, this.rest = const []});
@@ -46,9 +46,11 @@ int _byDuration(Itinerary a, Itinerary b) => a.durationSeconds.compareTo(b.durat
 /// `onDemand`.
 List<ScenarioGroup> groupByScenario(List<Itinerary> its, {City? city}) {
   if (its.isEmpty) return const [];
-  final onDemand = its.where((i) => i.hasOnDemand).toList()..sort(_byDuration);
-  final bike = its.where((i) => !i.hasOnDemand && _usesBike(i)).toList()..sort(_byDuration);
-  final pool = its.where((i) => !i.hasOnDemand && !_usesBike(i)).toList()..sort(_byDuration);
+  // park & ride first: it carries a CAR leg like a taxi combo does, and must not be mistaken for one
+  final parkRide = its.where((i) => i.hasParkRide).toList()..sort(_byDuration);
+  final onDemand = its.where((i) => !i.hasParkRide && i.hasOnDemand).toList()..sort(_byDuration);
+  final bike = its.where((i) => !i.hasParkRide && !i.hasOnDemand && _usesBike(i)).toList()..sort(_byDuration);
+  final pool = its.where((i) => !i.hasParkRide && !i.hasOnDemand && !_usesBike(i)).toList()..sort(_byDuration);
 
   final groups = <ScenarioGroup>[];
   if (pool.isNotEmpty) {
@@ -90,6 +92,9 @@ List<ScenarioGroup> groupByScenario(List<Itinerary> its, {City? city}) {
     if (cheapest != null) groups.add(ScenarioGroup(scenario: Scenario.cheapest, best: cheapest));
   }
   if (bike.isNotEmpty) groups.add(ScenarioGroup(scenario: Scenario.bike, best: bike.first, rest: bike.skip(1).toList()));
+  if (parkRide.isNotEmpty) {
+    groups.add(ScenarioGroup(scenario: Scenario.parkRide, best: parkRide.first, rest: parkRide.skip(1).toList()));
+  }
   if (onDemand.isNotEmpty) {
     groups.add(ScenarioGroup(scenario: Scenario.onDemand, best: onDemand.first, rest: onDemand.skip(1).toList()));
   }

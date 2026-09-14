@@ -385,6 +385,21 @@ class HttpApiClient implements ApiClient {
   }
 
   @override
+  Future<List<CurbZone>> curbs(String cityId, {List<double>? bbox, String userClass = 'car', int limit = 500}) async {
+    try {
+      final j = await _get('${_c(cityId)}/curbs', query: {
+        'bbox': ?bbox?.join(','),
+        'userClass': userClass,
+        'limit': limit,
+      });
+      return asList(j['curbs'], CurbZone.fromJson);
+    } on ApiException catch (e) {
+      if (e.isNotFound) return const [];
+      rethrow;
+    }
+  }
+
+  @override
   Future<RentalStation> rentalStation(String cityId, String stationId) async =>
       RentalStation.fromJson(await _get('${_c(cityId)}/rental/stations/${Uri.encodeComponent(stationId)}'));
 

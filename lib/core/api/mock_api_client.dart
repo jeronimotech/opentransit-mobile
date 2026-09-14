@@ -466,6 +466,19 @@ class MockApiClient implements ApiClient {
   }
 
   @override
+  Future<List<CurbZone>> curbs(String cityId, {List<double>? bbox, String userClass = 'car', int limit = 500}) async {
+    final c = await city(cityId);
+    if (!c.curbsEnabled) return const [];
+    final zones = asList((await _map('curbs'))['curbs'], CurbZone.fromJson);
+    return [
+      for (final z in zones)
+        if (bbox == null || bbox.length != 4 ||
+            (z.position.lon >= bbox[0] && z.position.lat >= bbox[1] && z.position.lon <= bbox[2] && z.position.lat <= bbox[3]))
+          z,
+    ].take(limit).toList();
+  }
+
+  @override
   Future<RentalStationsResponse> rentalStations(String cityId,
       {List<double>? bbox, String? networkId, int limit = 500}) async {
     final c = await city(cityId);

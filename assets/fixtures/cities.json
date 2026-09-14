@@ -1,629 +1,642 @@
 {
- "cities": [
-  {
-   "id": "bogota",
-   "name": "Bogotá",
-   "country": "CO",
-   "timezone": "America/Bogota",
-   "locale": "es-CO",
-   "center": {
-    "lat": 4.6534,
-    "lon": -74.0836
-   },
-   "bbox": [
-    -74.45,
-    3.95,
-    -73.85,
-    4.9
-   ],
-   "defaultZoom": 12,
-   "modes": [
-    "WALK",
-    "BUS",
-    "CABLE_CAR",
-    "BICYCLE"
-   ],
-   "branding": {
-    "primaryColor": "#D32F2F",
-    "logoUrl": null
-   },
-   "features": {
-    "realtimeVehicles": true,
-    "tripUpdates": true,
-    "alerts": true,
-    "fares": false,
-    "bikeShare": true,
-    "onDemand": true
-   },
-   "agencies": [
+  "cities": [
     {
-     "id": "1",
-     "name": "TransMilenio Troncal",
-     "component": "trunk",
-     "color": "#D32F2F"
-    },
-    {
-     "id": "2",
-     "name": "Alimentadores",
-     "component": "feeder",
-     "color": "#2E7D32"
-    },
-    {
-     "id": "3",
-     "name": "Dual",
-     "component": "dual",
-     "color": "#6A1B9A"
-    },
-    {
-     "id": "4",
-     "name": "Zonal Urbano",
-     "component": "zonal",
-     "color": "#1565C0"
-    },
-    {
-     "id": "5",
-     "name": "Zonal Complementario",
-     "component": "zonal",
-     "color": "#1565C0"
-    },
-    {
-     "id": "6",
-     "name": "Zonal Especial",
-     "component": "zonal",
-     "color": "#1565C0"
-    },
-    {
-     "id": "7",
-     "name": "TransMiCable",
-     "component": "cable",
-     "color": "#EF6C00"
-    }
-   ],
-   "attribution": "Datos: TRANSMILENIO S.A. (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors",
-   "components": [
-    {
-     "id": "trunk",
-     "label": "Troncal",
-     "color": "#D32F2F",
-     "icon": "brt"
-    },
-    {
-     "id": "feeder",
-     "label": "Alimentador",
-     "color": "#2E7D32",
-     "icon": "bus"
-    },
-    {
-     "id": "dual",
-     "label": "Dual",
-     "color": "#6A1B9A",
-     "icon": "bus"
-    },
-    {
-     "id": "zonal",
-     "label": "Zonal",
-     "color": "#1565C0",
-     "icon": "bus"
-    },
-    {
-     "id": "cable",
-     "label": "TransMiCable",
-     "color": "#EF6C00",
-     "icon": "cable"
-    }
-   ],
-   "fares": {
-    "currency": "COP",
-    "base": 3200,
-    "transfer": 0,
-    "transferWindowMinutes": 110,
-    "maxTransfers": 2,
-    "note": "Valores configurables; verificar con tarifa vigente",
-    "estimated": true
-   },
-   "config": {
-    "vehiclePollSeconds": 15,
-    "departuresRefreshSeconds": 20,
-    "features": {
-     "liveVehicles": true,
-     "board": true,
-     "pois": true,
-     "followAlong": true,
-     "bike": true,
-     "bikeShare": true,
-     "onDemand": true
-    },
-    "minAppVersion": {
-     "ios": "0.1.0",
-     "android": "0.1.0"
-    },
-    "maintenance": {
-     "active": false,
-     "message": null
-    },
-    "assistant": {
-     "enabled": true,
-     "provider": "deepseek",
-     "model": null
-    }
-   },
-   "links": {
-    "pqrs": "https://www.transmilenio.gov.co/publicaciones/147212/pqrs/",
-    "recharge": "https://www.tullaveplus.gov.co",
-    "support": "https://www.transmilenio.gov.co",
-    "privacy": null
-   },
-   "services": [
-    {
-     "id": "recharge",
-     "label": "Recargar tullave",
-     "icon": "card",
-     "url": "https://www.tullaveplus.gov.co",
-     "kind": "external"
-    },
-    {
-     "id": "pqrs",
-     "label": "PQRS",
-     "icon": "help",
-     "url": "https://www.transmilenio.gov.co/publicaciones/147212/pqrs/",
-     "kind": "external"
-    }
-   ],
-   "mobility": {
-    "bikeShare": [
-     {
-      "id": "tembici",
-      "name": "Tembici Bogotá",
-      "network": "tembici_bogota",
-      "gbfsUrl": "https://bogota.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json",
-      "color": "#00A859",
-      "url": "https://tembici.com.co/",
-      "apps": {
-       "ios": "https://apps.apple.com/co/app/id1454932002",
-       "android": "https://play.google.com/store/apps/details?id=com.tembici.app"
+      "id": "bogota",
+      "name": "Bogotá",
+      "country": "CO",
+      "timezone": "America/Bogota",
+      "locale": "es-CO",
+      "center": {
+        "lat": 4.6534,
+        "lon": -74.0836
       },
-      "pricingSummary": "Pase diario $11.000 · mensual $31.990",
-      "formFactors": [
-       "bicycle",
-       "scooter"
-      ]
-     }
-    ],
-    "taxiTariffs": [
-     {
-      "id": "bogota-taxi-2026",
-      "name": "Tarifa oficial de taxi 2026",
-      "currency": "COP",
-      "flagFall": 4500,
-      "unitPrice": 159,
-      "unitMeters": 100,
-      "unitSeconds": 30,
-      "minimumFare": 8000,
-      "surcharges": [
-       {
-        "id": "night",
-        "label": "Nocturno / dominical / festivo",
-        "amount": 3800,
-        "when": {
-         "nightFrom": "19:00",
-         "nightTo": "06:00",
-         "sundays": true,
-         "holidays": true
-        }
-       },
-       {
-        "id": "airport",
-        "label": "Aeropuerto",
-        "amount": 8000,
-        "when": {
-         "zones": [
-          "airport"
-         ]
-        }
-       },
-       {
-        "id": "door",
-        "label": "Puerta a puerta",
-        "amount": 1500,
-        "when": {
-         "optional": true
-        }
-       }
+      "bbox": [
+        -74.45,
+        3.95,
+        -73.85,
+        4.9
       ],
-      "zones": [
-       {
-        "id": "airport",
-        "name": "Aeropuerto El Dorado",
-        "polygon": [
-         [
-          -74.16,
-          4.68
-         ],
-         [
-          -74.13,
-          4.68
-         ],
-         [
-          -74.13,
-          4.72
-         ],
-         [
-          -74.16,
-          4.72
-         ]
-        ]
-       }
+      "defaultZoom": 12,
+      "modes": [
+        "WALK",
+        "BUS",
+        "CABLE_CAR",
+        "BICYCLE"
       ],
-      "source": {
-       "label": "Decreto Distrital 042 de 2026",
-       "url": "https://bogota.gov.co/mi-ciudad/movilidad/en-firme-el-decreto-que-fija-las-tarifas-de-taxi-en-bogota-en-2026"
+      "branding": {
+        "primaryColor": "#D32F2F",
+        "logoUrl": null
       },
-      "validFrom": "2026-02-12",
-      "note": "Estimación según tarifa oficial; el taxímetro manda."
-     }
-    ],
-    "onDemand": [
-     {
-      "id": "taxi",
-      "name": "Taxi",
-      "kind": "taxi",
-      "color": "#F2C200",
-      "textColor": "#111111",
-      "logoUrl": null,
-      "estimate": {
-       "kind": "tariff",
-       "tariffId": "bogota-taxi-2026"
+      "features": {
+        "realtimeVehicles": true,
+        "tripUpdates": true,
+        "alerts": true,
+        "fares": false,
+        "bikeShare": true,
+        "onDemand": true
       },
-      "handoff": {
-       "kind": "url",
-       "template": null,
-       "web": "https://www.taxislibres.com.co/",
-       "apps": {
-        "ios": "https://apps.apple.com/co/app/id511140577",
-        "android": "https://play.google.com/store/apps/details?id=com.taxislibres.app"
-       },
-       "scheme": null
-      },
-      "enabled": true,
-      "order": 1
-     },
-     {
-      "id": "uber",
-      "name": "Uber",
-      "kind": "ridehail",
-      "color": "#000000",
-      "textColor": "#FFFFFF",
-      "logoUrl": null,
-      "estimate": {
-       "kind": "none"
-      },
-      "handoff": {
-       "kind": "template",
-       "template": "https://m.uber.com/looking?client_id={clientId}&pickup={pickupJson}&drop[0]={dropoffJson}",
-       "web": "https://m.uber.com/",
-       "apps": {
-        "ios": "https://apps.apple.com/co/app/id368677368",
-        "android": "https://play.google.com/store/apps/details?id=com.ubercab"
-       },
-       "scheme": null
-      },
-      "enabled": true,
-      "order": 2
-     },
-     {
-      "id": "cabify",
-      "name": "Cabify",
-      "kind": "ridehail",
-      "color": "#7145D6",
-      "textColor": "#FFFFFF",
-      "logoUrl": null,
-      "estimate": {
-       "kind": "none"
-      },
-      "handoff": {
-       "kind": "url",
-       "template": null,
-       "web": "https://cabify.com/co",
-       "apps": {
-        "ios": "https://apps.apple.com/co/app/id476087442",
-        "android": "https://play.google.com/store/apps/details?id=com.cabify.rider"
-       },
-       "scheme": null
-      },
-      "enabled": true,
-      "order": 3
-     },
-     {
-      "id": "didi",
-      "name": "DiDi",
-      "kind": "ridehail",
-      "color": "#FF7F41",
-      "textColor": "#111111",
-      "logoUrl": null,
-      "estimate": {
-       "kind": "none"
-      },
-      "handoff": {
-       "kind": "url",
-       "template": null,
-       "web": "https://web.didiglobal.com/co/",
-       "apps": {
-        "ios": "https://apps.apple.com/co/app/id1362320138",
-        "android": "https://play.google.com/store/apps/details?id=com.didiglobal.passenger"
-       },
-       "scheme": null
-      },
-      "enabled": true,
-      "order": 4
-     },
-     {
-      "id": "indrive",
-      "name": "inDrive",
-      "kind": "ridehail",
-      "color": "#A6E22E",
-      "textColor": "#111111",
-      "logoUrl": null,
-      "estimate": {
-       "kind": "none"
-      },
-      "handoff": {
-       "kind": "url",
-       "template": null,
-       "web": "https://indrive.com/",
-       "apps": {
-        "ios": "https://apps.apple.com/co/app/id780125801",
-        "android": "https://play.google.com/store/apps/details?id=sinet.startup.inDriver"
-       },
-       "scheme": null
-      },
-      "enabled": true,
-      "order": 5
-     }
-    ],
-    "onDemandPolicy": {
-     "maxDirectDistanceKm": 40,
-     "firstLastMile": true,
-     "maxFeederKm": 8,
-     "showWhenTransitFaster": true
-    }
-   }
-  },
-  {
-   "id": "medellin",
-   "name": "Medellín",
-   "country": "CO",
-   "timezone": "America/Bogota",
-   "locale": "es-CO",
-   "center": {
-    "lat": 6.2442,
-    "lon": -75.5812
-   },
-   "bbox": [
-    -75.75,
-    6.1,
-    -75.45,
-    6.4
-   ],
-   "defaultZoom": 12,
-   "modes": [
-    "WALK",
-    "BUS",
-    "SUBWAY",
-    "TRAM",
-    "CABLE_CAR"
-   ],
-   "branding": {
-    "primaryColor": "#00838F",
-    "logoUrl": null
-   },
-   "features": {
-    "realtimeVehicles": false,
-    "tripUpdates": false,
-    "alerts": false,
-    "fares": false,
-    "bikeShare": true,
-    "onDemand": true
-   },
-   "agencies": [
-    {
-     "id": "1",
-     "name": "Metro de Medellín",
-     "component": "rail",
-     "color": "#00838F"
-    }
-   ],
-   "attribution": "Datos: Metro de Medellín (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors",
-   "components": [
-    {
-     "id": "rail",
-     "label": "Metro",
-     "color": "#00838F",
-     "icon": "rail"
-    }
-   ],
-   "fares": {
-    "currency": "COP",
-    "base": 3350,
-    "transfer": 0,
-    "transferWindowMinutes": 90,
-    "maxTransfers": 1,
-    "note": "Tarifa estimada",
-    "estimated": true
-   },
-   "config": {
-    "vehiclePollSeconds": 15,
-    "departuresRefreshSeconds": 20,
-    "features": {
-     "liveVehicles": true,
-     "board": true,
-     "pois": true,
-     "followAlong": true,
-     "bike": true,
-     "bikeShare": true,
-     "onDemand": true
-    },
-    "minAppVersion": {
-     "ios": "0.1.0",
-     "android": "0.1.0"
-    },
-    "maintenance": {
-     "active": false,
-     "message": null
-    },
-    "assistant": {
-     "enabled": true,
-     "provider": "deepseek",
-     "model": null
-    }
-   },
-   "links": {
-    "pqrs": null,
-    "recharge": null,
-    "support": "https://www.metrodemedellin.gov.co",
-    "privacy": null
-   },
-   "services": [],
-   "mobility": {
-    "bikeShare": [
-     {
-      "id": "encicla",
-      "name": "EnCicla",
-      "network": "encicla_medellin",
-      "gbfsUrl": "https://example.org/encicla/gbfs.json",
-      "color": "#0B7A3B",
-      "url": "https://www.encicla.gov.co/",
-      "apps": {
-       "ios": null,
-       "android": null
-      },
-      "pricingSummary": "Gratis con Cívica",
-      "formFactors": [
-       "bicycle"
-      ]
-     },
-     {
-      "id": "movo",
-      "name": "Movo",
-      "network": "movo_medellin",
-      "gbfsUrl": "https://example.org/movo/gbfs.json",
-      "color": "#7B1FA2",
-      "url": "https://example.org/movo",
-      "apps": {
-       "ios": null,
-       "android": null
-      },
-      "pricingSummary": "Desde $2.000 por viaje",
-      "formFactors": [
-       "scooter"
-      ]
-     }
-    ],
-    "taxiTariffs": [
-     {
-      "id": "medellin-taxi-2026",
-      "name": "Tarifa de taxi Medellín 2026",
-      "currency": "COP",
-      "flagFall": 4000,
-      "unitPrice": 140,
-      "unitMeters": 100,
-      "unitSeconds": 30,
-      "minimumFare": 7500,
-      "surcharges": [
-       {
-        "id": "night",
-        "label": "Nocturno / dominical / festivo",
-        "amount": 3800,
-        "when": {
-         "nightFrom": "19:00",
-         "nightTo": "06:00",
-         "sundays": true,
-         "holidays": true
+      "agencies": [
+        {
+          "id": "1",
+          "name": "TransMilenio Troncal",
+          "component": "trunk",
+          "color": "#D32F2F"
+        },
+        {
+          "id": "2",
+          "name": "Alimentadores",
+          "component": "feeder",
+          "color": "#2E7D32"
+        },
+        {
+          "id": "3",
+          "name": "Dual",
+          "component": "dual",
+          "color": "#6A1B9A"
+        },
+        {
+          "id": "4",
+          "name": "Zonal Urbano",
+          "component": "zonal",
+          "color": "#1565C0"
+        },
+        {
+          "id": "5",
+          "name": "Zonal Complementario",
+          "component": "zonal",
+          "color": "#1565C0"
+        },
+        {
+          "id": "6",
+          "name": "Zonal Especial",
+          "component": "zonal",
+          "color": "#1565C0"
+        },
+        {
+          "id": "7",
+          "name": "TransMiCable",
+          "component": "cable",
+          "color": "#EF6C00"
         }
-       },
-       {
-        "id": "airport",
-        "label": "Aeropuerto",
-        "amount": 8000,
-        "when": {
-         "zones": [
-          "airport"
-         ]
-        }
-       },
-       {
-        "id": "door",
-        "label": "Puerta a puerta",
-        "amount": 1500,
-        "when": {
-         "optional": true
-        }
-       }
       ],
-      "zones": [],
-      "source": {
-       "label": "Resolución AMVA 2026",
-       "url": "https://www.metropol.gov.co/"
+      "attribution": "Datos: TRANSMILENIO S.A. (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors",
+      "components": [
+        {
+          "id": "trunk",
+          "label": "Troncal",
+          "color": "#D32F2F",
+          "icon": "brt"
+        },
+        {
+          "id": "feeder",
+          "label": "Alimentador",
+          "color": "#2E7D32",
+          "icon": "bus"
+        },
+        {
+          "id": "dual",
+          "label": "Dual",
+          "color": "#6A1B9A",
+          "icon": "bus"
+        },
+        {
+          "id": "zonal",
+          "label": "Zonal",
+          "color": "#1565C0",
+          "icon": "bus"
+        },
+        {
+          "id": "cable",
+          "label": "TransMiCable",
+          "color": "#EF6C00",
+          "icon": "cable"
+        }
+      ],
+      "fares": {
+        "currency": "COP",
+        "base": 3200,
+        "transfer": 0,
+        "transferWindowMinutes": 110,
+        "maxTransfers": 2,
+        "note": "Valores configurables; verificar con tarifa vigente",
+        "estimated": true
       },
-      "validFrom": "2026-02-12",
-      "note": "Estimación según tarifa oficial; el taxímetro manda."
-     }
-    ],
-    "onDemand": [
-     {
-      "id": "taxi",
-      "name": "Taxi Medellín",
-      "kind": "taxi",
-      "color": "#FFC107",
-      "textColor": "#111111",
-      "logoUrl": null,
-      "estimate": {
-       "kind": "tariff",
-       "tariffId": "medellin-taxi-2026"
+      "config": {
+        "vehiclePollSeconds": 15,
+        "departuresRefreshSeconds": 20,
+        "features": {
+          "liveVehicles": true,
+          "board": true,
+          "pois": true,
+          "followAlong": true,
+          "bike": true,
+          "bikeShare": true,
+          "onDemand": true
+        },
+        "minAppVersion": {
+          "ios": "0.1.0",
+          "android": "0.1.0"
+        },
+        "maintenance": {
+          "active": false,
+          "message": null
+        },
+        "assistant": {
+          "enabled": true,
+          "provider": "deepseek",
+          "model": null
+        }
       },
-      "handoff": {
-       "kind": "none",
-       "template": null,
-       "web": null,
-       "apps": {
-        "ios": null,
-        "android": null
-       },
-       "scheme": null
+      "links": {
+        "pqrs": "https://www.transmilenio.gov.co/publicaciones/147212/pqrs/",
+        "recharge": "https://www.tullaveplus.gov.co",
+        "support": "https://www.transmilenio.gov.co",
+        "privacy": null
       },
-      "enabled": true,
-      "order": 1
-     },
-     {
-      "id": "app-x",
-      "name": "Ride App X",
-      "kind": "ridehail",
-      "color": "#0097A7",
-      "textColor": "#FFFFFF",
-      "logoUrl": null,
-      "estimate": {
-       "kind": "none"
+      "services": [
+        {
+          "id": "recharge",
+          "label": "Recargar tullave",
+          "icon": "card",
+          "url": "https://www.tullaveplus.gov.co",
+          "kind": "external"
+        },
+        {
+          "id": "pqrs",
+          "label": "PQRS",
+          "icon": "help",
+          "url": "https://www.transmilenio.gov.co/publicaciones/147212/pqrs/",
+          "kind": "external"
+        }
+      ],
+      "mobility": {
+        "bikeShare": [
+          {
+            "id": "tembici",
+            "name": "Tembici Bogotá",
+            "network": "tembici_bogota",
+            "gbfsUrl": "https://bogota.publicbikesystem.net/customer/gbfs/v3.0/gbfs.json",
+            "color": "#00A859",
+            "url": "https://tembici.com.co/",
+            "apps": {
+              "ios": "https://apps.apple.com/co/app/id1454932002",
+              "android": "https://play.google.com/store/apps/details?id=com.tembici.app"
+            },
+            "pricingSummary": "Pase diario $11.000 · mensual $31.990",
+            "formFactors": [
+              "bicycle",
+              "scooter"
+            ]
+          }
+        ],
+        "taxiTariffs": [
+          {
+            "id": "bogota-taxi-2026",
+            "name": "Tarifa oficial de taxi 2026",
+            "currency": "COP",
+            "flagFall": 4500,
+            "unitPrice": 159,
+            "unitMeters": 100,
+            "unitSeconds": 30,
+            "minimumFare": 8000,
+            "surcharges": [
+              {
+                "id": "night",
+                "label": "Nocturno / dominical / festivo",
+                "amount": 3800,
+                "when": {
+                  "nightFrom": "19:00",
+                  "nightTo": "06:00",
+                  "sundays": true,
+                  "holidays": true
+                }
+              },
+              {
+                "id": "airport",
+                "label": "Aeropuerto",
+                "amount": 8000,
+                "when": {
+                  "zones": [
+                    "airport"
+                  ]
+                }
+              },
+              {
+                "id": "door",
+                "label": "Puerta a puerta",
+                "amount": 1500,
+                "when": {
+                  "optional": true
+                }
+              }
+            ],
+            "zones": [
+              {
+                "id": "airport",
+                "name": "Aeropuerto El Dorado",
+                "polygon": [
+                  [
+                    -74.16,
+                    4.68
+                  ],
+                  [
+                    -74.13,
+                    4.68
+                  ],
+                  [
+                    -74.13,
+                    4.72
+                  ],
+                  [
+                    -74.16,
+                    4.72
+                  ]
+                ]
+              }
+            ],
+            "source": {
+              "label": "Decreto Distrital 042 de 2026",
+              "url": "https://bogota.gov.co/mi-ciudad/movilidad/en-firme-el-decreto-que-fija-las-tarifas-de-taxi-en-bogota-en-2026"
+            },
+            "validFrom": "2026-02-12",
+            "note": "Estimación según tarifa oficial; el taxímetro manda."
+          }
+        ],
+        "onDemand": [
+          {
+            "id": "taxi",
+            "name": "Taxi",
+            "kind": "taxi",
+            "color": "#F2C200",
+            "textColor": "#111111",
+            "logoUrl": null,
+            "estimate": {
+              "kind": "tariff",
+              "tariffId": "bogota-taxi-2026"
+            },
+            "handoff": {
+              "kind": "url",
+              "template": null,
+              "web": "https://www.taxislibres.com.co/",
+              "apps": {
+                "ios": "https://apps.apple.com/co/app/id511140577",
+                "android": "https://play.google.com/store/apps/details?id=com.taxislibres.app"
+              },
+              "scheme": null
+            },
+            "enabled": true,
+            "order": 1
+          },
+          {
+            "id": "uber",
+            "name": "Uber",
+            "kind": "ridehail",
+            "color": "#000000",
+            "textColor": "#FFFFFF",
+            "logoUrl": null,
+            "estimate": {
+              "kind": "none"
+            },
+            "handoff": {
+              "kind": "template",
+              "template": "https://m.uber.com/looking?client_id={clientId}&pickup={pickupJson}&drop[0]={dropoffJson}",
+              "web": "https://m.uber.com/",
+              "apps": {
+                "ios": "https://apps.apple.com/co/app/id368677368",
+                "android": "https://play.google.com/store/apps/details?id=com.ubercab"
+              },
+              "scheme": null
+            },
+            "enabled": true,
+            "order": 2
+          },
+          {
+            "id": "cabify",
+            "name": "Cabify",
+            "kind": "ridehail",
+            "color": "#7145D6",
+            "textColor": "#FFFFFF",
+            "logoUrl": null,
+            "estimate": {
+              "kind": "none"
+            },
+            "handoff": {
+              "kind": "url",
+              "template": null,
+              "web": "https://cabify.com/co",
+              "apps": {
+                "ios": "https://apps.apple.com/co/app/id476087442",
+                "android": "https://play.google.com/store/apps/details?id=com.cabify.rider"
+              },
+              "scheme": null
+            },
+            "enabled": true,
+            "order": 3
+          },
+          {
+            "id": "didi",
+            "name": "DiDi",
+            "kind": "ridehail",
+            "color": "#FF7F41",
+            "textColor": "#111111",
+            "logoUrl": null,
+            "estimate": {
+              "kind": "none"
+            },
+            "handoff": {
+              "kind": "url",
+              "template": null,
+              "web": "https://web.didiglobal.com/co/",
+              "apps": {
+                "ios": "https://apps.apple.com/co/app/id1362320138",
+                "android": "https://play.google.com/store/apps/details?id=com.didiglobal.passenger"
+              },
+              "scheme": null
+            },
+            "enabled": true,
+            "order": 4
+          },
+          {
+            "id": "indrive",
+            "name": "inDrive",
+            "kind": "ridehail",
+            "color": "#A6E22E",
+            "textColor": "#111111",
+            "logoUrl": null,
+            "estimate": {
+              "kind": "none"
+            },
+            "handoff": {
+              "kind": "url",
+              "template": null,
+              "web": "https://indrive.com/",
+              "apps": {
+                "ios": "https://apps.apple.com/co/app/id780125801",
+                "android": "https://play.google.com/store/apps/details?id=sinet.startup.inDriver"
+              },
+              "scheme": null
+            },
+            "enabled": true,
+            "order": 5
+          }
+        ],
+        "onDemandPolicy": {
+          "maxDirectDistanceKm": 40,
+          "firstLastMile": true,
+          "maxFeederKm": 8,
+          "showWhenTransitFaster": true
+        }
       },
-      "handoff": {
-       "kind": "url",
-       "template": null,
-       "web": "https://example.org/ride-x",
-       "apps": {
-        "ios": null,
-        "android": null
-       },
-       "scheme": null
+      "openMobility": {
+        "cds": {
+          "enabled": true,
+          "curbZones": 3,
+          "curbPolicies": 2
+        },
+        "parkRide": {
+          "enabled": true,
+          "maxDriveKm": 25,
+          "maxWalkMeters": 600,
+          "defaultDwellHours": 8
+        }
+      }
+    },
+    {
+      "id": "medellin",
+      "name": "Medellín",
+      "country": "CO",
+      "timezone": "America/Bogota",
+      "locale": "es-CO",
+      "center": {
+        "lat": 6.2442,
+        "lon": -75.5812
       },
-      "enabled": true,
-      "order": 2
-     }
-    ],
-    "onDemandPolicy": {
-     "maxDirectDistanceKm": 40,
-     "firstLastMile": true,
-     "maxFeederKm": 8,
-     "showWhenTransitFaster": true
+      "bbox": [
+        -75.75,
+        6.1,
+        -75.45,
+        6.4
+      ],
+      "defaultZoom": 12,
+      "modes": [
+        "WALK",
+        "BUS",
+        "SUBWAY",
+        "TRAM",
+        "CABLE_CAR"
+      ],
+      "branding": {
+        "primaryColor": "#00838F",
+        "logoUrl": null
+      },
+      "features": {
+        "realtimeVehicles": false,
+        "tripUpdates": false,
+        "alerts": false,
+        "fares": false,
+        "bikeShare": true,
+        "onDemand": true
+      },
+      "agencies": [
+        {
+          "id": "1",
+          "name": "Metro de Medellín",
+          "component": "rail",
+          "color": "#00838F"
+        }
+      ],
+      "attribution": "Datos: Metro de Medellín (GTFS) · Mapa: © OpenMapTiles © OpenStreetMap contributors",
+      "components": [
+        {
+          "id": "rail",
+          "label": "Metro",
+          "color": "#00838F",
+          "icon": "rail"
+        }
+      ],
+      "fares": {
+        "currency": "COP",
+        "base": 3350,
+        "transfer": 0,
+        "transferWindowMinutes": 90,
+        "maxTransfers": 1,
+        "note": "Tarifa estimada",
+        "estimated": true
+      },
+      "config": {
+        "vehiclePollSeconds": 15,
+        "departuresRefreshSeconds": 20,
+        "features": {
+          "liveVehicles": true,
+          "board": true,
+          "pois": true,
+          "followAlong": true,
+          "bike": true,
+          "bikeShare": true,
+          "onDemand": true
+        },
+        "minAppVersion": {
+          "ios": "0.1.0",
+          "android": "0.1.0"
+        },
+        "maintenance": {
+          "active": false,
+          "message": null
+        },
+        "assistant": {
+          "enabled": true,
+          "provider": "deepseek",
+          "model": null
+        }
+      },
+      "links": {
+        "pqrs": null,
+        "recharge": null,
+        "support": "https://www.metrodemedellin.gov.co",
+        "privacy": null
+      },
+      "services": [],
+      "mobility": {
+        "bikeShare": [
+          {
+            "id": "encicla",
+            "name": "EnCicla",
+            "network": "encicla_medellin",
+            "gbfsUrl": "https://example.org/encicla/gbfs.json",
+            "color": "#0B7A3B",
+            "url": "https://www.encicla.gov.co/",
+            "apps": {
+              "ios": null,
+              "android": null
+            },
+            "pricingSummary": "Gratis con Cívica",
+            "formFactors": [
+              "bicycle"
+            ]
+          },
+          {
+            "id": "movo",
+            "name": "Movo",
+            "network": "movo_medellin",
+            "gbfsUrl": "https://example.org/movo/gbfs.json",
+            "color": "#7B1FA2",
+            "url": "https://example.org/movo",
+            "apps": {
+              "ios": null,
+              "android": null
+            },
+            "pricingSummary": "Desde $2.000 por viaje",
+            "formFactors": [
+              "scooter"
+            ]
+          }
+        ],
+        "taxiTariffs": [
+          {
+            "id": "medellin-taxi-2026",
+            "name": "Tarifa de taxi Medellín 2026",
+            "currency": "COP",
+            "flagFall": 4000,
+            "unitPrice": 140,
+            "unitMeters": 100,
+            "unitSeconds": 30,
+            "minimumFare": 7500,
+            "surcharges": [
+              {
+                "id": "night",
+                "label": "Nocturno / dominical / festivo",
+                "amount": 3800,
+                "when": {
+                  "nightFrom": "19:00",
+                  "nightTo": "06:00",
+                  "sundays": true,
+                  "holidays": true
+                }
+              },
+              {
+                "id": "airport",
+                "label": "Aeropuerto",
+                "amount": 8000,
+                "when": {
+                  "zones": [
+                    "airport"
+                  ]
+                }
+              },
+              {
+                "id": "door",
+                "label": "Puerta a puerta",
+                "amount": 1500,
+                "when": {
+                  "optional": true
+                }
+              }
+            ],
+            "zones": [],
+            "source": {
+              "label": "Resolución AMVA 2026",
+              "url": "https://www.metropol.gov.co/"
+            },
+            "validFrom": "2026-02-12",
+            "note": "Estimación según tarifa oficial; el taxímetro manda."
+          }
+        ],
+        "onDemand": [
+          {
+            "id": "taxi",
+            "name": "Taxi Medellín",
+            "kind": "taxi",
+            "color": "#FFC107",
+            "textColor": "#111111",
+            "logoUrl": null,
+            "estimate": {
+              "kind": "tariff",
+              "tariffId": "medellin-taxi-2026"
+            },
+            "handoff": {
+              "kind": "none",
+              "template": null,
+              "web": null,
+              "apps": {
+                "ios": null,
+                "android": null
+              },
+              "scheme": null
+            },
+            "enabled": true,
+            "order": 1
+          },
+          {
+            "id": "app-x",
+            "name": "Ride App X",
+            "kind": "ridehail",
+            "color": "#0097A7",
+            "textColor": "#FFFFFF",
+            "logoUrl": null,
+            "estimate": {
+              "kind": "none"
+            },
+            "handoff": {
+              "kind": "url",
+              "template": null,
+              "web": "https://example.org/ride-x",
+              "apps": {
+                "ios": null,
+                "android": null
+              },
+              "scheme": null
+            },
+            "enabled": true,
+            "order": 2
+          }
+        ],
+        "onDemandPolicy": {
+          "maxDirectDistanceKm": 40,
+          "firstLastMile": true,
+          "maxFeederKm": 8,
+          "showWhenTransitFaster": true
+        }
+      }
     }
-   }
-  }
- ]
+  ]
 }

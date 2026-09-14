@@ -4,6 +4,7 @@ export 'common.dart';
 export 'forecast.dart';
 export 'live.dart';
 export 'ondemand.dart';
+export 'parking.dart';
 export 'plan.dart';
 export 'rental.dart';
 export 'share.dart';

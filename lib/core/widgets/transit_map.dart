@@ -125,6 +125,7 @@ class TransitMap extends StatefulWidget {
     this.onMarkerDragEnd,
     this.pois = const [],
     this.rentalStations = const [],
+    this.parkingZones = const [],
     this.fitTo,
     this.fitPadding = const EdgeInsets.fromLTRB(40, 120, 40, 260),
     this.myLocation = false,
@@ -138,6 +139,7 @@ class TransitMap extends StatefulWidget {
     this.onVehicleTap,
     this.onPoiTap,
     this.onRentalTap,
+    this.onParkingTap,
     this.onCameraIdle,
     this.onMapReady,
     this.attributionBottomInset = 0,
@@ -166,6 +168,9 @@ class TransitMap extends StatefulWidget {
   /// Shared-bike docking stations: a ring in the network colour (`strokeColor`)
   /// with the available count (`label`) inside from zoom 15.
   final List<MapPoint> rentalStations;
+
+  /// v1.6 paid parking zones (their centres), coloured by free spaces.
+  final List<MapPoint> parkingZones;
 
   /// When this list changes (by identity) the camera fits to it.
   final List<LatLng>? fitTo;
@@ -196,6 +201,7 @@ class TransitMap extends StatefulWidget {
   final void Function(String id)? onVehicleTap;
   final void Function(String id)? onPoiTap;
   final void Function(String id)? onRentalTap;
+  final void Function(String id)? onParkingTap;
   final void Function(LatLng center, double zoom)? onCameraIdle;
   final VoidCallback? onMapReady;
   final double attributionBottomInset;
@@ -214,6 +220,7 @@ class TransitMapState extends State<TransitMap> {
   static const _srcMarkers = 'ot-markers';
   static const _srcPois = 'ot-pois';
   static const _srcRental = 'ot-rental';
+  static const _srcParking = 'ot-parking';
 
   /// Circle annotation id → the [MapPoint.id] it stands for.
   final _dragIds = <String, String>{};
@@ -481,6 +488,34 @@ class TransitMapState extends State<TransitMap> {
       enableInteraction: false,
     );
 
+    await c.addGeoJsonSource(_srcParking, _emptyFc(), promoteId: 'id');
+    await c.addCircleLayer(
+      _srcParking,
+      'ot-parking-layer',
+      const ml.CircleLayerProperties(
+        circleColor: ['get', 'color'],
+        circleRadius: ['get', 'radius'],
+        circleStrokeColor: ['get', 'stroke'],
+        circleStrokeWidth: ['get', 'strokeWidth'],
+        circleOpacity: ['get', 'opacity'],
+      ),
+      minzoom: 13.5,
+    );
+    await c.addSymbolLayer(
+      _srcParking,
+      'ot-parking-count',
+      const ml.SymbolLayerProperties(
+        textField: ['get', 'label'],
+        textSize: 11,
+        textFont: ['Noto Sans Bold'],
+        textColor: ['get', 'stroke'],
+        textAllowOverlap: true,
+        textIgnorePlacement: true,
+      ),
+      minzoom: 15,
+      enableInteraction: false,
+    );
+
     await c.addGeoJsonSource(_srcMarkers, _emptyFc(), promoteId: 'id');
     await c.addCircleLayer(
       _srcMarkers,
@@ -576,6 +611,7 @@ class TransitMapState extends State<TransitMap> {
     if (layerId == 'ot-vehicles-layer') widget.onVehicleTap?.call(id);
     if (layerId == 'ot-pois-layer') widget.onPoiTap?.call(id);
     if (layerId == 'ot-rental-layer') widget.onRentalTap?.call(id);
+    if (layerId == 'ot-parking-layer') widget.onParkingTap?.call(id);
   }
 
   /// Pushes a source update, swallowing the `styleNotFound` PlatformException
@@ -598,6 +634,7 @@ class TransitMapState extends State<TransitMap> {
     await _setSource(_srcMarkers, _pointFc(widget.markers));
     await _setSource(_srcPois, _pointFc(widget.pois));
     await _setSource(_srcRental, _pointFc(widget.rentalStations));
+    await _setSource(_srcParking, _pointFc(widget.parkingZones));
   }
 
   @override
@@ -636,6 +673,9 @@ class TransitMapState extends State<TransitMap> {
     }
     if (!identical(oldWidget.rentalStations, widget.rentalStations)) {
       _setSource(_srcRental, _pointFc(widget.rentalStations));
+    }
+    if (!identical(oldWidget.parkingZones, widget.parkingZones)) {
+      _setSource(_srcParking, _pointFc(widget.parkingZones));
     }
     if (!identical(oldWidget.draggableMarkers, widget.draggableMarkers)) {
       _syncDraggable();

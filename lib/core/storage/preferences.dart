@@ -17,6 +17,7 @@ class PreferencesRepository {
   static const _kNetwork = 'networkLayer';
   static const _kZonal = 'zonalLayer';
   static const _kRental = 'rentalLayer';
+  static const _kParking = 'parkingLayer';
   static const _kNearRadius = 'nearMeRadius';
   static const _kNearComponents = 'nearMeComponents';
 
@@ -57,6 +58,10 @@ class PreferencesRepository {
   /// Zonal/feeder shapes on the home map (default off: they overlap heavily).
   bool get zonalLayer => _prefs.getBool(_kZonal) ?? false;
   Future<void> setZonalLayer(bool v) => _prefs.setBool(_kZonal, v);
+
+  /// Paid parking zones on the home map (v1.6, default on, drawn from zoom 14).
+  bool get parkingLayer => _prefs.getBool(_kParking) ?? true;
+  Future<void> setParkingLayer(bool v) => _prefs.setBool(_kParking, v);
 
   /// "Cerca de mí" radius in meters (300 / 600 / 1000, default 600).
   int get nearMeRadius => _prefs.getInt(_kNearRadius) ?? 600;

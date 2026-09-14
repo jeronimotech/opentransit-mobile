@@ -956,5 +956,80 @@
   "placeTypeAddress": "Dirección",
   "placeTypeStreet": "Calle",
   "placeTypePlace": "Lugar",
-  "placeOptions": "Opciones del lugar"
+  "placeOptions": "Opciones del lugar",
+  "modeParkRide": "Carro + transporte",
+  "modeParkRideShort": "Carro+bus",
+  "scenarioParkRide": "Carro + transporte",
+  "layerParking": "Parqueo pago",
+  "layerParkingHint": "Zonas con cupos libres, según el último conteo (zoom 14+)",
+  "parkingZone": "Zona de parqueo pago",
+  "parkingOwnCar": "Tu carro",
+  "parkingLeaveCarAt": "Deja el carro en {place}",
+  "@parkingLeaveCarAt": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "parkingSpaces": "{n, plural, =1{1 cupo} other{{n} cupos}}",
+  "@parkingSpaces": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "parkingSpacesOf": "{n} de {total} cupos",
+  "@parkingSpacesOf": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "parkingUnknownSpaces": "Cupos sin conteo",
+  "parkingFull": "Sin cupos",
+  "parkingAllowedNow": "Puedes parquear ahora",
+  "parkingNotNow": "No se puede parquear ahora",
+  "parkingUntil": "hasta las {time}",
+  "@parkingUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "parkingCountedAgo": "conteo {age}",
+  "@parkingCountedAgo": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "parkingNoCount": "El operador no publica el conteo",
+  "parkingFeeFor": "Parqueo {hours} h",
+  "@parkingFeeFor": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "parkingThenWalk": "Luego {distance} a pie ({duration}) hasta la parada",
+  "@parkingThenWalk": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "parkingContinueByTransit": "Seguir en transporte"
 }

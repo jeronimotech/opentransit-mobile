@@ -2695,6 +2695,126 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Opciones del lugar'**
   String get placeOptions;
+
+  /// No description provided for @modeParkRide.
+  ///
+  /// In es, this message translates to:
+  /// **'Carro + transporte'**
+  String get modeParkRide;
+
+  /// No description provided for @modeParkRideShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Carro+bus'**
+  String get modeParkRideShort;
+
+  /// No description provided for @scenarioParkRide.
+  ///
+  /// In es, this message translates to:
+  /// **'Carro + transporte'**
+  String get scenarioParkRide;
+
+  /// No description provided for @layerParking.
+  ///
+  /// In es, this message translates to:
+  /// **'Parqueo pago'**
+  String get layerParking;
+
+  /// No description provided for @layerParkingHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Zonas con cupos libres, según el último conteo (zoom 14+)'**
+  String get layerParkingHint;
+
+  /// No description provided for @parkingZone.
+  ///
+  /// In es, this message translates to:
+  /// **'Zona de parqueo pago'**
+  String get parkingZone;
+
+  /// No description provided for @parkingOwnCar.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu carro'**
+  String get parkingOwnCar;
+
+  /// No description provided for @parkingLeaveCarAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Deja el carro en {place}'**
+  String parkingLeaveCarAt(String place);
+
+  /// No description provided for @parkingSpaces.
+  ///
+  /// In es, this message translates to:
+  /// **'{n, plural, =1{1 cupo} other{{n} cupos}}'**
+  String parkingSpaces(int n);
+
+  /// No description provided for @parkingSpacesOf.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} de {total} cupos'**
+  String parkingSpacesOf(int n, int total);
+
+  /// No description provided for @parkingUnknownSpaces.
+  ///
+  /// In es, this message translates to:
+  /// **'Cupos sin conteo'**
+  String get parkingUnknownSpaces;
+
+  /// No description provided for @parkingFull.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cupos'**
+  String get parkingFull;
+
+  /// No description provided for @parkingAllowedNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes parquear ahora'**
+  String get parkingAllowedNow;
+
+  /// No description provided for @parkingNotNow.
+  ///
+  /// In es, this message translates to:
+  /// **'No se puede parquear ahora'**
+  String get parkingNotNow;
+
+  /// No description provided for @parkingUntil.
+  ///
+  /// In es, this message translates to:
+  /// **'hasta las {time}'**
+  String parkingUntil(String time);
+
+  /// No description provided for @parkingCountedAgo.
+  ///
+  /// In es, this message translates to:
+  /// **'conteo {age}'**
+  String parkingCountedAgo(String age);
+
+  /// No description provided for @parkingNoCount.
+  ///
+  /// In es, this message translates to:
+  /// **'El operador no publica el conteo'**
+  String get parkingNoCount;
+
+  /// No description provided for @parkingFeeFor.
+  ///
+  /// In es, this message translates to:
+  /// **'Parqueo {hours} h'**
+  String parkingFeeFor(int hours);
+
+  /// No description provided for @parkingThenWalk.
+  ///
+  /// In es, this message translates to:
+  /// **'Luego {distance} a pie ({duration}) hasta la parada'**
+  String parkingThenWalk(String distance, String duration);
+
+  /// No description provided for @parkingContinueByTransit.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir en transporte'**
+  String get parkingContinueByTransit;
 }
 
 class _AppLocalizationsDelegate

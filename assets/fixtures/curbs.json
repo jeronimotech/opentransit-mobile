@@ -1,0 +1,110 @@
+{
+  "generatedAt": "2026-09-14T17:30:00-05:00",
+  "count": 3,
+  "total": 3,
+  "curbs": [
+    {
+      "id": "3f5a9d84-2b1e-4c77-9c3f-8f6b1d0a55c1",
+      "name": "Und1191",
+      "streetName": "KR 54CL 57BCL 58",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -74.079,
+            4.6595
+          ],
+          [
+            -74.0787,
+            4.6595
+          ]
+        ]
+      },
+      "center": {
+        "lat": 4.6595,
+        "lon": -74.07885
+      },
+      "availableSpaces": 4,
+      "totalSpaces": 8,
+      "occupied": 4,
+      "occupancyRate": 0.5,
+      "available": true,
+      "availabilityTime": "2026-09-14T16:48:44+00:00",
+      "priceLabel": "$ 9.000 / hora · desde 2 h $ 13.500 / hora",
+      "allowed": true,
+      "whyLegal": "Estacionamiento · Lun Mar Mié Jue Vie 06:00–22:00 · Sáb Dom 06:00–22:00",
+      "nextChange": "2026-09-14T22:00:00-05:00",
+      "activePolicyIds": [
+        "11f15a8f-f82f-52f6-baf8-f2fd5c17edfb"
+      ]
+    },
+    {
+      "id": "9e2b7c14-6d3a-4f58-b1c0-2a7d9e4f0b33",
+      "name": "Und1199",
+      "streetName": "TV 59ACL 59CL 60",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -74.0805,
+            4.6602
+          ],
+          [
+            -74.0802,
+            4.6602
+          ]
+        ]
+      },
+      "center": {
+        "lat": 4.6602,
+        "lon": -74.08035
+      },
+      "availableSpaces": 0,
+      "totalSpaces": 14,
+      "occupied": 14,
+      "occupancyRate": 1.0,
+      "available": false,
+      "availabilityTime": "2026-09-14T02:18:35+00:00",
+      "priceLabel": "$ 8.400 / hora · desde 2 h $ 12.600 / hora",
+      "allowed": true,
+      "whyLegal": null,
+      "nextChange": "2026-09-14T22:00:00-05:00",
+      "activePolicyIds": [
+        "bf06a73f-a48a-5a73-918c-2b11f9d23467"
+      ]
+    },
+    {
+      "id": "1befeab6-14da-5dd7-b5dd-5ea190a25179",
+      "name": "Und1170",
+      "streetName": "CL 57BKR 50KR 53",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -74.0771,
+            4.658
+          ],
+          [
+            -74.0768,
+            4.658
+          ]
+        ]
+      },
+      "center": {
+        "lat": 4.658,
+        "lon": -74.07695
+      },
+      "availableSpaces": null,
+      "totalSpaces": 15,
+      "occupied": null,
+      "occupancyRate": null,
+      "available": null,
+      "availabilityTime": null,
+      "priceLabel": "$ 9.000 / hora · desde 2 h $ 13.500 / hora",
+      "allowed": false,
+      "whyLegal": null,
+      "nextChange": null,
+      "activePolicyIds": []
+    }
+  ]
+}

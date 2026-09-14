@@ -13,6 +13,7 @@ class PlannerState {
     this.arriveBy = false,
     this.modes = const {TravelMode.transit, TravelMode.walk},
     this.onDemand = false,
+    this.parkAndRide = false,
     this.result,
     this.request,
   });
@@ -26,6 +27,9 @@ class PlannerState {
 
   /// Ask for taxi / ride-hailing options too (v1.4).
   final bool onDemand;
+
+  /// Ask for park & ride options too: own car to a paid parking zone by a station (v1.6).
+  final bool parkAndRide;
   final AsyncValue<PlanResponse>? result;
   final PlanRequest? request;
 
@@ -41,6 +45,7 @@ class PlannerState {
     bool? arriveBy,
     Set<TravelMode>? modes,
     bool? onDemand,
+    bool? parkAndRide,
     AsyncValue<PlanResponse>? result,
     bool clearResult = false,
     PlanRequest? request,
@@ -52,6 +57,7 @@ class PlannerState {
         arriveBy: arriveBy ?? this.arriveBy,
         modes: modes ?? this.modes,
         onDemand: onDemand ?? this.onDemand,
+        parkAndRide: parkAndRide ?? this.parkAndRide,
         result: clearResult ? null : (result ?? this.result),
         request: request ?? this.request,
       );
@@ -72,6 +78,7 @@ class PlannerNotifier extends Notifier<PlannerState> {
         arriveBy: state.arriveBy,
         modes: state.modes,
         onDemand: state.onDemand,
+        parkAndRide: state.parkAndRide,
       );
   void setTime(DateTime? t) =>
       state = state.copyWith(time: t, clearTime: t == null, clearResult: true);
@@ -91,6 +98,10 @@ class PlannerNotifier extends Notifier<PlannerState> {
     ref.read(analyticsProvider).track(Ev.modeToggle, {'mode': 'ONDEMAND', 'on': v});
     state = state.copyWith(onDemand: v, clearResult: true);
   }
+
+  /// Not tracked as a mode toggle: the analytics schema lists the modes it
+  /// accepts and park & ride is not one of them yet.
+  void setParkAndRide(bool v) => state = state.copyWith(parkAndRide: v, clearResult: true);
 
   void setModes(Set<TravelMode> modes) =>
       state = state.copyWith(modes: modes.isEmpty ? {TravelMode.walk} : modes, clearResult: true);
@@ -112,7 +123,8 @@ class PlannerNotifier extends Notifier<PlannerState> {
       maxWalkDistance: settings.maxWalkDistance,
       locale: settings.locale?.languageCode ?? 'es',
       onDemand: s.onDemand,
-      numItineraries: s.onDemand ? 6 : 5,
+      parkAndRide: s.parkAndRide,
+      numItineraries: (s.onDemand || s.parkAndRide) ? 6 : 5,
     );
     state = state.copyWith(result: const AsyncValue.loading(), request: req);
     final analytics = ref.read(analyticsProvider);

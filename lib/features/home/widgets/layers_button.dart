@@ -4,7 +4,7 @@ import '../../../l10n/generated/app_localizations.dart';
 
 /// State of the three home-map layers.
 class MapLayers {
-  const MapLayers({required this.live, required this.pois, required this.network, this.zonal = false, this.rental = true});
+  const MapLayers({required this.live, required this.pois, required this.network, this.zonal = false, this.rental = true, this.parking = true});
   final bool live;
   final bool pois;
   final bool network;
@@ -15,9 +15,12 @@ class MapLayers {
   /// Shared-bike docking stations (v1.2), on by default from zoom 14.
   final bool rental;
 
-  MapLayers copyWith({bool? live, bool? pois, bool? network, bool? zonal, bool? rental}) => MapLayers(
+  /// Paid parking zones (v1.6), on by default from zoom 14.
+  final bool parking;
+
+  MapLayers copyWith({bool? live, bool? pois, bool? network, bool? zonal, bool? rental, bool? parking}) => MapLayers(
       live: live ?? this.live, pois: pois ?? this.pois, network: network ?? this.network,
-      zonal: zonal ?? this.zonal, rental: rental ?? this.rental);
+      zonal: zonal ?? this.zonal, rental: rental ?? this.rental, parking: parking ?? this.parking);
 }
 
 /// Single "Capas" button (UX audit §A) opening a small popover with toggles for
@@ -31,6 +34,7 @@ class LayersButton extends StatelessWidget {
     this.poisAvailable = true,
     this.rentalAvailable = false,
     this.rentalLabel,
+    this.parkingAvailable = false,
     this.networkLabel,
     this.zonalLabel,
     this.onNearMe,
@@ -45,6 +49,9 @@ class LayersButton extends StatelessWidget {
 
   /// Network name(s) shown under the toggle, from the city config.
   final String? rentalLabel;
+
+  /// Whether the city publishes paid parking zones (v1.6).
+  final bool parkingAvailable;
 
   /// Titles of the two network layers, built from the city's own components ("Troncal ·
   /// TransMiCable", "Subway · Streetcar"). Null hides the toggle: the city has nothing to draw
@@ -128,6 +135,16 @@ class LayersButton extends StatelessWidget {
                         subtitle: Text(rentalLabel == null ? l10n.layerBikeShareHint : '$rentalLabel · ${l10n.layerBikeShareHint}'),
                         value: cur.rental,
                         onChanged: (v) => update(cur.copyWith(rental: v)),
+                      ),
+                    if (parkingAvailable)
+                      SwitchListTile(
+                        key: const ValueKey('layer-parking'),
+                        contentPadding: EdgeInsets.zero,
+                        secondary: const Icon(Icons.local_parking_rounded),
+                        title: Text(l10n.layerParking),
+                        subtitle: Text(l10n.layerParkingHint),
+                        value: cur.parking,
+                        onChanged: (v) => update(cur.copyWith(parking: v)),
                       ),
                     if (poisAvailable)
                       SwitchListTile(

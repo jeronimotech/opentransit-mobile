@@ -622,7 +622,9 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                           child: Text(
                             leg.transit
                                 ? (_boarded ? l10n.getOffAt(leg.to.name) : l10n.boardAt(leg.from.name))
-                                : leg.isRental
+                                : leg.parkRide
+                                    ? l10n.parkingLeaveCarAt(leg.to.name)
+                                    : leg.isRental
                                     ? l10n.rentalDropoff(leg.rental?.dropoff?.name ?? leg.to.name)
                                     : leg.isOnDemand
                                         ? l10n.requestVehicleTo(leg.to.name)

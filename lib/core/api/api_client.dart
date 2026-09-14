@@ -111,6 +111,10 @@ abstract class ApiClient {
 
   Future<RentalStation> rentalStation(String cityId, String stationId);
 
+  /// v1.6 — paid parking zones (CDS curbs) inside [bbox], evaluated for a car.
+  /// Empty (never an error) when the city publishes none or the API predates v1.6.
+  Future<List<CurbZone>> curbs(String cityId, {List<double>? bbox, String userClass = 'car', int limit = 500});
+
   /// Nearest docking stations, sorted by distance.
   Future<List<RentalStation>> nearbyRentalStations(
     String cityId,

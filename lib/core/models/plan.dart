@@ -1,5 +1,6 @@
 import 'common.dart';
 import 'ondemand.dart';
+import 'parking.dart';
 import 'rental.dart';
 import 'transit.dart';
 
@@ -134,6 +135,7 @@ class Leg {
     this.alerts = const [],
     this.rental,
     this.onDemand,
+    this.parkRide = false,
   });
   final TravelMode mode;
   final bool transit;
@@ -157,6 +159,9 @@ class Leg {
 
   /// Shared-vehicle block for rental legs (v1.2); null for own bike / walk.
   final LegRental? rental;
+
+  /// v1.6: your own car, driven to the itinerary's parking zone (never a taxi).
+  final bool parkRide;
 
   /// Taxi / ride-hailing options for a CAR leg (v1.4); null otherwise.
   final LegOnDemand? onDemand;
@@ -196,6 +201,7 @@ class Leg {
         onDemand: j['onDemand'] is Map
             ? LegOnDemand.fromJson(Map<String, dynamic>.from(j['onDemand'] as Map))
             : null,
+        parkRide: asBool(j['parkRide']),
       );
 
   /// Colour for this leg: route colour for transit, the network colour for
@@ -220,7 +226,7 @@ class Leg {
         tripId: tripId ?? this.tripId, realtime: realtime ?? this.realtime,
         realtimeState: realtimeState ?? this.realtimeState, delaySeconds: delaySeconds,
         geometry: geometry, intermediateStops: intermediateStops ?? this.intermediateStops, steps: steps, alerts: alerts,
-        rental: rental, onDemand: onDemand,
+        rental: rental, onDemand: onDemand, parkRide: parkRide,
       );
 
   /// The same leg moved by [delta] (all times, including the places' and the
@@ -246,6 +252,7 @@ class FareLine {
 
   bool get isRental => kind == 'rental';
   bool get isOnDemand => kind == 'ondemand';
+  bool get isParking => kind == 'parking';
 
   factory FareLine.fromJson(Map<String, dynamic> j) => FareLine(
       label: j['label']?.toString() ?? '',
@@ -301,6 +308,7 @@ class Itinerary {
     this.rentalLegs,
     this.modesUsed = const [],
     this.source,
+    this.parking,
     this.retimed = false,
     this.raw,
   });
@@ -320,8 +328,11 @@ class Itinerary {
   final int? rentalLegs;
   final List<String> modesUsed;
 
-  /// Diagnostic origin of the itinerary (`primary | rental | ondemand`).
+  /// Diagnostic origin of the itinerary (`primary | rental | ondemand | parkride`).
   final String? source;
+
+  /// v1.6 park & ride: where the car is left, or null.
+  final ParkingInfo? parking;
 
   /// True after the user re-timed it from the live departure chips (client
   /// side; never comes from the API).
@@ -354,6 +365,7 @@ class Itinerary {
         rentalLegs: rentalLegs,
         modesUsed: modesUsed,
         source: source,
+        parking: parking,
         retimed: retimed ?? this.retimed,
         raw: raw,
       );
@@ -376,6 +388,7 @@ class Itinerary {
         rentalLegs: asInt(j['rentalLegs']),
         modesUsed: asStrings(j['modesUsed']),
         source: j['source']?.toString(),
+        parking: j['parking'] is Map ? ParkingInfo.fromJson(Map<String, dynamic>.from(j['parking'] as Map)) : null,
       );
 
   /// What to publish when sharing. Prefers the API's own JSON; falls back to
@@ -417,6 +430,9 @@ class Itinerary {
 
   /// True when the itinerary uses a taxi / ride-hailing leg (v1.4).
   bool get hasOnDemand => modesUsed.contains('CAR_ONDEMAND') || legs.any((l) => l.isOnDemand);
+
+  /// True for a park & ride itinerary: your own car to a parking zone, then transit (v1.6).
+  bool get hasParkRide => parking != null || source == 'parkride' || legs.any((l) => l.parkRide);
 
   /// The on-demand leg whose price drives the card (first one).
   LegOnDemand? get onDemand => onDemandLegList.firstOrNull?.onDemand;
@@ -472,6 +488,7 @@ class PlanRequest {
     this.maxWalkDistance = 1500,
     this.locale = 'es',
     this.onDemand = false,
+    this.parkAndRide = false,
   });
   final Place from;
   final Place to;
@@ -486,6 +503,9 @@ class PlanRequest {
   /// Ask the router for taxi / ride-hailing options too (v1.4 `onDemand=true`).
   final bool onDemand;
 
+  /// Ask for park & ride options too (v1.6 `parkAndRide=true`).
+  final bool parkAndRide;
+
   Map<String, String> toQuery() => {
         'fromLat': from.position.lat.toString(),
         'fromLon': from.position.lon.toString(),
@@ -499,6 +519,7 @@ class PlanRequest {
         'maxWalkDistance': maxWalkDistance.toString(),
         'locale': locale,
         if (onDemand) 'onDemand': 'true',
+        if (parkAndRide) 'parkAndRide': 'true',
         // Labels: the router echoes them back so the itinerary reads
         // "Calle 85" instead of a coordinate pair (contract v2.1).
         if (from.name.trim().isNotEmpty) 'fromName': from.name,

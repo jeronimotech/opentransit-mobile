@@ -1534,4 +1534,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get placeOptions => 'Place options';
+
+  @override
+  String get modeParkRide => 'Car + transit';
+
+  @override
+  String get modeParkRideShort => 'Car+bus';
+
+  @override
+  String get scenarioParkRide => 'Car + transit';
+
+  @override
+  String get layerParking => 'Paid parking';
+
+  @override
+  String get layerParkingHint =>
+      'Zones with free spaces, as of the last count (zoom 14+)';
+
+  @override
+  String get parkingZone => 'Paid parking zone';
+
+  @override
+  String get parkingOwnCar => 'Your car';
+
+  @override
+  String parkingLeaveCarAt(String place) {
+    return 'Leave the car at $place';
+  }
+
+  @override
+  String parkingSpaces(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n spaces',
+      one: '1 space',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String parkingSpacesOf(int n, int total) {
+    return '$n of $total spaces';
+  }
+
+  @override
+  String get parkingUnknownSpaces => 'Spaces not counted';
+
+  @override
+  String get parkingFull => 'Full';
+
+  @override
+  String get parkingAllowedNow => 'You may park now';
+
+  @override
+  String get parkingNotNow => 'No parking right now';
+
+  @override
+  String parkingUntil(String time) {
+    return 'until $time';
+  }
+
+  @override
+  String parkingCountedAgo(String age) {
+    return 'counted $age';
+  }
+
+  @override
+  String get parkingNoCount => 'The operator publishes no count';
+
+  @override
+  String parkingFeeFor(int hours) {
+    return 'Parking $hours h';
+  }
+
+  @override
+  String parkingThenWalk(String distance, String duration) {
+    return 'Then $distance on foot ($duration) to the stop';
+  }
+
+  @override
+  String get parkingContinueByTransit => 'Continue by transit';
 }

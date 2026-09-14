@@ -737,5 +737,80 @@
   "placeTypeAddress": "Address",
   "placeTypeStreet": "Street",
   "placeTypePlace": "Place",
-  "placeOptions": "Place options"
+  "placeOptions": "Place options",
+  "modeParkRide": "Car + transit",
+  "modeParkRideShort": "Car+bus",
+  "scenarioParkRide": "Car + transit",
+  "layerParking": "Paid parking",
+  "layerParkingHint": "Zones with free spaces, as of the last count (zoom 14+)",
+  "parkingZone": "Paid parking zone",
+  "parkingOwnCar": "Your car",
+  "parkingLeaveCarAt": "Leave the car at {place}",
+  "@parkingLeaveCarAt": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "parkingSpaces": "{n, plural, =1{1 space} other{{n} spaces}}",
+  "@parkingSpaces": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "parkingSpacesOf": "{n} of {total} spaces",
+  "@parkingSpacesOf": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "parkingUnknownSpaces": "Spaces not counted",
+  "parkingFull": "Full",
+  "parkingAllowedNow": "You may park now",
+  "parkingNotNow": "No parking right now",
+  "parkingUntil": "until {time}",
+  "@parkingUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "parkingCountedAgo": "counted {age}",
+  "@parkingCountedAgo": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "parkingNoCount": "The operator publishes no count",
+  "parkingFeeFor": "Parking {hours} h",
+  "@parkingFeeFor": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "parkingThenWalk": "Then {distance} on foot ({duration}) to the stop",
+  "@parkingThenWalk": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "parkingContinueByTransit": "Continue by transit"
 }

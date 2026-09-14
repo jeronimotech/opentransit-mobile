@@ -53,6 +53,28 @@ class CityFeatures {
         );
 }
 
+/// v1.6 open mobility: whether the city publishes curb zones (paid parking)
+/// and offers park & ride on top of them.
+class CityOpenMobility {
+  const CityOpenMobility({this.cdsEnabled = false, this.parkRideEnabled = false, this.maxWalkMeters = 600, this.defaultDwellHours = 8});
+  final bool cdsEnabled;
+  final bool parkRideEnabled;
+  final int maxWalkMeters;
+  final double defaultDwellHours;
+
+  factory CityOpenMobility.fromJson(Map<String, dynamic>? j) {
+    if (j == null) return const CityOpenMobility();
+    final cds = j['cds'] is Map ? Map<String, dynamic>.from(j['cds'] as Map) : const <String, dynamic>{};
+    final pr = j['parkRide'] is Map ? Map<String, dynamic>.from(j['parkRide'] as Map) : const <String, dynamic>{};
+    return CityOpenMobility(
+      cdsEnabled: asBool(cds['enabled']),
+      parkRideEnabled: asBool(pr['enabled']),
+      maxWalkMeters: asInt(pr['maxWalkMeters']) ?? 600,
+      defaultDwellHours: asDouble(pr['defaultDwellHours']) ?? 8,
+    );
+  }
+}
+
 /// Display style for one transit component (v1.1 `city.components[]`).
 class CityComponent {
   const CityComponent({
@@ -305,6 +327,7 @@ class City {
     this.links = const CityLinks(),
     this.services = const [],
     this.mobility = const CityMobility(),
+    this.openMobility = const CityOpenMobility(),
   });
 
   final String id;
@@ -329,6 +352,13 @@ class City {
   final CityLinks links;
   final List<CityService> services;
   final CityMobility mobility;
+  final CityOpenMobility openMobility;
+
+  /// Paid parking zones are drawn when the city publishes curbs (v1.6).
+  bool get curbsEnabled => openMobility.cdsEnabled && config.isEnabled('curbs');
+
+  /// Park & ride is offered only where curbs exist and the city turned it on.
+  bool get parkRideEnabled => curbsEnabled && openMobility.parkRideEnabled && config.isEnabled('parkRide');
 
   /// Shared bikes are offered when the feature flag is on, the module is not
   /// disabled by remote config and at least one network is configured.
@@ -382,6 +412,9 @@ class City {
       services: asList(j['services'], CityService.fromJson),
       mobility: CityMobility.fromJson(
         j['mobility'] is Map ? Map<String, dynamic>.from(j['mobility'] as Map) : null,
+      ),
+      openMobility: CityOpenMobility.fromJson(
+        j['openMobility'] is Map ? Map<String, dynamic>.from(j['openMobility'] as Map) : null,
       ),
     );
   }

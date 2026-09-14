@@ -247,6 +247,7 @@ String scenarioLabel(Scenario s, AppLocalizations l10n) => switch (s) {
       Scenario.fewerTransfers => l10n.scenarioFewerTransfers,
       Scenario.cheapest => l10n.scenarioCheapest,
       Scenario.bike => l10n.scenarioBike,
+      Scenario.parkRide => l10n.scenarioParkRide,
       Scenario.onDemand => l10n.scenarioOnDemand,
     };
 
@@ -256,6 +257,7 @@ IconData scenarioIcon(Scenario s) => switch (s) {
       Scenario.fewerTransfers => Icons.swap_horiz_rounded,
       Scenario.cheapest => Icons.savings_outlined,
       Scenario.bike => Icons.pedal_bike_rounded,
+      Scenario.parkRide => Icons.local_parking_rounded,
       Scenario.onDemand => Icons.local_taxi_rounded,
     };
 

@@ -90,6 +90,7 @@ class AppSettings {
     this.networkLayer = true,
     this.zonalLayer = false,
     this.rentalLayer = true,
+    this.parkingLayer = true,
   });
   final String? cityId;
 
@@ -104,6 +105,7 @@ class AppSettings {
   final bool networkLayer;
   final bool zonalLayer;
   final bool rentalLayer;
+  final bool parkingLayer;
 
   AppSettings copyWith({
     String? cityId,
@@ -119,6 +121,7 @@ class AppSettings {
     bool? networkLayer,
     bool? zonalLayer,
     bool? rentalLayer,
+    bool? parkingLayer,
   }) =>
       AppSettings(
         cityId: clearCity ? null : (cityId ?? this.cityId),
@@ -132,6 +135,7 @@ class AppSettings {
         networkLayer: networkLayer ?? this.networkLayer,
         zonalLayer: zonalLayer ?? this.zonalLayer,
         rentalLayer: rentalLayer ?? this.rentalLayer,
+        parkingLayer: parkingLayer ?? this.parkingLayer,
       );
 }
 
@@ -152,6 +156,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       networkLayer: p.networkLayer,
       zonalLayer: p.zonalLayer,
       rentalLayer: p.rentalLayer,
+      parkingLayer: p.parkingLayer,
     );
   }
 
@@ -215,6 +220,12 @@ class SettingsNotifier extends Notifier<AppSettings> {
     ref.read(analyticsProvider).track(Ev.layerToggle, {'layer': 'rental', 'on': v});
     state = state.copyWith(rentalLayer: v);
     await _p.setRentalLayer(v);
+  }
+
+  Future<void> setParkingLayer(bool v) async {
+    ref.read(analyticsProvider).track(Ev.layerToggle, {'layer': 'parking', 'on': v});
+    state = state.copyWith(parkingLayer: v);
+    await _p.setParkingLayer(v);
   }
 }
 
@@ -652,6 +663,15 @@ final rentalStationsProvider =
   final timer = Timer(Duration(seconds: r.ttlSeconds.clamp(15, 120)), () => ref.invalidateSelf());
   ref.onDispose(timer.cancel);
   return r;
+});
+
+/// v1.6 — paid parking zones in the viewport. PIM's counts are hours old, so a
+/// minute between refreshes loses nothing.
+final curbsProvider = FutureProvider.autoDispose.family<List<CurbZone>, BboxQuery>((ref, q) async {
+  final zones = await ref.watch(apiClientProvider).curbs(q.cityId, bbox: q.bbox);
+  final timer = Timer(const Duration(seconds: 60), () => ref.invalidateSelf());
+  ref.onDispose(timer.cancel);
+  return zones;
 });
 
 final rentalStationProvider = FutureProvider.autoDispose.family<RentalStation, CityKey>((ref, k) {

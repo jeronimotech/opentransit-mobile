@@ -1540,4 +1540,85 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get placeOptions => 'Opciones del lugar';
+
+  @override
+  String get modeParkRide => 'Carro + transporte';
+
+  @override
+  String get modeParkRideShort => 'Carro+bus';
+
+  @override
+  String get scenarioParkRide => 'Carro + transporte';
+
+  @override
+  String get layerParking => 'Parqueo pago';
+
+  @override
+  String get layerParkingHint =>
+      'Zonas con cupos libres, según el último conteo (zoom 14+)';
+
+  @override
+  String get parkingZone => 'Zona de parqueo pago';
+
+  @override
+  String get parkingOwnCar => 'Tu carro';
+
+  @override
+  String parkingLeaveCarAt(String place) {
+    return 'Deja el carro en $place';
+  }
+
+  @override
+  String parkingSpaces(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n cupos',
+      one: '1 cupo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String parkingSpacesOf(int n, int total) {
+    return '$n de $total cupos';
+  }
+
+  @override
+  String get parkingUnknownSpaces => 'Cupos sin conteo';
+
+  @override
+  String get parkingFull => 'Sin cupos';
+
+  @override
+  String get parkingAllowedNow => 'Puedes parquear ahora';
+
+  @override
+  String get parkingNotNow => 'No se puede parquear ahora';
+
+  @override
+  String parkingUntil(String time) {
+    return 'hasta las $time';
+  }
+
+  @override
+  String parkingCountedAgo(String age) {
+    return 'conteo $age';
+  }
+
+  @override
+  String get parkingNoCount => 'El operador no publica el conteo';
+
+  @override
+  String parkingFeeFor(int hours) {
+    return 'Parqueo $hours h';
+  }
+
+  @override
+  String parkingThenWalk(String distance, String duration) {
+    return 'Luego $distance a pie ($duration) hasta la parada';
+  }
+
+  @override
+  String get parkingContinueByTransit => 'Seguir en transporte';
 }

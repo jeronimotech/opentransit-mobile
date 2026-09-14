@@ -58,6 +58,7 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     if (q['time'] != null) planner.setTime(DateTime.tryParse(q['time']!));
     if (q['arriveBy'] == 'true') planner.setArriveBy(true);
     if (q['onDemand'] == '1' || q['onDemand'] == 'true') planner.setOnDemand(true);
+    if (q['parkAndRide'] == '1' || q['parkAndRide'] == 'true') planner.setParkAndRide(true);
     if (changed && ref.read(plannerProvider).canPlan) _submit();
   }
 
@@ -245,6 +246,10 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     final onDemand = city != null && city.onDemandEnabled;
     final onDemandOn = s.onDemand;
     final onDemandColor = colorFromHex(city?.mobility.onDemandProviders.firstOrNull?.color, fallback: const Color(0xFFF2C200));
+    // Park & ride (v1.6): own car to a paid parking zone by a station, then
+    // transit. Only where the city publishes curbs and turned the feature on.
+    final parkRide = city != null && city.parkRideEnabled;
+    final parkRideOn = s.parkAndRide;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.planTrip)),
@@ -395,6 +400,16 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                   selected: onDemandOn,
                   color: onDemandColor,
                   onToggle: (v) => ref.read(plannerProvider.notifier).setOnDemand(v),
+                ),
+              if (parkRide)
+                ModeGridItem(
+                  id: 'parkRide',
+                  label: l10n.modeParkRideShort,
+                  semanticsLabel: l10n.modeParkRide,
+                  icon: Icons.local_parking_rounded,
+                  selected: parkRideOn,
+                  color: parkRideBlue,
+                  onToggle: (v) => ref.read(plannerProvider.notifier).setParkAndRide(v),
                 ),
             ],
           ),

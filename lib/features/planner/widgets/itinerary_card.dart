@@ -91,6 +91,13 @@ class ItineraryCard extends StatelessWidget {
                     LeaveByLabel(leave),
                     _Meta(Icons.swap_horiz, l10n.transfersCount(it.transfers)),
                     _Meta(Icons.directions_walk, l10n.walkDistance(it.walkDistanceMeters)),
+                    if (it.parking != null)
+                      _Meta(
+                        Icons.local_parking_rounded,
+                        it.parking!.availableSpaces == null
+                            ? it.parking!.title
+                            : '${it.parking!.title} · ${it.parking!.totalSpaces != null ? l10n.parkingSpacesOf(it.parking!.availableSpaces!, it.parking!.totalSpaces!) : l10n.parkingSpaces(it.parking!.availableSpaces!)}',
+                      ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -222,6 +229,13 @@ class LegChip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (leg.transit) return RouteChip(leg.route, dense: true);
     final l10n = AppLocalizations.of(context);
+    if (leg.parkRide) {
+      // your own car, blue like every park & ride surface, never a provider's colour
+      return Tooltip(
+        message: '${l10n.parkingOwnCar} · ${formatDuration(leg.durationSeconds, l10n)}',
+        child: OnDemandChip(name: l10n.parkingOwnCar, color: parkRideBlue, dense: true, taxi: false),
+      );
+    }
     final od = leg.onDemand;
     if (od != null) {
       final rec = od.recommended;

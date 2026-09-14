@@ -77,10 +77,15 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
               ? colorFromHex(rental.color, fallback: const Color(0xFF00A859))
               : onDemand != null
                   ? colorFromHex(onDemand.recommended?.color, fallback: const Color(0xFFF2C200))
-                  : const Color(0xFF546E7A);
+                  : leg.parkRide
+                      ? parkRideBlue
+                      : const Color(0xFF546E7A);
       // Rental legs: dashed line in the network colour, docking stations as rings.
-      // On-demand legs: solid line in the provider colour.
-      lines.add(MapLine(id: 'leg-$i', points: pts, color: color, width: leg.transit ? 6 : (rental != null || onDemand != null ? 5 : 4), dashed: !leg.transit && onDemand == null));
+      // On-demand and park & ride legs: solid line in the provider colour / blue.
+      lines.add(MapLine(id: 'leg-$i', points: pts, color: color, width: leg.transit ? 6 : (rental != null || onDemand != null || leg.parkRide ? 5 : 4), dashed: !leg.transit && onDemand == null && !leg.parkRide));
+      if (leg.parkRide) {
+        stops.add(MapPoint(id: 'park-$i', position: leg.to.position, color: Colors.white, strokeColor: color, strokeWidth: 3.5, radius: 8, label: it.parking?.title ?? leg.to.name));
+      }
       if (rental != null) {
         stops.add(MapPoint(id: 'rp-$i', position: leg.from.position, color: Colors.white, strokeColor: color, strokeWidth: 3.5, radius: 7, label: rental.pickup?.name ?? leg.from.name));
         stops.add(MapPoint(id: 'rd-$i', position: leg.to.position, color: Colors.white, strokeColor: color, strokeWidth: 3.5, radius: 7, label: rental.dropoff?.name ?? leg.to.name));
@@ -333,6 +338,7 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
                       network: city?.mobility.network(named[i].rental?.networkId),
                       chosenStart: _chosen[i],
                       showDepartures: showDeparturesFor(it, i),
+                      parking: it.parking,
                       onRetime: (start, {realtime, tripId}) => _retime(base, i, start, realtime: realtime, tripId: tripId),
                     ),
                   _EndTile(place: named.last.to, time: it.endTime),
@@ -397,7 +403,7 @@ class _FareBlock extends StatelessWidget {
                             fontWeight: FontWeight.w800, color: f.amount == null ? scheme.outline : null)),
                   ],
                 ),
-                if (f.breakdown.length > 1 || f.breakdown.any((l) => l.isRental || l.isOnDemand)) ...[
+                if (f.breakdown.length > 1 || f.breakdown.any((l) => l.isRental || l.isOnDemand || l.isParking)) ...[
                   const SizedBox(height: 6),
                   for (final line in f.breakdown)
                     Padding(
@@ -466,6 +472,7 @@ class _LegTile extends ConsumerStatefulWidget {
     this.chosenStart,
     this.onRetime,
     this.showDepartures = false,
+    this.parking,
   });
   final String cityId;
   final Leg leg;
@@ -481,6 +488,9 @@ class _LegTile extends ConsumerStatefulWidget {
 
   /// Whether to offer the live departure chips for this leg.
   final bool showDepartures;
+
+  /// Where the car is left (park & ride itineraries only).
+  final ParkingInfo? parking;
   @override
   ConsumerState<_LegTile> createState() => _LegTileState();
 }
@@ -503,7 +513,9 @@ class _LegTileState extends ConsumerState<_LegTile> {
             ? colorFromHex(rental.color, fallback: const Color(0xFF00A859))
             : onDemand != null
                 ? colorFromHex(onDemand.recommended?.color, fallback: const Color(0xFFF2C200))
-                : scheme.outline;
+                : leg.parkRide
+                    ? parkRideBlue
+                    : scheme.outline;
     final delay = formatDelay(leg.delaySeconds, l10n);
 
     return IntrinsicHeight(
@@ -528,7 +540,7 @@ class _LegTileState extends ConsumerState<_LegTile> {
                 decoration: BoxDecoration(shape: BoxShape.circle, color: scheme.surface, border: Border.all(color: color, width: 3)),
               ),
               Expanded(
-                child: leg.transit || onDemand != null
+                child: leg.transit || onDemand != null || leg.parkRide
                     ? Container(width: 6, color: color)
                     : _DottedBar(color: color),
               ),
@@ -633,6 +645,8 @@ class _LegTileState extends ConsumerState<_LegTile> {
                     Text(l10n.rideTo(leg.to.name), style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
                   ] else if (rental != null) ...[
                     _RentalLegBody(leg: leg, rental: rental, network: widget.network, color: color),
+                  ] else if (leg.parkRide) ...[
+                    _ParkRideLegBody(leg: leg, parking: widget.parking, color: color),
                   ] else if (onDemand != null) ...[
                     _OnDemandLegBody(cityId: widget.cityId, leg: leg, onDemand: onDemand, color: color),
                   ] else ...[
@@ -675,6 +689,92 @@ class _LegTileState extends ConsumerState<_LegTile> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The car leg of a park & ride itinerary: the drive, then "Deja el carro en …"
+/// with spaces (and how old the count is), price, until when it is legal, the
+/// fee for the dwell the plan assumed — stated as such — and the walk to the stop.
+class _ParkRideLegBody extends StatelessWidget {
+  const _ParkRideLegBody({required this.leg, required this.parking, required this.color});
+  final Leg leg;
+  final ParkingInfo? parking;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final locale = Localizations.localeOf(context).toString();
+    final p = parking;
+    final age = p?.ageSeconds();
+    final spaces = p == null
+        ? null
+        : p.availableSpaces == null
+            ? l10n.parkingUnknownSpaces
+            : p.totalSpaces != null
+                ? l10n.parkingSpacesOf(p.availableSpaces!, p.totalSpaces!)
+                : l10n.parkingSpaces(p.availableSpaces!);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.parkingLeaveCarAt(p?.title ?? leg.to.name),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700)),
+        const SizedBox(height: 4),
+        Text('${l10n.parkingOwnCar} · ${formatDuration(leg.durationSeconds, l10n)} · ${formatDistance(leg.distanceMeters)}',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+        if (p != null) ...[
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(12),
+              border: Border(left: BorderSide(color: parkingColor(p.tone), width: 4)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.local_parking_rounded, size: 16, color: parkingColor(p.tone)),
+                    const SizedBox(width: 6),
+                    Expanded(child: Text(spaces ?? '', style: TextStyle(fontWeight: FontWeight.w700, color: parkingColor(p.tone)))),
+                  ],
+                ),
+                if (age != null)
+                  Text(l10n.parkingCountedAgo(formatUpdatedAgo(age, l10n)),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
+                if (p.priceLabel != null || p.allowedUntil != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      [
+                        if (p.priceLabel != null) p.priceLabel!,
+                        if (p.allowedUntil != null) l10n.parkingUntil(formatClock(p.allowedUntil!, locale)),
+                      ].join(' · '),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                if (p.fee != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '${l10n.parkingFeeFor(p.fee!.dwellHours.round())} · ≈ ${formatMoney(p.fee!.amount, p.fee!.currency, locale)}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(l10n.parkingThenWalk(formatDistance(p.walkMeters), formatDuration(p.walkSeconds, l10n)),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
