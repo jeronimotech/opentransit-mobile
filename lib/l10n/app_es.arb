@@ -1003,14 +1003,6 @@
       }
     }
   },
-  "parkingCountedAgo": "conteo {age}",
-  "@parkingCountedAgo": {
-    "placeholders": {
-      "age": {
-        "type": "String"
-      }
-    }
-  },
   "parkingNoCount": "El operador no publica el conteo",
   "parkingFeeFor": "Parqueo {hours} h",
   "@parkingFeeFor": {

@@ -784,14 +784,6 @@
       }
     }
   },
-  "parkingCountedAgo": "counted {age}",
-  "@parkingCountedAgo": {
-    "placeholders": {
-      "age": {
-        "type": "String"
-      }
-    }
-  },
   "parkingNoCount": "The operator publishes no count",
   "parkingFeeFor": "Parking {hours} h",
   "@parkingFeeFor": {

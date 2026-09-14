@@ -153,7 +153,9 @@ ParkingTone parkingTone({int? available, int? total, bool? allowed}) {
   if (allowed == false) return ParkingTone.closed;
   if (available == null) return ParkingTone.unknown;
   if (available <= 0) return ParkingTone.full;
-  if (available < 3 || ((total ?? 0) > 0 && available / total! < 0.2)) return ParkingTone.low;
+  // a tiny zone that is entirely free is fine, not "running low"
+  final ratio = (total ?? 0) > 0 ? available / total! : null;
+  if ((available < 3 && ratio != 1) || (ratio != null && ratio < 0.2)) return ParkingTone.low;
   return ParkingTone.ok;
 }
 

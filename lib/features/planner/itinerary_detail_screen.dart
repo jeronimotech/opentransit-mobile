@@ -744,7 +744,7 @@ class _ParkRideLegBody extends StatelessWidget {
                   ],
                 ),
                 if (age != null)
-                  Text(l10n.parkingCountedAgo(formatUpdatedAgo(age, l10n)),
+                  Text(formatUpdatedAgo(age, l10n),
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
                 if (p.priceLabel != null || p.allowedUntil != null)
                   Padding(

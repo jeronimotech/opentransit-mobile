@@ -2786,12 +2786,6 @@ abstract class AppLocalizations {
   /// **'hasta las {time}'**
   String parkingUntil(String time);
 
-  /// No description provided for @parkingCountedAgo.
-  ///
-  /// In es, this message translates to:
-  /// **'conteo {age}'**
-  String parkingCountedAgo(String age);
-
   /// No description provided for @parkingNoCount.
   ///
   /// In es, this message translates to:

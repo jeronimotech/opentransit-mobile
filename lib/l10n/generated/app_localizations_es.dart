@@ -1602,11 +1602,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String parkingCountedAgo(String age) {
-    return 'conteo $age';
-  }
-
-  @override
   String get parkingNoCount => 'El operador no publica el conteo';
 
   @override

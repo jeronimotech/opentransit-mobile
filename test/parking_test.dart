@@ -73,6 +73,8 @@ void main() {
       expect(parkingTone(available: 5, total: 10, allowed: false), ParkingTone.closed);
       expect(parkingTone(available: 0, total: 10, allowed: true), ParkingTone.full);
       expect(parkingTone(available: 1, total: 10, allowed: true), ParkingTone.low);
+      expect(parkingTone(available: 2, total: 2, allowed: true), ParkingTone.ok);
+      expect(parkingTone(available: 2, total: 20, allowed: true), ParkingTone.low);
       expect(parkingTone(available: 8, total: 10, allowed: true), ParkingTone.ok);
       expect(parkingTone(available: null, total: 10, allowed: true), ParkingTone.unknown);
     });

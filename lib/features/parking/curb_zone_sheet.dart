@@ -110,7 +110,7 @@ class CurbZoneSheet extends ConsumerWidget {
                 Container(width: 8, height: 8, decoration: BoxDecoration(color: age == null ? scheme.outline : (age > 900 ? Colors.orange.shade800 : Colors.green.shade600), shape: BoxShape.circle)),
                 const SizedBox(width: 6),
                 Text(
-                  age == null ? l10n.parkingNoCount : l10n.parkingCountedAgo(formatUpdatedAgo(age, l10n)),
+                  age == null ? l10n.parkingNoCount : formatUpdatedAgo(age, l10n),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.onSurfaceVariant),
                 ),
               ],
