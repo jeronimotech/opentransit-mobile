@@ -638,6 +638,20 @@ class MockApiClient implements ApiClient {
     (s['patches'] as List).add(progress.toJson());
   }
 
+  /// What the phone last registered, for tests.
+  final pushRegistrations = <Map<String, dynamic>>[];
+
+  @override
+  Future<bool> registerPushDevice(String cityId, Map<String, dynamic> registration) async {
+    pushRegistrations.add({...registration, 'cityId': cityId});
+    return true;
+  }
+
+  @override
+  Future<void> unregisterPushDevice(String cityId, String token) async {
+    pushRegistrations.removeWhere((r) => r['token'] == token);
+  }
+
   @override
   Future<void> revokeShare(String cityId, String token, String writeKey) async {
     final s = shares.where((e) => e['token'] == token).firstOrNull;

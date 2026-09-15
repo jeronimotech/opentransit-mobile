@@ -26,5 +26,29 @@ import workmanager_apple
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "WatchSessionBridge") {
       WatchSessionBridge.register(with: registrar)
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "PushBridge") {
+      PushBridge.register(with: registrar)
+    }
+  }
+
+  // MARK: - APNs (v2.3 scheduled-trip reminders)
+
+  override func application(_ application: UIApplication,
+                            didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    PushBridge.tokenReceived(deviceToken)
+    super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
+  }
+
+  override func application(_ application: UIApplication,
+                            didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    NSLog("APNs registration failed: %@", error.localizedDescription)
+    super.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
+  }
+
+  override func application(_ application: UIApplication,
+                            didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                            fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    if PushBridge.handle(userInfo, completion: completionHandler) { return }
+    super.application(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
   }
 }

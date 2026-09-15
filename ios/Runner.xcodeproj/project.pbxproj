@@ -35,6 +35,7 @@
 		AC470295C090FF7EE73F9F33 /* WatchSessionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9D5B33AAEEB1573E912762 /* WatchSessionBridge.swift */; };
 		B034AA68E866CE66874F7FB7 /* OpenTransitLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68ED2BD9523F4B4C7F1FB27 /* OpenTransitLiveActivity.swift */; };
 		B17575891798D11A5B6B9978 /* LiveActivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */; };
+		A1B2C3D4E5F60718293A4B5C /* PushBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F708192A3B4C5D6E7F /* PushBridge.swift */; };
 		CB1F70D9273ACA734C8EED15 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4680D3E851D9A1B248C38824 /* Pods_RunnerTests.framework */; };
 		D54D384E35A70428CE51BB90 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E6D00FCE15668099898D41 /* Foundation.framework */; };
 		D78FF2C2C69C670D66A501CE /* OpenTransitLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -135,6 +136,7 @@
 		57E8F128A24E161FE160F6B4 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		62CD490DA9A9C3FF40026A86 /* WatchViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchViews.swift; path = OpenTransitWatch/WatchViews.swift; sourceTree = "<group>"; };
 		653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityBridge.swift; sourceTree = "<group>"; };
+		C4D5E6F708192A3B4C5D6E7F /* PushBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PushBridge.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75477E9EF546828FDCCE2CCF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -337,6 +339,7 @@
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */,
+				C4D5E6F708192A3B4C5D6E7F /* PushBridge.swift */,
 				0D9D5B33AAEEB1573E912762 /* WatchSessionBridge.swift */,
 			);
 			path = Runner;
@@ -666,6 +669,7 @@
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
 				B17575891798D11A5B6B9978 /* LiveActivityBridge.swift in Sources */,
+				A1B2C3D4E5F60718293A4B5C /* PushBridge.swift in Sources */,
 				AC470295C090FF7EE73F9F33 /* WatchSessionBridge.swift in Sources */,
 				13AC6D31ABE67D1E20EF0FC5 /* OpenTransitActivityAttributes.swift in Sources */,
 			);

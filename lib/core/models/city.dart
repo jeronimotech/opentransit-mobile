@@ -153,6 +153,7 @@ class CityConfig {
     this.updateUrlAndroid,
     this.maintenance = const MaintenanceState(),
     this.assistant = const AssistantPublic(),
+    this.pushReminders = false,
   });
   final int vehiclePollSeconds;
   final int departuresRefreshSeconds;
@@ -173,6 +174,10 @@ class CityConfig {
   /// Public slice only — the provider key never reaches the app.
   final AssistantPublic assistant;
 
+  /// v2.3: the city can send an iPhone the silent wake-up that refreshes a scheduled trip, and alert
+  /// pushes for followed routes — so the app registers its (anonymous) token.
+  final bool pushReminders;
+
   bool isEnabled(String feature) => features[feature] ?? true;
 
   factory CityConfig.fromJson(Map<String, dynamic>? j) {
@@ -186,7 +191,9 @@ class CityConfig {
     final feats = j['features'] is Map
         ? Map<String, dynamic>.from(j['features'] as Map)
         : const <String, dynamic>{};
+    final push = j['push'] is Map ? Map<String, dynamic>.from(j['push'] as Map) : const <String, dynamic>{};
     return CityConfig(
+      pushReminders: asBool(push['reminders']),
       vehiclePollSeconds: asInt(j['vehiclePollSeconds']) ?? 15,
       departuresRefreshSeconds: asInt(j['departuresRefreshSeconds']) ?? 20,
       features: {for (final e in feats.entries) e.key: asBool(e.value, fallback: true)},

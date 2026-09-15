@@ -115,6 +115,11 @@ abstract class ApiClient {
   /// Empty (never an error) when the city publishes none or the API predates v1.6.
   Future<List<CurbZone>> curbs(String cityId, {List<double>? bbox, String userClass = 'car', int limit = 500});
 
+  /// v2.3 — registers (idempotently) this phone's anonymous APNs token with the instants it wants a
+  /// silent wake-up and the routes it follows. Never throws on a 4xx from an older API.
+  Future<bool> registerPushDevice(String cityId, Map<String, dynamic> registration);
+  Future<void> unregisterPushDevice(String cityId, String token);
+
   /// Nearest docking stations, sorted by distance.
   Future<List<RentalStation>> nearbyRentalStations(
     String cityId,

@@ -21,6 +21,7 @@ import 'storage/favorites.dart';
 import 'utils/notifications.dart';
 import 'storage/scheduled_trips.dart';
 import 'scheduling/trip_scheduler.dart';
+import 'scheduling/push_registrar.dart';
 import 'storage/preferences.dart';
 import 'storage/route_alerts_store.dart';
 import 'utils/commute.dart';
@@ -360,6 +361,36 @@ class ScheduledTripsNotifier extends Notifier<List<ScheduledTrip>> {
     } catch (e) {
       debugPrint('scheduled trips resync failed: $e');
     }
+    await ref.read(pushRegistrarProvider).sync();
+  }
+}
+
+/// v2.3 — keeps the server's copy of this phone's wake instants and followed routes current (iOS
+/// only; Android wakes itself). Also arms the Android alert poll while any route is followed.
+final pushRegistrarProvider = Provider<PushRegistrarSync>((ref) => PushRegistrarSync(ref));
+
+class PushRegistrarSync {
+  PushRegistrarSync(this._ref);
+  final Ref _ref;
+
+  Future<void> sync() async {
+    try {
+      final settings = _ref.read(settingsProvider);
+      final cityId = settings.cityId;
+      if (cityId == null) return;
+      final prefs = _ref.read(sharedPrefsProvider);
+      final followed = RouteAlertsRepository(prefs).schedules(cityId).isNotEmpty;
+      await const WorkmanagerJobs().ensureAlertPoll(followed);
+      final city = _ref.read(cityProvider(cityId)).asData?.value;
+      await PushRegistrar(prefs: prefs, api: _ref.read(apiClientProvider)).sync(
+        cityId: cityId,
+        serverReminders: city?.config.pushReminders ?? false,
+        locale: settings.locale ?? const Locale('es'),
+        now: DateTime.now(),
+      );
+    } catch (e) {
+      debugPrint('push registrar sync failed: $e');
+    }
   }
 }
 
@@ -426,6 +457,7 @@ class RouteAlertSchedulesNotifier extends Notifier<Map<String, AlertSchedule>> {
   Future<void> set(String cityId, String routeId, AlertSchedule schedule) async {
     await _repo.setSchedule(cityId, routeId, schedule);
     state = _repo.schedules(cityId);
+    await ref.read(pushRegistrarProvider).sync();
   }
 }
 

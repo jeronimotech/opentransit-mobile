@@ -13,6 +13,7 @@ import '../models/models.dart';
 import '../storage/scheduled_trips.dart';
 import '../utils/notifications.dart';
 import '../../l10n/generated/app_localizations.dart';
+import 'push_registrar.dart';
 
 /// Where reminders go. `LocalNotifications` in the app; a memory sink in tests.
 abstract class ReminderSink {
@@ -56,6 +57,9 @@ abstract class BackgroundJobs {
   Future<void> scheduleRefresh(String tripId, DateTime at, DateTime now);
   Future<void> cancelRefresh(String tripId);
   Future<void> ensurePeriodic();
+
+  /// Android only: poll the followed routes' alerts every 15 minutes while any route is followed.
+  Future<void> ensureAlertPoll(bool needed);
 }
 
 class NoBackgroundJobs implements BackgroundJobs {
@@ -66,11 +70,14 @@ class NoBackgroundJobs implements BackgroundJobs {
   Future<void> cancelRefresh(String tripId) async {}
   @override
   Future<void> ensurePeriodic() async {}
+  @override
+  Future<void> ensureAlertPoll(bool needed) async {}
 }
 
 class WorkmanagerJobs implements BackgroundJobs {
   const WorkmanagerJobs();
   static const taskName = 'tripRefresh';
+  static const alertTaskName = 'routeAlertsPoll';
   static const periodicName = 'com.jeronimotech.opentransit.tripRefresh';
 
   bool get _android => defaultTargetPlatform == TargetPlatform.android;
@@ -99,6 +106,22 @@ class WorkmanagerJobs implements BackgroundJobs {
     try {
       await Workmanager().cancelByUniqueName('trip-$tripId');
     } catch (_) {}
+  }
+
+  @override
+  Future<void> ensureAlertPoll(bool needed) async {
+    if (!_android) return;
+    try {
+      if (needed) {
+        await Workmanager().registerPeriodicTask(alertTaskName, alertTaskName,
+            frequency: const Duration(minutes: 15), existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+            constraints: Constraints(networkType: NetworkType.connected));
+      } else {
+        await Workmanager().cancelByUniqueName(alertTaskName);
+      }
+    } catch (e) {
+      debugPrint('alert poll not registered: $e');
+    }
   }
 
   @override
@@ -279,6 +302,11 @@ void tripRefreshDispatcher() {
         jobs: const WorkmanagerJobs(),
         locale: Locale(code == null || code.isEmpty || code == 'system' ? 'es' : code),
       );
+      if (task == WorkmanagerJobs.alertTaskName) {
+        final n = await runRouteAlertCheck(prefs: prefs, api: scheduler.api, locale: scheduler.locale, now: DateTime.now());
+        debugPrint('route alerts poll: $n notification(s)');
+        return true;
+      }
       final n = await scheduler.refreshDue(now: DateTime.now(), tripId: inputData?['tripId']?.toString());
       debugPrint('trip refresh: $n reminder(s) refined');
       return true;

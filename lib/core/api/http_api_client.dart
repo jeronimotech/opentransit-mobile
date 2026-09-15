@@ -400,6 +400,30 @@ class HttpApiClient implements ApiClient {
   }
 
   @override
+  Future<bool> registerPushDevice(String cityId, Map<String, dynamic> registration) async {
+    try {
+      final r = await _dio.put<dynamic>('${_c(cityId)}/push/devices', data: registration);
+      onStatus?.call(true);
+      final body = r.data;
+      return body is Map && body['serverPush'] == true;
+    } on DioException catch (e) {
+      final ex = _toApiException(e);
+      onStatus?.call(!ex.isNetwork);
+      if (ex.isNotFound) return false;          // an API without v2.3
+      throw ex;
+    }
+  }
+
+  @override
+  Future<void> unregisterPushDevice(String cityId, String token) async {
+    try {
+      await _dio.delete<dynamic>('${_c(cityId)}/push/devices/$token');
+    } on DioException catch (_) {
+      // best effort: a token the server never had needs no goodbye
+    }
+  }
+
+  @override
   Future<RentalStation> rentalStation(String cityId, String stationId) async =>
       RentalStation.fromJson(await _get('${_c(cityId)}/rental/stations/${Uri.encodeComponent(stationId)}'));
 
