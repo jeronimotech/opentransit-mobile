@@ -74,6 +74,28 @@ struct WatchGoState: Codable, Hashable {
   }
 }
 
+/// v2.3 — the next scheduled trip: "Sales 7:12 · G30 → Trabajo".
+struct WatchNextTrip: Codable, Hashable {
+  var leaveEpochSeconds: Double = 0
+  var arriveEpochSeconds: Double = 0
+  var toName: String = ""
+  var routes: [String] = []
+
+  var leaveAt: Date { Date(timeIntervalSince1970: leaveEpochSeconds) }
+  var arriveAt: Date { Date(timeIntervalSince1970: arriveEpochSeconds) }
+  var isValid: Bool { leaveEpochSeconds > 0 }
+
+  init() {}
+
+  init(from decoder: Decoder) throws {
+    let c = try decoder.container(keyedBy: CodingKeys.self)
+    leaveEpochSeconds = (try? c.decodeIfPresent(Double.self, forKey: .leaveEpochSeconds)) as? Double ?? 0
+    arriveEpochSeconds = (try? c.decodeIfPresent(Double.self, forKey: .arriveEpochSeconds)) as? Double ?? 0
+    toName = (try? c.decodeIfPresent(String.self, forKey: .toName)) as? String ?? ""
+    routes = (try? c.decodeIfPresent([String].self, forKey: .routes)) as? [String] ?? []
+  }
+}
+
 /// Everything the watch knows, persisted so a cold launch on the wrist shows
 /// the last board instead of an empty screen.
 struct WatchSnapshot: Codable, Hashable {
@@ -82,6 +104,7 @@ struct WatchSnapshot: Codable, Hashable {
   var apiBaseUrl: String = ""
   var favourites: [WatchFavourite] = []
   var go: WatchGoState = .idle
+  var nextTrip: WatchNextTrip?
   var analyticsEnabled: Bool = true
   var sentAt: Double = 0
 
@@ -98,6 +121,7 @@ struct WatchSnapshot: Codable, Hashable {
     apiBaseUrl = (try? c.decodeIfPresent(String.self, forKey: .apiBaseUrl)) as? String ?? ""
     favourites = (try? c.decodeIfPresent([WatchFavourite].self, forKey: .favourites)) as? [WatchFavourite] ?? []
     go = (try? c.decodeIfPresent(WatchGoState.self, forKey: .go)) as? WatchGoState ?? .idle
+    nextTrip = ((try? c.decodeIfPresent(WatchNextTrip.self, forKey: .nextTrip)) as? WatchNextTrip).flatMap { $0.isValid ? $0 : nil }
     analyticsEnabled = (try? c.decodeIfPresent(Bool.self, forKey: .analyticsEnabled)) as? Bool ?? true
     sentAt = (try? c.decodeIfPresent(Double.self, forKey: .sentAt)) as? Double ?? 0
   }

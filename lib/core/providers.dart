@@ -21,6 +21,7 @@ import 'storage/favorites.dart';
 import 'utils/notifications.dart';
 import 'storage/scheduled_trips.dart';
 import 'scheduling/trip_scheduler.dart';
+import 'watch/watch_sync.dart';
 import 'scheduling/push_registrar.dart';
 import 'storage/preferences.dart';
 import 'storage/route_alerts_store.dart';
@@ -362,6 +363,25 @@ class ScheduledTripsNotifier extends Notifier<List<ScheduledTrip>> {
       debugPrint('scheduled trips resync failed: $e');
     }
     await ref.read(pushRegistrarProvider).sync();
+    await _syncWatch();
+  }
+
+  /// "Sales 7:12 · G30 → Trabajo" on the wrist, and its complication.
+  Future<void> _syncWatch() async {
+    final cityId = ref.read(settingsProvider).cityId;
+    if (cityId == null) return;
+    final next = nextScheduledTrip(state, DateTime.now());
+    final city = ref.read(cityProvider(cityId)).asData?.value;
+    try {
+      await WatchSync.instance.syncNextTrip(
+        cityId: cityId,
+        cityName: city?.name ?? cityId,
+        apiBaseUrl: AppConfig.apiUrl,
+        nextTrip: next == null ? null : WatchNextTrip(leaveAt: next.leaveAt, arriveAt: next.arriveAt, toName: next.toName, routes: next.routes),
+      );
+    } catch (e) {
+      debugPrint('watch next-trip sync failed: $e');
+    }
   }
 }
 

@@ -163,9 +163,29 @@ struct GoView: View {
 
   private var go: WatchGoState { store.snapshot.go }
 
+  /// The next scheduled trip, when it leaves within the day.
+  private var nextTrip: WatchNextTrip? {
+    guard let t = store.snapshot.nextTrip, t.leaveAt.timeIntervalSinceNow < 24 * 3600,
+          t.leaveAt.timeIntervalSinceNow > -30 * 60 else { return nil }
+    return t
+  }
+
   var body: some View {
     VStack(spacing: 8) {
-      if !go.active {
+      if !go.active, let t = nextTrip {
+        Image(systemName: "alarm").font(.title2).foregroundStyle(.tint)
+        Text("Sales \(t.leaveAt, style: .time)").font(.headline)
+        if t.leaveAt > .now {
+          Text(t.leaveAt, style: .relative).font(.caption2).foregroundStyle(.secondary)
+        } else {
+          Text("Es hora de salir").font(.caption2).foregroundStyle(.secondary)
+        }
+        if !t.routes.isEmpty {
+          HStack(spacing: 4) { ForEach(t.routes.prefix(3), id: \.self) { RouteChip(name: $0, color: nil) } }
+        }
+        Text("→ \(t.toName) · llegas \(t.arriveAt, style: .time)").font(.caption2).foregroundStyle(.secondary)
+          .lineLimit(2).multilineTextAlignment(.center)
+      } else if !go.active {
         Image(systemName: "figure.walk.motion").font(.title2).foregroundStyle(.secondary)
         Text("Sin viaje en curso").font(.footnote).foregroundStyle(.secondary)
         Text("Inicia un viaje en el iPhone").font(.caption2).foregroundStyle(.secondary)

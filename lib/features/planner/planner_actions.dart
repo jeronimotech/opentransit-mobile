@@ -58,7 +58,7 @@ bool assignPlace(WidgetRef ref, PlaceField field, Place place) {
 ///
 /// Takes a [GoRouter] rather than a [BuildContext] so callers may pop their own
 /// route first (a popped context cannot be used for navigation).
-Future<void> runPlan(WidgetRef ref, GoRouter router, String cityId) async {
+Future<void> runPlan(WidgetRef ref, GoRouter router, String cityId, {bool autoGo = false}) async {
   final s = ref.read(plannerProvider);
   if (s.from == null || s.to == null) return;
   await ref.read(recentTripsProvider.notifier).add(RecentTrip(
@@ -67,7 +67,30 @@ Future<void> runPlan(WidgetRef ref, GoRouter router, String cityId) async {
   // Navigate even on error so the results screen can show the retry state.
   if (res != null || ref.read(plannerProvider).result != null) {
     router.push('/$cityId/results');
+    // v2.3: a "time to leave" reminder continues into GO — Live Activity, Dynamic Island, the watch —
+    // with the itinerary the reminder was built on (the latest that still arrives in time).
+    final its = res?.itineraries ?? const <Itinerary>[];
+    final idx = autoGo ? autoGoIndex(its, arriveBy: s.arriveBy, time: s.time, now: DateTime.now()) : null;
+    if (idx != null) {
+      router.push('/$cityId/itinerary/$idx');
+      router.push('/$cityId/itinerary/$idx/go');
+    }
   }
+}
+
+/// Which itinerary a reminder-started GO follows: for "arrive by", the latest departure that still
+/// arrives in time (what the reminder promised); otherwise the first that has not left yet.
+int? autoGoIndex(List<Itinerary> its, {required bool arriveBy, DateTime? time, required DateTime now}) {
+  if (its.isEmpty) return null;
+  if (arriveBy && time != null) {
+    final p = ScheduledTripPlan.pick(its, occurrence: time, arriveBy: true, now: now);
+    if (p != null) {
+      final i = its.indexWhere((it) => it.startTime.toLocal() == p.leaveAt && it.endTime.toLocal() == p.arriveAt);
+      if (i >= 0) return i;
+    }
+  }
+  final i = its.indexWhere((it) => it.startTime.isAfter(now.subtract(const Duration(minutes: 3))));
+  return i >= 0 ? i : 0;
 }
 
 /// Location of the full-screen "choose on map" picker for [field], optionally

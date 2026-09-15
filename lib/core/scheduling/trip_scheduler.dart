@@ -165,14 +165,40 @@ int refineId(String tripId) => reminderBaseId(tripId) + 3;
 String _hm(DateTime t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
 /// Deep link the reminders open: the planner with both ends and the pinned time, which plans itself.
-String tripLocation(ScheduledTrip t, DateTime occurrence) {
+/// With [go], the "time to leave" reminder, the app continues straight into GO — Live Activity,
+/// Dynamic Island and the watch — with the itinerary the reminder was built on.
+String tripLocation(ScheduledTrip t, DateTime occurrence, {bool go = false}) {
   final q = {
     'fromLat': t.from.position.lat.toStringAsFixed(5), 'fromLon': t.from.position.lon.toStringAsFixed(5),
     'fromName': t.from.name, 'toLat': t.to.position.lat.toStringAsFixed(5),
     'toLon': t.to.position.lon.toStringAsFixed(5), 'toName': t.to.name,
-    'time': occurrence.toIso8601String(), if (t.arriveBy) 'arriveBy': 'true',
+    'time': occurrence.toIso8601String(), if (t.arriveBy) 'arriveBy': 'true', if (go) 'go': '1',
   };
   return Uri(path: '/${t.cityId}/plan', queryParameters: q).toString();
+}
+
+/// The next scheduled trip across [trips], for the watch face: the earliest upcoming departure.
+WatchNextTripInfo? nextScheduledTrip(List<ScheduledTrip> trips, DateTime now) {
+  WatchNextTripInfo? best;
+  for (final t in trips) {
+    if (!t.enabled) continue;
+    final occ = t.nextOccurrence(now);
+    if (occ == null) continue;
+    final p = t.lastPlan != null && t.lastPlan!.occurrence == occ ? t.lastPlan : null;
+    final leave = p?.leaveAt ?? ReminderTimes.fallbackLeave(occ, arriveBy: t.arriveBy);
+    if (!leave.isAfter(now.subtract(const Duration(minutes: 5)))) continue;
+    final info = WatchNextTripInfo(leaveAt: leave, arriveAt: p?.arriveAt ?? occ, toName: t.to.name, routes: p?.routes ?? const []);
+    if (best == null || info.leaveAt.isBefore(best.leaveAt)) best = info;
+  }
+  return best;
+}
+
+class WatchNextTripInfo {
+  const WatchNextTripInfo({required this.leaveAt, required this.arriveAt, required this.toName, required this.routes});
+  final DateTime leaveAt;
+  final DateTime arriveAt;
+  final String toName;
+  final List<String> routes;
 }
 
 class TripScheduler {
@@ -245,7 +271,7 @@ class TripScheduler {
           l10n.tripEveBody(_hm(leaveAt), _hm(arriveAt), routes), eve, payload: link);
     }
     await reminders.schedule(leaveId(t.id), l10n.tripLeaveTitle,
-        l10n.tripLeaveBody(t.to.name, routes, _hm(arriveAt)), leaveAt, payload: link);
+        l10n.tripLeaveBody(t.to.name, routes, _hm(arriveAt)), leaveAt, payload: tripLocation(t, occ, go: true));
     final refresh = ReminderTimes.refreshAt(leaveAt, now);
     if (refresh != null) await jobs.scheduleRefresh(t.id, refresh, now);
   }
@@ -275,7 +301,8 @@ class TripScheduler {
       final link = tripLocation(trip, occ);
       await reminders.cancel(leaveId(t.id));
       await reminders.schedule(leaveId(t.id), l10n.tripLeaveTitle,
-          l10n.tripLeaveBody(t.to.name, p.routesLabel, _hm(p.arriveAt)), p.leaveAt, payload: link);
+          l10n.tripLeaveBody(t.to.name, p.routesLabel, _hm(p.arriveAt)), p.leaveAt,
+          payload: tripLocation(trip, occ, go: true));
       await reminders.show(refineId(t.id), l10n.tripRefineTitle(_hm(p.leaveAt)),
           l10n.tripRefineBody(p.routesLabel, _hm(p.arriveAt)), payload: link);
       refined++;

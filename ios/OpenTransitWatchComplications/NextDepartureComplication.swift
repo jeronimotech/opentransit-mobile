@@ -51,6 +51,19 @@ struct NextDepartureProvider: TimelineProvider {
   /// phone has not synced yet.
   private func current() -> NextDepartureEntry {
     let d = UserDefaults.standard
+    // v2.3: a scheduled trip leaving within the next hour and a half owns the face — "Sal 7:12", minutes
+    // to go, the first route as the label — because that is the one number the wearer is waiting for.
+    if let sdata = d.data(forKey: "watch.snapshot"),
+       let snap = try? JSONDecoder().decode(WatchSnapshot.self, from: sdata),
+       let t = snap.nextTrip {
+      let secs = t.leaveAt.timeIntervalSinceNow
+      if secs > -10 * 60 && secs < 90 * 60 {
+        let f = DateFormatter(); f.dateFormat = "HH:mm"
+        return NextDepartureEntry(date: .now, routeShortName: t.routes.first ?? "",
+                                  routeColor: "#1D4ED8", stopName: "Sal \(f.string(from: t.leaveAt))",
+                                  minutes: max(0, Int(secs / 60)), realtime: false)
+      }
+    }
     guard let data = d.data(forKey: "watch.summary"),
           let summary = try? JSONDecoder().decode(WatchSummary.self, from: data),
           let item = summary.items.first,

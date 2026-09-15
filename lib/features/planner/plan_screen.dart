@@ -59,10 +59,11 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
     if (q['arriveBy'] == 'true') planner.setArriveBy(true);
     if (q['onDemand'] == '1' || q['onDemand'] == 'true') planner.setOnDemand(true);
     if (q['parkAndRide'] == '1' || q['parkAndRide'] == 'true') planner.setParkAndRide(true);
-    if (changed && ref.read(plannerProvider).canPlan) _submit();
+    // a "time to leave" reminder: plan and continue straight into GO with the itinerary it was built on
+    if (changed && ref.read(plannerProvider).canPlan) _submit(autoGo: q['go'] == '1');
   }
 
-  Future<void> _submit() => runPlan(ref, GoRouter.of(context), widget.cityId);
+  Future<void> _submit({bool autoGo = false}) => runPlan(ref, GoRouter.of(context), widget.cityId, autoGo: autoGo);
 
   /// "Mi ubicación", available for the origin *and* the destination.
   Future<void> _useMyLocation(PlaceField field) async {

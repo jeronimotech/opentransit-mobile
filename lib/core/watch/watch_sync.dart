@@ -81,6 +81,23 @@ class WatchGoState {
 /// WatchConnectivity application context, Android a Wearable Data Layer data
 /// item. Both are latest-wins and survive a sleeping watch, so the Dart side
 /// does not care which one is underneath.
+/// v2.3 — the next scheduled trip, for the wrist: "Sales 7:12 · G30 → Trabajo".
+@immutable
+class WatchNextTrip {
+  const WatchNextTrip({required this.leaveAt, required this.arriveAt, required this.toName, this.routes = const []});
+  final DateTime leaveAt;
+  final DateTime arriveAt;
+  final String toName;
+  final List<String> routes;
+
+  Map<String, Object?> toJson() => {
+        'leaveEpochSeconds': leaveAt.millisecondsSinceEpoch / 1000.0,
+        'arriveEpochSeconds': arriveAt.millisecondsSinceEpoch / 1000.0,
+        'toName': toName,
+        'routes': routes,
+      };
+}
+
 class WatchSync {
   WatchSync({MethodChannel? channel, bool? platformSupported})
       : _channel = channel ?? const MethodChannel('opentransit/watch'),
@@ -100,6 +117,21 @@ class WatchSync {
 
   /// Sends the snapshot. Identical consecutive snapshots are dropped so a GO
   /// session does not burn the watch's radio on every GPS fix.
+  WatchNextTrip? _lastNextTrip;
+  WatchGoState _lastGo = WatchGoState.idle;
+
+  /// The next scheduled trip, sent on its own (from the planner side, which knows nothing about GO)
+  /// with whatever GO state was last sent, so neither surface wipes the other.
+  Future<bool> syncNextTrip({
+    required String cityId,
+    required String cityName,
+    required String apiBaseUrl,
+    required WatchNextTrip? nextTrip,
+  }) {
+    _lastNextTrip = nextTrip;
+    return sync(cityId: cityId, cityName: cityName, apiBaseUrl: apiBaseUrl, favourites: const [], go: _lastGo);
+  }
+
   Future<bool> sync({
     required String cityId,
     required String cityName,
@@ -108,6 +140,7 @@ class WatchSync {
     WatchGoState go = WatchGoState.idle,
     bool analyticsEnabled = true,
   }) async {
+    _lastGo = go;
     if (!await isSupported()) return false;
     final payload = <String, Object?>{
       'cityId': cityId,
@@ -115,6 +148,7 @@ class WatchSync {
       'apiBaseUrl': apiBaseUrl,
       'favourites': [for (final f in favourites) f.toJson()],
       'go': go.toJson(),
+      if (_lastNextTrip != null) 'nextTrip': _lastNextTrip!.toJson(),
       'analyticsEnabled': analyticsEnabled,
     };
     final fingerprint = payload.toString();
