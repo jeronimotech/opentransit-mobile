@@ -15,6 +15,7 @@ import '../../../core/widgets/common.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../planner/planner_state.dart';
 import '../../planner/widgets/itinerary_card.dart';
+import '../../trips/schedule_trip_sheet.dart';
 
 /// Casa ⇄ Trabajo: the next viable departure toward whichever end fits the
 /// hour, with a countdown and a detour badge when an alert touches the route.
@@ -105,6 +106,14 @@ class _CommuteCardState extends ConsumerState<CommuteCard> {
                             .textTheme
                             .titleSmall
                             ?.copyWith(fontWeight: FontWeight.w800)),
+                  ),
+                  IconButton(
+                    key: const ValueKey('commute-schedule'),
+                    tooltip: l10n.scheduleTrip,
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.alarm_add_rounded, size: 20),
+                    onPressed: () => showScheduleTripSheet(context, ref, cityId: widget.cityId, from: from, to: to,
+                        hour: direction == CommuteDirection.toWork ? 8 : 18, minute: 0, arriveBy: true),
                   ),
                   IconButton(
                     key: const ValueKey('commute-invert'),

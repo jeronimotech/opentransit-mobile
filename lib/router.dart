@@ -23,6 +23,7 @@ import 'features/planner/results_screen.dart';
 import 'features/routes/route_detail_screen.dart';
 import 'features/routes/routes_screen.dart';
 import 'features/settings/settings_screen.dart';
+import 'features/trips/trips_screen.dart';
 import 'features/stops/stop_detail_screen.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
@@ -44,7 +45,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (segs.isEmpty) return cityId == null ? '/cities' : '/$cityId';
       if (segs.first == 'cities') return null;
       // Host-less deep link (`/plan?...`) → prefix with the remembered city.
-      const known = {'plan', 'search', 'pick', 'results', 'stops', 'routes', 'alerts', 'favorites', 'settings', 'vehicles', 'itinerary', 'locate', 'live'};
+      const known = {'plan', 'trips', 'search', 'pick', 'results', 'stops', 'routes', 'alerts', 'favorites', 'settings', 'vehicles', 'itinerary', 'locate', 'live'};
       if (known.contains(segs.first)) {
         if (cityId == null) return '/cities';
         return Uri(path: '/$cityId${uri.path}', queryParameters: uri.queryParameters.isEmpty ? null : uri.queryParameters).toString();
@@ -82,6 +83,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                     cityId: s.pathParameters['city']!,
                     query: s.uri.queryParameters,
                   ),
+                ),
+                GoRoute(
+                  path: 'trips',
+                  builder: (_, s) => TripsScreen(cityId: s.pathParameters['city']!),
                 ),
                 GoRoute(
                   path: 'search',

@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest_all.dart' as tzdata;
+import 'package:timezone/timezone.dart' as tz;
 
 /// Set by the screenshot walkthrough only, for the same reason as
 /// [skipLocationPrompt] in `location.dart`: the iOS notification prompt is a
@@ -17,6 +22,20 @@ class LocalNotifications {
 
   final _plugin = FlutterLocalNotificationsPlugin();
   bool _ready = false;
+  bool _tzReady = false;
+
+  /// App locations a tapped notification asks for (its `payload`), e.g.
+  /// `/bogota/plan?fromLat=…&arriveBy=true`. The app routes them.
+  final _taps = StreamController<String>.broadcast();
+  Stream<String> get taps => _taps.stream;
+  String? _launchPayload;
+
+  /// The payload of the notification that launched the app, once.
+  String? takeLaunchPayload() {
+    final p = _launchPayload;
+    _launchPayload = null;
+    return p;
+  }
 
   Future<bool> init() async {
     if (_ready) return true;
@@ -28,12 +47,111 @@ class LocalNotifications {
         requestSoundPermission: false,
       );
       await _plugin.initialize(
-          settings: const InitializationSettings(android: android, iOS: ios));
+        settings: const InitializationSettings(android: android, iOS: ios),
+        onDidReceiveNotificationResponse: (r) {
+          final p = r.payload;
+          if (p != null && p.isNotEmpty) _taps.add(p);
+        },
+      );
+      final launch = await _plugin.getNotificationAppLaunchDetails();
+      if (launch?.didNotificationLaunchApp == true) {
+        _launchPayload = launch!.notificationResponse?.payload;
+      }
       _ready = true;
     } catch (e) {
       debugPrint('notifications init failed: $e');
     }
     return _ready;
+  }
+
+  /// Scheduled reminders need the device's zone: a 07:12 reminder is 07:12
+  /// where the phone is, not UTC.
+  Future<void> initTimezone() async {
+    if (_tzReady) return;
+    try {
+      tzdata.initializeTimeZones();
+      final info = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(info.identifier));
+    } catch (e) {
+      debugPrint('timezone init failed (UTC assumed): $e');
+    }
+    _tzReady = true;
+  }
+
+  /// Android 12+ gates exact alarms behind a user setting; a "sal ahora"
+  /// reminder that drifts ten minutes is useless, so the app asks once when
+  /// the first trip is scheduled. Elsewhere this is a no-op.
+  Future<void> requestExactAlarms() async {
+    if (!await init()) return;
+    try {
+      final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      if (android != null && (await android.canScheduleExactNotifications()) != true) {
+        await android.requestExactAlarmsPermission();
+      }
+    } catch (e) {
+      debugPrint('exact alarm permission failed: $e');
+    }
+  }
+
+  /// A one-shot reminder at [when] (local time). False when it could not be
+  /// scheduled (no permission, the plugin failed, or [when] is already past).
+  Future<bool> schedule(int id, String title, String body, DateTime when, {String? payload}) async {
+    if (!await init()) return false;
+    await initTimezone();
+    if (!when.isAfter(DateTime.now())) return false;
+    try {
+      var exact = true;
+      final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      if (android != null) exact = (await android.canScheduleExactNotifications()) ?? false;
+      await _plugin.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: tz.TZDateTime.from(when, tz.local),
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'trip_reminders', 'Viajes programados',
+            importance: Importance.high, priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true),
+        ),
+        androidScheduleMode: exact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle,
+        payload: payload,
+      );
+      return true;
+    } catch (e) {
+      debugPrint('notification schedule failed: $e');
+      return false;
+    }
+  }
+
+  Future<void> cancel(int id) async {
+    if (!await init()) return;
+    try {
+      await _plugin.cancel(id: id);
+    } catch (_) {}
+  }
+
+  /// An immediate reminder that opens [payload] when tapped.
+  Future<void> showWithPayload(int id, String title, String body, {String? payload}) async {
+    if (!await init()) return;
+    try {
+      await _plugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'trip_reminders', 'Viajes programados',
+            importance: Importance.high, priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true),
+        ),
+        payload: payload,
+      );
+    } catch (e) {
+      debugPrint('notification show failed: $e');
+    }
   }
 
   Future<bool> requestPermission() async {

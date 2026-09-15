@@ -2809,6 +2809,180 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Seguir en transporte'**
   String get parkingContinueByTransit;
+
+  /// No description provided for @tripsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Viajes programados'**
+  String get tripsTitle;
+
+  /// No description provided for @tripsSettingsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos la noche anterior y a la hora de salir'**
+  String get tripsSettingsHint;
+
+  /// No description provided for @tripsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Programa un viaje desde un resultado o desde tu trayecto Casa ⇄ Trabajo y te avisamos cuándo salir.'**
+  String get tripsEmpty;
+
+  /// No description provided for @tripsRefresh.
+  ///
+  /// In es, this message translates to:
+  /// **'Recalcular'**
+  String get tripsRefresh;
+
+  /// No description provided for @scheduleTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Programar viaje'**
+  String get scheduleTrip;
+
+  /// No description provided for @scheduleTripHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos la noche anterior con la hora de salida, 20 minutos antes con datos en vivo, y a la hora de salir.'**
+  String get scheduleTripHint;
+
+  /// No description provided for @scheduleArriveBy.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegar a las'**
+  String get scheduleArriveBy;
+
+  /// No description provided for @scheduleDepartAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Salir a las'**
+  String get scheduleDepartAt;
+
+  /// No description provided for @scheduleRepeat.
+  ///
+  /// In es, this message translates to:
+  /// **'Repetir'**
+  String get scheduleRepeat;
+
+  /// No description provided for @scheduleOnce.
+  ///
+  /// In es, this message translates to:
+  /// **'Una vez'**
+  String get scheduleOnce;
+
+  /// No description provided for @scheduleSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Programar'**
+  String get scheduleSave;
+
+  /// No description provided for @scheduleSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo. Te avisamos la noche anterior y a la hora de salir.'**
+  String get scheduleSaved;
+
+  /// No description provided for @scheduleNotifDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Viaje guardado, pero sin permiso de notificaciones no podemos avisarte.'**
+  String get scheduleNotifDenied;
+
+  /// No description provided for @tripWeekdays.
+  ///
+  /// In es, this message translates to:
+  /// **'Lun–Vie'**
+  String get tripWeekdays;
+
+  /// No description provided for @tripDaily.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los días'**
+  String get tripDaily;
+
+  /// No description provided for @tripWeekend.
+  ///
+  /// In es, this message translates to:
+  /// **'Fin de semana'**
+  String get tripWeekend;
+
+  /// No description provided for @tripOnceOn.
+  ///
+  /// In es, this message translates to:
+  /// **'{date}'**
+  String tripOnceOn(String date);
+
+  /// No description provided for @tripArriveAt.
+  ///
+  /// In es, this message translates to:
+  /// **'llegar {time}'**
+  String tripArriveAt(String time);
+
+  /// No description provided for @tripDepartAt.
+  ///
+  /// In es, this message translates to:
+  /// **'salir {time}'**
+  String tripDepartAt(String time);
+
+  /// No description provided for @tripLeaveAround.
+  ///
+  /// In es, this message translates to:
+  /// **'Sal ~{time}'**
+  String tripLeaveAround(String time);
+
+  /// No description provided for @tripPlanning.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculando la hora de salida…'**
+  String get tripPlanning;
+
+  /// No description provided for @tripPast.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya pasó'**
+  String get tripPast;
+
+  /// No description provided for @tripDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Viaje eliminado'**
+  String get tripDeleted;
+
+  /// No description provided for @tripEveTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mañana: {to}'**
+  String tripEveTitle(String to);
+
+  /// No description provided for @tripEveBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Sal a las {leave} para llegar a las {arrive} · {routes}'**
+  String tripEveBody(String leave, String arrive, String routes);
+
+  /// No description provided for @tripRefineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sal a las {leave}'**
+  String tripRefineTitle(String leave);
+
+  /// No description provided for @tripRefineBody.
+  ///
+  /// In es, this message translates to:
+  /// **'{routes} · llegas a las {arrive}'**
+  String tripRefineBody(String routes, String arrive);
+
+  /// No description provided for @tripLeaveTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Es hora de salir'**
+  String get tripLeaveTitle;
+
+  /// No description provided for @tripLeaveBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Hacia {to} · {routes} · llegas a las {arrive}'**
+  String tripLeaveBody(String to, String routes, String arrive);
 }
 
 class _AppLocalizationsDelegate

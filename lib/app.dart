@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'core/analytics/analytics.dart';
 import 'core/analytics/analytics_event.dart';
 import 'core/providers.dart';
+import 'core/utils/notifications.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/colors.dart';
 import 'core/utils/route_alert_watcher.dart';
@@ -48,11 +51,22 @@ class _OpenTransitAppState extends ConsumerState<OpenTransitApp>
       });
       // Saved-route alerts: local notifications only, armed per route.
       ref.read(routeAlertWatcherProvider).start();
+      // Scheduled trips: re-arm the reminders (Android drops them on reboot and update) and open
+      // what a tapped reminder asked for.
+      ref.read(scheduledTripsProvider.notifier).resync(replan: false);
+      final launch = LocalNotifications.instance.takeLaunchPayload();
+      if (launch != null) router.go(launch);
+      _tapSub = LocalNotifications.instance.taps.listen((loc) {
+        if (mounted) ref.read(routerProvider).go(loc);
+      });
     });
   }
 
+  StreamSubscription<String>? _tapSub;
+
   @override
   void dispose() {
+    _tapSub?.cancel();
     _observed?.routerDelegate.removeListener(_onRoute);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();

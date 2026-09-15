@@ -804,5 +804,112 @@
       }
     }
   },
-  "parkingContinueByTransit": "Continue by transit"
+  "parkingContinueByTransit": "Continue by transit",
+  "tripsTitle": "Scheduled trips",
+  "tripsSettingsHint": "Reminders the evening before and when it is time to leave",
+  "tripsEmpty": "Schedule a trip from a result or from your Home ⇄ Work commute and we will tell you when to leave.",
+  "tripsRefresh": "Recalculate",
+  "scheduleTrip": "Schedule trip",
+  "scheduleTripHint": "We remind you the evening before with the time to leave, 20 minutes before with live data, and when it is time to go.",
+  "scheduleArriveBy": "Arrive by",
+  "scheduleDepartAt": "Leave at",
+  "scheduleRepeat": "Repeat",
+  "scheduleOnce": "Once",
+  "scheduleSave": "Schedule",
+  "scheduleSaved": "Done. We will remind you the evening before and when it is time to leave.",
+  "scheduleNotifDenied": "Trip saved, but without notification permission we cannot remind you.",
+  "tripWeekdays": "Mon–Fri",
+  "tripDaily": "Every day",
+  "tripWeekend": "Weekend",
+  "tripOnceOn": "{date}",
+  "@tripOnceOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tripArriveAt": "arrive {time}",
+  "@tripArriveAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDepartAt": "leave {time}",
+  "@tripDepartAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tripLeaveAround": "Leave ~{time}",
+  "@tripLeaveAround": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tripPlanning": "Working out when to leave…",
+  "tripPast": "Already passed",
+  "tripDeleted": "Trip removed",
+  "tripEveTitle": "Tomorrow: {to}",
+  "@tripEveTitle": {
+    "placeholders": {
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "tripEveBody": "Leave at {leave} to arrive by {arrive} · {routes}",
+  "@tripEveBody": {
+    "placeholders": {
+      "leave": {
+        "type": "String"
+      },
+      "arrive": {
+        "type": "String"
+      },
+      "routes": {
+        "type": "String"
+      }
+    }
+  },
+  "tripRefineTitle": "Leave at {leave}",
+  "@tripRefineTitle": {
+    "placeholders": {
+      "leave": {
+        "type": "String"
+      }
+    }
+  },
+  "tripRefineBody": "{routes} · arriving {arrive}",
+  "@tripRefineBody": {
+    "placeholders": {
+      "routes": {
+        "type": "String"
+      },
+      "arrive": {
+        "type": "String"
+      }
+    }
+  },
+  "tripLeaveTitle": "Time to leave",
+  "tripLeaveBody": "To {to} · {routes} · arriving {arrive}",
+  "@tripLeaveBody": {
+    "placeholders": {
+      "to": {
+        "type": "String"
+      },
+      "routes": {
+        "type": "String"
+      },
+      "arrive": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -1616,4 +1616,114 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get parkingContinueByTransit => 'Seguir en transporte';
+
+  @override
+  String get tripsTitle => 'Viajes programados';
+
+  @override
+  String get tripsSettingsHint =>
+      'Avisos la noche anterior y a la hora de salir';
+
+  @override
+  String get tripsEmpty =>
+      'Programa un viaje desde un resultado o desde tu trayecto Casa ⇄ Trabajo y te avisamos cuándo salir.';
+
+  @override
+  String get tripsRefresh => 'Recalcular';
+
+  @override
+  String get scheduleTrip => 'Programar viaje';
+
+  @override
+  String get scheduleTripHint =>
+      'Te avisamos la noche anterior con la hora de salida, 20 minutos antes con datos en vivo, y a la hora de salir.';
+
+  @override
+  String get scheduleArriveBy => 'Llegar a las';
+
+  @override
+  String get scheduleDepartAt => 'Salir a las';
+
+  @override
+  String get scheduleRepeat => 'Repetir';
+
+  @override
+  String get scheduleOnce => 'Una vez';
+
+  @override
+  String get scheduleSave => 'Programar';
+
+  @override
+  String get scheduleSaved =>
+      'Listo. Te avisamos la noche anterior y a la hora de salir.';
+
+  @override
+  String get scheduleNotifDenied =>
+      'Viaje guardado, pero sin permiso de notificaciones no podemos avisarte.';
+
+  @override
+  String get tripWeekdays => 'Lun–Vie';
+
+  @override
+  String get tripDaily => 'Todos los días';
+
+  @override
+  String get tripWeekend => 'Fin de semana';
+
+  @override
+  String tripOnceOn(String date) {
+    return '$date';
+  }
+
+  @override
+  String tripArriveAt(String time) {
+    return 'llegar $time';
+  }
+
+  @override
+  String tripDepartAt(String time) {
+    return 'salir $time';
+  }
+
+  @override
+  String tripLeaveAround(String time) {
+    return 'Sal ~$time';
+  }
+
+  @override
+  String get tripPlanning => 'Calculando la hora de salida…';
+
+  @override
+  String get tripPast => 'Ya pasó';
+
+  @override
+  String get tripDeleted => 'Viaje eliminado';
+
+  @override
+  String tripEveTitle(String to) {
+    return 'Mañana: $to';
+  }
+
+  @override
+  String tripEveBody(String leave, String arrive, String routes) {
+    return 'Sal a las $leave para llegar a las $arrive · $routes';
+  }
+
+  @override
+  String tripRefineTitle(String leave) {
+    return 'Sal a las $leave';
+  }
+
+  @override
+  String tripRefineBody(String routes, String arrive) {
+    return '$routes · llegas a las $arrive';
+  }
+
+  @override
+  String get tripLeaveTitle => 'Es hora de salir';
+
+  @override
+  String tripLeaveBody(String to, String routes, String arrive) {
+    return 'Hacia $to · $routes · llegas a las $arrive';
+  }
 }

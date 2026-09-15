@@ -24,6 +24,7 @@ import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'planner_actions.dart';
 import 'planner_state.dart';
+import '../trips/schedule_trip_sheet.dart';
 
 class ItineraryDetailScreen extends ConsumerStatefulWidget {
   const ItineraryDetailScreen({super.key, required this.cityId, required this.index});
@@ -328,7 +329,18 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
                       icon: const Icon(Icons.navigation_rounded),
                       label: Text(l10n.startTrip),
                     ),
-                  const SizedBox(height: 16),
+                  TextButton.icon(
+                    key: const ValueKey('schedule-trip'),
+                    onPressed: () {
+                      final s = ref.read(plannerProvider);
+                      if (s.from == null || s.to == null) return;
+                      showScheduleTripSheet(context, ref, cityId: widget.cityId, from: s.from!, to: s.to!,
+                          hour: it.endTime.hour, minute: it.endTime.minute, arriveBy: true);
+                    },
+                    icon: const Icon(Icons.alarm_add_rounded, size: 18),
+                    label: Text(l10n.scheduleTrip),
+                  ),
+                  const SizedBox(height: 8),
                   for (var i = 0; i < named.length; i++)
                     _LegTile(
                       cityId: widget.cityId,

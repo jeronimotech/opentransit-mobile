@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'dart:ui' show Locale;
 
@@ -7,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'analytics/analytics.dart';
 import 'analytics/analytics_event.dart';
@@ -18,6 +18,9 @@ import 'config.dart';
 import 'connectivity.dart';
 import 'models/models.dart';
 import 'storage/favorites.dart';
+import 'utils/notifications.dart';
+import 'storage/scheduled_trips.dart';
+import 'scheduling/trip_scheduler.dart';
 import 'storage/preferences.dart';
 import 'storage/route_alerts_store.dart';
 import 'utils/commute.dart';
@@ -309,6 +312,56 @@ class FavoritesNotifier extends Notifier<List<Favorite>> {
 
 final favoritesProvider =
     NotifierProvider<FavoritesNotifier, List<Favorite>>(FavoritesNotifier.new);
+
+/// v2.3 scheduled trips: stored on the device, reminders re-armed after every change.
+final scheduledTripsProvider =
+    NotifierProvider<ScheduledTripsNotifier, List<ScheduledTrip>>(ScheduledTripsNotifier.new);
+
+class ScheduledTripsNotifier extends Notifier<List<ScheduledTrip>> {
+  ScheduledTripsRepository get _repo => ScheduledTripsRepository(ref.read(sharedPrefsProvider));
+
+  @override
+  List<ScheduledTrip> build() => ScheduledTripsRepository(ref.watch(sharedPrefsProvider)).load();
+
+  TripScheduler _scheduler() => TripScheduler(
+        repo: _repo,
+        api: ref.read(apiClientProvider),
+        reminders: const LocalReminderSink(),
+        jobs: const WorkmanagerJobs(),
+        locale: ref.read(settingsProvider).locale ?? const Locale('es'),
+      );
+
+  Future<void> add(ScheduledTrip t) async {
+    state = [...state.where((x) => x.id != t.id), t];
+    await _repo.save(state);
+    await resync();
+  }
+
+  Future<void> setEnabled(String id, bool enabled) async {
+    state = [for (final t in state) t.id == id ? t.copyWith(enabled: enabled) : t];
+    await _repo.save(state);
+    await resync();
+  }
+
+  Future<void> remove(String id) async {
+    for (final f in [eveId(id), leaveId(id), refineId(id)]) {
+      await LocalNotifications.instance.cancel(f);
+    }
+    await const WorkmanagerJobs().cancelRefresh(id);
+    state = state.where((t) => t.id != id).toList();
+    await _repo.save(state);
+  }
+
+  /// Plans what is stale and re-arms every reminder. Safe to call often; only stale plans hit the
+  /// network.
+  Future<void> resync({bool replan = true}) async {
+    try {
+      state = await _scheduler().sync(now: DateTime.now(), replan: replan);
+    } catch (e) {
+      debugPrint('scheduled trips resync failed: $e');
+    }
+  }
+}
 
 class RecentTripsNotifier extends Notifier<List<RecentTrip>> {
   RecentTripsRepository get _repo => RecentTripsRepository(ref.read(sharedPrefsProvider));

@@ -82,9 +82,12 @@ class MockApiClient implements ApiClient {
   Future<PlanResponse> plan(String cityId, PlanRequest request) async {
     final j = await _map('plan');
     final base = PlanResponse.fromJson(j);
-    // Shift the fixture so the first itinerary departs at the requested time.
+    // Shift the fixture so the first itinerary departs at the requested time — or, for an
+    // "arrive by" request, so the last one arrives exactly then, as the real router answers.
     final anchor = request.time ?? now;
-    final shift = anchor.difference(base.itineraries.first.startTime);
+    final shift = request.arriveBy && request.time != null
+        ? anchor.difference(base.itineraries.map((i) => i.endTime).reduce((a, b) => a.isAfter(b) ? a : b))
+        : anchor.difference(base.itineraries.first.startTime);
     final shifted = PlanResponse.fromJson(
         Map<String, dynamic>.from(rebaseTimes(j, shift) as Map));
     var its = shifted.itineraries;

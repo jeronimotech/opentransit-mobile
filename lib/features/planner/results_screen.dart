@@ -14,6 +14,7 @@ import '../../core/utils/scenarios.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'planner_state.dart';
+import '../trips/schedule_trip_sheet.dart';
 import 'widgets/forecast_sheet.dart';
 import 'widgets/itinerary_card.dart';
 
@@ -119,6 +120,18 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
               ref.read(plannerProvider.notifier).setArriveBy(false);
               await _replan();
             }),
+          ),
+          IconButton(
+            key: const ValueKey('schedule-button'),
+            tooltip: l10n.scheduleTrip,
+            icon: const Icon(Icons.alarm_add_rounded),
+            onPressed: () {
+              final s = ref.read(plannerProvider);
+              if (s.from == null || s.to == null) return;
+              final t = s.time ?? DateTime.now();
+              showScheduleTripSheet(context, ref, cityId: widget.cityId, from: s.from!, to: s.to!,
+                  hour: t.hour, minute: t.minute, arriveBy: s.arriveBy);
+            },
           ),
           PopupMenuButton<ItinerarySort?>(
             key: const ValueKey('sort-menu'),

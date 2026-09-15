@@ -1023,5 +1023,112 @@
       }
     }
   },
-  "parkingContinueByTransit": "Seguir en transporte"
+  "parkingContinueByTransit": "Seguir en transporte",
+  "tripsTitle": "Viajes programados",
+  "tripsSettingsHint": "Avisos la noche anterior y a la hora de salir",
+  "tripsEmpty": "Programa un viaje desde un resultado o desde tu trayecto Casa ⇄ Trabajo y te avisamos cuándo salir.",
+  "tripsRefresh": "Recalcular",
+  "scheduleTrip": "Programar viaje",
+  "scheduleTripHint": "Te avisamos la noche anterior con la hora de salida, 20 minutos antes con datos en vivo, y a la hora de salir.",
+  "scheduleArriveBy": "Llegar a las",
+  "scheduleDepartAt": "Salir a las",
+  "scheduleRepeat": "Repetir",
+  "scheduleOnce": "Una vez",
+  "scheduleSave": "Programar",
+  "scheduleSaved": "Listo. Te avisamos la noche anterior y a la hora de salir.",
+  "scheduleNotifDenied": "Viaje guardado, pero sin permiso de notificaciones no podemos avisarte.",
+  "tripWeekdays": "Lun–Vie",
+  "tripDaily": "Todos los días",
+  "tripWeekend": "Fin de semana",
+  "tripOnceOn": "{date}",
+  "@tripOnceOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "tripArriveAt": "llegar {time}",
+  "@tripArriveAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tripDepartAt": "salir {time}",
+  "@tripDepartAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tripLeaveAround": "Sal ~{time}",
+  "@tripLeaveAround": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tripPlanning": "Calculando la hora de salida…",
+  "tripPast": "Ya pasó",
+  "tripDeleted": "Viaje eliminado",
+  "tripEveTitle": "Mañana: {to}",
+  "@tripEveTitle": {
+    "placeholders": {
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "tripEveBody": "Sal a las {leave} para llegar a las {arrive} · {routes}",
+  "@tripEveBody": {
+    "placeholders": {
+      "leave": {
+        "type": "String"
+      },
+      "arrive": {
+        "type": "String"
+      },
+      "routes": {
+        "type": "String"
+      }
+    }
+  },
+  "tripRefineTitle": "Sal a las {leave}",
+  "@tripRefineTitle": {
+    "placeholders": {
+      "leave": {
+        "type": "String"
+      }
+    }
+  },
+  "tripRefineBody": "{routes} · llegas a las {arrive}",
+  "@tripRefineBody": {
+    "placeholders": {
+      "routes": {
+        "type": "String"
+      },
+      "arrive": {
+        "type": "String"
+      }
+    }
+  },
+  "tripLeaveTitle": "Es hora de salir",
+  "tripLeaveBody": "Hacia {to} · {routes} · llegas a las {arrive}",
+  "@tripLeaveBody": {
+    "placeholders": {
+      "to": {
+        "type": "String"
+      },
+      "routes": {
+        "type": "String"
+      },
+      "arrive": {
+        "type": "String"
+      }
+    }
+  }
 }

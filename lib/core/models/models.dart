@@ -10,3 +10,4 @@ export 'rental.dart';
 export 'share.dart';
 export 'transit.dart';
 export 'vehicle.dart';
+export 'scheduled_trip.dart';

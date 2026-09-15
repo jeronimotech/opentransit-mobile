@@ -68,6 +68,14 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          ListTile(
+            key: const ValueKey('settings-trips'),
+            leading: const Icon(Icons.alarm_rounded),
+            title: Text(l10n.tripsTitle),
+            subtitle: Text(l10n.tripsSettingsHint),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push('/$cityId/trips'),
+          ),
           SectionTitle(l10n.accessibility),
           SwitchListTile(
             secondary: const Icon(Icons.accessible),
