@@ -32,10 +32,10 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		9A1C0FF1A0B2C3D4E5F60002 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9A1C0FF1A0B2C3D4E5F60001 /* PrivacyInfo.xcprivacy */; };
+		A1B2C3D4E5F60718293A4B5C /* PushBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F708192A3B4C5D6E7F /* PushBridge.swift */; };
 		AC470295C090FF7EE73F9F33 /* WatchSessionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9D5B33AAEEB1573E912762 /* WatchSessionBridge.swift */; };
 		B034AA68E866CE66874F7FB7 /* OpenTransitLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68ED2BD9523F4B4C7F1FB27 /* OpenTransitLiveActivity.swift */; };
 		B17575891798D11A5B6B9978 /* LiveActivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */; };
-		A1B2C3D4E5F60718293A4B5C /* PushBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F708192A3B4C5D6E7F /* PushBridge.swift */; };
 		CB1F70D9273ACA734C8EED15 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4680D3E851D9A1B248C38824 /* Pods_RunnerTests.framework */; };
 		D54D384E35A70428CE51BB90 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E6D00FCE15668099898D41 /* Foundation.framework */; };
 		D78FF2C2C69C670D66A501CE /* OpenTransitLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -136,7 +136,6 @@
 		57E8F128A24E161FE160F6B4 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		62CD490DA9A9C3FF40026A86 /* WatchViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchViews.swift; path = OpenTransitWatch/WatchViews.swift; sourceTree = "<group>"; };
 		653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityBridge.swift; sourceTree = "<group>"; };
-		C4D5E6F708192A3B4C5D6E7F /* PushBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PushBridge.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75477E9EF546828FDCCE2CCF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -159,6 +158,7 @@
 		ACAE3A709B368BB303A0C3EF /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		B0D8426D24D41C701C1D193B /* OpenTransitActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitActivityAttributes.swift; path = Shared/OpenTransitActivityAttributes.swift; sourceTree = "<group>"; };
 		BB0C52EE85CEFBCFFB9BAAC5 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4D5E6F708192A3B4C5D6E7F /* PushBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PushBridge.swift; sourceTree = "<group>"; };
 		C620802AF81C1761070E54FB /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		D0DB935EA01C6C5F2829428A /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		E3175CAD8E8A0BC797B87984 /* OpenTransitActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitActivityAttributes.swift; path = Shared/OpenTransitActivityAttributes.swift; sourceTree = "<group>"; };

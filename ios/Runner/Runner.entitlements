@@ -5,6 +5,9 @@
 	<!-- Universal Links for the canonical web URLs. Replace the placeholder host
 	     with the deployed opentransit-web host (keep in sync with WEB_HOST) and
 	     serve /.well-known/apple-app-site-association there. -->
+	<!-- v2.3 scheduled-trip reminders: the silent APNs wake-up and route alert pushes. -->
+	<key>aps-environment</key>
+	<string>production</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:bogota.opentransit.tech</string>
