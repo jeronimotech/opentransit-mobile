@@ -2983,6 +2983,78 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Hacia {to} · {routes} · llegas a las {arrive}'**
   String tripLeaveBody(String to, String routes, String arrive);
+
+  /// No description provided for @remindersPermissionOk.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos permitidos'**
+  String get remindersPermissionOk;
+
+  /// No description provided for @remindersPermissionUnknown.
+  ///
+  /// In es, this message translates to:
+  /// **'Comprobando el permiso de notificaciones…'**
+  String get remindersPermissionUnknown;
+
+  /// No description provided for @remindersPermissionDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Las notificaciones están desactivadas para opentransit: los avisos se programan, pero el teléfono no los muestra.'**
+  String get remindersPermissionDenied;
+
+  /// No description provided for @remindersOpenSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Permitir notificaciones'**
+  String get remindersOpenSettings;
+
+  /// No description provided for @remindersTest.
+  ///
+  /// In es, this message translates to:
+  /// **'Probar aviso'**
+  String get remindersTest;
+
+  /// No description provided for @remindersTestScheduled.
+  ///
+  /// In es, this message translates to:
+  /// **'Te llega un aviso de prueba en 10 segundos.'**
+  String get remindersTestScheduled;
+
+  /// No description provided for @remindersTestTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aviso de prueba'**
+  String get remindersTestTitle;
+
+  /// No description provided for @remindersTestBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Así se verán tus recordatorios de viaje.'**
+  String get remindersTestBody;
+
+  /// No description provided for @remindersArmed.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos armados: {kinds}'**
+  String remindersArmed(String kinds);
+
+  /// No description provided for @remindersEve.
+  ///
+  /// In es, this message translates to:
+  /// **'noche anterior'**
+  String get remindersEve;
+
+  /// No description provided for @remindersLeave.
+  ///
+  /// In es, this message translates to:
+  /// **'hora de salir'**
+  String get remindersLeave;
+
+  /// No description provided for @remindersNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin avisos armados — revisa el permiso de notificaciones'**
+  String get remindersNone;
 }
 
 class _AppLocalizationsDelegate

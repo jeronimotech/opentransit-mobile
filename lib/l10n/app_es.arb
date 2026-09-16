@@ -1130,5 +1130,24 @@
         "type": "String"
       }
     }
-  }
+  },
+  "remindersPermissionOk": "Avisos permitidos",
+  "remindersPermissionUnknown": "Comprobando el permiso de notificaciones…",
+  "remindersPermissionDenied": "Las notificaciones están desactivadas para opentransit: los avisos se programan, pero el teléfono no los muestra.",
+  "remindersOpenSettings": "Permitir notificaciones",
+  "remindersTest": "Probar aviso",
+  "remindersTestScheduled": "Te llega un aviso de prueba en 10 segundos.",
+  "remindersTestTitle": "Aviso de prueba",
+  "remindersTestBody": "Así se verán tus recordatorios de viaje.",
+  "remindersArmed": "Avisos armados: {kinds}",
+  "@remindersArmed": {
+    "placeholders": {
+      "kinds": {
+        "type": "String"
+      }
+    }
+  },
+  "remindersEve": "noche anterior",
+  "remindersLeave": "hora de salir",
+  "remindersNone": "Sin avisos armados — revisa el permiso de notificaciones"
 }

@@ -911,5 +911,24 @@
         "type": "String"
       }
     }
-  }
+  },
+  "remindersPermissionOk": "Reminders allowed",
+  "remindersPermissionUnknown": "Checking the notification permission…",
+  "remindersPermissionDenied": "Notifications are off for opentransit: reminders get scheduled, but the phone will not show them.",
+  "remindersOpenSettings": "Allow notifications",
+  "remindersTest": "Test reminder",
+  "remindersTestScheduled": "A test reminder arrives in 10 seconds.",
+  "remindersTestTitle": "Test reminder",
+  "remindersTestBody": "This is how your trip reminders will look.",
+  "remindersArmed": "Armed: {kinds}",
+  "@remindersArmed": {
+    "placeholders": {
+      "kinds": {
+        "type": "String"
+      }
+    }
+  },
+  "remindersEve": "evening before",
+  "remindersLeave": "time to leave",
+  "remindersNone": "No reminders armed — check the notification permission"
 }

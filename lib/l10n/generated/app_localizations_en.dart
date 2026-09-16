@@ -1720,4 +1720,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String tripLeaveBody(String to, String routes, String arrive) {
     return 'To $to · $routes · arriving $arrive';
   }
+
+  @override
+  String get remindersPermissionOk => 'Reminders allowed';
+
+  @override
+  String get remindersPermissionUnknown =>
+      'Checking the notification permission…';
+
+  @override
+  String get remindersPermissionDenied =>
+      'Notifications are off for opentransit: reminders get scheduled, but the phone will not show them.';
+
+  @override
+  String get remindersOpenSettings => 'Allow notifications';
+
+  @override
+  String get remindersTest => 'Test reminder';
+
+  @override
+  String get remindersTestScheduled => 'A test reminder arrives in 10 seconds.';
+
+  @override
+  String get remindersTestTitle => 'Test reminder';
+
+  @override
+  String get remindersTestBody => 'This is how your trip reminders will look.';
+
+  @override
+  String remindersArmed(String kinds) {
+    return 'Armed: $kinds';
+  }
+
+  @override
+  String get remindersEve => 'evening before';
+
+  @override
+  String get remindersLeave => 'time to leave';
+
+  @override
+  String get remindersNone =>
+      'No reminders armed — check the notification permission';
 }

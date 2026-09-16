@@ -3,12 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
+import '../../core/scheduling/trip_scheduler.dart';
 import '../../core/utils/format.dart';
+import '../../core/utils/notifications.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../planner/planner_state.dart';
+
+/// What the OS really holds: the permission and the reminder ids it accepted. Re-read on every
+/// change to the trips, so the list never claims more than iOS will deliver.
+final reminderStatusProvider = FutureProvider.autoDispose<({bool? granted, Set<int> pending})>((ref) async {
+  ref.watch(scheduledTripsProvider);
+  final n = LocalNotifications.instance;
+  return (granted: await n.permissionGranted(), pending: await n.pendingIds());
+});
 
 /// "Mis viajes": every scheduled trip with when it is pinned, what the planner last said ("sal ~7:12 ·
 /// G30 + J23"), a switch, and swipe to delete. Tapping plans it now.
@@ -36,9 +48,9 @@ class TripsScreen extends ConsumerWidget {
           ? EmptyView(icon: Icons.alarm_rounded, message: l10n.tripsEmpty)
           : ListView.separated(
               padding: const EdgeInsets.only(bottom: 32),
-              itemCount: trips.length,
+              itemCount: trips.length + 1,
               separatorBuilder: (_, _) => const Divider(height: 1),
-              itemBuilder: (context, i) => _TripTile(cityId: cityId, trip: trips[i]),
+              itemBuilder: (context, i) => i == 0 ? const _RemindersStatus() : _TripTile(cityId: cityId, trip: trips[i - 1]),
             ),
     );
   }
@@ -52,6 +64,76 @@ String scheduleLabel(ScheduledTrip t, AppLocalizations l10n, String locale) {
   final monday = DateTime(2026, 9, 14);
   final names = DateFormat.E(locale);
   return (t.days.toList()..sort()).map((d) => names.format(monday.add(Duration(days: d - 1)))).join(' ');
+}
+
+/// "Avisos permitidos" or the one thing to fix, plus a test reminder ten seconds out.
+class _RemindersStatus extends ConsumerWidget {
+  const _RemindersStatus();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final status = ref.watch(reminderStatusProvider).asData?.value;
+    final granted = status?.granted;
+    final denied = granted == false;
+    return Container(
+      key: const ValueKey('reminders-status'),
+      margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      decoration: BoxDecoration(
+        color: denied ? scheme.errorContainer : scheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(denied ? Icons.notifications_off_rounded : Icons.notifications_active_rounded, size: 20,
+                  color: denied ? scheme.onErrorContainer : scheme.primary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  denied ? l10n.remindersPermissionDenied : granted == true ? l10n.remindersPermissionOk : l10n.remindersPermissionUnknown,
+                  style: TextStyle(fontWeight: FontWeight.w700, color: denied ? scheme.onErrorContainer : null),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              if (denied)
+                FilledButton.tonal(
+                  key: const ValueKey('reminders-settings'),
+                  onPressed: () async {
+                    final ok = await LocalNotifications.instance.requestPermission();
+                    if (!ok) await launchUrl(Uri.parse('app-settings:'));
+                    ref.invalidate(reminderStatusProvider);
+                  },
+                  child: Text(l10n.remindersOpenSettings),
+                ),
+              OutlinedButton.icon(
+                key: const ValueKey('reminders-test'),
+                onPressed: () async {
+                  final messenger = ScaffoldMessenger.maybeOf(context);
+                  await LocalNotifications.instance.requestPermission();
+                  final ok = await LocalNotifications.instance.schedule(999999, l10n.remindersTestTitle, l10n.remindersTestBody,
+                      DateTime.now().add(const Duration(seconds: 10)));
+                  ref.invalidate(reminderStatusProvider);
+                  messenger?.showSnackBar(SnackBar(content: Text(ok ? l10n.remindersTestScheduled : l10n.scheduleNotifDenied)));
+                },
+                icon: const Icon(Icons.notification_add_rounded, size: 18),
+                label: Text(l10n.remindersTest),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _TripTile extends ConsumerWidget {
@@ -79,6 +161,16 @@ class _TripTile extends ConsumerWidget {
     } else {
       next = l10n.tripPlanning;
     }
+    // what the OS really holds for this trip
+    final pending = ref.watch(reminderStatusProvider).asData?.value.pending;
+    String? armed;
+    if (t.enabled && occ != null && pending != null) {
+      final kinds = [
+        if (pending.contains(eveId(t.id))) l10n.remindersEve,
+        if (pending.contains(leaveId(t.id))) l10n.remindersLeave,
+      ];
+      armed = kinds.isEmpty ? l10n.remindersNone : l10n.remindersArmed(kinds.join(' · '));
+    }
     return Dismissible(
       key: ValueKey('trip-${t.id}'),
       direction: DismissDirection.endToStart,
@@ -100,9 +192,11 @@ class _TripTile extends ConsumerWidget {
           [
             '${scheduleLabel(t, l10n, locale)} · ${t.arriveBy ? l10n.tripArriveAt(time) : l10n.tripDepartAt(time)}',
             if (next.isNotEmpty) next,
+            ?armed,
           ].join('\n'),
+          style: armed == l10n.remindersNone ? TextStyle(color: scheme.error) : null,
         ),
-        isThreeLine: next.isNotEmpty,
+        isThreeLine: next.isNotEmpty || armed != null,
         trailing: Switch(
           value: t.enabled,
           onChanged: (v) => ref.read(scheduledTripsProvider.notifier).setEnabled(t.id, v),

@@ -132,6 +132,32 @@ class LocalNotifications {
     } catch (_) {}
   }
 
+  /// Whether the OS will show our notifications at all. Null when it cannot be known (web, a failed
+  /// plugin). iOS silently drops scheduled reminders when this is false — the one failure a rider
+  /// cannot see, so the trips screen shows it.
+  Future<bool?> permissionGranted() async {
+    if (!await init()) return null;
+    try {
+      final ios = _plugin.resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+      if (ios != null) return (await ios.checkPermissions())?.isEnabled;
+      final android = _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      if (android != null) return await android.areNotificationsEnabled();
+    } catch (e) {
+      debugPrint('notification permission check failed: $e');
+    }
+    return null;
+  }
+
+  /// Ids of the reminders the OS actually holds — what is really armed, as opposed to what we asked.
+  Future<Set<int>> pendingIds() async {
+    if (!await init()) return const {};
+    try {
+      return {for (final p in await _plugin.pendingNotificationRequests()) p.id};
+    } catch (_) {
+      return const {};
+    }
+  }
+
   /// An immediate reminder that opens [payload] when tapped.
   Future<void> showWithPayload(int id, String title, String body, {String? payload}) async {
     if (!await init()) return;

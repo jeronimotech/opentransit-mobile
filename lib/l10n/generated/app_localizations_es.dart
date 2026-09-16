@@ -1726,4 +1726,46 @@ class AppLocalizationsEs extends AppLocalizations {
   String tripLeaveBody(String to, String routes, String arrive) {
     return 'Hacia $to · $routes · llegas a las $arrive';
   }
+
+  @override
+  String get remindersPermissionOk => 'Avisos permitidos';
+
+  @override
+  String get remindersPermissionUnknown =>
+      'Comprobando el permiso de notificaciones…';
+
+  @override
+  String get remindersPermissionDenied =>
+      'Las notificaciones están desactivadas para opentransit: los avisos se programan, pero el teléfono no los muestra.';
+
+  @override
+  String get remindersOpenSettings => 'Permitir notificaciones';
+
+  @override
+  String get remindersTest => 'Probar aviso';
+
+  @override
+  String get remindersTestScheduled =>
+      'Te llega un aviso de prueba en 10 segundos.';
+
+  @override
+  String get remindersTestTitle => 'Aviso de prueba';
+
+  @override
+  String get remindersTestBody => 'Así se verán tus recordatorios de viaje.';
+
+  @override
+  String remindersArmed(String kinds) {
+    return 'Avisos armados: $kinds';
+  }
+
+  @override
+  String get remindersEve => 'noche anterior';
+
+  @override
+  String get remindersLeave => 'hora de salir';
+
+  @override
+  String get remindersNone =>
+      'Sin avisos armados — revisa el permiso de notificaciones';
 }
