@@ -28,8 +28,21 @@ class PushRegistrar {
 
   String? get token => prefs.getString(tokenKey);
 
+  /// Stores the token; a previous, different one is unregistered first so a reinstall or a new build
+  /// does not leave dead tokens behind on the server.
   Future<void> saveToken(String token, {String env = 'prod'}) async {
-    await prefs.setString(tokenKey, token.toLowerCase());
+    final old = prefs.getString(tokenKey);
+    final next = token.toLowerCase();
+    if (old != null && old != next) {
+      final cityId = prefs.getString('city');
+      if (cityId != null) {
+        try {
+          await api.unregisterPushDevice(cityId, old);
+        } catch (_) {}
+      }
+      await prefs.remove(sentKey);
+    }
+    await prefs.setString(tokenKey, next);
     await prefs.setString(envKey, env);
   }
 

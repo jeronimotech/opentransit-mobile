@@ -168,7 +168,8 @@ void main() {
       final s = scheduler(sink);
       await s.sync(now: monday10);
       final before = sink.scheduled[leaveId('t1')]!.when;
-      final n = await s.refreshDue(now: monday10);
+      // the live check, ten minutes before the planned departure
+      final n = await s.refreshDue(now: before.subtract(const Duration(minutes: 10)));
       expect(n, 1);
       expect(sink.shown.single.title, startsWith('Sal a las '));
       expect(sink.shown.single.id, refineId('t1'));
@@ -177,6 +178,42 @@ void main() {
       await ScheduledTripsRepository(prefs).save([_trip(hour: 18)]);
       sink.shown.clear();
       expect(await s.refreshDue(now: monday10), 0);
+      expect(sink.shown, isEmpty);
+    });
+  });
+
+  group('the live check acts only around the departure', () {
+    final occ = DateTime(2026, 9, 16, 7, 42);
+    ScheduledTrip planned() => _trip(hour: 7, minute: 42, plan: ScheduledTripPlan(occurrence: occ,
+        leaveAt: DateTime(2026, 9, 16, 6, 42), arriveAt: occ, routes: const ['HB631', 'K16'], computedAt: DateTime(2026, 9, 15, 21)));
+
+    test('due within forty minutes before and five after; not an hour late', () {
+      expect(TripScheduler.dueNow(planned(), occ, DateTime(2026, 9, 16, 6, 22)), isTrue);
+      expect(TripScheduler.dueNow(planned(), occ, DateTime(2026, 9, 16, 6, 45)), isTrue);
+      expect(TripScheduler.dueNow(planned(), occ, DateTime(2026, 9, 16, 5, 50)), isFalse);
+      expect(TripScheduler.dueNow(planned(), occ, DateTime(2026, 9, 16, 7, 34)), isFalse);   // the 07:34 wake-up
+    });
+
+    test('a late wake-up never announces a departure that already left', () {
+      final its = [
+        _it('gone', DateTime(2026, 9, 16, 6, 42), 60),   // arrives 7:42, left long ago
+        _it('now', DateTime(2026, 9, 16, 7, 35), 20),    // arrives 7:55, too late for 7:42
+      ];
+      final at = DateTime(2026, 9, 16, 7, 34);
+      expect(ScheduledTripPlan.pick(its, occurrence: occ, arriveBy: true, now: at, notBefore: at.subtract(const Duration(minutes: 2))), isNull);
+      // and without the guard the stale one would have been chosen
+      expect(ScheduledTripPlan.pick(its, occurrence: occ, arriveBy: true, now: at)!.leaveAt, DateTime(2026, 9, 16, 6, 42));
+    });
+
+    test('refreshDue is silent for a trip whose departure is more than five minutes gone', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      await ScheduledTripsRepository(prefs).save([planned()]);
+      final sink = MemoryReminderSink();
+      final s = TripScheduler(repo: ScheduledTripsRepository(prefs),
+          api: MockApiClient(bundle: DiskAssetBundle(), now: DateTime(2026, 9, 16, 7, 34), latency: Duration.zero),
+          reminders: sink, jobs: const NoBackgroundJobs(), locale: const Locale('es'));
+      expect(await s.refreshDue(now: DateTime(2026, 9, 16, 7, 34)), 0);
       expect(sink.shown, isEmpty);
     });
   });

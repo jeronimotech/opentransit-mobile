@@ -184,10 +184,14 @@ class ScheduledTripPlan {
   /// The itinerary to plan the day around: for "arrive by", the one that leaves latest and still gets
   /// there in time; for "depart at", the one that arrives first. Null when nothing fits.
   static ScheduledTripPlan? pick(List<Itinerary> its, {required DateTime occurrence, required bool arriveBy,
-                                 required DateTime now}) {
+                                 required DateTime now, DateTime? notBefore}) {
     Iterable<Itinerary> ok = its;
     if (arriveBy) {
       ok = its.where((i) => !i.endTime.isAfter(occurrence));
+    }
+    // the live check asks "what do I do now": a departure already gone is not an answer
+    if (notBefore != null) {
+      ok = ok.where((i) => !i.startTime.isBefore(notBefore));
     }
     if (ok.isEmpty) return null;
     final it = arriveBy

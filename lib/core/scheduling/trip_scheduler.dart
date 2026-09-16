@@ -212,15 +212,18 @@ class TripScheduler {
 
   AppLocalizations get l10n => lookupAppLocalizations(locale);
 
-  /// Ask the planner about one occurrence. Null when the network or the planner had nothing.
-  Future<ScheduledTripPlan?> plan(ScheduledTrip t, DateTime occurrence, DateTime now) async {
+  /// Ask the planner about one occurrence. Null when the network or the planner had nothing. With
+  /// [notBefore], only departures from then on count (the live check must never say "sal a las 06:42"
+  /// at 07:34).
+  Future<ScheduledTripPlan?> plan(ScheduledTrip t, DateTime occurrence, DateTime now, {DateTime? notBefore}) async {
     try {
       final res = await api.plan(t.cityId, PlanRequest(
         from: t.from, to: t.to, time: occurrence, arriveBy: t.arriveBy,
         modes: t.modes.map(TravelMode.parse).toList(), onDemand: t.onDemand,
         numItineraries: 6, locale: locale.languageCode,
       ));
-      return ScheduledTripPlan.pick(res.itineraries, occurrence: occurrence, arriveBy: t.arriveBy, now: now);
+      return ScheduledTripPlan.pick(res.itineraries, occurrence: occurrence, arriveBy: t.arriveBy, now: now,
+                                    notBefore: notBefore);
     } catch (e) {
       debugPrint('scheduled trip plan failed: $e');
       return null;
@@ -276,22 +279,37 @@ class TripScheduler {
     if (refresh != null) await jobs.scheduleRefresh(t.id, refresh, now);
   }
 
+  /// How far ahead of leaving the live check acts, and how long after (a late wake-up still helps
+  /// while the rider can still catch something).
+  static const refreshAhead = Duration(minutes: 40);
+  static const refreshGrace = Duration(minutes: 5);
+
+  /// Whether the live check should act on a trip now: its departure is within [refreshAhead] and not
+  /// more than [refreshGrace] gone. The background job runs when iOS lets it, which can be an hour
+  /// late; acting then on a trip that already left produced "sal a las 06:42" at 07:34.
+  static bool dueNow(ScheduledTrip t, DateTime occ, DateTime now) {
+    final leave = t.lastPlan != null && t.lastPlan!.occurrence == occ
+        ? t.lastPlan!.leaveAt
+        : ReminderTimes.fallbackLeave(occ, arriveBy: t.arriveBy);
+    final ahead = leave.difference(now);
+    return ahead <= refreshAhead && ahead >= -refreshGrace;
+  }
+
   /// The live check: for every trip leaving within the next 40 minutes (or the one named by
-  /// [tripId]), plan again with real-time data, tell the rider, and move the "leave now" reminder.
+  /// [tripId], when it is), plan again with real-time data from departures still ahead, tell the
+  /// rider, and move the "leave now" reminder. Silent when nothing ahead still arrives in time.
   Future<int> refreshDue({required DateTime now, String? tripId}) async {
     final trips = repo.load();
     var refined = 0;
     final out = <ScheduledTrip>[];
     for (final t in trips) {
       final occ = t.enabled ? t.nextOccurrence(now) : null;
-      final due = occ != null && (tripId == t.id ||
-          (t.lastPlan?.leaveAt ?? ReminderTimes.fallbackLeave(occ, arriveBy: t.arriveBy))
-              .difference(now).inMinutes.clamp(-5, 999) <= 40);
+      final due = occ != null && (tripId == null || tripId == t.id) && dueNow(t, occ, now);
       if (!due) {
         out.add(t);
         continue;
       }
-      final p = await plan(t, occ, now);
+      final p = await plan(t, occ, now, notBefore: now.subtract(const Duration(minutes: 2)));
       if (p == null) {
         out.add(t);
         continue;
