@@ -2,6 +2,13 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.15.0
+
+### Added
+- **Seven more cities, on every continent.** Brisbane, Roma, Lisboa, Kuala Lumpur, Casablanca, Boston and Santiago de Chile join Bogotá and Toronto, each with its own OTP graph and whatever realtime its agency publishes (Casablanca and Santiago are timetable-only and say so).
+- **Five more languages.** Italian, European Portuguese, French, Malay and Arabic (right-to-left), picked in Settings or from the phone's language. A phone set to a language the app lacks now gets English rather than Spanish.
+- **Ferries.** A `ferry` component with its own icon, for Brisbane's CityCats and Boston's harbour ferries.
+
 ## 1.12.0
 
 ### Fixed

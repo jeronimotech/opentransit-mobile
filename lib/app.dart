@@ -144,12 +144,15 @@ class _OpenTransitAppState extends ConsumerState<OpenTransitApp>
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      // The phone's language when we have it; English otherwise, because a phone set to
+      // a language we lack (German in Roma, Japanese in Brisbane) is far more likely to
+      // read English than Spanish now that the app serves cities on five continents.
       localeResolutionCallback: (device, supported) {
-        if (device == null) return const Locale('es');
+        if (device == null) return const Locale('en');
         for (final s in supported) {
           if (s.languageCode == device.languageCode) return s;
         }
-        return const Locale('es');
+        return const Locale('en');
       },
     );
   }

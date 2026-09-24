@@ -49,6 +49,7 @@ enum Component {
   // with a subway, streetcars and buses, so the component comes from the GTFS mode.
   tram,
   bus,
+  ferry,
   other;
 
   /// Which of the two network layers a component is drawn in. The backbone is the handful of
@@ -58,7 +59,7 @@ enum Component {
   /// Every component belongs to exactly one group: leaving one out (as `tram` and `bus` were)
   /// means its shapes are never drawn, on either toggle.
   bool get isBackbone => switch (this) {
-        Component.trunk || Component.cable || Component.rail || Component.tram => true,
+        Component.trunk || Component.cable || Component.rail || Component.tram || Component.ferry => true,
         Component.feeder || Component.dual || Component.zonal || Component.bus || Component.other => false,
       };
 

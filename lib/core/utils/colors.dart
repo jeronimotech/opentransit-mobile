@@ -22,6 +22,7 @@ Color _defaultComponentColor(Component? c) => switch (c) {
       Component.rail => const Color(0xFF00838F),
       Component.tram => const Color(0xFF0054A6),
       Component.bus => const Color(0xFFD32F2F),
+      Component.ferry => const Color(0xFF0277BD),
       _ => const Color(0xFF607D8B),
     };
 
@@ -59,6 +60,7 @@ IconData componentIcon(Component? c, {City? city}) {
     Component.rail => Icons.train,
     Component.tram => Icons.tram,
     Component.bus => Icons.directions_bus_outlined,
+    Component.ferry => Icons.directions_boat,
     _ => Icons.directions_transit,
   };
 }

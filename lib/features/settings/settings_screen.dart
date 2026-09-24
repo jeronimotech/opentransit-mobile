@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:opentransit_mobile/core/i18n/languages.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/config.dart';
@@ -40,8 +42,7 @@ class SettingsScreen extends ConsumerWidget {
               underline: const SizedBox.shrink(),
               items: [
                 DropdownMenuItem(value: 'system', child: Text(l10n.themeSystem)),
-                const DropdownMenuItem(value: 'es', child: Text('Español')),
-                const DropdownMenuItem(value: 'en', child: Text('English')),
+                for (final e in kAppLanguages.entries) DropdownMenuItem(value: e.key, child: Text(e.value)),
               ],
               onChanged: (v) => n.setLocale(v == null || v == 'system' ? null : Locale(v)),
             ),
