@@ -36,15 +36,25 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="opentransit" />
             </intent-filter>
-            <!-- App Links for the canonical web URLs (https://<web-host>/{city}/...).
-                 Replace the placeholder host with the deployed opentransit-web host
-                 (keep it in sync with the WEB_HOST dart-define) and publish
-                 /.well-known/assetlinks.json on that host. -->
+            <!-- App Links for the canonical web URLs (https://<city>.opentransit.tech/{city}/...).
+                 One host per city, because Android verifies each one against the
+                 /.well-known/assetlinks.json it serves; the web app already serves that
+                 file on every city host. This list is compiled in, so a new city needs a
+                 release before its shared links open the app — keep it in step with
+                 ios/Runner/Runner.entitlements and AppConfig.webDomain. -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="bogota.opentransit.tech" />
+                <data android:scheme="https" android:host="toronto.opentransit.tech" />
+                <data android:scheme="https" android:host="boston.opentransit.tech" />
+                <data android:scheme="https" android:host="santiago.opentransit.tech" />
+                <data android:scheme="https" android:host="roma.opentransit.tech" />
+                <data android:scheme="https" android:host="lisboa.opentransit.tech" />
+                <data android:scheme="https" android:host="casablanca.opentransit.tech" />
+                <data android:scheme="https" android:host="kualalumpur.opentransit.tech" />
+                <data android:scheme="https" android:host="brisbane.opentransit.tech" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -56,6 +66,15 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Server pushes (v2.5). Never reached without google-services.json: Firebase does not
+             initialise, so FCM never starts this service and the phone's own alarms carry on. -->
+        <service
+            android:name=".OpentransitMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
             <intent-filter>

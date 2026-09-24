@@ -346,6 +346,24 @@ void main() {
       final l = CanonicalLinks.locate('bogota', stopId: 's1');
       expect(l.queryParameters, {'stop': 's1'});
     });
+
+    // A trip shared in Rome used to carry a bogota.opentransit.tech link, because the
+    // host was a single build-time constant. Every city has its own host now.
+    test('each city gets its own host, and any city host comes back in', () {
+      expect(CanonicalLinks.stop('roma', 'roma:70').host, 'roma.opentransit.tech');
+      expect(CanonicalLinks.city('boston').host, 'boston.opentransit.tech');
+      expect(
+        CanonicalLinks.toAppLocation(Uri.parse('https://lisboa.opentransit.tech/lisboa/alerts')),
+        '/lisboa/alerts',
+      );
+      // A city added after this build shipped still opens in the app.
+      expect(
+        CanonicalLinks.toAppLocation(Uri.parse('https://medellin.opentransit.tech/medellin')),
+        '/medellin',
+      );
+      expect(CanonicalLinks.toAppLocation(Uri.parse('https://opentransit.tech.evil.com/x')), isNull);
+      expect(CanonicalLinks.isOurHost('notopentransit.tech'), isFalse);
+    });
   });
 }
 

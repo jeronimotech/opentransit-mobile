@@ -37,7 +37,8 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     final api = MockApiClient(bundle: DiskAssetBundle(), now: monday10, latency: Duration.zero);
-    final reg = PushRegistrar(prefs: prefs, api: api);
+    // Explicitly iOS: the registrar now reads the platform, and a test host reports Android.
+    final reg = PushRegistrar(prefs: prefs, api: api, platform: 'ios');
     await reg.saveToken('AB' * 32, env: 'sandbox');
     await ScheduledTripsRepository(prefs).save([_trip()]);
     await RouteAlertsRepository(prefs).setSchedule('bogota', 'bogota:G30', AlertSchedule.always);
@@ -82,5 +83,34 @@ void main() {
     expect(n, greaterThan(0));
     // recorded: the same pass again notifies nothing
     expect(await runRouteAlertCheck(prefs: prefs, api: api, locale: const Locale('es'), now: monday10), 0);
+  });
+
+  // The server keeps one row per token, so it has to reach it byte for byte. APNs tokens are hex and
+  // Apple hands them back in either case, which is why they are folded; an FCM token is mixed-case and
+  // carries ':', '-' and '_', and folding one makes every push to that phone undeliverable.
+  test('an Android registration keeps its token intact and says so', () async {
+    const fcmToken = 'cXy7_d-Zk1M:APA91bH-Ab3Cd4Ef5Gh6Ij7Kl8Mn9Op0Qr1St2Uv3Wx4Yz';
+    SharedPreferences.setMockInitialValues({'city': 'bogota'});
+    final prefs = await SharedPreferences.getInstance();
+    final api = MockApiClient(bundle: DiskAssetBundle(), now: monday10, latency: Duration.zero);
+    final reg = PushRegistrar(prefs: prefs, api: api, platform: 'android');
+    await reg.saveToken(fcmToken);
+    expect(reg.token, fcmToken);
+    await ScheduledTripsRepository(prefs).save([_trip()]);
+    await reg.sync(cityId: 'bogota', serverReminders: true, locale: const Locale('es'), now: monday10);
+    final sent = api.pushRegistrations.single;
+    expect(sent['token'], fcmToken);
+    expect(sent['platform'], 'android');
+  });
+
+  test('an iOS registration still folds its hex token to one case', () async {
+    SharedPreferences.setMockInitialValues({'city': 'bogota'});
+    final prefs = await SharedPreferences.getInstance();
+    final api = MockApiClient(bundle: DiskAssetBundle(), now: monday10, latency: Duration.zero);
+    final reg = PushRegistrar(prefs: prefs, api: api, platform: 'ios');
+    await reg.saveToken('AB' * 32);
+    expect(reg.token, 'ab' * 32);
+    expect(reg.registration(cityId: 'bogota', trips: const [], routeIds: const [],
+        locale: const Locale('es'), now: monday10)['platform'], 'ios');
   });
 }

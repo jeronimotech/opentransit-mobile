@@ -12,14 +12,18 @@ import '../utils/notifications.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'trip_scheduler.dart';
 
-/// Everything the server may know about this phone: an APNs token, the instants it wants to be woken
-/// (twenty minutes before each scheduled trip leaves, over the next week) and the routes it follows.
-/// Nothing else leaves the device. Re-registered whenever any of it changes, and skipped when the same
-/// registration was already sent.
+/// Everything the server may know about this phone: a push token (APNs on iOS, FCM on Android), the
+/// instants it wants to be woken (twenty minutes before each scheduled trip leaves, over the next
+/// week) and the routes it follows. Nothing else leaves the device. Re-registered whenever any of it
+/// changes, and skipped when the same registration was already sent.
 class PushRegistrar {
-  PushRegistrar({required this.prefs, required this.api});
+  PushRegistrar({required this.prefs, required this.api, String? platform})
+      : platform = platform ?? (defaultTargetPlatform == TargetPlatform.android ? 'android' : 'ios');
   final SharedPreferences prefs;
   final ApiClient api;
+
+  /// Which service holds this token, and therefore how it must be treated.
+  final String platform;
 
   static const tokenKey = 'push.token';
   static const sentKey = 'push.lastRegistration';
@@ -30,9 +34,13 @@ class PushRegistrar {
 
   /// Stores the token; a previous, different one is unregistered first so a reinstall or a new build
   /// does not leave dead tokens behind on the server.
+  ///
+  /// Only APNs tokens are folded to lower case: they are hex and Apple hands them back in either
+  /// case, so one form in storage keeps the unregister call from missing its row. An FCM token is
+  /// mixed-case and carries ':', '-' and '_'; lowercasing one makes it undeliverable.
   Future<void> saveToken(String token, {String env = 'prod'}) async {
     final old = prefs.getString(tokenKey);
-    final next = token.toLowerCase();
+    final next = platform == 'ios' ? token.toLowerCase() : token;
     if (old != null && old != next) {
       final cityId = prefs.getString('city');
       if (cityId != null) {
@@ -72,7 +80,7 @@ class PushRegistrar {
                                      required Iterable<String> routeIds, required Locale locale, required DateTime now}) =>
       {
         'token': token,
-        'platform': 'ios',
+        'platform': platform,
         'env': prefs.getString(envKey) ?? 'prod',
         'locale': locale.toString(),
         'wakeAt': [for (final t in wakeInstants(trips.where((t) => t.cityId == cityId).toList(), now)) t.toIso8601String()],

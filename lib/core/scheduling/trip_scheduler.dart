@@ -78,6 +78,9 @@ class WorkmanagerJobs implements BackgroundJobs {
   const WorkmanagerJobs();
   static const taskName = 'tripRefresh';
   static const alertTaskName = 'routeAlertsPoll';
+  /// Enqueued from Kotlin, never from here: the push service has the new token but not the rest of
+  /// the registration. Keep in step with `OpentransitMessagingService`.
+  static const tokenSyncTaskName = 'pushTokenSync';
   static const periodicName = 'com.jeronimotech.opentransit.tripRefresh';
 
   bool get _android => defaultTargetPlatform == TargetPlatform.android;
@@ -350,6 +353,19 @@ void tripRefreshDispatcher() {
       if (task == WorkmanagerJobs.alertTaskName) {
         final n = await runRouteAlertCheck(prefs: prefs, api: scheduler.api, locale: scheduler.locale, now: DateTime.now());
         debugPrint('route alerts poll: $n notification(s)');
+        return true;
+      }
+      if (task == WorkmanagerJobs.tokenSyncTaskName) {
+        // A new FCM token, handed over by OpentransitMessagingService.onNewToken. Registering it needs
+        // the wake instants and followed routes, which live here and not in the push service.
+        final token = inputData?['token']?.toString();
+        final cityId = prefs.getString('city');
+        if (token == null || token.isEmpty || cityId == null) return true;
+        final registrar = PushRegistrar(prefs: prefs, api: scheduler.api);
+        await registrar.saveToken(token);
+        // The push arrived at all, so the city has server reminders on; there is nothing to ask.
+        await registrar.sync(cityId: cityId, serverReminders: true, locale: scheduler.locale, now: DateTime.now());
+        debugPrint('push token registered');
         return true;
       }
       final n = await scheduler.refreshDue(now: DateTime.now(), tripId: inputData?['tripId']?.toString());

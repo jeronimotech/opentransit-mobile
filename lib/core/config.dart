@@ -43,9 +43,6 @@ class AppConfig {
   );
   static const String deepLinkScheme = 'opentransit';
 
-  /// Host of the web app whose `https://<host>/{city}/...` URLs this app
-  /// claims (App Links / Universal Links) and emits when sharing. Keep in sync
-  /// with `android/app/src/main/AndroidManifest.xml` and
   /// Identity used to build a store link when a city configured none. Both are
   /// build-time facts about *this* app, unlike the city's own update URL.
   static const String packageName = String.fromEnvironment(
@@ -57,9 +54,21 @@ class AppConfig {
     defaultValue: '6809010622',
   );
 
-  /// `ios/Runner/Runner.entitlements`.
-  static const String webHost = String.fromEnvironment(
-    'WEB_HOST',
-    defaultValue: 'bogota.opentransit.tech',
+  /// Domain the city web apps live under, one subdomain per city
+  /// (`roma.opentransit.tech`). Shared links and the App Links / Universal
+  /// Links this app claims are built from it, so a trip shared in Rome opens
+  /// Rome's host rather than Bogotá's — which is what the single [webHost]
+  /// below used to do, and why a link shared anywhere else opened a browser.
+  ///
+  /// Keep the host list in `android/app/src/main/AndroidManifest.xml` and
+  /// `ios/Runner/Runner.entitlements` in step with the cities the API serves:
+  /// both are compiled in, so a new city needs a release to be deep-linkable.
+  static const String webDomain = String.fromEnvironment(
+    'WEB_DOMAIN',
+    defaultValue: 'opentransit.tech',
   );
+
+  /// One host for every city, for a deployment that serves them from a single
+  /// domain. Empty (the default) means derive the host from the city id.
+  static const String webHost = String.fromEnvironment('WEB_HOST');
 }

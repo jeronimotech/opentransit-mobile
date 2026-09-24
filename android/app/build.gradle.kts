@@ -14,6 +14,14 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Server pushes are optional. The google-services plugin fails the build outright when
+// google-services.json is missing, so it is applied only when the file is actually there:
+// a clone without Firebase credentials still builds and runs, it just never gets a push.
+val firebaseConfig = file("google-services.json")
+if (firebaseConfig.exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 android {
     namespace = "org.opentransit.opentransit_mobile"
     compileSdk = flutter.compileSdkVersion
@@ -77,6 +85,13 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    // Firebase Cloud Messaging, the Android half of the scheduled-trip pushes. The BoM keeps the
+    // Firebase libraries on one consistent set of versions.
+    implementation(platform("com.google.firebase:firebase-bom:34.1.0"))
+    implementation("com.google.firebase:firebase-messaging")
+    // The push service hands `tripRefresh` to the same Dart isolate WorkManager already runs.
+    // The workmanager plugin keeps this as `implementation`, so it is not on our classpath through it.
+    implementation("androidx.work:work-runtime:2.11.2")
     // Phone half of the watch link (WatchDataLayerBridge). Degrades to "no
     // watch" on devices without Play Services rather than failing to start.
     implementation("com.google.android.gms:play-services-wearable:18.2.0")

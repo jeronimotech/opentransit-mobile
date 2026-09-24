@@ -2,15 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Universal Links for the canonical web URLs. Replace the placeholder host
-	     with the deployed opentransit-web host (keep in sync with WEB_HOST) and
-	     serve /.well-known/apple-app-site-association there. -->
+	<!-- Universal Links for the canonical web URLs, one entry per city host; each
+	     serves /.well-known/apple-app-site-association. Compiled in, so a new city
+	     needs a release — keep in step with android/app/src/main/AndroidManifest.xml
+	     and AppConfig.webDomain. -->
 	<!-- v2.3 scheduled-trip reminders: the silent APNs wake-up and route alert pushes. -->
 	<key>aps-environment</key>
 	<string>production</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:bogota.opentransit.tech</string>
+		<string>applinks:toronto.opentransit.tech</string>
+		<string>applinks:boston.opentransit.tech</string>
+		<string>applinks:santiago.opentransit.tech</string>
+		<string>applinks:roma.opentransit.tech</string>
+		<string>applinks:lisboa.opentransit.tech</string>
+		<string>applinks:casablanca.opentransit.tech</string>
+		<string>applinks:kualalumpur.opentransit.tech</string>
+		<string>applinks:brisbane.opentransit.tech</string>
 	</array>
 </dict>
 </plist>

@@ -9,5 +9,6 @@ class MainActivity : FlutterActivity() {
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         WatchDataLayerBridge.register(messenger, applicationContext)
         GoNotificationBridge.register(messenger, applicationContext)
+        PushTokenBridge.register(messenger, applicationContext)
     }
 }

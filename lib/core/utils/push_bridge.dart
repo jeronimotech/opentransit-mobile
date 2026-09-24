@@ -11,8 +11,10 @@ import '../scheduling/push_registrar.dart';
 import '../scheduling/trip_scheduler.dart';
 import '../storage/scheduled_trips.dart';
 
-/// Dart side of `opentransit/push` (iOS). The Runner hands over the APNs token and every silent
-/// wake-up; the app registers the token and, on a wake-up, re-plans the trips due soon.
+/// Dart side of `opentransit/push`. iOS hands over the APNs token and every silent wake-up from
+/// `PushBridge.swift`; Android hands over the FCM token from `PushTokenBridge.kt` and delivers its
+/// wake-ups through the WorkManager isolate instead, because a push may arrive with no engine running.
+/// Either way the app registers the token and, on a wake-up, re-plans the trips due soon.
 class PushBridge {
   PushBridge._();
   static final instance = PushBridge._();
@@ -53,7 +55,9 @@ class PushBridge {
           return null;
       }
     });
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
+    // A build with no push credentials answers with an error, which is a normal state and not worth
+    // more than a line in the log: the phone's own alarms are the floor either way.
+    if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
       unawaited(_channel.invokeMethod<void>('register').catchError((Object e) {
         debugPrint('push register unavailable: $e');
       }));

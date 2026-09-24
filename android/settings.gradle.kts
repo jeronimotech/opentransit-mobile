@@ -23,6 +23,9 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.4.10" apply false
     // Kotlin 2.x needs the Compose compiler as its own plugin; the wear module uses it.
     id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" apply false
+    // Declared, never applied here: app/build.gradle.kts applies it only when
+    // google-services.json exists, so a build without Firebase credentials still works.
+    id("com.google.gms.google-services") version "4.4.4" apply false
 }
 
 include(":app")
