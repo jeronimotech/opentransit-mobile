@@ -53,3 +53,8 @@ tool/.venv-asc/
 # Intermediate emulator captures the Play folder is derived from (12 MB, one command
 # to regenerate — see docs/store/README.md). The fitted 1080x1920 set is committed.
 docs/store/android-raw/
+
+# Firebase credentials for the Android push service. It ships inside the APK, so it is not a
+# secret in the usual sense, but it names this project's Firebase instance and this repository is
+# public. Drop it at android/app/google-services.json; without it the build simply has no pushes.
+android/app/google-services.json
