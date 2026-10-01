@@ -145,9 +145,15 @@ class Client:
                         "Users and permissions, the account needs 'Release to testing tracks' or more, "
                         "and the Google Cloud project it belongs to must be linked under API access.")
             elif e.code == 403:
-                hint = ("\nAuthenticated but not permitted. Either the Cloud project is not linked under "
-                        "Play Console -> Setup -> API access, or this service account has not been "
-                        "invited under Users and permissions.")
+                # Granting only the release permissions is not enough and the message does not say so:
+                # 'View app information' is a prerequisite, and without it the account cannot see the
+                # app it is allowed to publish to. Play Console's own help text says this, in a
+                # paragraph under a different checkbox.
+                hint = ("\nAuthenticated but not permitted. In Play Console -> Users and permissions, "
+                        "open this service account and check that Account permissions includes "
+                        "'View app information and download bulk reports (read-only)'. It is a "
+                        "prerequisite for the release permissions, and granting those alone leaves "
+                        "exactly this error.")
             elif e.code == 404:
                 hint = (f"\nPlay has no app with the package {self.package}. The first upload of a new "
                         "app has to go through the Play Console UI; the API can only add builds to an "

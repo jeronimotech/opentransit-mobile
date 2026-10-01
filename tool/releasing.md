@@ -186,11 +186,23 @@ tool/play_publish.py --status         # what each track is serving
 2. **Create the app in the Play Console UI and upload the first bundle there.** The API cannot
    create an app, and a 404 from it on a package that exists in the UI usually means this step is
    still pending.
-3. **A service account.** Play Console → *Users and permissions* → *Invite new user* accepts a
-   service-account email, and Google Cloud is where the account and its key are created. The role
-   needs *Release to testing tracks* at minimum, or *Release to production* for the production
-   track. The Cloud project holding the account must be linked under Play Console → *API access*.
-4. **Download the JSON key once** and put it beside the other credentials, mode 600. It can publish
+3. **Enable the API.** In the Google Cloud project that will hold the service account, switch on
+   *Google Play Android Developer API*. Nothing works before this, and the error says the project
+   "has not been used in project N before", which reads like a permissions problem and is not one.
+4. **A service account.** Create it in Google Cloud with no Cloud roles, download its JSON key, then
+   invite its email in Play Console → *Users and permissions* → *Invite new user*. Under **Account
+   permissions** it needs three things, and the third is the one everybody misses:
+   - *Release apps to testing tracks*
+   - *Release to production, exclude devices, and use Play App Signing* — only for the production track
+   - **View app information and download bulk reports (read-only)** — a prerequisite. Without it the
+     account cannot see the app it is allowed to publish to, and every call returns
+     `403 The caller does not have permission` with no clue why. Play Console says so only in the
+     help text under a *different* checkbox.
+
+   There is **no "API access" page** any more: it is gone from the left nav, from Settings and from
+   Developer account. Linking the Cloud project is implicit once the API is on and the account is
+   invited.
+5. **Keep the JSON key** beside the other credentials, mode 600. It can publish
    releases to every app in the account, so treat it like the APNs key.
 
 ## What it does and does not do
