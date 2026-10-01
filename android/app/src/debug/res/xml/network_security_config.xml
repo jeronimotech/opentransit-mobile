@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug builds only. 10.0.2.2 is the emulator's route to the host machine, so a developer can
+     point the app at a local API (lib/core/config.dart falls back to http://10.0.2.2:8001 when
+     API_URL is undefined). Release builds get no network security config at all, which means
+     Android's default: HTTPS only, cleartext refused.
+
+     This replaces android:usesCleartextTraffic="true" on the main manifest, which applied to
+     release builds too and contradicted the Play "encrypted in transit" declaration. Same shape
+     as android/wear/src/debug/. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

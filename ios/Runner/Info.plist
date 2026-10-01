@@ -64,8 +64,11 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
+		<!-- ATS stays on. NSAllowsLocalNetworking only exempts local/.local hosts, so a dev build
+		     can reach http://localhost:8001 (lib/core/config.dart) while every public host is
+		     still required to be HTTPS. NSAllowsArbitraryLoads was removed: it disabled ATS for
+		     every host in release builds and contradicted the Play "encrypted in transit"
+		     declaration. -->
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
