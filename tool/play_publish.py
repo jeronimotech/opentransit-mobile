@@ -132,12 +132,22 @@ class Client:
             except ValueError:
                 pass
             hint = ""
-            if e.code == 401:
+            low = detail.lower()
+            if "has not been used in project" in low or "is disabled" in low:
+                # The first wall a new setup hits, and the message above buries it: the key is fine,
+                # the API itself is off in the Cloud project.
+                hint = ("\nThe key works — this is the Android Publisher API being switched off in the "
+                        "Cloud project. Enable it at the URL in the message above, wait a minute, and "
+                        "retry. Then, in Play Console: Setup -> API access to link the project, and "
+                        "Users and permissions to invite this service account.")
+            elif e.code == 401:
                 hint = ("\nThe service account exists but Play is refusing it. In Play Console, under "
                         "Users and permissions, the account needs 'Release to testing tracks' or more, "
                         "and the Google Cloud project it belongs to must be linked under API access.")
             elif e.code == 403:
-                hint = "\nAuthenticated but not permitted: check the account's role in Play Console."
+                hint = ("\nAuthenticated but not permitted. Either the Cloud project is not linked under "
+                        "Play Console -> Setup -> API access, or this service account has not been "
+                        "invited under Users and permissions.")
             elif e.code == 404:
                 hint = (f"\nPlay has no app with the package {self.package}. The first upload of a new "
                         "app has to go through the Play Console UI; the API can only add builds to an "
