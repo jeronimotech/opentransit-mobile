@@ -1,0 +1,1 @@
+opentransit fonctionne désormais dans neuf villes : Bogotá, Toronto, Boston, Santiago, Rome, Lisbonne, Casablanca, Kuala Lumpur et Brisbane. Trajets programmés, suivi du trajet et vélos en libre-service.

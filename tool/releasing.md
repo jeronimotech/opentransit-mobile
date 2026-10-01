@@ -1,4 +1,9 @@
-# Releasing to TestFlight
+# Releasing to the stores
+
+Two scripts, one per store: `tool/testflight.sh` for iOS and `tool/play.sh` for Android. Neither
+needs a browser, an Apple ID login or the Play Console UI.
+
+# iOS: TestFlight
 
 `tool/testflight.sh` builds, signs, exports and uploads the iOS app with no Xcode UI and no Apple ID
 login. It needs a paid Apple Developer Program team and an App Store Connect API key. Nothing
@@ -115,3 +120,53 @@ BUNDLE_ID=com.jeronimotech.opentransit.LiveActivity \
 ```
 
 If the export fails with "no profile for …", that bundle id is the one missing.
+
+---
+
+# Releasing to Google Play
+
+`tool/play.sh` is the Android twin: it builds, signs, uploads and puts the build on a track, with no
+Play Console UI. `tool/play_publish.py` is the API client underneath, usable on its own.
+
+```bash
+cat > ~/.config/opentransit/play.env <<'ENV'      # private, never committed
+GOOGLE_PLAY_SERVICE_ACCOUNT=/Users/you/.config/opentransit/play-service-account.json
+ENV
+chmod 600 ~/.config/opentransit/play.env
+
+tool/play.sh                          # internal testing
+PLAY_TRACK=production tool/play.sh    # production
+PLAY_TRACK=production PLAY_ROLLOUT=0.1 tool/play.sh   # 10 % staged rollout
+tool/play_publish.py --status         # what each track is serving
+```
+
+## One-time setup (Google side)
+
+1. **Play Console account, as an organization.** 25 USD once. Google verifies the organization,
+   usually against a D-U-N-S number, and that takes days — start it before you need it. An
+   organization account also avoids the twenty-testers-for-fourteen-days rule that applies to new
+   personal accounts.
+2. **Create the app in the Play Console UI and upload the first bundle there.** The API cannot
+   create an app, and a 404 from it on a package that exists in the UI usually means this step is
+   still pending.
+3. **A service account.** Play Console → *Users and permissions* → *Invite new user* accepts a
+   service-account email, and Google Cloud is where the account and its key are created. The role
+   needs *Release to testing tracks* at minimum, or *Release to production* for the production
+   track. The Cloud project holding the account must be linked under Play Console → *API access*.
+4. **Download the JSON key once** and put it beside the other credentials, mode 600. It can publish
+   releases to every app in the account, so treat it like the APNs key.
+
+## What it does and does not do
+
+Signing is the upload key in `android/key.properties`; Play App Signing re-signs with the key Google
+holds, which is why losing the local keystore is survivable. The uploader never touches the store
+listing, the screenshots, the Data safety answers or the content rating: those live in the Console,
+and a release whose listing is incomplete will not commit.
+
+Play's API applies changes through an **edit**: you open one, attach the bundle and the track, and
+commit. An uncommitted edit changes nothing, and an edit goes stale if the app is touched elsewhere
+meanwhile — so a failed commit is worth retrying from a fresh edit rather than debugging. A failure
+here discards the edit on the way out.
+
+Release notes come from `docs/store/release-notes/<locale>.txt`, one file per published language.
+Play refuses a commit that has no notes for a language the listing is live in.

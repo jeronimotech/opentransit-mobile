@@ -138,7 +138,7 @@ All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://ke
 ## [1.4.0] - 2026-09-05
 ### Added
 - On-demand mobility (taxi / ride-hailing): "Taxi / app" mode, provider picker with hand-off, tariff estimates.
-- TestFlight release tooling: `tool/testflight.sh` (manual signing with an API-key-created certificate/profile in a dedicated keychain, export, upload, wait for processing; `SIGNING=cloud` opt-in), `tool/asc_signing.py` (bundle-id / certificate / profile / builds), `tool/testflight.md`, `ios/ExportOptions*.plist`.
+- TestFlight release tooling: `tool/testflight.sh` (manual signing with an API-key-created certificate/profile in a dedicated keychain, export, upload, wait for processing; `SIGNING=cloud` opt-in), `tool/asc_signing.py` (bundle-id / certificate / profile / builds), `tool/releasing.md`, `ios/ExportOptions*.plist`.
 - Real app icon (`assets/icon/icon.png`, generated for iOS and Android via flutter_launcher_icons).
 ### Changed
 - Bundle id / application id `com.jeronimotech.opentransit`; display name "opentransit"; no team id in the Xcode project.

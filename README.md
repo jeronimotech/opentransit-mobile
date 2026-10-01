@@ -540,7 +540,7 @@ chip.
 key (App Manager role is enough) and no Xcode UI: `tool/asc_signing.py` creates the bundle id,
 distribution certificate and App Store profile through the API, the identity lives in a dedicated
 keychain, and the script waits until App Store Connect marks the build VALID. Nothing Apple-specific
-lives in the repo. Setup and troubleshooting: [`tool/testflight.md`](tool/testflight.md).
+lives in the repo. Setup and troubleshooting: [`tool/releasing.md`](tool/releasing.md).
 
 ```bash
 set -a; source ~/.config/opentransit/apple.env; set +a   # APPLE_TEAM_ID, ASC_KEY_ID, ASC_ISSUER_ID

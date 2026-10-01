@@ -1,0 +1,1 @@
+opentransit now runs in nine cities: Bogotá, Toronto, Boston, Santiago, Rome, Lisbon, Casablanca, Kuala Lumpur and Brisbane. Scheduled trips, follow-along and shared bikes.
