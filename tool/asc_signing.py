@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""App Store Connect signing helper — bundle id, distribution certificate, App Store profile, builds.
+"""App Store Connect client — signing records, builds, and App Store submission.
+
+Signing (bundle id, distribution certificate, App Store profile) plus the two things that come after
+it: finding a processed build, and preparing and submitting an App Store version.
 
 Idempotent: every subcommand returns the existing record when one matches and only creates
 when nothing usable exists. Never prints key material (the .p8, private keys, or the certificate
@@ -329,6 +332,181 @@ def cmd_builds(c: Client, args: argparse.Namespace) -> None:
 
 
 # ----------------------------------------------------------------------------- main
+# ----------------------------------------------------------------------------- App Store submission
+IOS = "IOS"
+
+# Versions Apple will let us edit. Anything else — WAITING_FOR_REVIEW, IN_REVIEW, READY_FOR_SALE —
+# is frozen, and the fix is a new version or a cancelled submission, not a retry.
+EDITABLE_STATES = {
+    "PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED",
+    "INVALID_BINARY", "DEVELOPER_REMOVED_FROM_SALE",
+}
+
+# `docs/store/release-notes` is named after Play's locale codes, which are not Apple's.
+PLAY_TO_APPLE = {
+    "es-419": "es-MX", "en-US": "en-US", "pt-PT": "pt-PT",
+    "fr-FR": "fr-FR", "it-IT": "it", "ms-MY": "ms", "ar": "ar-SA",
+}
+
+
+def _app_id(args: argparse.Namespace) -> str:
+    app = getattr(args, "app_id", None) or os.environ.get("APP_STORE_ID") or "6809010622"
+    return str(app)
+
+
+def _find_build(c: Client, app: str, version: str) -> dict:
+    """The processed build with this CFBundleVersion. Uploading is tool/testflight.sh's job; this only
+    attaches what is already there, so a missing build means the upload has not finished."""
+    builds = c.get_all("/builds", {"filter[app]": app, "filter[version]": version,
+                                   "fields[builds]": "version,processingState,expired"})
+    live = [b for b in builds if not b["attributes"].get("expired")]
+    if not live:
+        sys.exit(f"no build with version {version} for app {app}. "
+                 f"Run `asc_signing.py builds` to see what App Store Connect has.")
+    b = live[0]
+    state = b["attributes"].get("processingState")
+    if state != "VALID":
+        sys.exit(f"build {version} is {state}, not VALID. Wait for processing to finish.")
+    return b
+
+
+def _editable_version(c: Client, app: str, version: str, release_type: str) -> dict:
+    """The App Store version row for this version string, created if Apple has none to edit."""
+    rows = c.get_all(f"/apps/{app}/appStoreVersions",
+                     {"filter[platform]": IOS, "limit": 20,
+                      "fields[appStoreVersions]": "versionString,appStoreState,releaseType"})
+    mine = [v for v in rows if v["attributes"].get("versionString") == version]
+    for v in mine:
+        if v["attributes"].get("appStoreState") in EDITABLE_STATES:
+            log(f"reusing version {version} ({v['attributes']['appStoreState']})")
+            return v
+    if mine:
+        sys.exit(f"version {version} exists but is {mine[0]['attributes'].get('appStoreState')}, "
+                 "which Apple does not allow editing. Bump the version or cancel the submission.")
+    # Apple allows exactly one editable version at a time, and creating an app leaves a placeholder
+    # behind (1.0, never submitted). Renaming it is what the Console makes you do by hand, so do that
+    # rather than refusing to proceed over a version string nobody chose.
+    spare = [v for v in rows if v["attributes"].get("appStoreState") in EDITABLE_STATES]
+    if spare:
+        v = spare[0]
+        was = v["attributes"]["versionString"]
+        log(f"renaming the editable version {was} to {version} — Apple allows only one at a time")
+        c.request("PATCH", f"/appStoreVersions/{v['id']}",
+                  {"data": {"type": "appStoreVersions", "id": v["id"],
+                            "attributes": {"versionString": version, "releaseType": release_type}}})
+        v["attributes"]["versionString"] = version
+        return v
+    log(f"creating version {version}")
+    body = {"data": {"type": "appStoreVersions",
+                     "attributes": {"platform": IOS, "versionString": version,
+                                    "releaseType": release_type},
+                     "relationships": {"app": {"data": {"type": "apps", "id": app}}}}}
+    return c.request("POST", "/appStoreVersions", body)["data"]
+
+
+def _set_release_notes(c: Client, version_id: str, src: Path) -> None:
+    """`whatsNew` per locale. Only locales the app already publishes can be set here: creating one
+    needs the full metadata Apple requires for a new language, which belongs in the Console."""
+    notes: dict[str, str] = {}
+    for f in sorted(src.glob("*.txt")):
+        text = f.read_text().strip()
+        if text:
+            notes[PLAY_TO_APPLE.get(f.stem, f.stem)] = text[:4000]
+    if not notes:
+        sys.exit(f"no <locale>.txt files with content in {src}")
+    rows = c.get_all(f"/appStoreVersions/{version_id}/appStoreVersionLocalizations",
+                     {"fields[appStoreVersionLocalizations]": "locale"})
+    have = {r["attributes"]["locale"]: r["id"] for r in rows}
+    for locale, text in sorted(notes.items()):
+        loc_id = have.get(locale)
+        if not loc_id:
+            log(f"skipping {locale}: the app does not publish that language yet")
+            continue
+        c.request("PATCH", f"/appStoreVersionLocalizations/{loc_id}",
+                  {"data": {"type": "appStoreVersionLocalizations", "id": loc_id,
+                            "attributes": {"whatsNew": text}}})
+        log(f"release notes set for {locale}")
+    missing = sorted(set(notes) - set(have))
+    if missing:
+        log(f"not published in: {', '.join(missing)} — add them in App Store Connect with their "
+            "full metadata, then re-run")
+
+
+def _submit_for_review(c: Client, app: str, version_id: str) -> dict:
+    """Apple's current flow: a reviewSubmission holds items, and PATCHing `submitted` sends it. The
+    older appStoreVersionSubmissions endpoint is deprecated and rejects apps that use the new one."""
+    open_subs = [s for s in c.get_all("/reviewSubmissions",
+                                      {"filter[app]": app, "filter[state]": "READY_FOR_REVIEW,UNRESOLVED_ISSUES",
+                                       "fields[reviewSubmissions]": "state,platform"})
+                 if s["attributes"].get("platform") == IOS]
+    if open_subs:
+        sub = open_subs[0]
+        log(f"reusing the open review submission ({sub['attributes']['state']})")
+    else:
+        sub = c.request("POST", "/reviewSubmissions",
+                        {"data": {"type": "reviewSubmissions", "attributes": {"platform": IOS},
+                                  "relationships": {"app": {"data": {"type": "apps", "id": app}}}}})["data"]
+        log("review submission created")
+    items = c.get_all(f"/reviewSubmissions/{sub['id']}/items", {"limit": 50})
+    already = any((i.get("relationships", {}).get("appStoreVersion", {}).get("data") or {}).get("id") == version_id
+                  for i in items)
+    if not already:
+        c.request("POST", "/reviewSubmissionItems",
+                  {"data": {"type": "reviewSubmissionItems",
+                            "relationships": {
+                                "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": sub["id"]}},
+                                "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}}}}})
+        log("version added to the submission")
+    c.request("PATCH", f"/reviewSubmissions/{sub['id']}",
+              {"data": {"type": "reviewSubmissions", "id": sub["id"], "attributes": {"submitted": True}}})
+    return c.request("GET", f"/reviewSubmissions/{sub['id']}",
+                     params={"fields[reviewSubmissions]": "state,submittedDate"})["data"]
+
+
+def cmd_appstore(c: Client, args: argparse.Namespace) -> None:
+    """Prepare an App Store version and, with --submit, send it to review.
+
+    What it does not do: write the description, keywords or screenshots. Those live in App Store
+    Connect and Apple blocks a submission whose metadata is incomplete, with an error that names the
+    field. Export compliance needs no call either — ios/Runner/Info.plist already declares
+    ITSAppUsesNonExemptEncryption."""
+    app = _app_id(args)
+    if args.status:
+        emit({"app": app,
+              "versions": [{"version": v["attributes"]["versionString"],
+                             "state": v["attributes"].get("appStoreState"),
+                             "releaseType": v["attributes"].get("releaseType")}
+                            for v in c.get_all(f"/apps/{app}/appStoreVersions",
+                                               {"filter[platform]": IOS, "limit": 10,
+                                                "fields[appStoreVersions]":
+                                                    "versionString,appStoreState,releaseType"})],
+              "reviewSubmissions": [{"state": s["attributes"].get("state"),
+                                      "submitted": s["attributes"].get("submittedDate")}
+                                     for s in c.get_all("/reviewSubmissions",
+                                                        {"filter[app]": app, "limit": 5,
+                                                         "fields[reviewSubmissions]": "state,submittedDate"})]})
+        return
+    if not args.version:
+        sys.exit("pass --version (the CFBundleShortVersionString, e.g. 1.15.0), or --status")
+
+    version = _editable_version(c, app, args.version, args.release_type)
+    if args.build:
+        b = _find_build(c, app, args.build)
+        c.request("PATCH", f"/appStoreVersions/{version['id']}/relationships/build",
+                  {"data": {"type": "builds", "id": b["id"]}})
+        log(f"build {args.build} attached")
+    if args.notes_from:
+        _set_release_notes(c, version["id"], args.notes_from)
+    if not args.submit:
+        log("prepared but not submitted; add --submit to send it to review")
+        emit({"app": app, "version": args.version, "versionId": version["id"], "submitted": False})
+        return
+    sub = _submit_for_review(c, app, version["id"])
+    emit({"app": app, "version": args.version, "versionId": version["id"], "submitted": True,
+          "reviewState": sub["attributes"].get("state"),
+          "submittedDate": sub["attributes"].get("submittedDate")})
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -340,10 +518,19 @@ def main() -> None:
     p.add_argument("--wait", action="store_true"); p.add_argument("--version")
     p.add_argument("--build-name", help="CFBundleShortVersionString to narrow the match, e.g. 1.4.0")
     p.add_argument("--timeout", type=float, default=20)
+    p = sub.add_parser("appstore", help="prepare an App Store version and optionally submit it")
+    p.add_argument("--version", help="CFBundleShortVersionString, e.g. 1.15.0")
+    p.add_argument("--build", help="CFBundleVersion of the build to attach, e.g. 29")
+    p.add_argument("--notes-from", type=Path, help="directory of <locale>.txt release notes")
+    p.add_argument("--release-type", default="MANUAL", choices=("MANUAL", "AFTER_APPROVAL", "SCHEDULED"),
+                   help="MANUAL keeps the moment of release yours (default)")
+    p.add_argument("--submit", action="store_true", help="send it to review")
+    p.add_argument("--status", action="store_true", help="print versions and review submissions")
+    p.add_argument("--app-id", help="App Store app id (default: APP_STORE_ID or opentransit's)")
     args = ap.parse_args()
     c = Client(Env())
-    {"bundle-id": cmd_bundle_id, "certificate": cmd_certificate,
-     "profile": cmd_profile, "builds": cmd_builds}[args.cmd](c, args)
+    {"bundle-id": cmd_bundle_id, "certificate": cmd_certificate, "profile": cmd_profile,
+     "builds": cmd_builds, "appstore": cmd_appstore}[args.cmd](c, args)
 
 
 if __name__ == "__main__":

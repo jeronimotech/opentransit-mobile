@@ -121,6 +121,43 @@ BUNDLE_ID=com.jeronimotech.opentransit.LiveActivity \
 
 If the export fails with "no profile for …", that bundle id is the one missing.
 
+
+## Submitting to App Store review
+
+`asc_signing.py appstore` prepares the App Store version and sends it to review. Uploading the binary
+is still `tool/testflight.sh`; this attaches a build that is already processed.
+
+```bash
+set -a; source ~/.config/opentransit/apple.env; set +a
+
+tool/asc_signing.py appstore --status                 # versions and review submissions
+tool/asc_signing.py appstore --version 1.15.0 --build 29 \
+  --notes-from docs/store/release-notes               # prepare, do not submit
+tool/asc_signing.py appstore --version 1.15.0 --build 29 \
+  --notes-from docs/store/release-notes --submit      # and send it to review
+```
+
+`--release-type` defaults to `MANUAL`, so an approved version waits for you to release it rather than
+going live the moment Apple says yes. `AFTER_APPROVAL` is the other sensible choice.
+
+Three things about Apple's model that the errors do not explain well:
+
+- **Only one version can be editable at a time.** Creating an app leaves a placeholder behind (1.0,
+  never submitted), so the first real run renames it rather than refusing over a version string
+  nobody chose. It says so when it does.
+- **Release notes can only be set for languages the app already publishes.** opentransit publishes
+  `en-US` and `es-MX`; the other five need to be created in App Store Connect with their full
+  metadata first, and until then those locales are skipped with a line in the log. Note also that the
+  notes directory is named after Play's locale codes, so they are mapped on the way in: `es-419` →
+  `es-MX`, `it-IT` → `it`, `ms-MY` → `ms`, `ar` → `ar-SA`.
+- **Submission goes through a `reviewSubmission`,** not the old `appStoreVersionSubmissions`
+  endpoint, which Apple deprecated and which now rejects apps that have used the new flow.
+
+What it does not do: the description, keywords, screenshots and the app review contact. Apple blocks a
+submission whose metadata is incomplete and names the field, so the first run will tell you what is
+missing. Export compliance needs no call — `ios/Runner/Info.plist` already declares
+`ITSAppUsesNonExemptEncryption`.
+
 ---
 
 # Releasing to Google Play
