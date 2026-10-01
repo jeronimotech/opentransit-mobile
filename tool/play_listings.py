@@ -21,6 +21,13 @@ shows the character counts against Play's limits before anything is sent.
 Graphics are deliberately not touched. Play falls back to the default language's icon, feature
 graphic and screenshots for any localisation that has none of its own, which is what we want
 while the screenshots are Bogotá-only: one set, not seven that drift.
+
+Permission note, because the failure is silent and the error body is empty. Committing an edit
+that touches listings needs 'Manage store presence' on the service account, on top of the
+'View app information' prerequisite. Granting it does not take effect immediately: every
+listing write kept returning 200 and the final `:commit` kept returning 403 "The caller does
+not have permission" for more than ten minutes afterwards, then started working with no further
+change. If you hit that, wait rather than re-granting.
 """
 from __future__ import annotations
 
