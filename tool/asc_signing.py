@@ -26,6 +26,10 @@ Subcommands (all print one JSON object on stdout; diagnostics go to stderr):
   builds [--limit N] [--wait] [--version BUILD] [--build-name NAME] [--timeout MIN]
                                 list recent builds of the app; --wait polls until --version
                                 (optionally narrowed by --build-name) is VALID
+  appstore [--version X --build N] [--notes-from DIR] [--release-type T] [--submit] [--status]
+                                prepare an App Store version — reusing or renaming the one editable
+                                version Apple allows — attach a processed build, set the release notes
+                                per locale, and with --submit send it through a reviewSubmission
 
 Dependencies: pyjwt + cryptography. If they are missing the script bootstraps a private venv in
 tool/.venv-asc (git-ignored) and re-executes itself inside it.
