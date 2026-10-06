@@ -29,6 +29,7 @@ class BoardTime {
     this.delaySeconds,
     this.tripId,
     this.vehicleId,
+    this.vehicle,
   });
   final DateTime time;
   final int minutes;
@@ -36,6 +37,11 @@ class BoardTime {
   final int? delaySeconds;
   final String? tripId;
   final String? vehicleId;
+
+  /// Where that bus is, so the stop map can draw it approaching instead of only
+  /// saying "3 min". Null when the departure has no live match — the honest answer
+  /// for a feed whose trip ids are not the schedule's.
+  final Vehicle? vehicle;
 
   factory BoardTime.fromJson(Map<String, dynamic> j, {DateTime? now}) {
     final t = parseTime(j['time']) ?? DateTime.now();
@@ -47,6 +53,9 @@ class BoardTime {
       delaySeconds: asInt(j['delaySeconds']),
       tripId: j['tripId']?.toString(),
       vehicleId: j['vehicleId']?.toString(),
+      vehicle: j['vehicle'] is Map<String, dynamic>
+          ? Vehicle.fromJson(j['vehicle'] as Map<String, dynamic>)
+          : null,
     );
   }
 }

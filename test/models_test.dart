@@ -167,4 +167,36 @@ void main() {
       expect(TravelMode.bus.isTransit, isTrue);
     });
   });
+
+  group('BoardTime carries where the bus is', () {
+    // The stop map draws the departures the board is already showing, so the position has to
+    // ride on the row. A departure with no live match must stay null rather than inherit one.
+    Map<String, dynamic> row({Map<String, dynamic>? vehicle}) => {
+          'time': '2026-10-06T12:00:00Z',
+          'minutes': 4,
+          'realtime': true,
+          'tripId': 'bogota:t2',
+          'vehicleId': 'V1',
+          'vehicle': ?vehicle,
+        };
+
+    test('parses the vehicle when the departure matched a live one', () {
+      final t = BoardTime.fromJson(row(vehicle: {
+        'id': 'V1',
+        'lat': 4.63,
+        'lon': -74.08,
+        'bearing': 12.0,
+        'routeShortName': 'G12',
+      }));
+      expect(t.vehicle, isNotNull);
+      expect(t.vehicle!.id, 'V1');
+      expect(t.vehicle!.routeShortName, 'G12');
+    });
+
+    test('stays null when there is no live match', () {
+      expect(BoardTime.fromJson(row()).vehicle, isNull);
+      // and when the field is present but not an object, rather than throwing
+      expect(BoardTime.fromJson({...row(), 'vehicle': null}).vehicle, isNull);
+    });
+  });
 }

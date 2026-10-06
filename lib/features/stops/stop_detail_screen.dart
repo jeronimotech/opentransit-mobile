@@ -9,6 +9,7 @@ import '../../core/providers.dart';
 import '../../core/analytics/analytics_event.dart';
 import '../../core/analytics/track_view.dart';
 import '../../core/storage/favorites.dart';
+import '../../core/live/marker_style.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/links.dart';
@@ -19,8 +20,14 @@ import '../favorites/save_favorite_sheet.dart';
 import '../planner/planner_state.dart';
 import 'widgets/board_view.dart';
 
-/// Stop / station page, "board first" (UX audit §D): a 120 px map strip with
-/// "Ver en mapa", the header chips, then the arrival board above the fold,
+/// Stop / station page, map-first: the map fills the page and the board rides in a
+/// draggable sheet over it, the same shape as locate, home, near_me, itinerary_detail
+/// and forecast_sheet. It used to be "board first" — a 120 px map strip plus a separate
+/// "Ver en mapa" modal — which made the map both too small to read and duplicated, and
+/// left the list eating the screen. The approaching buses draw on that map, because
+/// "3 min" from a feed that may be stale is the one claim a rider cannot check and a bus
+/// two blocks away is.
+/// Historic note: the header chips, then the arrival board above the fold,
 /// routes collapsed, and accessibility as a muted line at the end.
 class StopDetailScreen extends ConsumerWidget {
   const StopDetailScreen({super.key, required this.cityId, required this.stopId});
@@ -115,39 +122,32 @@ class StopDetailScreen extends ConsumerWidget {
               ),
             ],
           ),
+          // The sheet floats over the map, so the bar must not reserve space for itself.
+          extendBodyBehindAppBar: true,
           body: BoardScope(
             stopId: stopId,
-            child: ListView(
-              padding: const EdgeInsets.only(bottom: 32),
+            child: Stack(
               children: [
-                trackView,
-                // 120 px map strip with "Ver en mapa" (full map in a sheet).
-                SizedBox(
-                  height: 120,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      IgnorePointer(
-                        child: TransitMap(
-                          initialCenter: stop.position,
-                          initialZoom: 15.5,
-                          markers: [MapPoint(id: stop.id, position: stop.position, color: color, radius: 9, strokeWidth: 3)],
-                        ),
-                      ),
-                      Positioned(
-                        right: 12,
-                        bottom: 10,
-                        child: FilledButton.tonalIcon(
-                          key: const ValueKey('view-on-map'),
-                          style: FilledButton.styleFrom(minimumSize: const Size(44, 40), visualDensity: VisualDensity.compact),
-                          onPressed: () => _showFullMap(context, stop, color),
-                          icon: const Icon(Icons.map_outlined, size: 18),
-                          label: Text(l10n.viewOnMapAction),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                Positioned.fill(child: _StopMap(cityId: cityId, stop: stop, color: color)),
+                DraggableScrollableSheet(
+                  initialChildSize: 0.42,
+                  minChildSize: 0.22,
+                  maxChildSize: 0.92,
+                  snap: true,
+                  snapSizes: const [0.22, 0.42, 0.92],
+                  builder: (context, controller) => Container(
+                    decoration: BoxDecoration(
+                      color: scheme.surface,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                      boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 12)],
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: ListView(
+                      controller: controller,
+                      padding: const EdgeInsets.only(bottom: 32),
+                      children: [
+                        const _SheetGrabber(),
+                        trackView,
                 // 1. Arrival board first (the component lives in the header subtitle).
                 BoardView(
                   cityId: cityId,
@@ -213,6 +213,10 @@ class StopDetailScreen extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: Text(stop.id, style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
                 ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -237,56 +241,8 @@ class StopDetailScreen extends ConsumerWidget {
     final seen = <String>{};
     return [for (final r in routes) if (seen.add(r.shortName)) r];
   }
-
-  Future<void> _showFullMap(BuildContext context, Stop stop, Color color) => showModalBottomSheet<void>(
-        context: context,
-        isScrollControlled: true,
-        useSafeArea: true,
-        builder: (ctx) => SizedBox(
-          height: MediaQuery.sizeOf(ctx).height * 0.92,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                  child: TransitMap(
-                    initialCenter: stop.position,
-                    initialZoom: 16,
-                    markers: [MapPoint(id: stop.id, position: stop.position, color: color, radius: 10, strokeWidth: 3)],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: IconButton.filledTonal(
-                  onPressed: () => Navigator.pop(ctx),
-                  icon: const Icon(Icons.close),
-                  tooltip: MaterialLocalizations.of(ctx).closeButtonLabel,
-                ),
-              ),
-              Positioned(
-                left: 16,
-                bottom: 16,
-                right: 72,
-                child: Material(
-                  color: Theme.of(ctx).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(14),
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    child: Text(stop.name, maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.w700)),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
 }
 
-/// Small muted accessibility line: "Accesible · Dato del feed no verificado".
 class _AccessibilityLine extends StatelessWidget {
   const _AccessibilityLine({required this.access});
   final StopAccessibility access;
@@ -351,3 +307,69 @@ class _StopAlerts extends ConsumerWidget {
 
 /// Kept for callers that still want a flat countdown list.
 String countdownLabel(DateTime t, AppLocalizations l10n) => formatCountdown(t, l10n);
+
+
+/// The grabber: without it a sheet that can be dragged does not look like one.
+class _SheetGrabber extends StatelessWidget {
+  const _SheetGrabber();
+  @override
+  Widget build(BuildContext context) => Center(
+        child: Container(
+          width: 36,
+          height: 4,
+          margin: const EdgeInsets.only(top: 10, bottom: 6),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.outlineVariant,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+      );
+}
+
+/// The stop and the buses coming to it.
+///
+/// Positions ride on the board rows themselves (`BoardTime.vehicle`), so this draws exactly
+/// the departures the list is showing — no second request, and no chance of the map and the
+/// list disagreeing about which bus is which. A departure with no live match contributes
+/// nothing rather than borrowing another bus's position.
+class _StopMap extends ConsumerWidget {
+  const _StopMap({required this.cityId, required this.stop, required this.color});
+  final String cityId;
+  final Stop stop;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final board = ref.watch(boardProvider(CityKey(cityId, stop.id)));
+    final vehicles = board.maybeWhen(
+      data: (b) => <Vehicle>[
+        for (final row in b.rows)
+          for (final t in row.next)
+            if (t.vehicle != null) t.vehicle!,
+      ],
+      orElse: () => const <Vehicle>[],
+    );
+    // One bus can serve two rows of the same board; drawing it twice stacks markers.
+    final unique = {for (final v in vehicles) v.id: v}.values.toList(growable: false);
+    final city = ref.watch(currentCityProvider);
+    return TransitMap(
+      initialCenter: stop.position,
+      initialZoom: 15.5,
+      markers: [MapPoint(id: stop.id, position: stop.position, color: color, radius: 10, strokeWidth: 3)],
+      vehicles: [
+        for (final v in unique)
+          MapPoint(
+            id: v.id,
+            position: v.position,
+            color: mapVehicleColor(componentColor(v.component, city: city)),
+            radius: 6,
+            strokeWidth: 1.5,
+            bearing: v.bearing,
+            label: v.routeShortName,
+          ),
+      ],
+      // Leave room for the sheet at its resting height, so a bus is never drawn under it.
+      fitPadding: const EdgeInsets.fromLTRB(40, 120, 40, 320),
+    );
+  }
+}
