@@ -472,6 +472,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sourceEstimated => 'تقديري';
 
   @override
+  String get boardTimetableOnly =>
+      'هذه المدينة لا تنشر بيانات مباشرة. جميع الأوقات هنا مأخوذة من الجدول الزمني.';
+
+  @override
   String stopsAway(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

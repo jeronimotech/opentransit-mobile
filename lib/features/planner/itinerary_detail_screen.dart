@@ -1056,7 +1056,6 @@ class _DepartureChips extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toString();
     final scheme = Theme.of(context).colorScheme;
-    final sem = context.semantic;
     final next = ref.watch(nextBusesProvider(StopRouteKey(cityId, stopId, routeId))).asData?.value;
     final options = (next?.next ?? const <NextBus>[]).take(3).toList();
     if (options.isEmpty) return const SizedBox.shrink();
@@ -1086,12 +1085,19 @@ class _DepartureChips extends ConsumerWidget {
                   selectedColor: color.withValues(alpha: 0.18),
                   visualDensity: VisualDensity.compact,
                   materialTapTargetSize: MaterialTapTargetSize.padded,
-                  avatar: n.isLive
-                      ? Container(width: 8, height: 8, decoration: BoxDecoration(color: sem.live, shape: BoxShape.circle))
-                      : null,
+                  // An estimate used to show as a bare clock, which reads as the timetable. It is
+                  // neither: a bus is out there, we just paired it by stop rather than by trip.
+                  avatar: n.source == 'scheduled' ? null : SourceDot(source: n.source, size: 8),
                   label: Text(
-                    n.isLive ? '${formatClock(n.time, locale)} · ${l10n.sourceLive}' : formatClock(n.time, locale),
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: n.isLive ? sem.live : scheme.onSurface),
+                    n.source == 'scheduled'
+                        ? formatClock(n.time, locale)
+                        : '${formatClock(n.time, locale)} · ${SourceBadge.label(l10n, n.source)}',
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: n.source == 'scheduled'
+                            ? scheme.onSurface
+                            : SourceBadge.color(context, n.source)),
                   ),
                   onSelected: (_) => onPick(n.time, realtime: n.isLive, tripId: n.tripId),
                 ),

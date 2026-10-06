@@ -137,6 +137,7 @@
   "sourceLive": "Em tempo real",
   "sourceScheduled": "Segundo o horário",
   "sourceEstimated": "Estimado",
+  "boardTimetableOnly": "Esta cidade não publica dados em tempo real. Todos os horários vêm da tabela.",
   "stopsAway": "{count, plural, =1{1 paragem} other{{count} paragens}}",
   "noBuses": "Sem autocarros próximos para esta carreira.",
   "searchStopHint": "Procurar estação ou paragem",

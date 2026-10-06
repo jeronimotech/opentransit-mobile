@@ -199,4 +199,62 @@ void main() {
       expect(BoardTime.fromJson({...row(), 'vehicle': null}).vehicle, isNull);
     });
   });
+
+  group('BoardTime says how much to trust the time', () {
+    Map<String, dynamic> row({String? source, bool realtime = true}) => {
+          'time': '2026-10-06T12:00:00Z',
+          'minutes': 4,
+          'realtime': realtime,
+          'source': ?source,
+        };
+
+    test('keeps the three states apart', () {
+      final live = BoardTime.fromJson(row(source: 'live'));
+      expect(live.isLive, isTrue);
+      expect(live.isEstimated, isFalse);
+
+      final est = BoardTime.fromJson(row(source: 'estimated'));
+      expect(est.isEstimated, isTrue);
+      expect(est.isLive, isFalse);
+      // An estimate is still better than the timetable — just not a bus reporting itself.
+      expect(est.realtime, isTrue);
+
+      final sched = BoardTime.fromJson(row(source: 'scheduled', realtime: false));
+      expect(sched.isLive, isFalse);
+      expect(sched.isEstimated, isFalse);
+    });
+
+    test('an API that predates the field is read as live, not as an estimate', () {
+      // Under-claiming would be safer in general, but inventing "estimated" would put a word on
+      // screen the server never said. Old servers only knew realtime or not; say exactly that.
+      expect(BoardTime.fromJson(row()).source, 'live');
+      expect(BoardTime.fromJson(row(realtime: false)).source, 'scheduled');
+    });
+
+    test('the client-side fallback derives it from the departure it grouped', () {
+      // BoardResponse.fromDepartures is used against an API with no /board, where the three
+      // states have to come out of Departure.realtimeSource instead.
+      BoardTime only(Map<String, dynamic> dep) => BoardResponse.fromDepartures(
+            DeparturesResponse.fromJson({
+              'stop': {'id': 'bogota:S1', 'name': 'Portal Sur', 'lat': 4.6, 'lon': -74.1},
+              'generatedAt': '2026-10-06T12:00:00Z',
+              'departures': [dep],
+            }),
+          ).rows.single.next.single;
+
+      Map<String, dynamic> dep({bool realtime = true, String? src}) => {
+            'route': {'id': 'bogota:G12', 'shortName': 'G12'},
+            'headsign': 'Norte',
+            'tripId': 'bogota:t1',
+            'scheduledTime': '2026-10-06T12:05:00Z',
+            'realtimeTime': realtime ? '2026-10-06T12:04:00Z' : null,
+            'realtime': realtime,
+            'realtimeSource': ?src,
+          };
+
+      expect(only(dep(src: 'trip')).source, 'live');
+      expect(only(dep(src: 'stop')).source, 'estimated');
+      expect(only(dep(realtime: false)).source, 'scheduled');
+    });
+  });
 }

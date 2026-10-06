@@ -272,6 +272,7 @@
   "sourceLive": "En vivo",
   "sourceScheduled": "Por programación",
   "sourceEstimated": "Estimado",
+  "boardTimetableOnly": "Esta ciudad no publica datos en vivo. Todos los tiempos vienen de la programación.",
   "stopsAway": "{count, plural, =1{1 parada} other{{count} paradas}}",
   "@stopsAway": {
     "placeholders": {

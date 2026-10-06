@@ -474,6 +474,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sourceEstimated => 'Estimated';
 
   @override
+  String get boardTimetableOnly =>
+      'This city publishes no live data. Every time here comes from the timetable.';
+
+  @override
   String stopsAway(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

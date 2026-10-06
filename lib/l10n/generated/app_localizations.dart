@@ -930,6 +930,12 @@ abstract class AppLocalizations {
   /// **'Estimado'**
   String get sourceEstimated;
 
+  /// No description provided for @boardTimetableOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta ciudad no publica datos en vivo. Todos los tiempos vienen de la programación.'**
+  String get boardTimetableOnly;
+
   /// No description provided for @stopsAway.
   ///
   /// In es, this message translates to:

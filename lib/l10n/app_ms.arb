@@ -137,6 +137,7 @@
   "sourceLive": "Langsung",
   "sourceScheduled": "Mengikut jadual",
   "sourceEstimated": "Anggaran",
+  "boardTimetableOnly": "Bandar ini tidak menerbitkan data langsung. Semua masa di sini diambil daripada jadual.",
   "stopsAway": "{count, plural, =1{1 hentian} other{{count} hentian}}",
   "noBuses": "Tiada bas terdekat untuk laluan ini.",
   "searchStopHint": "Cari stesen atau hentian",

@@ -26,6 +26,7 @@ class BoardTime {
     required this.time,
     required this.minutes,
     required this.realtime,
+    this.source = 'scheduled',
     this.delaySeconds,
     this.tripId,
     this.vehicleId,
@@ -34,6 +35,13 @@ class BoardTime {
   final DateTime time;
   final int minutes;
   final bool realtime;
+
+  /// `live | estimated | scheduled`, the same three words [NextBus.source] uses.
+  ///
+  /// [realtime] cannot tell the middle case from the first: it is true both for a prediction whose
+  /// trip the schedule knows and for one the API rescued by pairing on stop and route. The second
+  /// is an inference, and a rider is owed that difference.
+  final String source;
   final int? delaySeconds;
   final String? tripId;
   final String? vehicleId;
@@ -43,13 +51,20 @@ class BoardTime {
   /// for a feed whose trip ids are not the schedule's.
   final Vehicle? vehicle;
 
+  bool get isLive => source == 'live';
+  bool get isEstimated => source == 'estimated';
+
   factory BoardTime.fromJson(Map<String, dynamic> j, {DateTime? now}) {
     final t = parseTime(j['time']) ?? DateTime.now();
+    final rt = asBool(j['realtime']);
     return BoardTime(
       time: t,
       minutes: asInt(j['minutes']) ??
           (t.difference(now ?? DateTime.now()).inSeconds / 60).round(),
-      realtime: asBool(j['realtime']),
+      realtime: rt,
+      // An API that predates the field only tells us realtime or not. Call that "live" rather than
+      // inventing an estimate it never claimed; the field is what narrows it.
+      source: j['source']?.toString() ?? (rt ? 'live' : 'scheduled'),
       delaySeconds: asInt(j['delaySeconds']),
       tripId: j['tripId']?.toString(),
       vehicleId: j['vehicleId']?.toString(),
@@ -126,6 +141,9 @@ class BoardResponse {
               time: dep.effectiveTime,
               minutes: (dep.effectiveTime.difference(at).inSeconds / 60).round(),
               realtime: dep.realtime,
+              source: !dep.realtime
+                  ? 'scheduled'
+                  : (dep.realtimeSource == 'trip' ? 'live' : 'estimated'),
               delaySeconds: dep.delaySeconds,
               tripId: dep.tripId,
               vehicleId: dep.vehicleId,

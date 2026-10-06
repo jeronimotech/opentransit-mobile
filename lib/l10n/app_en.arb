@@ -157,6 +157,7 @@
   "sourceLive": "Live",
   "sourceScheduled": "Scheduled",
   "sourceEstimated": "Estimated",
+  "boardTimetableOnly": "This city publishes no live data. Every time here comes from the timetable.",
   "stopsAway": "{count, plural, =1{1 stop} other{{count} stops}}",
   "@stopsAway": {
     "placeholders": {

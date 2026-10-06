@@ -476,6 +476,10 @@ class AppLocalizationsMs extends AppLocalizations {
   String get sourceEstimated => 'Anggaran';
 
   @override
+  String get boardTimetableOnly =>
+      'Bandar ini tidak menerbitkan data langsung. Semua masa di sini diambil daripada jadual.';
+
+  @override
   String stopsAway(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -476,6 +476,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sourceEstimated => 'Estimé';
 
   @override
+  String get boardTimetableOnly =>
+      'Cette ville ne publie pas de données en temps réel. Tous les horaires viennent de la grille.';
+
+  @override
   String stopsAway(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

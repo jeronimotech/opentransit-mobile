@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/models.dart';
 import '../../../core/analytics/analytics_event.dart';
 import '../../../core/providers.dart';
-import '../../../core/theme/semantic_colors.dart';
 import '../../../core/utils/text.dart';
 import '../../../core/widgets/common.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -41,6 +40,10 @@ class _BoardViewState extends ConsumerState<BoardView> {
     final key = CityKey(cityId, stopId);
     final board = ref.watch(boardProvider(key));
     final scheme = Theme.of(context).colorScheme;
+    // Casablanca and Santiago publish no realtime at all. The city picker signals that by the
+    // absence of a live badge, which is not something anyone reads; say it where the times are.
+    final city = ref.watch(cityProvider(cityId)).asData?.value;
+    final timetableOnly = city != null && !city.features.realtimeVehicles && !city.features.tripUpdates;
     if (!_tracked && board.hasValue && !compact) {
       _tracked = true;
       ref.read(analyticsProvider).track(Ev.boardView, {'stopId': stopId, 'component': board.value?.stop.component?.name});
@@ -66,6 +69,21 @@ class _BoardViewState extends ConsumerState<BoardView> {
                     label: Text(l10n.locateTitle),
                   ),
                 ],
+              ],
+            ),
+          ),
+        if (timetableOnly)
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, compact ? 2 : 4, 16, 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.schedule, size: 14, color: scheme.outline),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(l10n.boardTimetableOnly,
+                      style: TextStyle(fontSize: 11, color: scheme.onSurfaceVariant, height: 1.3)),
+                ),
               ],
             ),
           ),
@@ -111,13 +129,12 @@ class BoardRowTile extends StatelessWidget {
         headsignLabel(row.route.longName, towards: l10n.towards) ?? row.route.shortName;
     final window = row.route.serviceWindow;
     final etaText = first == null ? null : (first.minutes <= 0 ? l10n.arrivingNow : l10n.minutesOnly(first.minutes));
-    final sem = context.semantic;
-    final firstLive = first?.realtime ?? false;
+    final source = first?.source ?? 'scheduled';
     return Semantics(
       label: [
         row.route.shortName,
         label,
-        if (etaText != null) '$etaText · ${first!.realtime ? l10n.sourceLive : l10n.sourceScheduled}',
+        if (etaText != null) '$etaText · ${SourceBadge.label(l10n, source)}',
       ].join(', '),
       child: ExcludeSemantics(
         child: InkWell(
@@ -157,10 +174,17 @@ class BoardRowTile extends StatelessWidget {
                               fontSize: compact ? 18 : 22,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -0.5,
-                              color: firstLive ? sem.live : scheme.onSurface,
+                              color: source == 'scheduled'
+                                  ? scheme.onSurface
+                                  : SourceBadge.color(context, source),
                             ),
                       ),
-                      if (firstLive) const LiveBadge(compact: true),
+                      // The pulse means a bus is reporting itself. An estimate is not reporting
+                      // anything, so it gets the word instead — a pulsing dot would be the lie.
+                      if (first!.isLive)
+                        const LiveBadge(compact: true)
+                      else if (first.isEstimated)
+                        const SourceBadge(source: 'estimated', dense: true),
                     ],
                   ),
               ],
@@ -174,7 +198,8 @@ class BoardRowTile extends StatelessWidget {
   String _stopIdFrom(BuildContext context) => _StopIdScope.of(context) ?? '';
 }
 
-/// "luego 5 · 7 min" where each number carries a live dot only when realtime.
+/// "luego 5 · 7 min" where each number carries a filled dot when a bus is reporting and a hollow
+/// ring when the time is our estimate — same shape, unfilled, because nothing confirmed it.
 class _ThenTimes extends StatelessWidget {
   const _ThenTimes({required this.times, this.compact = false});
   final List<BoardTime> times;
@@ -186,7 +211,6 @@ class _ThenTimes extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final size = compact ? 11.0 : 12.0;
     final muted = TextStyle(color: scheme.onSurfaceVariant, fontSize: size);
-    final live = context.semantic.live;
     // l10n.andThenTimes gives "y en {times} min": split around the placeholder.
     final template = l10n.andThenTimes('\u0000');
     final parts = template.split('\u0000');
@@ -197,12 +221,14 @@ class _ThenTimes extends StatelessWidget {
         for (var i = 0; i < times.length; i++) ...[
           if (i > 0) Text(', ', style: muted),
           if (times[i].realtime) ...[
-            Container(width: 6, height: 6, decoration: BoxDecoration(color: live, shape: BoxShape.circle)),
+            SourceDot(source: times[i].source),
             const SizedBox(width: 3),
           ],
           Text('${times[i].minutes.clamp(0, 999)}',
               style: TextStyle(
-                  color: times[i].realtime ? live : scheme.onSurfaceVariant,
+                  color: times[i].realtime
+                      ? SourceBadge.color(context, times[i].source)
+                      : scheme.onSurfaceVariant,
                   fontSize: size,
                   fontWeight: FontWeight.w700)),
         ],

@@ -256,6 +256,77 @@ class _Label extends StatelessWidget {
       );
 }
 
+/// How much to trust a time: `live | estimated | scheduled`.
+///
+/// One component so the three words read the same everywhere, and so "estimated" is impossible to
+/// forget — it is the state we used to hide inside "live". Green reported itself, orange is our
+/// inference, grey is the timetable. Pass [dense] where it sits under a big number.
+class SourceBadge extends StatelessWidget {
+  const SourceBadge({super.key, required this.source, this.dense = false});
+
+  /// `live | estimated | scheduled`. Anything else reads as scheduled, which is the safe way to
+  /// be wrong: it under-claims rather than over-claims.
+  final String source;
+  final bool dense;
+
+  /// The three words on their own, for a semantics label or a sentence.
+  static String label(AppLocalizations l10n, String source) => switch (source) {
+        'live' => l10n.sourceLive,
+        'estimated' => l10n.sourceEstimated,
+        _ => l10n.sourceScheduled,
+      };
+
+  static Color color(BuildContext context, String source) => switch (source) {
+        'live' => context.semantic.live,
+        'estimated' => context.semantic.disruption,
+        _ => Theme.of(context).colorScheme.outline,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final text = label(AppLocalizations.of(context), source);
+    final c = color(context, source);
+    return Semantics(
+      label: text,
+      child: ExcludeSemantics(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: dense ? 5 : 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: c.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Text(text,
+              style: TextStyle(color: c, fontSize: dense ? 10 : 11, fontWeight: FontWeight.w700)),
+        ),
+      ),
+    );
+  }
+}
+
+/// The badge's dot on its own, for rows too tight for the word: filled when a bus reported the
+/// time, a hollow ring when the time is our estimate. Same shape either way, so the difference
+/// reads as "unconfirmed" rather than as a different kind of thing.
+class SourceDot extends StatelessWidget {
+  const SourceDot({super.key, required this.source, this.size = 6});
+  final String source;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = SourceBadge.color(context, source);
+    final filled = source == 'live';
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: filled ? c : Colors.transparent,
+        shape: BoxShape.circle,
+        border: filled ? null : Border.all(color: c, width: 1.2),
+      ),
+    );
+  }
+}
+
 /// "Fuera de horario · próximo 04:30" / "Sin servicio hoy"; nothing while active.
 class ServiceHint extends StatelessWidget {
   const ServiceHint(this.window, {super.key, this.dense = false});

@@ -567,7 +567,7 @@ class _NextBusesList extends ConsumerWidget {
                     style: const TextStyle(fontWeight: FontWeight.w700)),
                 subtitle: Row(
                   children: [
-                    _SourceBadge(source: n.source),
+                    SourceBadge(source: n.source),
                     const SizedBox(width: 8),
                     Text(formatClock(n.time, locale)),
                     if (n.stopsAway != null) ...[
@@ -608,25 +608,3 @@ class _NextBusesList extends ConsumerWidget {
   }
 }
 
-class _SourceBadge extends StatelessWidget {
-  const _SourceBadge({required this.source});
-  final String source;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final (text, color) = switch (source) {
-      'live' => (l10n.sourceLive, Colors.green.shade700),
-      'estimated' => (l10n.sourceEstimated, Colors.orange.shade800),
-      _ => (l10n.sourceScheduled, Theme.of(context).colorScheme.outline),
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(text, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700)),
-    );
-  }
-}

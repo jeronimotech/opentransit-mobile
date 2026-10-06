@@ -137,6 +137,7 @@
   "sourceLive": "In tempo reale",
   "sourceScheduled": "Da orario",
   "sourceEstimated": "Stimato",
+  "boardTimetableOnly": "Questa città non pubblica dati in tempo reale. Tutti gli orari vengono dall'orario programmato.",
   "stopsAway": "{count, plural, =1{1 fermata} other{{count} fermate}}",
   "noBuses": "Nessun bus in arrivo per questa linea.",
   "searchStopHint": "Cerca stazione o fermata",

@@ -137,6 +137,7 @@
   "sourceLive": "مباشر",
   "sourceScheduled": "حسب الجدول",
   "sourceEstimated": "تقديري",
+  "boardTimetableOnly": "هذه المدينة لا تنشر بيانات مباشرة. جميع الأوقات هنا مأخوذة من الجدول الزمني.",
   "stopsAway": "{count, plural, =1{موقف واحد} other{{count} مواقف}}",
   "noBuses": "لا حافلات قادمة لهذا الخط.",
   "searchStopHint": "ابحث عن محطة أو موقف",
