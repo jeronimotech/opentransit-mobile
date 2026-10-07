@@ -1881,4 +1881,24 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get offlineFailed => 'Jadual tidak dapat dimuat turun';
+
+  @override
+  String get appIconTitle => 'Ikon apl';
+
+  @override
+  String get appIconDefault => 'Lalai';
+
+  @override
+  String get appIconExplain =>
+      'Menukar ikon kepada warna pengangkutan bandar anda.';
+
+  @override
+  String get appIconChanged => 'Ikon ditukar';
+
+  @override
+  String get appIconFailed => 'Ikon tidak dapat ditukar';
+
+  @override
+  String get appIconAndroidNote =>
+      'Menukarnya akan menutup apl, dan pintasan skrin utama mungkin perlu ditambah semula.';
 }

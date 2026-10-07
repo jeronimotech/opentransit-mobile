@@ -3257,6 +3257,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo descargar el horario'**
   String get offlineFailed;
+
+  /// No description provided for @appIconTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Icono de la app'**
+  String get appIconTitle;
+
+  /// No description provided for @appIconDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'Predeterminado'**
+  String get appIconDefault;
+
+  /// No description provided for @appIconExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'Pone el icono en los colores del transporte de tu ciudad.'**
+  String get appIconExplain;
+
+  /// No description provided for @appIconChanged.
+  ///
+  /// In es, this message translates to:
+  /// **'Icono cambiado'**
+  String get appIconChanged;
+
+  /// No description provided for @appIconFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cambiar el icono'**
+  String get appIconFailed;
+
+  /// No description provided for @appIconAndroidNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Al cambiarlo, Android cierra la app y puede que tengas que volver a agregar el acceso directo.'**
+  String get appIconAndroidNote;
 }
 
 class _AppLocalizationsDelegate

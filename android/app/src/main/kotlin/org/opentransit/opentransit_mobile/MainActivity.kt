@@ -50,5 +50,6 @@ class MainActivity : FlutterActivity() {
         WatchDataLayerBridge.register(messenger, applicationContext)
         GoNotificationBridge.register(messenger, applicationContext)
         PushTokenBridge.register(messenger, applicationContext)
+        CityIconBridge.register(messenger, applicationContext)
     }
 }

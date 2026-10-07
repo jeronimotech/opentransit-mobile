@@ -15,6 +15,7 @@ import 'api/api_client.dart';
 import 'api/http_api_client.dart';
 import 'api/mock_api_client.dart';
 import 'config.dart';
+import 'city_icon.dart';
 import 'connectivity.dart';
 import 'offline/offline_board.dart';
 import 'offline/offline_store.dart';
@@ -553,6 +554,12 @@ final departuresProvider =
   ref.onDispose(timer.cancel);
   return ref.watch(apiClientProvider).departures(k.cityId, k.id);
 });
+
+final cityIconProvider = Provider<CityIcon>((ref) => CityIcon());
+
+/// Which city's icon is on the home screen, or null for the default one.
+final currentCityIconProvider =
+    FutureProvider<String?>((ref) => ref.watch(cityIconProvider).current());
 
 /// One store for every city; the files are per city, the object is not.
 final offlineStoreProvider = Provider<OfflineStore>((ref) => OfflineStore());

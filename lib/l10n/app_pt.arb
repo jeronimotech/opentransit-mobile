@@ -538,5 +538,11 @@
   },
   "offlineExplain": "Guarda o horário completo da cidade para as partidas funcionarem no subterrâneo ou sem dados. Não inclui tempo real.",
   "offlineDownloading": "A descarregar…",
-  "offlineFailed": "Não foi possível descarregar o horário"
+  "offlineFailed": "Não foi possível descarregar o horário",
+  "appIconTitle": "Ícone da app",
+  "appIconDefault": "Predefinido",
+  "appIconExplain": "Põe o ícone nas cores dos transportes da tua cidade.",
+  "appIconChanged": "Ícone alterado",
+  "appIconFailed": "Não foi possível alterar o ícone",
+  "appIconAndroidNote": "Ao alterá-lo o Android fecha a app, e pode ser preciso voltar a adicionar o atalho."
 }

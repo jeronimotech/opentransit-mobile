@@ -538,5 +538,11 @@
   },
   "offlineExplain": "Conserve tout l'horaire de la ville pour que les départs fonctionnent sous terre ou sans données. Le temps réel n'est pas inclus.",
   "offlineDownloading": "Téléchargement…",
-  "offlineFailed": "L'horaire n'a pas pu être téléchargé"
+  "offlineFailed": "L'horaire n'a pas pu être téléchargé",
+  "appIconTitle": "Icône de l'app",
+  "appIconDefault": "Par défaut",
+  "appIconExplain": "Met l'icône aux couleurs des transports de votre ville.",
+  "appIconChanged": "Icône changée",
+  "appIconFailed": "L'icône n'a pas pu être changée",
+  "appIconAndroidNote": "Le changement ferme l'app, et le raccourci devra peut-être être réajouté."
 }

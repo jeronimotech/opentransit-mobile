@@ -1870,4 +1870,23 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get offlineFailed => 'تعذّر تنزيل الجدول';
+
+  @override
+  String get appIconTitle => 'أيقونة التطبيق';
+
+  @override
+  String get appIconDefault => 'الافتراضية';
+
+  @override
+  String get appIconExplain => 'تجعل الأيقونة بألوان النقل في مدينتك.';
+
+  @override
+  String get appIconChanged => 'تم تغيير الأيقونة';
+
+  @override
+  String get appIconFailed => 'تعذّر تغيير الأيقونة';
+
+  @override
+  String get appIconAndroidNote =>
+      'تغييرها يُغلق التطبيق، وقد تحتاج إلى إضافة الاختصار من جديد.';
 }

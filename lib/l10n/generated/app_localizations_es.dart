@@ -1882,4 +1882,24 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get offlineFailed => 'No se pudo descargar el horario';
+
+  @override
+  String get appIconTitle => 'Icono de la app';
+
+  @override
+  String get appIconDefault => 'Predeterminado';
+
+  @override
+  String get appIconExplain =>
+      'Pone el icono en los colores del transporte de tu ciudad.';
+
+  @override
+  String get appIconChanged => 'Icono cambiado';
+
+  @override
+  String get appIconFailed => 'No se pudo cambiar el icono';
+
+  @override
+  String get appIconAndroidNote =>
+      'Al cambiarlo, Android cierra la app y puede que tengas que volver a agregar el acceso directo.';
 }

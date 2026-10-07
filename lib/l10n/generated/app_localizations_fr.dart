@@ -1892,4 +1892,24 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get offlineFailed => 'L\'horaire n\'a pas pu être téléchargé';
+
+  @override
+  String get appIconTitle => 'Icône de l\'app';
+
+  @override
+  String get appIconDefault => 'Par défaut';
+
+  @override
+  String get appIconExplain =>
+      'Met l\'icône aux couleurs des transports de votre ville.';
+
+  @override
+  String get appIconChanged => 'Icône changée';
+
+  @override
+  String get appIconFailed => 'L\'icône n\'a pas pu être changée';
+
+  @override
+  String get appIconAndroidNote =>
+      'Le changement ferme l\'app, et le raccourci devra peut-être être réajouté.';
 }

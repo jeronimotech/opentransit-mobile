@@ -10,6 +10,7 @@ import '../../core/providers.dart';
 import '../../core/widgets/common.dart';
 import '../../core/utils/links.dart';
 import '../../l10n/generated/app_localizations.dart';
+import 'widgets/app_icon_tile.dart';
 import 'widgets/offline_tile.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -78,6 +79,8 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push('/$cityId/trips'),
           ),
+          SectionTitle(l10n.appIconTitle),
+          const AppIconTile(),
           SectionTitle(l10n.offlineTitle),
           OfflineTile(cityId: cityId),
           SectionTitle(l10n.accessibility),

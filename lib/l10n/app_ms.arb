@@ -538,5 +538,11 @@
   },
   "offlineExplain": "Menyimpan seluruh jadual bandar supaya perjalanan berfungsi di bawah tanah atau tanpa data. Masa nyata tidak disertakan.",
   "offlineDownloading": "Memuat turun…",
-  "offlineFailed": "Jadual tidak dapat dimuat turun"
+  "offlineFailed": "Jadual tidak dapat dimuat turun",
+  "appIconTitle": "Ikon apl",
+  "appIconDefault": "Lalai",
+  "appIconExplain": "Menukar ikon kepada warna pengangkutan bandar anda.",
+  "appIconChanged": "Ikon ditukar",
+  "appIconFailed": "Ikon tidak dapat ditukar",
+  "appIconAndroidNote": "Menukarnya akan menutup apl, dan pintasan skrin utama mungkin perlu ditambah semula."
 }

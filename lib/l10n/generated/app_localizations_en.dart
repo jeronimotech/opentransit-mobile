@@ -1875,4 +1875,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineFailed => 'The timetable could not be downloaded';
+
+  @override
+  String get appIconTitle => 'App icon';
+
+  @override
+  String get appIconDefault => 'Default';
+
+  @override
+  String get appIconExplain => 'Puts the icon in your city\'s transit colours.';
+
+  @override
+  String get appIconChanged => 'Icon changed';
+
+  @override
+  String get appIconFailed => 'The icon could not be changed';
+
+  @override
+  String get appIconAndroidNote =>
+      'Changing it closes the app, and a home-screen shortcut may need to be added again.';
 }

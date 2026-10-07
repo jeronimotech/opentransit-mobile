@@ -538,5 +538,11 @@
   },
   "offlineExplain": "Conserva l'intero orario della città così le partenze funzionano sottoterra o senza dati. Il tempo reale non è incluso.",
   "offlineDownloading": "Scaricamento…",
-  "offlineFailed": "Non è stato possibile scaricare l'orario"
+  "offlineFailed": "Non è stato possibile scaricare l'orario",
+  "appIconTitle": "Icona dell'app",
+  "appIconDefault": "Predefinita",
+  "appIconExplain": "Mette l'icona nei colori del trasporto della tua città.",
+  "appIconChanged": "Icona cambiata",
+  "appIconFailed": "Non è stato possibile cambiare l'icona",
+  "appIconAndroidNote": "Cambiandola Android chiude l'app, e il collegamento potrebbe dover essere riaggiunto."
 }

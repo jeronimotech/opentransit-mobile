@@ -976,5 +976,11 @@
   },
   "offlineExplain": "Keeps the city's whole timetable so departures work underground or with no data. Realtime is not included.",
   "offlineDownloading": "Downloading…",
-  "offlineFailed": "The timetable could not be downloaded"
+  "offlineFailed": "The timetable could not be downloaded",
+  "appIconTitle": "App icon",
+  "appIconDefault": "Default",
+  "appIconExplain": "Puts the icon in your city's transit colours.",
+  "appIconChanged": "Icon changed",
+  "appIconFailed": "The icon could not be changed",
+  "appIconAndroidNote": "Changing it closes the app, and a home-screen shortcut may need to be added again."
 }
