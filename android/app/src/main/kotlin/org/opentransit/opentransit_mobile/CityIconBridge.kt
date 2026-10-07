@@ -31,8 +31,21 @@ object CityIconBridge {
         "lisboa", "roma", "santiago", "toronto",
     )
 
+    /**
+     * The namespace the manifest resolves `.Launcher…` against, which is NOT the application id.
+     *
+     * `namespace` is org.opentransit.opentransit_mobile and `applicationId` is
+     * com.jeronimotech.opentransit, so `ComponentName(context, ".Launcher")` — which expands with
+     * `context.packageName`, the application id — names a component that does not exist.
+     * `setComponentEnabledSetting` throws for an unknown component, and since `repair` runs at
+     * startup that is a crash on launch, for a cosmetic feature.
+     *
+     * Derived from a real class rather than written out, so it cannot drift if the namespace moves.
+     */
+    private val NAMESPACE: String = MainActivity::class.java.name.substringBeforeLast('.')
+
     private fun alias(context: Context, suffix: String) =
-        ComponentName(context, "${context.packageName}.$suffix")
+        ComponentName(context.packageName, "$NAMESPACE.$suffix")
 
     private fun aliasFor(city: String?): String =
         if (city != null && CITIES.contains(city)) {
@@ -44,14 +57,28 @@ object CityIconBridge {
     private fun all(): List<String> = listOf(DEFAULT) + CITIES.map { aliasFor(it) }
 
     private fun isEnabled(context: Context, suffix: String): Boolean =
-        context.packageManager.getComponentEnabledSetting(alias(context, suffix)) ==
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        try {
+            context.packageManager.getComponentEnabledSetting(alias(context, suffix)) ==
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        } catch (e: IllegalArgumentException) {
+            false
+        }
 
     /** The alias currently showing, or the default when the state says nothing. */
     private fun current(context: Context): String =
         all().firstOrNull { isEnabled(context, it) } ?: DEFAULT
 
     private fun setEnabled(context: Context, suffix: String, on: Boolean) {
+        // Never fatal. This whole feature is a colour on a home screen, and the one thing it must
+        // not do is take the app down with it.
+        try {
+            doSetEnabled(context, suffix, on)
+        } catch (e: IllegalArgumentException) {
+            // An alias this build does not declare. Nothing to enable, nothing to repair.
+        }
+    }
+
+    private fun doSetEnabled(context: Context, suffix: String, on: Boolean) {
         context.packageManager.setComponentEnabledSetting(
             alias(context, suffix),
             if (on) PackageManager.COMPONENT_ENABLED_STATE_ENABLED
