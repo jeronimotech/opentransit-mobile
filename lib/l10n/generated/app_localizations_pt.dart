@@ -1897,7 +1897,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appIconExplain =>
-      'Põe o ícone nas cores dos transportes da tua cidade.';
+      'Escolhe de que cidade queres o ícone no teu ecrã inicial.';
 
   @override
   String get appIconChanged => 'Ícone alterado';
@@ -1908,4 +1908,7 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get appIconAndroidNote =>
       'Ao alterá-lo o Android fecha a app, e pode ser preciso voltar a adicionar o atalho.';
+
+  @override
+  String get appIconYourCity => 'A tua cidade';
 }

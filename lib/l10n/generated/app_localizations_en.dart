@@ -1883,7 +1883,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appIconDefault => 'Default';
 
   @override
-  String get appIconExplain => 'Puts the icon in your city\'s transit colours.';
+  String get appIconExplain =>
+      'Choose which city\'s icon sits on your home screen.';
 
   @override
   String get appIconChanged => 'Icon changed';
@@ -1894,4 +1895,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get appIconAndroidNote =>
       'Changing it closes the app, and a home-screen shortcut may need to be added again.';
+
+  @override
+  String get appIconYourCity => 'Your city';
 }

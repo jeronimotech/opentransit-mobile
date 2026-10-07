@@ -1198,8 +1198,9 @@
   "offlineFailed": "No se pudo descargar el horario",
   "appIconTitle": "Icono de la app",
   "appIconDefault": "Predeterminado",
-  "appIconExplain": "Pone el icono en los colores del transporte de tu ciudad.",
+  "appIconExplain": "Elegí de qué ciudad querés el icono en tu pantalla de inicio.",
   "appIconChanged": "Icono cambiado",
   "appIconFailed": "No se pudo cambiar el icono",
-  "appIconAndroidNote": "Al cambiarlo, Android cierra la app y puede que tengas que volver a agregar el acceso directo."
+  "appIconAndroidNote": "Al cambiarlo, Android cierra la app y puede que tengas que volver a agregar el acceso directo.",
+  "appIconYourCity": "Tu ciudad"
 }

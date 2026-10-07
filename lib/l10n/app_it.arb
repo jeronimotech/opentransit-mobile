@@ -541,8 +541,9 @@
   "offlineFailed": "Non è stato possibile scaricare l'orario",
   "appIconTitle": "Icona dell'app",
   "appIconDefault": "Predefinita",
-  "appIconExplain": "Mette l'icona nei colori del trasporto della tua città.",
+  "appIconExplain": "Scegli di quale città vuoi l'icona sulla schermata principale.",
   "appIconChanged": "Icona cambiata",
   "appIconFailed": "Non è stato possibile cambiare l'icona",
-  "appIconAndroidNote": "Cambiandola Android chiude l'app, e il collegamento potrebbe dover essere riaggiunto."
+  "appIconAndroidNote": "Cambiandola Android chiude l'app, e il collegamento potrebbe dover essere riaggiunto.",
+  "appIconYourCity": "La tua città"
 }

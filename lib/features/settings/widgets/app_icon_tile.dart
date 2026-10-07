@@ -22,7 +22,15 @@ class AppIconTile extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final citiesAsync = ref.watch(citiesProvider);
-    final cities = citiesAsync.asData?.value ?? const <City>[];
+    final all = citiesAsync.asData?.value ?? const <City>[];
+    // The rider's own city comes first, ahead of the default, because the question this row asks
+    // is "which city", not "which colour" — and the answer most people want is the one they live
+    // in. Finding it eleventh in an alphabetical list is what made it read as a palette.
+    final home = ref.watch(settingsProvider).cityId;
+    final cities = [
+      ...all.where((c) => c.id == home),
+      ...all.where((c) => c.id != home),
+    ];
     final current = ref.watch(currentCityIconProvider).asData?.value;
 
     Future<void> pick(String? city) async {
@@ -60,20 +68,33 @@ class AppIconTile extends ConsumerWidget {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              _Swatch(
-                key: const ValueKey('app-icon-default'),
-                label: l10n.appIconDefault,
-                color: scheme.outlineVariant,
-                selected: current == null,
-                onTap: () => pick(null),
-              ),
-              for (final c in cities)
+              for (final c in cities) ...[
                 _Swatch(
                   key: ValueKey('app-icon-${c.id}'),
                   label: c.name,
+                  // Named as theirs, so the row reads as a list of cities rather than of colours.
+                  hint: c.id == home ? l10n.appIconYourCity : null,
                   color: colorFromHex(c.primaryColor),
                   selected: current == c.id,
                   onTap: () => pick(c.id),
+                ),
+                if (c.id == home)
+                  _Swatch(
+                    key: const ValueKey('app-icon-default'),
+                    label: l10n.appIconDefault,
+                    color: scheme.outlineVariant,
+                    selected: current == null,
+                    onTap: () => pick(null),
+                  ),
+              ],
+              // No city loaded means no home city either; the default still has to be reachable.
+              if (cities.every((c) => c.id != home))
+                _Swatch(
+                  key: const ValueKey('app-icon-default'),
+                  label: l10n.appIconDefault,
+                  color: scheme.outlineVariant,
+                  selected: current == null,
+                  onTap: () => pick(null),
                 ),
             ],
           ),
@@ -92,8 +113,18 @@ class AppIconTile extends ConsumerWidget {
 }
 
 class _Swatch extends StatelessWidget {
-  const _Swatch({super.key, required this.label, required this.color, required this.selected, required this.onTap});
+  const _Swatch({
+    super.key,
+    required this.label,
+    required this.color,
+    required this.selected,
+    required this.onTap,
+    this.hint,
+  });
   final String label;
+
+  /// "Your city", under the rider's own. Nothing under the others.
+  final String? hint;
   final Color color;
   final bool selected;
   final VoidCallback onTap;
@@ -133,8 +164,19 @@ class _Swatch extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 10)),
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: hint != null ? FontWeight.w700 : FontWeight.w400)),
                 ),
+                if (hint != null)
+                  SizedBox(
+                    width: 56,
+                    child: Text(hint!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 9, color: scheme.onSurfaceVariant)),
+                  ),
               ],
             ),
           ),

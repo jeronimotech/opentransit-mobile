@@ -541,8 +541,9 @@
   "offlineFailed": "Jadual tidak dapat dimuat turun",
   "appIconTitle": "Ikon apl",
   "appIconDefault": "Lalai",
-  "appIconExplain": "Menukar ikon kepada warna pengangkutan bandar anda.",
+  "appIconExplain": "Pilih ikon bandar mana yang anda mahu pada skrin utama.",
   "appIconChanged": "Ikon ditukar",
   "appIconFailed": "Ikon tidak dapat ditukar",
-  "appIconAndroidNote": "Menukarnya akan menutup apl, dan pintasan skrin utama mungkin perlu ditambah semula."
+  "appIconAndroidNote": "Menukarnya akan menutup apl, dan pintasan skrin utama mungkin perlu ditambah semula.",
+  "appIconYourCity": "Bandar anda"
 }

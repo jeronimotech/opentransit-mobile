@@ -3273,7 +3273,7 @@ abstract class AppLocalizations {
   /// No description provided for @appIconExplain.
   ///
   /// In es, this message translates to:
-  /// **'Pone el icono en los colores del transporte de tu ciudad.'**
+  /// **'Elegí de qué ciudad querés el icono en tu pantalla de inicio.'**
   String get appIconExplain;
 
   /// No description provided for @appIconChanged.
@@ -3293,6 +3293,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Al cambiarlo, Android cierra la app y puede que tengas que volver a agregar el acceso directo.'**
   String get appIconAndroidNote;
+
+  /// No description provided for @appIconYourCity.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu ciudad'**
+  String get appIconYourCity;
 }
 
 class _AppLocalizationsDelegate

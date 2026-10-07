@@ -541,8 +541,9 @@
   "offlineFailed": "تعذّر تنزيل الجدول",
   "appIconTitle": "أيقونة التطبيق",
   "appIconDefault": "الافتراضية",
-  "appIconExplain": "تجعل الأيقونة بألوان النقل في مدينتك.",
+  "appIconExplain": "اختر أيقونة أي مدينة تريدها على شاشتك الرئيسية.",
   "appIconChanged": "تم تغيير الأيقونة",
   "appIconFailed": "تعذّر تغيير الأيقونة",
-  "appIconAndroidNote": "تغييرها يُغلق التطبيق، وقد تحتاج إلى إضافة الاختصار من جديد."
+  "appIconAndroidNote": "تغييرها يُغلق التطبيق، وقد تحتاج إلى إضافة الاختصار من جديد.",
+  "appIconYourCity": "مدينتك"
 }

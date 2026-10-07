@@ -541,8 +541,9 @@
   "offlineFailed": "L'horaire n'a pas pu être téléchargé",
   "appIconTitle": "Icône de l'app",
   "appIconDefault": "Par défaut",
-  "appIconExplain": "Met l'icône aux couleurs des transports de votre ville.",
+  "appIconExplain": "Choisissez de quelle ville vous voulez l'icône sur votre écran d'accueil.",
   "appIconChanged": "Icône changée",
   "appIconFailed": "L'icône n'a pas pu être changée",
-  "appIconAndroidNote": "Le changement ferme l'app, et le raccourci devra peut-être être réajouté."
+  "appIconAndroidNote": "Le changement ferme l'app, et le raccourci devra peut-être être réajouté.",
+  "appIconYourCity": "Votre ville"
 }

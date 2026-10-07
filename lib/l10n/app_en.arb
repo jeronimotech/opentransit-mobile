@@ -979,8 +979,9 @@
   "offlineFailed": "The timetable could not be downloaded",
   "appIconTitle": "App icon",
   "appIconDefault": "Default",
-  "appIconExplain": "Puts the icon in your city's transit colours.",
+  "appIconExplain": "Choose which city's icon sits on your home screen.",
   "appIconChanged": "Icon changed",
   "appIconFailed": "The icon could not be changed",
-  "appIconAndroidNote": "Changing it closes the app, and a home-screen shortcut may need to be added again."
+  "appIconAndroidNote": "Changing it closes the app, and a home-screen shortcut may need to be added again.",
+  "appIconYourCity": "Your city"
 }

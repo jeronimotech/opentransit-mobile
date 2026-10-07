@@ -1901,7 +1901,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get appIconExplain =>
-      'Met l\'icône aux couleurs des transports de votre ville.';
+      'Choisissez de quelle ville vous voulez l\'icône sur votre écran d\'accueil.';
 
   @override
   String get appIconChanged => 'Icône changée';
@@ -1912,4 +1912,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get appIconAndroidNote =>
       'Le changement ferme l\'app, et le raccourci devra peut-être être réajouté.';
+
+  @override
+  String get appIconYourCity => 'Votre ville';
 }

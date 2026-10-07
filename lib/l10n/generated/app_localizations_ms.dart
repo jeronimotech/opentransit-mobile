@@ -1890,7 +1890,7 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get appIconExplain =>
-      'Menukar ikon kepada warna pengangkutan bandar anda.';
+      'Pilih ikon bandar mana yang anda mahu pada skrin utama.';
 
   @override
   String get appIconChanged => 'Ikon ditukar';
@@ -1901,4 +1901,7 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get appIconAndroidNote =>
       'Menukarnya akan menutup apl, dan pintasan skrin utama mungkin perlu ditambah semula.';
+
+  @override
+  String get appIconYourCity => 'Bandar anda';
 }

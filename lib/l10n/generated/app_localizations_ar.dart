@@ -1878,7 +1878,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appIconDefault => 'الافتراضية';
 
   @override
-  String get appIconExplain => 'تجعل الأيقونة بألوان النقل في مدينتك.';
+  String get appIconExplain =>
+      'اختر أيقونة أي مدينة تريدها على شاشتك الرئيسية.';
 
   @override
   String get appIconChanged => 'تم تغيير الأيقونة';
@@ -1889,4 +1890,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get appIconAndroidNote =>
       'تغييرها يُغلق التطبيق، وقد تحتاج إلى إضافة الاختصار من جديد.';
+
+  @override
+  String get appIconYourCity => 'مدينتك';
 }
