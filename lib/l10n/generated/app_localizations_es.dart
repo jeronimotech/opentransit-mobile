@@ -1792,4 +1792,28 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get noItinerariesStepFree =>
       'No encontramos rutas para esta búsqueda. Puede ser por el filtro sin escalones, no porque no exista servicio accesible.';
+
+  @override
+  String get occupancyEmpty => 'Vacío';
+
+  @override
+  String get occupancyManySeats => 'Asientos libres';
+
+  @override
+  String get occupancyFewSeats => 'Pocos asientos';
+
+  @override
+  String get occupancyStanding => 'Solo de pie';
+
+  @override
+  String get occupancyCrushed => 'Muy lleno';
+
+  @override
+  String get occupancyFull => 'Lleno';
+
+  @override
+  String get occupancyNotAccepting => 'No recibe pasajeros';
+
+  @override
+  String get occupancyLabel => 'Ocupación';
 }

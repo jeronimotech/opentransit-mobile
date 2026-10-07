@@ -565,19 +565,20 @@ class _NextBusesList extends ConsumerWidget {
                 ),
                 title: Text(n.minutes <= 0 ? l10n.arrivingNow : l10n.inMinutes(n.minutes),
                     style: const TextStyle(fontWeight: FontWeight.w700)),
-                subtitle: Row(
+                // A Wrap, not a Row: badge + clock + stops away + distance already overflowed a
+                // narrow phone before occupancy joined them, and a subtitle that reflows is better
+                // than one that clips the end of the line.
+                subtitle: Wrap(
+                  spacing: 8,
+                  runSpacing: 2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     SourceBadge(source: n.source),
-                    const SizedBox(width: 8),
                     Text(formatClock(n.time, locale)),
-                    if (n.stopsAway != null) ...[
-                      const SizedBox(width: 8),
-                      Text('· ${l10n.stopsAway(n.stopsAway!)}'),
-                    ],
-                    if (n.distanceMeters != null) ...[
-                      const SizedBox(width: 8),
-                      Text('· ${formatDistance(n.distanceMeters!)}'),
-                    ],
+                    if (n.stopsAway != null) Text('· ${l10n.stopsAway(n.stopsAway!)}'),
+                    if (n.distanceMeters != null) Text('· ${formatDistance(n.distanceMeters!)}'),
+                    if (n.vehicle?.crowding.isKnown ?? false)
+                      OccupancyBadge(occupancy: n.vehicle!.crowding, dense: true),
                   ],
                 ),
                 trailing: n.vehicle == null ? null : const Icon(Icons.chevron_right),

@@ -498,5 +498,13 @@
   "warnAccessibilityNoData": "Esta cidade não publica dados de acessibilidade, por isso a opção sem degraus não consegue filtrar nada.",
   "warnNoSharedVehicles": "Não há veículos compartilhados disponíveis agora, por isso essa opção ficou de fora.",
   "warnNoParkRide": "Não encontramos zona de estacionamento legal com vagas perto de uma estação.",
-  "noItinerariesStepFree": "Nenhum percurso encontrado para esta busca. Pode ser o filtro sem degraus, e não falta de serviço acessível."
+  "noItinerariesStepFree": "Nenhum percurso encontrado para esta busca. Pode ser o filtro sem degraus, e não falta de serviço acessível.",
+  "occupancyEmpty": "Vazio",
+  "occupancyManySeats": "Lugares livres",
+  "occupancyFewSeats": "Poucos lugares",
+  "occupancyStanding": "Só em pé",
+  "occupancyCrushed": "Muito cheio",
+  "occupancyFull": "Cheio",
+  "occupancyNotAccepting": "Não recebe passageiros",
+  "occupancyLabel": "Ocupação"
 }

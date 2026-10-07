@@ -498,5 +498,13 @@
   "warnAccessibilityNoData": "Cette ville ne publie aucune donnée d'accessibilité, donc l'option sans marche ne peut rien filtrer.",
   "warnNoSharedVehicles": "Aucun véhicule partagé n'est disponible actuellement, cette option a donc été écartée.",
   "warnNoParkRide": "Aucune zone de stationnement légale avec des places n'a été trouvée près d'une station.",
-  "noItinerariesStepFree": "Aucun itinéraire trouvé pour cette recherche. Cela peut venir du filtre sans marche, pas d'une absence de service accessible."
+  "noItinerariesStepFree": "Aucun itinéraire trouvé pour cette recherche. Cela peut venir du filtre sans marche, pas d'une absence de service accessible.",
+  "occupancyEmpty": "Vide",
+  "occupancyManySeats": "Places assises",
+  "occupancyFewSeats": "Peu de places",
+  "occupancyStanding": "Debout seulement",
+  "occupancyCrushed": "Très chargé",
+  "occupancyFull": "Complet",
+  "occupancyNotAccepting": "N'embarque pas",
+  "occupancyLabel": "Occupation"
 }

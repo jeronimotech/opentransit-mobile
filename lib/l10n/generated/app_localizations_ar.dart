@@ -1782,4 +1782,28 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get noItinerariesStepFree =>
       'لم نجد مسارات لهذا البحث. قد يكون السبب مُرشّح المسار الخالي من الدرجات، وليس غياب خدمة ميسَّرة.';
+
+  @override
+  String get occupancyEmpty => 'فارغة';
+
+  @override
+  String get occupancyManySeats => 'مقاعد متاحة';
+
+  @override
+  String get occupancyFewSeats => 'مقاعد قليلة';
+
+  @override
+  String get occupancyStanding => 'وقوف فقط';
+
+  @override
+  String get occupancyCrushed => 'مزدحمة جدًا';
+
+  @override
+  String get occupancyFull => 'ممتلئة';
+
+  @override
+  String get occupancyNotAccepting => 'لا تُقل ركابًا';
+
+  @override
+  String get occupancyLabel => 'الازدحام';
 }

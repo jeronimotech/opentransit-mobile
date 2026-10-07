@@ -498,5 +498,13 @@
   "warnAccessibilityNoData": "Bandar ini tidak menerbitkan data kebolehcapaian, jadi pilihan tanpa tangga tidak dapat menapis apa-apa.",
   "warnNoSharedVehicles": "Tiada kenderaan kongsi tersedia sekarang, jadi pilihan itu ditinggalkan.",
   "warnNoParkRide": "Tiada zon letak kereta yang sah dengan ruang berdekatan stesen.",
-  "noItinerariesStepFree": "Tiada laluan ditemui untuk carian ini. Mungkin kerana penapis tanpa tangga, bukan kerana tiada perkhidmatan mesra akses."
+  "noItinerariesStepFree": "Tiada laluan ditemui untuk carian ini. Mungkin kerana penapis tanpa tangga, bukan kerana tiada perkhidmatan mesra akses.",
+  "occupancyEmpty": "Kosong",
+  "occupancyManySeats": "Ada tempat duduk",
+  "occupancyFewSeats": "Sedikit tempat duduk",
+  "occupancyStanding": "Berdiri sahaja",
+  "occupancyCrushed": "Sangat padat",
+  "occupancyFull": "Penuh",
+  "occupancyNotAccepting": "Tidak menaikkan penumpang",
+  "occupancyLabel": "Keadaan penuh"
 }

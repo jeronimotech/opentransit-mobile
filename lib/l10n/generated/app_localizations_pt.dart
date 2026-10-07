@@ -1798,4 +1798,28 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get noItinerariesStepFree =>
       'Nenhum percurso encontrado para esta busca. Pode ser o filtro sem degraus, e não falta de serviço acessível.';
+
+  @override
+  String get occupancyEmpty => 'Vazio';
+
+  @override
+  String get occupancyManySeats => 'Lugares livres';
+
+  @override
+  String get occupancyFewSeats => 'Poucos lugares';
+
+  @override
+  String get occupancyStanding => 'Só em pé';
+
+  @override
+  String get occupancyCrushed => 'Muito cheio';
+
+  @override
+  String get occupancyFull => 'Cheio';
+
+  @override
+  String get occupancyNotAccepting => 'Não recebe passageiros';
+
+  @override
+  String get occupancyLabel => 'Ocupação';
 }

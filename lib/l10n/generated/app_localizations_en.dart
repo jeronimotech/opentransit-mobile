@@ -1785,4 +1785,28 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noItinerariesStepFree =>
       'No routes found for this search. That may be the step-free filter rather than a lack of accessible service.';
+
+  @override
+  String get occupancyEmpty => 'Empty';
+
+  @override
+  String get occupancyManySeats => 'Seats available';
+
+  @override
+  String get occupancyFewSeats => 'Few seats';
+
+  @override
+  String get occupancyStanding => 'Standing only';
+
+  @override
+  String get occupancyCrushed => 'Very crowded';
+
+  @override
+  String get occupancyFull => 'Full';
+
+  @override
+  String get occupancyNotAccepting => 'Not boarding';
+
+  @override
+  String get occupancyLabel => 'Occupancy';
 }

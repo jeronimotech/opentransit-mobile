@@ -936,5 +936,13 @@
   "warnAccessibilityNoData": "This city publishes no accessibility data, so the step-free option cannot filter anything.",
   "warnNoSharedVehicles": "No shared vehicles are available right now, so that option was left out.",
   "warnNoParkRide": "No legal parking zone with spaces was found near a station.",
-  "noItinerariesStepFree": "No routes found for this search. That may be the step-free filter rather than a lack of accessible service."
+  "noItinerariesStepFree": "No routes found for this search. That may be the step-free filter rather than a lack of accessible service.",
+  "occupancyEmpty": "Empty",
+  "occupancyManySeats": "Seats available",
+  "occupancyFewSeats": "Few seats",
+  "occupancyStanding": "Standing only",
+  "occupancyCrushed": "Very crowded",
+  "occupancyFull": "Full",
+  "occupancyNotAccepting": "Not boarding",
+  "occupancyLabel": "Occupancy"
 }

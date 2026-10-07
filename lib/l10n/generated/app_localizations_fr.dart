@@ -1801,4 +1801,28 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get noItinerariesStepFree =>
       'Aucun itinéraire trouvé pour cette recherche. Cela peut venir du filtre sans marche, pas d\'une absence de service accessible.';
+
+  @override
+  String get occupancyEmpty => 'Vide';
+
+  @override
+  String get occupancyManySeats => 'Places assises';
+
+  @override
+  String get occupancyFewSeats => 'Peu de places';
+
+  @override
+  String get occupancyStanding => 'Debout seulement';
+
+  @override
+  String get occupancyCrushed => 'Très chargé';
+
+  @override
+  String get occupancyFull => 'Complet';
+
+  @override
+  String get occupancyNotAccepting => 'N\'embarque pas';
+
+  @override
+  String get occupancyLabel => 'Occupation';
 }

@@ -101,7 +101,13 @@ class VehicleDetailScreen extends ConsumerWidget {
                       spacing: 8,
                       children: [
                         if (d.avgKmh != null) Chip(avatar: const Icon(Icons.speed, size: 16), label: Text('${d.avgKmh!.toStringAsFixed(0)} km/h'), visualDensity: VisualDensity.compact),
-                        if (v.occupancy != null) Chip(avatar: const Icon(Icons.groups, size: 16), label: Text(_occupancy(v.occupancy!)), visualDensity: VisualDensity.compact),
+                        if (v.crowding.isKnown)
+                          Chip(
+                            avatar: Icon(Icons.groups, size: 16,
+                                color: OccupancyBadge.color(context, v.crowding)),
+                            label: Text(OccupancyBadge.label(l10n, v.crowding)),
+                            visualDensity: VisualDensity.compact,
+                          ),
                         if (!v.tripResolved) Chip(avatar: const Icon(Icons.help_outline, size: 16), label: Text(l10n.scheduled), visualDensity: VisualDensity.compact),
                       ],
                     ),
@@ -137,11 +143,4 @@ class VehicleDetailScreen extends ConsumerWidget {
   }
 }
 
-String _occupancy(String o) => switch (o) {
-      'EMPTY' => '○○○',
-      'MANY_SEATS_AVAILABLE' => '●○○',
-      'FEW_SEATS_AVAILABLE' => '●●○',
-      'STANDING_ROOM_ONLY' || 'CRUSHED_STANDING_ROOM_ONLY' => '●●●',
-      'FULL' || 'NOT_ACCEPTING_PASSENGERS' => '●●● !',
-      _ => o,
-    };
+

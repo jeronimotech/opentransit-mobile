@@ -1790,4 +1790,28 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get noItinerariesStepFree =>
       'Tiada laluan ditemui untuk carian ini. Mungkin kerana penapis tanpa tangga, bukan kerana tiada perkhidmatan mesra akses.';
+
+  @override
+  String get occupancyEmpty => 'Kosong';
+
+  @override
+  String get occupancyManySeats => 'Ada tempat duduk';
+
+  @override
+  String get occupancyFewSeats => 'Sedikit tempat duduk';
+
+  @override
+  String get occupancyStanding => 'Berdiri sahaja';
+
+  @override
+  String get occupancyCrushed => 'Sangat padat';
+
+  @override
+  String get occupancyFull => 'Penuh';
+
+  @override
+  String get occupancyNotAccepting => 'Tidak menaikkan penumpang';
+
+  @override
+  String get occupancyLabel => 'Keadaan penuh';
 }

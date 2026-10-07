@@ -159,6 +159,14 @@ class BoardRowTile extends StatelessWidget {
                         _ThenTimes(times: rest, compact: compact)
                       else if (window != null && !window.active)
                         ServiceHint(window, dense: true),
+                      // Only when the agency published it for this very bus, which is why Bogota's
+                      // rows are unchanged and Boston's gain a line. Left out of the compact
+                      // favourites rows, where a third line costs more than it tells.
+                      if (!compact && (first?.vehicle?.crowding.isKnown ?? false))
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: OccupancyBadge(occupancy: first!.vehicle!.crowding, dense: true),
+                        ),
                     ],
                   ),
                 ),

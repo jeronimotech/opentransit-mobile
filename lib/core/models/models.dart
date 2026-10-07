@@ -3,6 +3,7 @@ export 'city.dart';
 export 'common.dart';
 export 'forecast.dart';
 export 'live.dart';
+export 'occupancy.dart';
 export 'ondemand.dart';
 export 'parking.dart';
 export 'plan.dart';

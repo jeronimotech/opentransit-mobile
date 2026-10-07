@@ -1794,4 +1794,28 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get noItinerariesStepFree =>
       'Nessun percorso trovato per questa ricerca. Potrebbe essere il filtro senza gradini, non la mancanza di servizio accessibile.';
+
+  @override
+  String get occupancyEmpty => 'Vuoto';
+
+  @override
+  String get occupancyManySeats => 'Posti a sedere';
+
+  @override
+  String get occupancyFewSeats => 'Pochi posti';
+
+  @override
+  String get occupancyStanding => 'Solo in piedi';
+
+  @override
+  String get occupancyCrushed => 'Molto pieno';
+
+  @override
+  String get occupancyFull => 'Pieno';
+
+  @override
+  String get occupancyNotAccepting => 'Non fa salire';
+
+  @override
+  String get occupancyLabel => 'Occupazione';
 }

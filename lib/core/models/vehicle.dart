@@ -1,4 +1,5 @@
 import 'common.dart';
+import 'occupancy.dart';
 import 'transit.dart';
 
 class Vehicle {
@@ -29,7 +30,11 @@ class Vehicle {
   final DateTime? timestamp;
   final String? stopId;
   final int? stopSequence;
+  /// The feed's own `occupancy_status` name, kept raw so [merge] can tell an absent key from a
+  /// null value. Read it through [crowding].
   final String? occupancy;
+
+  Occupancy get crowding => Occupancy.parse(occupancy);
 
   factory Vehicle.fromJson(Map<String, dynamic> j) => Vehicle(
         id: j['id'].toString(),

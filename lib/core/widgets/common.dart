@@ -327,6 +327,76 @@ class SourceDot extends StatelessWidget {
   }
 }
 
+/// How full the bus is, where the agency says so. Draws nothing when it does not.
+///
+/// Three dots for the glance and the word for the precision, the same division of labour as
+/// [SourceBadge]. Colour comes from the semantic palette: green while there is a seat, orange once
+/// it is standing room, red when boarding itself is in doubt.
+class OccupancyBadge extends StatelessWidget {
+  const OccupancyBadge({super.key, required this.occupancy, this.showLabel = true, this.dense = false});
+  final Occupancy occupancy;
+
+  /// Dots only, for a row that has no width to spare.
+  final bool showLabel;
+  final bool dense;
+
+  static String label(AppLocalizations l10n, Occupancy o) => switch (o) {
+        Occupancy.empty => l10n.occupancyEmpty,
+        Occupancy.manySeats => l10n.occupancyManySeats,
+        Occupancy.fewSeats => l10n.occupancyFewSeats,
+        Occupancy.standing => l10n.occupancyStanding,
+        Occupancy.crushed => l10n.occupancyCrushed,
+        Occupancy.full => l10n.occupancyFull,
+        Occupancy.notAccepting => l10n.occupancyNotAccepting,
+        Occupancy.unknown => '',
+      };
+
+  static Color color(BuildContext context, Occupancy o) {
+    final sem = context.semantic;
+    if (o.isSevere) return sem.severe;
+    if (o.isCrowded) return sem.disruption;
+    return sem.live;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!occupancy.isKnown) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context);
+    final text = label(l10n, occupancy);
+    final c = color(context, occupancy);
+    final filled = occupancy.dots;
+    final size = dense ? 4.0 : 5.0;
+    return Semantics(
+      label: '${l10n.occupancyLabel}: $text',
+      child: ExcludeSemantics(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i = 0; i < 3; i++) ...[
+              if (i > 0) SizedBox(width: size / 2.5),
+              Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  color: i < filled ? c : Colors.transparent,
+                  shape: BoxShape.circle,
+                  border: i < filled ? null : Border.all(color: c.withValues(alpha: 0.45), width: 1),
+                ),
+              ),
+            ],
+            if (showLabel) ...[
+              SizedBox(width: dense ? 4 : 5),
+              Text(text,
+                  style: TextStyle(
+                      color: c, fontSize: dense ? 10 : 11, fontWeight: FontWeight.w700)),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// "Fuera de horario · próximo 04:30" / "Sin servicio hoy"; nothing while active.
 class ServiceHint extends StatelessWidget {
   const ServiceHint(this.window, {super.key, this.dense = false});

@@ -498,5 +498,13 @@
   "warnAccessibilityNoData": "هذه المدينة لا تنشر بيانات إمكانية الوصول، لذا لا يستطيع خيار المسار الخالي من الدرجات تصفية أي شيء.",
   "warnNoSharedVehicles": "لا تتوفر مركبات مشتركة الآن، لذا استُبعد هذا الخيار.",
   "warnNoParkRide": "لم نجد منطقة وقوف قانونية بها أماكن قريبة من محطة.",
-  "noItinerariesStepFree": "لم نجد مسارات لهذا البحث. قد يكون السبب مُرشّح المسار الخالي من الدرجات، وليس غياب خدمة ميسَّرة."
+  "noItinerariesStepFree": "لم نجد مسارات لهذا البحث. قد يكون السبب مُرشّح المسار الخالي من الدرجات، وليس غياب خدمة ميسَّرة.",
+  "occupancyEmpty": "فارغة",
+  "occupancyManySeats": "مقاعد متاحة",
+  "occupancyFewSeats": "مقاعد قليلة",
+  "occupancyStanding": "وقوف فقط",
+  "occupancyCrushed": "مزدحمة جدًا",
+  "occupancyFull": "ممتلئة",
+  "occupancyNotAccepting": "لا تُقل ركابًا",
+  "occupancyLabel": "الازدحام"
 }

@@ -3101,6 +3101,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No encontramos rutas para esta búsqueda. Puede ser por el filtro sin escalones, no porque no exista servicio accesible.'**
   String get noItinerariesStepFree;
+
+  /// No description provided for @occupancyEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Vacío'**
+  String get occupancyEmpty;
+
+  /// No description provided for @occupancyManySeats.
+  ///
+  /// In es, this message translates to:
+  /// **'Asientos libres'**
+  String get occupancyManySeats;
+
+  /// No description provided for @occupancyFewSeats.
+  ///
+  /// In es, this message translates to:
+  /// **'Pocos asientos'**
+  String get occupancyFewSeats;
+
+  /// No description provided for @occupancyStanding.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo de pie'**
+  String get occupancyStanding;
+
+  /// No description provided for @occupancyCrushed.
+  ///
+  /// In es, this message translates to:
+  /// **'Muy lleno'**
+  String get occupancyCrushed;
+
+  /// No description provided for @occupancyFull.
+  ///
+  /// In es, this message translates to:
+  /// **'Lleno'**
+  String get occupancyFull;
+
+  /// No description provided for @occupancyNotAccepting.
+  ///
+  /// In es, this message translates to:
+  /// **'No recibe pasajeros'**
+  String get occupancyNotAccepting;
+
+  /// No description provided for @occupancyLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupación'**
+  String get occupancyLabel;
 }
 
 class _AppLocalizationsDelegate
