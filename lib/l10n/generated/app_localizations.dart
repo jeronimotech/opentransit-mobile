@@ -3149,6 +3149,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ocupación'**
   String get occupancyLabel;
+
+  /// No description provided for @warnWalkingBetter.
+  ///
+  /// In es, this message translates to:
+  /// **'Caminar es más rápido que cualquier opción de transporte para este trayecto.'**
+  String get warnWalkingBetter;
+
+  /// No description provided for @warnNoTransitConnection.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión de transporte público entre estos dos puntos.'**
+  String get warnNoTransitConnection;
+
+  /// No description provided for @warnNoTransitInWindow.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay viajes en esta franja horaria. Probá otra hora.'**
+  String get warnNoTransitInWindow;
+
+  /// No description provided for @warnOutsideServicePeriod.
+  ///
+  /// In es, this message translates to:
+  /// **'La fecha está fuera del calendario que publica la agencia.'**
+  String get warnOutsideServicePeriod;
+
+  /// No description provided for @warnOutsideBounds.
+  ///
+  /// In es, this message translates to:
+  /// **'Uno de los puntos queda fuera del área que cubre esta ciudad.'**
+  String get warnOutsideBounds;
+
+  /// No description provided for @warnLocationNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos ubicar uno de los dos puntos.'**
+  String get warnLocationNotFound;
+
+  /// No description provided for @warnNoStopsInRange.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay paradas caminables cerca de uno de los dos puntos.'**
+  String get warnNoStopsInRange;
+
+  /// No description provided for @warnRouterError.
+  ///
+  /// In es, this message translates to:
+  /// **'El planificador tuvo un problema con esta búsqueda.'**
+  String get warnRouterError;
 }
 
 class _AppLocalizationsDelegate

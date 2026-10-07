@@ -41,6 +41,43 @@ void main() {
       expect(PlanWarnings.line(l10n, 'PARK_RIDE_NO_PARKING: none nearby'), l10n.warnNoParkRide);
     });
 
+    test("OTP's own routing errors are localised, not forwarded in English", () {
+      // `plan_from_otp` turns every routingError into `CODE: description`, so these arrived with
+      // OTP's English text. They are also the warnings seen most, being the reason a search
+      // returned nothing. Measured on production: a short Roma pair answers
+      // WALKING_BETTER_THAN_TRANSIT.
+      expect(PlanWarnings.line(l10n, 'WALKING_BETTER_THAN_TRANSIT: Walking is better than transit'),
+          l10n.warnWalkingBetter);
+      expect(PlanWarnings.line(l10n, 'NO_TRANSIT_CONNECTION: no connection'),
+          l10n.warnNoTransitConnection);
+      expect(PlanWarnings.line(l10n, 'NO_TRANSIT_CONNECTION_IN_SEARCH_WINDOW: none in window'),
+          l10n.warnNoTransitInWindow);
+      expect(PlanWarnings.line(l10n, 'OUTSIDE_SERVICE_PERIOD: too far ahead'),
+          l10n.warnOutsideServicePeriod);
+      expect(PlanWarnings.line(l10n, 'OUTSIDE_BOUNDS: off the graph'), l10n.warnOutsideBounds);
+      expect(PlanWarnings.line(l10n, 'LOCATION_NOT_FOUND: no such place'),
+          l10n.warnLocationNotFound);
+      expect(PlanWarnings.line(l10n, 'NO_STOPS_IN_RANGE: nothing nearby'), l10n.warnNoStopsInRange);
+      expect(PlanWarnings.line(l10n, 'SYSTEM_ERROR: boom'), l10n.warnRouterError);
+    });
+
+    test('nothing localised is left in English', () {
+      // Every code the routers can emit, ours and OTP's. A new one still falls back to the
+      // server's sentence, but none of these should reach that branch.
+      const known = [
+        'ACCESSIBILITY_UNVERIFIED', 'ACCESSIBILITY_NO_DATA', 'MODE_NO_VEHICLES',
+        'PARK_RIDE_NO_PARKING', 'WALKING_BETTER_THAN_TRANSIT', 'NO_TRANSIT_CONNECTION',
+        'NO_TRANSIT_CONNECTION_IN_SEARCH_WINDOW', 'OUTSIDE_SERVICE_PERIOD', 'OUTSIDE_BOUNDS',
+        'LOCATION_NOT_FOUND', 'NO_STOPS_IN_RANGE', 'SYSTEM_ERROR',
+      ];
+      for (final code in known) {
+        final line = PlanWarnings.line(l10n, '$code: some english sentence from the server');
+        expect(line, isNotNull, reason: '$code produced no line');
+        expect(line, isNot('some english sentence from the server'),
+            reason: '$code fell through to the English fallback');
+      }
+    });
+
     test('NO_ITINERARIES is hidden, because the empty state already says it', () {
       expect(PlanWarnings.line(l10n, 'NO_ITINERARIES: no itineraries found'), isNull);
     });

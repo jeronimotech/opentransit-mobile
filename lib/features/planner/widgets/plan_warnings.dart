@@ -30,6 +30,17 @@ class PlanWarnings extends StatelessWidget {
       'ACCESSIBILITY_NO_DATA' => l10n.warnAccessibilityNoData,
       'MODE_NO_VEHICLES' => l10n.warnNoSharedVehicles,
       'PARK_RIDE_NO_PARKING' => l10n.warnNoParkRide,
+      // OTP's own RoutingErrorCode values. `plan_from_otp` forwards them verbatim with OTP's
+      // English description, so before these existed a Spanish rider was shown English — and these
+      // are the warnings most often seen, because they are the reason a search found nothing.
+      'WALKING_BETTER_THAN_TRANSIT' => l10n.warnWalkingBetter,
+      'NO_TRANSIT_CONNECTION' => l10n.warnNoTransitConnection,
+      'NO_TRANSIT_CONNECTION_IN_SEARCH_WINDOW' => l10n.warnNoTransitInWindow,
+      'OUTSIDE_SERVICE_PERIOD' => l10n.warnOutsideServicePeriod,
+      'OUTSIDE_BOUNDS' => l10n.warnOutsideBounds,
+      'LOCATION_NOT_FOUND' => l10n.warnLocationNotFound,
+      'NO_STOPS_IN_RANGE' => l10n.warnNoStopsInRange,
+      'SYSTEM_ERROR' => l10n.warnRouterError,
       _ => null,
     };
     if (text != null) return text;

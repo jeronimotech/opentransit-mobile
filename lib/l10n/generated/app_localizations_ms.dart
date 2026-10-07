@@ -1814,4 +1814,36 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get occupancyLabel => 'Keadaan penuh';
+
+  @override
+  String get warnWalkingBetter =>
+      'Berjalan lebih cepat daripada mana-mana pilihan pengangkutan untuk perjalanan ini.';
+
+  @override
+  String get warnNoTransitConnection =>
+      'Tiada sambungan pengangkutan awam antara dua titik ini.';
+
+  @override
+  String get warnNoTransitInWindow =>
+      'Tiada perjalanan dalam tempoh masa ini. Cuba masa lain.';
+
+  @override
+  String get warnOutsideServicePeriod =>
+      'Tarikh ini di luar kalendar yang diterbitkan oleh agensi.';
+
+  @override
+  String get warnOutsideBounds =>
+      'Salah satu titik berada di luar kawasan yang diliputi bandar ini.';
+
+  @override
+  String get warnLocationNotFound =>
+      'Salah satu daripada dua titik tidak dapat ditemui.';
+
+  @override
+  String get warnNoStopsInRange =>
+      'Tiada perhentian yang boleh dicapai dengan berjalan berdekatan salah satu titik.';
+
+  @override
+  String get warnRouterError =>
+      'Perancang menghadapi masalah dengan carian ini.';
 }

@@ -506,5 +506,13 @@
   "occupancyCrushed": "Très chargé",
   "occupancyFull": "Complet",
   "occupancyNotAccepting": "N'embarque pas",
-  "occupancyLabel": "Occupation"
+  "occupancyLabel": "Occupation",
+  "warnWalkingBetter": "La marche est plus rapide que toute option de transport pour ce trajet.",
+  "warnNoTransitConnection": "Il n'y a aucune liaison en transport entre ces deux points.",
+  "warnNoTransitInWindow": "Aucun trajet dans cette plage horaire. Essayez une autre heure.",
+  "warnOutsideServicePeriod": "La date est en dehors du calendrier publié par l'exploitant.",
+  "warnOutsideBounds": "L'un des points est en dehors de la zone couverte par cette ville.",
+  "warnLocationNotFound": "L'un des deux points n'a pas pu être localisé.",
+  "warnNoStopsInRange": "Aucun arrêt accessible à pied près de l'un des deux points.",
+  "warnRouterError": "Le planificateur a rencontré un problème avec cette recherche."
 }

@@ -506,5 +506,13 @@
   "occupancyCrushed": "Sangat padat",
   "occupancyFull": "Penuh",
   "occupancyNotAccepting": "Tidak menaikkan penumpang",
-  "occupancyLabel": "Keadaan penuh"
+  "occupancyLabel": "Keadaan penuh",
+  "warnWalkingBetter": "Berjalan lebih cepat daripada mana-mana pilihan pengangkutan untuk perjalanan ini.",
+  "warnNoTransitConnection": "Tiada sambungan pengangkutan awam antara dua titik ini.",
+  "warnNoTransitInWindow": "Tiada perjalanan dalam tempoh masa ini. Cuba masa lain.",
+  "warnOutsideServicePeriod": "Tarikh ini di luar kalendar yang diterbitkan oleh agensi.",
+  "warnOutsideBounds": "Salah satu titik berada di luar kawasan yang diliputi bandar ini.",
+  "warnLocationNotFound": "Salah satu daripada dua titik tidak dapat ditemui.",
+  "warnNoStopsInRange": "Tiada perhentian yang boleh dicapai dengan berjalan berdekatan salah satu titik.",
+  "warnRouterError": "Perancang menghadapi masalah dengan carian ini."
 }

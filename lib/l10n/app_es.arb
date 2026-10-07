@@ -1163,5 +1163,13 @@
   "occupancyCrushed": "Muy lleno",
   "occupancyFull": "Lleno",
   "occupancyNotAccepting": "No recibe pasajeros",
-  "occupancyLabel": "Ocupación"
+  "occupancyLabel": "Ocupación",
+  "warnWalkingBetter": "Caminar es más rápido que cualquier opción de transporte para este trayecto.",
+  "warnNoTransitConnection": "No hay conexión de transporte público entre estos dos puntos.",
+  "warnNoTransitInWindow": "No hay viajes en esta franja horaria. Probá otra hora.",
+  "warnOutsideServicePeriod": "La fecha está fuera del calendario que publica la agencia.",
+  "warnOutsideBounds": "Uno de los puntos queda fuera del área que cubre esta ciudad.",
+  "warnLocationNotFound": "No pudimos ubicar uno de los dos puntos.",
+  "warnNoStopsInRange": "No hay paradas caminables cerca de uno de los dos puntos.",
+  "warnRouterError": "El planificador tuvo un problema con esta búsqueda."
 }

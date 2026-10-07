@@ -1809,4 +1809,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get occupancyLabel => 'Occupancy';
+
+  @override
+  String get warnWalkingBetter =>
+      'Walking is faster than any transit option for this trip.';
+
+  @override
+  String get warnNoTransitConnection =>
+      'There is no transit connection between these two points.';
+
+  @override
+  String get warnNoTransitInWindow =>
+      'No trips in this time window. Try another time.';
+
+  @override
+  String get warnOutsideServicePeriod =>
+      'The date falls outside the calendar the agency publishes.';
+
+  @override
+  String get warnOutsideBounds =>
+      'One of the points is outside the area this city covers.';
+
+  @override
+  String get warnLocationNotFound =>
+      'One of the two points could not be located.';
+
+  @override
+  String get warnNoStopsInRange =>
+      'There are no walkable stops near one of the two points.';
+
+  @override
+  String get warnRouterError => 'The planner hit a problem with this search.';
 }

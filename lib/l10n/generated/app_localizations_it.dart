@@ -1818,4 +1818,36 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get occupancyLabel => 'Occupazione';
+
+  @override
+  String get warnWalkingBetter =>
+      'Andare a piedi è più rapido di qualsiasi opzione di trasporto per questo tragitto.';
+
+  @override
+  String get warnNoTransitConnection =>
+      'Non esiste un collegamento con i mezzi tra questi due punti.';
+
+  @override
+  String get warnNoTransitInWindow =>
+      'Nessuna corsa in questa fascia oraria. Prova un altro orario.';
+
+  @override
+  String get warnOutsideServicePeriod =>
+      'La data è fuori dal calendario pubblicato dall\'azienda.';
+
+  @override
+  String get warnOutsideBounds =>
+      'Uno dei punti è fuori dall\'area coperta da questa città.';
+
+  @override
+  String get warnLocationNotFound =>
+      'Non è stato possibile localizzare uno dei due punti.';
+
+  @override
+  String get warnNoStopsInRange =>
+      'Non ci sono fermate raggiungibili a piedi vicino a uno dei due punti.';
+
+  @override
+  String get warnRouterError =>
+      'Il pianificatore ha avuto un problema con questa ricerca.';
 }

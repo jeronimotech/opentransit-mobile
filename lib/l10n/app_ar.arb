@@ -506,5 +506,13 @@
   "occupancyCrushed": "مزدحمة جدًا",
   "occupancyFull": "ممتلئة",
   "occupancyNotAccepting": "لا تُقل ركابًا",
-  "occupancyLabel": "الازدحام"
+  "occupancyLabel": "الازدحام",
+  "warnWalkingBetter": "المشي أسرع من أي خيار نقل في هذه الرحلة.",
+  "warnNoTransitConnection": "لا يوجد اتصال بالنقل العام بين هاتين النقطتين.",
+  "warnNoTransitInWindow": "لا رحلات في هذه الفترة الزمنية. جرّب وقتًا آخر.",
+  "warnOutsideServicePeriod": "التاريخ خارج الجدول الذي تنشره الجهة المشغّلة.",
+  "warnOutsideBounds": "إحدى النقطتين خارج المنطقة التي تغطيها هذه المدينة.",
+  "warnLocationNotFound": "لم نتمكن من تحديد إحدى النقطتين.",
+  "warnNoStopsInRange": "لا توجد محطات على مسافة سير قريبة من إحدى النقطتين.",
+  "warnRouterError": "واجه المخطّط مشكلة في هذا البحث."
 }

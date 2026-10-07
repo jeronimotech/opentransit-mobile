@@ -944,5 +944,13 @@
   "occupancyCrushed": "Very crowded",
   "occupancyFull": "Full",
   "occupancyNotAccepting": "Not boarding",
-  "occupancyLabel": "Occupancy"
+  "occupancyLabel": "Occupancy",
+  "warnWalkingBetter": "Walking is faster than any transit option for this trip.",
+  "warnNoTransitConnection": "There is no transit connection between these two points.",
+  "warnNoTransitInWindow": "No trips in this time window. Try another time.",
+  "warnOutsideServicePeriod": "The date falls outside the calendar the agency publishes.",
+  "warnOutsideBounds": "One of the points is outside the area this city covers.",
+  "warnLocationNotFound": "One of the two points could not be located.",
+  "warnNoStopsInRange": "There are no walkable stops near one of the two points.",
+  "warnRouterError": "The planner hit a problem with this search."
 }

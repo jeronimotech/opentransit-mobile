@@ -1806,4 +1806,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get occupancyLabel => 'الازدحام';
+
+  @override
+  String get warnWalkingBetter => 'المشي أسرع من أي خيار نقل في هذه الرحلة.';
+
+  @override
+  String get warnNoTransitConnection =>
+      'لا يوجد اتصال بالنقل العام بين هاتين النقطتين.';
+
+  @override
+  String get warnNoTransitInWindow =>
+      'لا رحلات في هذه الفترة الزمنية. جرّب وقتًا آخر.';
+
+  @override
+  String get warnOutsideServicePeriod =>
+      'التاريخ خارج الجدول الذي تنشره الجهة المشغّلة.';
+
+  @override
+  String get warnOutsideBounds =>
+      'إحدى النقطتين خارج المنطقة التي تغطيها هذه المدينة.';
+
+  @override
+  String get warnLocationNotFound => 'لم نتمكن من تحديد إحدى النقطتين.';
+
+  @override
+  String get warnNoStopsInRange =>
+      'لا توجد محطات على مسافة سير قريبة من إحدى النقطتين.';
+
+  @override
+  String get warnRouterError => 'واجه المخطّط مشكلة في هذا البحث.';
 }
