@@ -1765,4 +1765,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get remindersNone =>
       'No reminders armed — check the notification permission';
+
+  @override
+  String get warnAccessibilityUnverified =>
+      'This city\'s accessibility data is not a survey: the feed publishes the same value for nearly every stop, so step-free routes cannot be verified.';
+
+  @override
+  String get warnAccessibilityNoData =>
+      'This city publishes no accessibility data, so the step-free option cannot filter anything.';
+
+  @override
+  String get warnNoSharedVehicles =>
+      'No shared vehicles are available right now, so that option was left out.';
+
+  @override
+  String get warnNoParkRide =>
+      'No legal parking zone with spaces was found near a station.';
+
+  @override
+  String get noItinerariesStepFree =>
+      'No routes found for this search. That may be the step-free filter rather than a lack of accessible service.';
 }

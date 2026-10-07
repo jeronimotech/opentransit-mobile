@@ -931,5 +931,10 @@
   },
   "remindersEve": "evening before",
   "remindersLeave": "time to leave",
-  "remindersNone": "No reminders armed — check the notification permission"
+  "remindersNone": "No reminders armed — check the notification permission",
+  "warnAccessibilityUnverified": "This city's accessibility data is not a survey: the feed publishes the same value for nearly every stop, so step-free routes cannot be verified.",
+  "warnAccessibilityNoData": "This city publishes no accessibility data, so the step-free option cannot filter anything.",
+  "warnNoSharedVehicles": "No shared vehicles are available right now, so that option was left out.",
+  "warnNoParkRide": "No legal parking zone with spaces was found near a station.",
+  "noItinerariesStepFree": "No routes found for this search. That may be the step-free filter rather than a lack of accessible service."
 }

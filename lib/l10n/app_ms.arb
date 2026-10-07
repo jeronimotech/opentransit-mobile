@@ -493,5 +493,10 @@
   "remindersArmed": "Peringatan ditetapkan: {kinds}",
   "remindersEve": "malam sebelumnya",
   "remindersLeave": "waktu bertolak",
-  "remindersNone": "Tiada peringatan ditetapkan — semak kebenaran pemberitahuan"
+  "remindersNone": "Tiada peringatan ditetapkan — semak kebenaran pemberitahuan",
+  "warnAccessibilityUnverified": "Data kebolehcapaian bandar ini bukan kajian: suapan menerbitkan nilai yang sama bagi hampir setiap perhentian, jadi laluan tanpa tangga tidak dapat disahkan.",
+  "warnAccessibilityNoData": "Bandar ini tidak menerbitkan data kebolehcapaian, jadi pilihan tanpa tangga tidak dapat menapis apa-apa.",
+  "warnNoSharedVehicles": "Tiada kenderaan kongsi tersedia sekarang, jadi pilihan itu ditinggalkan.",
+  "warnNoParkRide": "Tiada zon letak kereta yang sah dengan ruang berdekatan stesen.",
+  "noItinerariesStepFree": "Tiada laluan ditemui untuk carian ini. Mungkin kerana penapis tanpa tangga, bukan kerana tiada perkhidmatan mesra akses."
 }

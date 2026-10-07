@@ -17,6 +17,7 @@ import 'planner_state.dart';
 import '../trips/schedule_trip_sheet.dart';
 import 'widgets/forecast_sheet.dart';
 import 'widgets/itinerary_card.dart';
+import 'widgets/plan_warnings.dart';
 
 /// Flat sort orders offered in the "Ordenar" menu; `null` = grouped by
 /// scenario (the default, Lote 1).
@@ -181,11 +182,25 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
               error: (e, _) => ErrorView(error: e, onRetry: _replan),
               data: (plan) {
                 if (plan.itineraries.isEmpty) {
-                  return EmptyView(icon: Icons.alt_route, message: l10n.noItineraries);
+                  // A step-free search that finds nothing in a city with no accessibility data is
+                  // not evidence that no accessible service exists, and saying "no routes" alone
+                  // lets the rider draw exactly that conclusion.
+                  final gap = PlanWarnings.hasAccessibilityGap(plan.warnings);
+                  return EmptyView(
+                    icon: gap ? Icons.accessible : Icons.alt_route,
+                    message: gap ? l10n.noItinerariesStepFree : l10n.noItineraries,
+                    detail: gap
+                        ? [for (final w in plan.warnings) ?PlanWarnings.line(l10n, w)].firstOrNull
+                        : null,
+                  );
                 }
                 final header = Padding(
                   padding: const EdgeInsets.only(bottom: 4),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PlanWarnings(warnings: plan.warnings),
+                      Row(
                     children: [
                       Expanded(
                         child: Text(
@@ -203,6 +218,8 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
                           visualDensity: VisualDensity.compact,
                           onPressed: _replan,
                         ),
+                        ],
+                      ),
                     ],
                   ),
                 );

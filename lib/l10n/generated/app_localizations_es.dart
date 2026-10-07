@@ -1772,4 +1772,24 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get remindersNone =>
       'Sin avisos armados — revisa el permiso de notificaciones';
+
+  @override
+  String get warnAccessibilityUnverified =>
+      'Los datos de accesibilidad de esta ciudad no son un relevamiento: el feed publica el mismo valor en casi todas las paradas, así que no podemos verificar las rutas sin escalones.';
+
+  @override
+  String get warnAccessibilityNoData =>
+      'Esta ciudad no publica datos de accesibilidad, así que la opción sin escalones no puede filtrar nada.';
+
+  @override
+  String get warnNoSharedVehicles =>
+      'No hay vehículos compartidos disponibles ahora mismo, así que esa opción quedó fuera.';
+
+  @override
+  String get warnNoParkRide =>
+      'No encontramos una zona de parqueo legal con cupos cerca de una estación.';
+
+  @override
+  String get noItinerariesStepFree =>
+      'No encontramos rutas para esta búsqueda. Puede ser por el filtro sin escalones, no porque no exista servicio accesible.';
 }

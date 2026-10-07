@@ -1781,4 +1781,24 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get remindersNone =>
       'Aucun rappel programmé — vérifiez l’autorisation de notifications';
+
+  @override
+  String get warnAccessibilityUnverified =>
+      'Les données d\'accessibilité de cette ville ne sont pas un relevé : le flux publie la même valeur pour presque tous les arrêts, donc les itinéraires sans marche ne peuvent pas être vérifiés.';
+
+  @override
+  String get warnAccessibilityNoData =>
+      'Cette ville ne publie aucune donnée d\'accessibilité, donc l\'option sans marche ne peut rien filtrer.';
+
+  @override
+  String get warnNoSharedVehicles =>
+      'Aucun véhicule partagé n\'est disponible actuellement, cette option a donc été écartée.';
+
+  @override
+  String get warnNoParkRide =>
+      'Aucune zone de stationnement légale avec des places n\'a été trouvée près d\'une station.';
+
+  @override
+  String get noItinerariesStepFree =>
+      'Aucun itinéraire trouvé pour cette recherche. Cela peut venir du filtre sans marche, pas d\'une absence de service accessible.';
 }

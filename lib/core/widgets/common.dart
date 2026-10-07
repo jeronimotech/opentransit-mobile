@@ -433,9 +433,13 @@ class ErrorView extends ConsumerWidget {
 }
 
 class EmptyView extends StatelessWidget {
-  const EmptyView({super.key, required this.icon, required this.message});
+  const EmptyView({super.key, required this.icon, required this.message, this.detail});
   final IconData icon;
   final String message;
+
+  /// A second, muted line for *why* it is empty, when the reason is something the rider would
+  /// otherwise guess wrong — a filter that could not run, rather than a service that does not exist.
+  final String? detail;
 
   @override
   Widget build(BuildContext context) => Center(
@@ -449,6 +453,13 @@ class EmptyView extends StatelessWidget {
               Text(message,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge),
+              if (detail != null) ...[
+                const SizedBox(height: 8),
+                Text(detail!,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+              ],
             ],
           ),
         ),

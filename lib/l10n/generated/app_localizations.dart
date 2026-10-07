@@ -3071,6 +3071,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sin avisos armados — revisa el permiso de notificaciones'**
   String get remindersNone;
+
+  /// No description provided for @warnAccessibilityUnverified.
+  ///
+  /// In es, this message translates to:
+  /// **'Los datos de accesibilidad de esta ciudad no son un relevamiento: el feed publica el mismo valor en casi todas las paradas, así que no podemos verificar las rutas sin escalones.'**
+  String get warnAccessibilityUnverified;
+
+  /// No description provided for @warnAccessibilityNoData.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta ciudad no publica datos de accesibilidad, así que la opción sin escalones no puede filtrar nada.'**
+  String get warnAccessibilityNoData;
+
+  /// No description provided for @warnNoSharedVehicles.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay vehículos compartidos disponibles ahora mismo, así que esa opción quedó fuera.'**
+  String get warnNoSharedVehicles;
+
+  /// No description provided for @warnNoParkRide.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos una zona de parqueo legal con cupos cerca de una estación.'**
+  String get warnNoParkRide;
+
+  /// No description provided for @noItinerariesStepFree.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos rutas para esta búsqueda. Puede ser por el filtro sin escalones, no porque no exista servicio accesible.'**
+  String get noItinerariesStepFree;
 }
 
 class _AppLocalizationsDelegate

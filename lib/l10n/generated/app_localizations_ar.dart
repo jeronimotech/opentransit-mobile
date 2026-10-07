@@ -1762,4 +1762,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get remindersNone => 'لا تنبيهات مفعّلة — راجع إذن الإشعارات';
+
+  @override
+  String get warnAccessibilityUnverified =>
+      'بيانات إمكانية الوصول في هذه المدينة ليست مسحًا ميدانيًا: التغذية تنشر القيمة نفسها لجميع المحطات تقريبًا، لذا لا يمكن التحقق من المسارات الخالية من الدرجات.';
+
+  @override
+  String get warnAccessibilityNoData =>
+      'هذه المدينة لا تنشر بيانات إمكانية الوصول، لذا لا يستطيع خيار المسار الخالي من الدرجات تصفية أي شيء.';
+
+  @override
+  String get warnNoSharedVehicles =>
+      'لا تتوفر مركبات مشتركة الآن، لذا استُبعد هذا الخيار.';
+
+  @override
+  String get warnNoParkRide =>
+      'لم نجد منطقة وقوف قانونية بها أماكن قريبة من محطة.';
+
+  @override
+  String get noItinerariesStepFree =>
+      'لم نجد مسارات لهذا البحث. قد يكون السبب مُرشّح المسار الخالي من الدرجات، وليس غياب خدمة ميسَّرة.';
 }

@@ -1770,4 +1770,24 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get remindersNone =>
       'Tiada peringatan ditetapkan — semak kebenaran pemberitahuan';
+
+  @override
+  String get warnAccessibilityUnverified =>
+      'Data kebolehcapaian bandar ini bukan kajian: suapan menerbitkan nilai yang sama bagi hampir setiap perhentian, jadi laluan tanpa tangga tidak dapat disahkan.';
+
+  @override
+  String get warnAccessibilityNoData =>
+      'Bandar ini tidak menerbitkan data kebolehcapaian, jadi pilihan tanpa tangga tidak dapat menapis apa-apa.';
+
+  @override
+  String get warnNoSharedVehicles =>
+      'Tiada kenderaan kongsi tersedia sekarang, jadi pilihan itu ditinggalkan.';
+
+  @override
+  String get warnNoParkRide =>
+      'Tiada zon letak kereta yang sah dengan ruang berdekatan stesen.';
+
+  @override
+  String get noItinerariesStepFree =>
+      'Tiada laluan ditemui untuk carian ini. Mungkin kerana penapis tanpa tangga, bukan kerana tiada perkhidmatan mesra akses.';
 }
