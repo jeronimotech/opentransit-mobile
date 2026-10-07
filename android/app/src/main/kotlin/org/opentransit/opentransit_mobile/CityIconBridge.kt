@@ -56,10 +56,22 @@ object CityIconBridge {
 
     private fun all(): List<String> = listOf(DEFAULT) + CITIES.map { aliasFor(it) }
 
+    /**
+     * Whether this alias is the one currently showing.
+     *
+     * `getComponentEnabledSetting` returns DEFAULT, not ENABLED, for a component nobody has
+     * overridden — and DEFAULT means "whatever the manifest declared", which for `.Launcher` is
+     * enabled and for the nine city aliases is disabled. Reading DEFAULT as "disabled" made a
+     * fresh install look like it had no launcher at all, so `repair` fired on first run and wrote
+     * an override that should never have existed. Seen on a real device.
+     */
     private fun isEnabled(context: Context, suffix: String): Boolean =
         try {
-            context.packageManager.getComponentEnabledSetting(alias(context, suffix)) ==
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+            when (context.packageManager.getComponentEnabledSetting(alias(context, suffix))) {
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED -> true
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED -> false
+                else -> suffix == DEFAULT
+            }
         } catch (e: IllegalArgumentException) {
             false
         }

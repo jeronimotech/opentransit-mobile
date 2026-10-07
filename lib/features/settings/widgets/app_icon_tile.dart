@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/city_icon.dart';
+import '../../../core/models/models.dart';
 import '../../../core/providers.dart';
 import '../../../core/utils/colors.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -20,7 +21,8 @@ class AppIconTile extends ConsumerWidget {
     if (!CityIcon.supported) return const SizedBox.shrink();
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
-    final cities = ref.watch(citiesProvider).asData?.value ?? const [];
+    final citiesAsync = ref.watch(citiesProvider);
+    final cities = citiesAsync.asData?.value ?? const <City>[];
     final current = ref.watch(currentCityIconProvider).asData?.value;
 
     Future<void> pick(String? city) async {
@@ -40,6 +42,18 @@ class AppIconTile extends ConsumerWidget {
           title: Text(l10n.appIconTitle),
           subtitle: Text(l10n.appIconExplain, style: TextStyle(color: scheme.onSurfaceVariant)),
         ),
+        // Without the city list there is nothing to choose from, and rendering just "Default" looks
+        // like the feature works and offers one option. It cost a real test: the city list was
+        // failing to load and the picker silently showed a single swatch.
+        if (cities.isEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: citiesAsync.isLoading
+                ? const SizedBox(
+                    height: 24, width: 24, child: CircularProgressIndicator(strokeWidth: 2))
+                : Text(l10n.errorOffline, style: TextStyle(color: scheme.onSurfaceVariant)),
+          )
+        else
         SizedBox(
           height: 76,
           child: ListView(
