@@ -514,5 +514,29 @@
   "warnOutsideBounds": "Uno dei punti è fuori dall'area coperta da questa città.",
   "warnLocationNotFound": "Non è stato possibile localizzare uno dei due punti.",
   "warnNoStopsInRange": "Non ci sono fermate raggiungibili a piedi vicino a uno dei due punti.",
-  "warnRouterError": "Il pianificatore ha avuto un problema con questa ricerca."
+  "warnRouterError": "Il pianificatore ha avuto un problema con questa ricerca.",
+  "freshOffline": "Offline · orario scaricato",
+  "offlineTitle": "Orari offline",
+  "offlineDownload": "Scarica",
+  "offlineRemove": "Elimina",
+  "offlineNotAvailable": "Non ancora disponibile in questa città",
+  "offlineInstalled": "Scaricato il {date}",
+  "@offlineInstalled": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineSize": "{size} su questo telefono",
+  "@offlineSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineExplain": "Conserva l'intero orario della città così le partenze funzionano sottoterra o senza dati. Il tempo reale non è incluso.",
+  "offlineDownloading": "Scaricamento…",
+  "offlineFailed": "Non è stato possibile scaricare l'orario"
 }

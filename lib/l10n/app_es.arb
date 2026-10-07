@@ -1171,5 +1171,29 @@
   "warnOutsideBounds": "Uno de los puntos queda fuera del área que cubre esta ciudad.",
   "warnLocationNotFound": "No pudimos ubicar uno de los dos puntos.",
   "warnNoStopsInRange": "No hay paradas caminables cerca de uno de los dos puntos.",
-  "warnRouterError": "El planificador tuvo un problema con esta búsqueda."
+  "warnRouterError": "El planificador tuvo un problema con esta búsqueda.",
+  "freshOffline": "Sin conexión · horario descargado",
+  "offlineTitle": "Horarios sin conexión",
+  "offlineDownload": "Descargar",
+  "offlineRemove": "Borrar",
+  "offlineNotAvailable": "Aún no disponible en esta ciudad",
+  "offlineInstalled": "Descargado el {date}",
+  "@offlineInstalled": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineSize": "{size} en el teléfono",
+  "@offlineSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineExplain": "Guarda el horario completo de la ciudad para que las salidas funcionen bajo tierra o sin datos. No incluye tiempo real.",
+  "offlineDownloading": "Descargando…",
+  "offlineFailed": "No se pudo descargar el horario"
 }

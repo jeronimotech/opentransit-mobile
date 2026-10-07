@@ -1840,4 +1840,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get warnRouterError => 'The planner hit a problem with this search.';
+
+  @override
+  String get freshOffline => 'Offline · downloaded timetable';
+
+  @override
+  String get offlineTitle => 'Offline timetables';
+
+  @override
+  String get offlineDownload => 'Download';
+
+  @override
+  String get offlineRemove => 'Delete';
+
+  @override
+  String get offlineNotAvailable => 'Not available in this city yet';
+
+  @override
+  String offlineInstalled(String date) {
+    return 'Downloaded $date';
+  }
+
+  @override
+  String offlineSize(String size) {
+    return '$size on this phone';
+  }
+
+  @override
+  String get offlineExplain =>
+      'Keeps the city\'s whole timetable so departures work underground or with no data. Realtime is not included.';
+
+  @override
+  String get offlineDownloading => 'Downloading…';
+
+  @override
+  String get offlineFailed => 'The timetable could not be downloaded';
 }

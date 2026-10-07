@@ -1850,4 +1850,39 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get warnRouterError =>
       'Il pianificatore ha avuto un problema con questa ricerca.';
+
+  @override
+  String get freshOffline => 'Offline · orario scaricato';
+
+  @override
+  String get offlineTitle => 'Orari offline';
+
+  @override
+  String get offlineDownload => 'Scarica';
+
+  @override
+  String get offlineRemove => 'Elimina';
+
+  @override
+  String get offlineNotAvailable => 'Non ancora disponibile in questa città';
+
+  @override
+  String offlineInstalled(String date) {
+    return 'Scaricato il $date';
+  }
+
+  @override
+  String offlineSize(String size) {
+    return '$size su questo telefono';
+  }
+
+  @override
+  String get offlineExplain =>
+      'Conserva l\'intero orario della città così le partenze funzionano sottoterra o senza dati. Il tempo reale non è incluso.';
+
+  @override
+  String get offlineDownloading => 'Scaricamento…';
+
+  @override
+  String get offlineFailed => 'Non è stato possibile scaricare l\'orario';
 }

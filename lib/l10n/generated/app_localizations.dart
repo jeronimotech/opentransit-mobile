@@ -3197,6 +3197,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El planificador tuvo un problema con esta búsqueda.'**
   String get warnRouterError;
+
+  /// No description provided for @freshOffline.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión · horario descargado'**
+  String get freshOffline;
+
+  /// No description provided for @offlineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Horarios sin conexión'**
+  String get offlineTitle;
+
+  /// No description provided for @offlineDownload.
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar'**
+  String get offlineDownload;
+
+  /// No description provided for @offlineRemove.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrar'**
+  String get offlineRemove;
+
+  /// No description provided for @offlineNotAvailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no disponible en esta ciudad'**
+  String get offlineNotAvailable;
+
+  /// No description provided for @offlineInstalled.
+  ///
+  /// In es, this message translates to:
+  /// **'Descargado el {date}'**
+  String offlineInstalled(String date);
+
+  /// No description provided for @offlineSize.
+  ///
+  /// In es, this message translates to:
+  /// **'{size} en el teléfono'**
+  String offlineSize(String size);
+
+  /// No description provided for @offlineExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'Guarda el horario completo de la ciudad para que las salidas funcionen bajo tierra o sin datos. No incluye tiempo real.'**
+  String get offlineExplain;
+
+  /// No description provided for @offlineDownloading.
+  ///
+  /// In es, this message translates to:
+  /// **'Descargando…'**
+  String get offlineDownloading;
+
+  /// No description provided for @offlineFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo descargar el horario'**
+  String get offlineFailed;
 }
 
 class _AppLocalizationsDelegate

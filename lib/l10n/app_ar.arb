@@ -514,5 +514,29 @@
   "warnOutsideBounds": "إحدى النقطتين خارج المنطقة التي تغطيها هذه المدينة.",
   "warnLocationNotFound": "لم نتمكن من تحديد إحدى النقطتين.",
   "warnNoStopsInRange": "لا توجد محطات على مسافة سير قريبة من إحدى النقطتين.",
-  "warnRouterError": "واجه المخطّط مشكلة في هذا البحث."
+  "warnRouterError": "واجه المخطّط مشكلة في هذا البحث.",
+  "freshOffline": "بدون اتصال · جدول مُنزَّل",
+  "offlineTitle": "الجداول بدون اتصال",
+  "offlineDownload": "تنزيل",
+  "offlineRemove": "حذف",
+  "offlineNotAvailable": "غير متوفر في هذه المدينة بعد",
+  "offlineInstalled": "نُزِّل في {date}",
+  "@offlineInstalled": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineSize": "{size} على هذا الهاتف",
+  "@offlineSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineExplain": "يحفظ جدول المدينة بالكامل لتعمل المواعيد تحت الأرض أو بدون بيانات. لا يتضمن البيانات المباشرة.",
+  "offlineDownloading": "جارٍ التنزيل…",
+  "offlineFailed": "تعذّر تنزيل الجدول"
 }

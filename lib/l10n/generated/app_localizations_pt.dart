@@ -1853,4 +1853,39 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get warnRouterError => 'O planejador teve um problema com esta busca.';
+
+  @override
+  String get freshOffline => 'Sem ligação · horário descarregado';
+
+  @override
+  String get offlineTitle => 'Horários sem ligação';
+
+  @override
+  String get offlineDownload => 'Descarregar';
+
+  @override
+  String get offlineRemove => 'Apagar';
+
+  @override
+  String get offlineNotAvailable => 'Ainda não disponível nesta cidade';
+
+  @override
+  String offlineInstalled(String date) {
+    return 'Descarregado em $date';
+  }
+
+  @override
+  String offlineSize(String size) {
+    return '$size no telefone';
+  }
+
+  @override
+  String get offlineExplain =>
+      'Guarda o horário completo da cidade para as partidas funcionarem no subterrâneo ou sem dados. Não inclui tempo real.';
+
+  @override
+  String get offlineDownloading => 'A descarregar…';
+
+  @override
+  String get offlineFailed => 'Não foi possível descarregar o horário';
 }

@@ -514,5 +514,29 @@
   "warnOutsideBounds": "L'un des points est en dehors de la zone couverte par cette ville.",
   "warnLocationNotFound": "L'un des deux points n'a pas pu être localisé.",
   "warnNoStopsInRange": "Aucun arrêt accessible à pied près de l'un des deux points.",
-  "warnRouterError": "Le planificateur a rencontré un problème avec cette recherche."
+  "warnRouterError": "Le planificateur a rencontré un problème avec cette recherche.",
+  "freshOffline": "Hors ligne · horaire téléchargé",
+  "offlineTitle": "Horaires hors ligne",
+  "offlineDownload": "Télécharger",
+  "offlineRemove": "Supprimer",
+  "offlineNotAvailable": "Pas encore disponible dans cette ville",
+  "offlineInstalled": "Téléchargé le {date}",
+  "@offlineInstalled": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineSize": "{size} sur ce téléphone",
+  "@offlineSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineExplain": "Conserve tout l'horaire de la ville pour que les départs fonctionnent sous terre ou sans données. Le temps réel n'est pas inclus.",
+  "offlineDownloading": "Téléchargement…",
+  "offlineFailed": "L'horaire n'a pas pu être téléchargé"
 }

@@ -16,6 +16,8 @@ import 'api/http_api_client.dart';
 import 'api/mock_api_client.dart';
 import 'config.dart';
 import 'connectivity.dart';
+import 'offline/offline_board.dart';
+import 'offline/offline_store.dart';
 import 'models/models.dart';
 import 'storage/favorites.dart';
 import 'utils/notifications.dart';
@@ -552,12 +554,51 @@ final departuresProvider =
   return ref.watch(apiClientProvider).departures(k.cityId, k.id);
 });
 
+/// One store for every city; the files are per city, the object is not.
+final offlineStoreProvider = Provider<OfflineStore>((ref) => OfflineStore());
+
+/// The installed bundle for a city, or null. Kept alive rather than autoDispose: reopening it
+/// re-reads and re-parses a megabyte of header, and a rider underground will hit it repeatedly.
+final offlineBundleProvider = FutureProvider.family<InstalledBundle?, String>(
+    (ref, cityId) => ref.watch(offlineStoreProvider).open(cityId));
+
+/// What is installed, for a settings screen. Separate from [offlineBundleProvider] so showing the
+/// row costs a small file read rather than parsing the header.
+final offlineMetaProvider = FutureProvider.family<OfflineMeta?, String>(
+    (ref, cityId) => ref.watch(offlineStoreProvider).meta(cityId));
+
 final boardProvider =
-    FutureProvider.autoDispose.family<BoardResponse, CityKey>((ref, k) {
+    FutureProvider.autoDispose.family<BoardResponse, CityKey>((ref, k) async {
   final timer = Timer(_refreshFor(ref, k.cityId), () => ref.invalidateSelf());
   ref.onDispose(timer.cancel);
-  return ref.watch(apiClientProvider).board(k.cityId, k.id);
+  try {
+    return await ref.watch(apiClientProvider).board(k.cityId, k.id);
+  } on Object {
+    // The request failed, which underground is the normal case rather than the exception. Fall back
+    // to the downloaded timetable if there is one, and rethrow if there is not: an error the rider
+    // can act on beats an empty board that looks like the end of service.
+    final board = await _offlineBoard(ref, k);
+    if (board == null) rethrow;
+    return board;
+  }
 });
+
+Future<BoardResponse?> _offlineBoard(Ref ref, CityKey k) async {
+  final bundle = await ref.read(offlineBundleProvider(k.cityId).future);
+  if (bundle == null) return null;
+  // Stop ids are city-scoped on the wire and bare in the bundle, which is built from the feed.
+  final raw = k.id.contains(':') ? k.id.split(':').skip(1).join(':') : k.id;
+  final si = bundle.header.stopIndexById[raw];
+  if (si == null) return null;
+  final now = DateTime.now();
+  return offlineBoard(
+    header: bundle.header,
+    stop: bundle.header.stops[si],
+    departures: await bundle.departures(raw, at: now, limit: 30),
+    cityId: k.cityId,
+    at: now,
+  );
+}
 
 final nextBusesProvider =
     FutureProvider.autoDispose.family<NextBusesResponse, StopRouteKey>((ref, k) {

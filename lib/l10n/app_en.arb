@@ -952,5 +952,29 @@
   "warnOutsideBounds": "One of the points is outside the area this city covers.",
   "warnLocationNotFound": "One of the two points could not be located.",
   "warnNoStopsInRange": "There are no walkable stops near one of the two points.",
-  "warnRouterError": "The planner hit a problem with this search."
+  "warnRouterError": "The planner hit a problem with this search.",
+  "freshOffline": "Offline · downloaded timetable",
+  "offlineTitle": "Offline timetables",
+  "offlineDownload": "Download",
+  "offlineRemove": "Delete",
+  "offlineNotAvailable": "Not available in this city yet",
+  "offlineInstalled": "Downloaded {date}",
+  "@offlineInstalled": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineSize": "{size} on this phone",
+  "@offlineSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineExplain": "Keeps the city's whole timetable so departures work underground or with no data. Realtime is not included.",
+  "offlineDownloading": "Downloading…",
+  "offlineFailed": "The timetable could not be downloaded"
 }

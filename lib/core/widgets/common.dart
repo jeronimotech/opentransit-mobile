@@ -224,6 +224,12 @@ class FreshnessLabel extends ConsumerWidget {
     final rt = health?.realtime;
     final stale = freshness?.stale ?? rt?.isStale ?? false;
     final age = freshness?.ageSeconds ?? rt?.ageSeconds;
+    // Before anything else: a board read from a downloaded timetable is not "scheduled" in the
+    // ordinary sense, it is the app working from what it stored. Saying so is the difference
+    // between a rider trusting the number and wondering why nothing is live.
+    if (freshness?.offline ?? false) {
+      return _Label(color: scheme.outline, text: l10n.freshOffline);
+    }
     if (stale) {
       return _Label(
         color: context.semantic.disruption,

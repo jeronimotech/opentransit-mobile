@@ -1835,4 +1835,39 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get warnRouterError => 'واجه المخطّط مشكلة في هذا البحث.';
+
+  @override
+  String get freshOffline => 'بدون اتصال · جدول مُنزَّل';
+
+  @override
+  String get offlineTitle => 'الجداول بدون اتصال';
+
+  @override
+  String get offlineDownload => 'تنزيل';
+
+  @override
+  String get offlineRemove => 'حذف';
+
+  @override
+  String get offlineNotAvailable => 'غير متوفر في هذه المدينة بعد';
+
+  @override
+  String offlineInstalled(String date) {
+    return 'نُزِّل في $date';
+  }
+
+  @override
+  String offlineSize(String size) {
+    return '$size على هذا الهاتف';
+  }
+
+  @override
+  String get offlineExplain =>
+      'يحفظ جدول المدينة بالكامل لتعمل المواعيد تحت الأرض أو بدون بيانات. لا يتضمن البيانات المباشرة.';
+
+  @override
+  String get offlineDownloading => 'جارٍ التنزيل…';
+
+  @override
+  String get offlineFailed => 'تعذّر تنزيل الجدول';
 }

@@ -6,10 +6,15 @@ import 'vehicle.dart';
 
 /// How fresh the realtime data behind a response is.
 class Freshness {
-  const Freshness({this.realtime = false, this.ageSeconds, this.stale = false});
+  const Freshness({this.realtime = false, this.ageSeconds, this.stale = false, this.offline = false});
   final bool realtime;
   final int? ageSeconds;
   final bool stale;
+
+  /// Set by the client, never by the API: this board was read from a downloaded timetable because
+  /// the request failed. "Scheduled" is true but incomplete — the rider should know the app is
+  /// working from what it stored, not from what the agency is saying right now.
+  final bool offline;
 
   factory Freshness.fromJson(Map<String, dynamic>? j) => j == null
       ? const Freshness()

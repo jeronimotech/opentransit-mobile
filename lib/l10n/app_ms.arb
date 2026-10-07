@@ -514,5 +514,29 @@
   "warnOutsideBounds": "Salah satu titik berada di luar kawasan yang diliputi bandar ini.",
   "warnLocationNotFound": "Salah satu daripada dua titik tidak dapat ditemui.",
   "warnNoStopsInRange": "Tiada perhentian yang boleh dicapai dengan berjalan berdekatan salah satu titik.",
-  "warnRouterError": "Perancang menghadapi masalah dengan carian ini."
+  "warnRouterError": "Perancang menghadapi masalah dengan carian ini.",
+  "freshOffline": "Luar talian · jadual dimuat turun",
+  "offlineTitle": "Jadual luar talian",
+  "offlineDownload": "Muat turun",
+  "offlineRemove": "Hapus",
+  "offlineNotAvailable": "Belum tersedia di bandar ini",
+  "offlineInstalled": "Dimuat turun pada {date}",
+  "@offlineInstalled": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineSize": "{size} pada telefon ini",
+  "@offlineSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineExplain": "Menyimpan seluruh jadual bandar supaya perjalanan berfungsi di bawah tanah atau tanpa data. Masa nyata tidak disertakan.",
+  "offlineDownloading": "Memuat turun…",
+  "offlineFailed": "Jadual tidak dapat dimuat turun"
 }

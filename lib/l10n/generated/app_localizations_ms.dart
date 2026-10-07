@@ -1846,4 +1846,39 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get warnRouterError =>
       'Perancang menghadapi masalah dengan carian ini.';
+
+  @override
+  String get freshOffline => 'Luar talian · jadual dimuat turun';
+
+  @override
+  String get offlineTitle => 'Jadual luar talian';
+
+  @override
+  String get offlineDownload => 'Muat turun';
+
+  @override
+  String get offlineRemove => 'Hapus';
+
+  @override
+  String get offlineNotAvailable => 'Belum tersedia di bandar ini';
+
+  @override
+  String offlineInstalled(String date) {
+    return 'Dimuat turun pada $date';
+  }
+
+  @override
+  String offlineSize(String size) {
+    return '$size pada telefon ini';
+  }
+
+  @override
+  String get offlineExplain =>
+      'Menyimpan seluruh jadual bandar supaya perjalanan berfungsi di bawah tanah atau tanpa data. Masa nyata tidak disertakan.';
+
+  @override
+  String get offlineDownloading => 'Memuat turun…';
+
+  @override
+  String get offlineFailed => 'Jadual tidak dapat dimuat turun';
 }
