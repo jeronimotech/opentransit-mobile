@@ -29,9 +29,15 @@ class PlaceSearchScreen extends ConsumerStatefulWidget {
     required this.field,
     this.saveAs,
     this.implicit = false,
+    this.initialQuery,
   });
   final String cityId;
   final String field;
+
+  /// Prefilled and searched immediately. Set when another app shared a place by name and gave no
+  /// coordinates — Google Maps sends `geo:0,0?q=Museo del Oro` for a place it has not resolved,
+  /// and typing it again would be the app ignoring what it was handed.
+  final String? initialQuery;
 
   /// True when the caller did not name a field (a bare `/city/search` deep
   /// link). The screen then fills whichever end is still empty instead of
@@ -69,6 +75,11 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
   void initState() {
     super.initState();
     _locate();
+    final q = widget.initialQuery;
+    if (q != null && q.trim().isNotEmpty) {
+      _controller.text = q;
+      _search(q);
+    }
   }
 
   Future<void> _locate() async {

@@ -55,6 +55,23 @@
                 <data android:scheme="https" android:host="kualalumpur.opentransit.tech" />
                 <data android:scheme="https" android:host="brisbane.opentransit.tech" />
             </intent-filter>
+            <!-- Be choosable as the handler for a map pin. The Android convention for "here is a
+                 place" is a geo: URI, and claiming it is what lets another app hand a location to
+                 a transit app instead of only to a map. RFC 5870 plus the geo:0,0?q=… form Google
+                 Maps actually sends. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="geo" />
+            </intent-filter>
+            <!-- Be a share target. MainActivity repackages the shared text as
+                 opentransit://shared?text=… so Flutter's own deep-link plumbing delivers it. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

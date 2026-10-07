@@ -6,6 +6,7 @@ import 'core/models/models.dart';
 import 'core/providers.dart';
 import 'core/utils/links.dart';
 import 'features/alerts/alerts_screen.dart';
+import 'features/cities/city_for_position.dart';
 import 'features/cities/city_picker_screen.dart';
 import 'features/favorites/favorites_screen.dart';
 import 'features/home/app_shell.dart';
@@ -28,6 +29,14 @@ import 'features/stops/stop_detail_screen.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
 
+/// The destination of a `/plan?toLat=…&toLon=…` location, when it has one.
+LatLng? _sharedPoint(Uri mapped) {
+  if (mapped.path != '/plan') return null;
+  final lat = double.tryParse(mapped.queryParameters['toLat'] ?? '');
+  final lon = double.tryParse(mapped.queryParameters['toLon'] ?? '');
+  return lat == null || lon == null ? null : LatLng(lat, lon);
+}
+
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: _rootKey,
@@ -40,7 +49,24 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Deep links: `opentransit://bogota/plan?...` and the canonical
       // `https://<web-host>/bogota/plan?...` both map to `/bogota/plan?...`.
       final mapped = CanonicalLinks.toAppLocation(uri);
-      if (mapped != null && mapped != uri.toString()) return mapped;
+      if (mapped != null && mapped != uri.toString()) {
+        // A shared place carries no city, so pick the one whose feed actually covers it rather
+        // than the one the app happens to be set to. Sharing a Toronto address into a Bogotá-set
+        // app otherwise plans inside Bogotá and answers OUTSIDE_BOUNDS, which is honest but
+        // useless when we have Toronto right here.
+        final to = _sharedPoint(Uri.parse(mapped));
+        if (to != null) {
+          final cities = ref.read(citiesProvider).asData?.value;
+          final city = cities == null ? null : cityForPosition(cities, to);
+          // No city covers it: say so, instead of planning a trip that cannot exist.
+          if (cities != null && city == null) return '/cities';
+          if (city != null) {
+            return Uri(path: '/${city.id}/plan',
+                queryParameters: Uri.parse(mapped).queryParameters).toString();
+          }
+        }
+        return mapped;
+      }
       final segs = uri.pathSegments;
       if (segs.isEmpty) return cityId == null ? '/cities' : '/$cityId';
       if (segs.first == 'cities') return null;
@@ -95,6 +121,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     field: s.uri.queryParameters['field'] ?? 'to',
                     implicit: s.uri.queryParameters['field'] == null,
                     saveAs: s.uri.queryParameters['saveAs'],
+                    initialQuery: s.uri.queryParameters['q'],
                   ),
                 ),
                 // Full-screen "choose on map" picker, for either field.
