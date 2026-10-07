@@ -35,3 +35,14 @@ String formatUpdatedAgo(int seconds, AppLocalizations l10n) {
   if (seconds < 7200) return l10n.updatedMinutesAgo((seconds / 60).round());
   return l10n.updatedHoursAgo((seconds / 3600).round());
 }
+
+
+/// "5.4 MB". For a question a rider is being asked to answer — "download this?" — so it rounds the
+/// way a person reads a download size rather than the way a disk reports one.
+String formatBytes(int bytes) {
+  if (bytes < 1024) return '$bytes B';
+  final kb = bytes / 1024;
+  if (kb < 1000) return '${kb.toStringAsFixed(0)} KB';
+  final mb = kb / 1024;
+  return mb < 10 ? '${mb.toStringAsFixed(1)} MB' : '${mb.toStringAsFixed(0)} MB';
+}

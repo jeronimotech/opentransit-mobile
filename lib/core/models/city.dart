@@ -23,6 +23,42 @@ class CityAgency {
       );
 }
 
+/// Where this city's offline timetable lives, and how big it is before anyone downloads it.
+///
+/// Null when the city has no bundle published, in which case the app offers no download rather
+/// than one that 404s. The size comes from the config rather than a HEAD request because the
+/// question "download 5.4 MB?" needs the number to be worth asking.
+class OfflineBundleInfo {
+  const OfflineBundleInfo({
+    required this.url,
+    required this.bytes,
+    this.formatVersion = 1,
+    this.departures,
+    this.builtAt,
+  });
+
+  final String url;
+  final int bytes;
+  final int formatVersion;
+  final int? departures;
+  final String? builtAt;
+
+  static OfflineBundleInfo? fromJson(Object? raw) {
+    if (raw is! Map) return null;
+    final j = Map<String, dynamic>.from(raw);
+    final url = j['url']?.toString();
+    final bytes = asInt(j['bytes']);
+    if (url == null || url.isEmpty || bytes == null || bytes <= 0) return null;
+    return OfflineBundleInfo(
+      url: url,
+      bytes: bytes,
+      formatVersion: asInt(j['formatVersion']) ?? 1,
+      departures: asInt(j['departures']),
+      builtAt: j['builtAt']?.toString(),
+    );
+  }
+}
+
 class CityFeatures {
   const CityFeatures({
     this.realtimeVehicles = false,
@@ -335,9 +371,13 @@ class City {
     this.services = const [],
     this.mobility = const CityMobility(),
     this.openMobility = const CityOpenMobility(),
+    this.offline,
   });
 
   final String id;
+
+  /// v1.6: the downloadable timetable, or null where none is published yet.
+  final OfflineBundleInfo? offline;
   final String name;
   final String country;
   final String timezone;
@@ -423,6 +463,7 @@ class City {
       openMobility: CityOpenMobility.fromJson(
         j['openMobility'] is Map ? Map<String, dynamic>.from(j['openMobility'] as Map) : null,
       ),
+      offline: OfflineBundleInfo.fromJson(j['offline']),
     );
   }
 
