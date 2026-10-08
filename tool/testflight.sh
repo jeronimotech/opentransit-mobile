@@ -126,6 +126,19 @@ prepare_manual_signing() {
   $ASC profile --cert-id "$CERT_ID" --name "$PROFILE_NAME" --install > build/asc-profile.json
   PROFILE_UUID=$(json_field uuid < build/asc-profile.json)
 
+  # 3b. the same for every embedded companion. The patch step below points each bundle id at a
+  # profile *by name*, so a name with no profile behind it fails the archive with nothing in the log
+  # that says why. The three original companions worked only because their profiles had been created
+  # once by hand; the first new one — the share extension — had none and the archive just failed.
+  # `bundle-id` and `profile` both read BUNDLE_ID, so each call overrides it for itself only.
+  while IFS= read -r pair; do
+    [[ -z "$pair" || "$pair" != *=* ]] && continue
+    companion_id="${pair%%=*}"; companion_name="${pair#*=}"
+    echo "==> App Store Connect: companion \"$companion_name\" ($companion_id)"
+    BUNDLE_ID="$companion_id" $ASC bundle-id > /dev/null
+    BUNDLE_ID="$companion_id" $ASC profile --cert-id "$CERT_ID" --name "$companion_name" --install > /dev/null
+  done < <(echo "$COMPANION_PROFILES" | tr ';' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+
   # 4. import the identity into the dedicated keychain if it is not there yet
   openssl x509 -inform DER -in "$DIST_DIR/dist.cer" -out "$DIST_DIR/dist.pem" 2>/dev/null
   CERT_CN=$(openssl x509 -in "$DIST_DIR/dist.pem" -noout -subject -nameopt RFC2253 | sed -n 's/.*CN=\([^,]*\).*/\1/p')

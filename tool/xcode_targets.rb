@@ -20,7 +20,14 @@ require 'xcodeproj'
 
 ROOT       = File.expand_path('..', __dir__)
 PROJECT    = File.join(ROOT, 'ios', 'Runner.xcodeproj')
-APP_ID     = ENV.fetch('BUNDLE_ID', 'com.jeronimotech.opentransit')
+# A companion's own id must never become the base. testflight.sh overrides BUNDLE_ID per companion
+# while creating its profile, and one leak of that into this script produced
+# `com.jeronimotech.opentransit.Share.Share` — a bundle id no profile matches, and an archive
+# failure whose log says nothing about the cause.
+COMPANION_SUFFIXES = %w[LiveActivity Share watchkitapp.complications watchkitapp].freeze
+APP_ID = COMPANION_SUFFIXES.reduce(ENV.fetch('BUNDLE_ID', 'com.jeronimotech.opentransit')) do |id, s|
+  id.sub(/\.#{Regexp.escape(s)}\z/, '')
+end
 TEAM_ID    = ENV['APPLE_TEAM_ID']
 CHECK_ONLY = ARGV.include?('--check')
 
