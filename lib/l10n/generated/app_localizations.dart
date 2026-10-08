@@ -3317,6 +3317,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Permite planear viajes sin red. Pesa más y solo sirve para eso.'**
   String get offlinePlanExplain;
+
+  /// No description provided for @searchOfflineStopsOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión: solo paradas descargadas, no direcciones.'**
+  String get searchOfflineStopsOnly;
 }
 
 class _AppLocalizationsDelegate

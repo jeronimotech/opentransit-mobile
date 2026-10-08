@@ -986,5 +986,6 @@
   "appIconYourCity": "Your city",
   "warnOfflinePlan": "Planned from the downloaded timetable, with no realtime.",
   "offlinePlanTitle": "Offline journey planning",
-  "offlinePlanExplain": "Lets you plan trips with no network. Larger, and only for that."
+  "offlinePlanExplain": "Lets you plan trips with no network. Larger, and only for that.",
+  "searchOfflineStopsOnly": "Offline: downloaded stops only, not addresses."
 }

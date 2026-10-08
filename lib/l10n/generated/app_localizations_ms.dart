@@ -1915,4 +1915,8 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get offlinePlanExplain =>
       'Membolehkan anda merancang perjalanan tanpa rangkaian. Lebih besar, dan hanya untuk itu.';
+
+  @override
+  String get searchOfflineStopsOnly =>
+      'Luar talian: hanya perhentian yang dimuat turun, bukan alamat.';
 }

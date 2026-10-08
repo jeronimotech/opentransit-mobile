@@ -1919,4 +1919,8 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get offlinePlanExplain =>
       'Permette di calcolare percorsi senza rete. Più pesante, e solo per questo.';
+
+  @override
+  String get searchOfflineStopsOnly =>
+      'Offline: solo le fermate scaricate, non gli indirizzi.';
 }

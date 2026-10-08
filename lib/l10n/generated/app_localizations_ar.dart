@@ -1904,4 +1904,8 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get offlinePlanExplain =>
       'يتيح تخطيط الرحلات بدون شبكة. أكبر حجمًا، ولهذا الغرض فقط.';
+
+  @override
+  String get searchOfflineStopsOnly =>
+      'بدون اتصال: المحطات المُنزَّلة فقط، وليس العناوين.';
 }

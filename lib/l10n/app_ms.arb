@@ -548,5 +548,6 @@
   "appIconYourCity": "Bandar anda",
   "warnOfflinePlan": "Dirancang daripada jadual yang dimuat turun, tanpa masa nyata.",
   "offlinePlanTitle": "Perancangan luar talian",
-  "offlinePlanExplain": "Membolehkan anda merancang perjalanan tanpa rangkaian. Lebih besar, dan hanya untuk itu."
+  "offlinePlanExplain": "Membolehkan anda merancang perjalanan tanpa rangkaian. Lebih besar, dan hanya untuk itu.",
+  "searchOfflineStopsOnly": "Luar talian: hanya perhentian yang dimuat turun, bukan alamat."
 }

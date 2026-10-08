@@ -1916,4 +1916,8 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get offlinePlanExplain =>
       'Permite planear viajes sin red. Pesa más y solo sirve para eso.';
+
+  @override
+  String get searchOfflineStopsOnly =>
+      'Sin conexión: solo paradas descargadas, no direcciones.';
 }

@@ -548,5 +548,6 @@
   "appIconYourCity": "Votre ville",
   "warnOfflinePlan": "Calculé à partir de l'horaire téléchargé, sans temps réel.",
   "offlinePlanTitle": "Itinéraires hors ligne",
-  "offlinePlanExplain": "Permet de calculer des trajets sans réseau. Plus lourd, et rien d'autre."
+  "offlinePlanExplain": "Permet de calculer des trajets sans réseau. Plus lourd, et rien d'autre.",
+  "searchOfflineStopsOnly": "Hors ligne : seulement les arrêts téléchargés, pas les adresses."
 }

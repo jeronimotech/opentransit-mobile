@@ -1909,4 +1909,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get offlinePlanExplain =>
       'Lets you plan trips with no network. Larger, and only for that.';
+
+  @override
+  String get searchOfflineStopsOnly =>
+      'Offline: downloaded stops only, not addresses.';
 }

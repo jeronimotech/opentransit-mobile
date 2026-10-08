@@ -15,6 +15,7 @@ import '../../l10n/generated/app_localizations.dart';
 import 'planner_actions.dart';
 import 'planner_state.dart';
 import 'widgets/place_result_tile.dart';
+import '../../core/offline/offline_plan.dart';
 
 /// Geocode autocomplete for the origin (`field=from`) or destination (`to`).
 ///
@@ -56,6 +57,10 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
   final _controller = TextEditingController();
   Timer? _debounce;
   List<GeocodeResult> _results = const [];
+
+  /// True when the results came from the downloaded bundle. Said on screen, because "stops only"
+  /// is a different answer from the one this field normally gives.
+  bool _offline = false;
   bool _loading = false;
   Object? _error;
   int _seq = 0;
@@ -124,10 +129,29 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
       if (seq != _seq || !mounted) return;
       setState(() {
         _results = r;
+        _offline = false;
         _loading = false;
       });
     } catch (e) {
       if (seq != _seq || !mounted) return;
+      // The geocoder is a network call, so offline this field answered "cannot reach the server"
+      // and a rider could not even name where they were starting from — with a planner behind it
+      // that answers in under a tenth of a second. The downloaded stops are the honest fallback.
+      final bundle = await ref.read(offlineBundleProvider(widget.cityId).future);
+      if (seq != _seq || !mounted) return;
+      if (bundle != null) {
+        final offline = offlineSearchStops(bundle.header, q,
+            cityId: widget.cityId, near: _here);
+        if (offline.isNotEmpty) {
+          setState(() {
+            _results = offline;
+            _offline = true;
+            _loading = false;
+            _error = null;
+          });
+          return;
+        }
+      }
       setState(() {
         _error = e;
         _loading = false;
@@ -311,6 +335,23 @@ class _PlaceSearchScreenState extends ConsumerState<PlaceSearchScreen> {
               ),
           ],
           if (_loading) const LinearProgressIndicator(minHeight: 2),
+          if (_offline)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Row(
+                children: [
+                  Icon(Icons.cloud_off_outlined, size: 14,
+                      color: Theme.of(context).colorScheme.outline),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(AppLocalizations.of(context).searchOfflineStopsOnly,
+                        style: TextStyle(
+                            fontSize: 11,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                  ),
+                ],
+              ),
+            ),
           if (_error != null) ErrorView(error: _error!, onRetry: () => _search(query)),
           for (var i = 0; i < _results.length; i++)
             PlaceResultTile(

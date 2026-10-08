@@ -154,3 +154,78 @@ PlanResponse offlinePlanResponse({
     warnings: const ['OFFLINE_PLAN: planned from the downloaded timetable, with no realtime'],
   );
 }
+
+/// Search the downloaded stops by name, for when the geocoder cannot be reached.
+///
+/// Without this the offline planner is unreachable: a rider types an origin, the geocoder is a
+/// network call, and the field answers "cannot reach the server". The engine answering in 88 ms
+/// behind a search box that cannot be filled is a feature nobody can use.
+///
+/// Stops only, and said so: the online geocoder also knows addresses, streets and places, and none
+/// of that is in the bundle. Offering a stop list and calling it a search would be the quieter lie.
+List<GeocodeResult> offlineSearchStops(
+  OfflineHeader header,
+  String query, {
+  required String cityId,
+  LatLng? near,
+  int limit = 20,
+}) {
+  final q = _fold(query);
+  if (q.isEmpty) return const [];
+
+  final hits = <({int score, double distance, Stop stop})>[];
+  for (final s in header.stops) {
+    final name = _fold(s.name);
+    final code = _fold(s.code ?? '');
+    // Ranked, not just filtered: someone typing "porta" wants Portal Suba before Transversal
+    // Portales, and a code match is the most deliberate thing they can type.
+    final int score;
+    if (code.isNotEmpty && code == q) {
+      score = 0;
+    } else if (name.startsWith(q)) {
+      score = 1;
+    } else if (name.contains(' $q')) {
+      score = 2;
+    } else if (name.contains(q)) {
+      score = 3;
+    } else {
+      continue;
+    }
+    hits.add((
+      score: score,
+      distance: near == null ? 0 : haversineMeters(near, s.position),
+      stop: s,
+    ));
+  }
+
+  hits.sort((a, b) {
+    final byScore = a.score.compareTo(b.score);
+    return byScore != 0 ? byScore : a.distance.compareTo(b.distance);
+  });
+
+  return [
+    for (final h in hits.take(limit))
+      GeocodeResult(
+        id: '$cityId:${h.stop.id}',
+        name: h.stop.name,
+        position: h.stop.position,
+        type: h.stop.locationType == 'station' ? 'station' : 'stop',
+        stopId: '$cityId:${h.stop.id}',
+        source: 'gtfs',
+        distanceMeters: near == null ? null : h.distance.round(),
+      ),
+  ];
+}
+
+/// Lower-cased and stripped of the accents a rider will not type.
+String _fold(String s) {
+  const from = 'áàäâãéèëêíìïîóòöôõúùüûñç';
+  const to = 'aaaaaeeeeiiiiooooouuuunc';
+  final buf = StringBuffer();
+  for (final r in s.toLowerCase().runes) {
+    final ch = String.fromCharCode(r);
+    final i = from.indexOf(ch);
+    buf.write(i >= 0 ? to[i] : ch);
+  }
+  return buf.toString().trim();
+}
