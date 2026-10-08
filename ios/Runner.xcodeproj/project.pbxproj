@@ -26,6 +26,7 @@
 		62C33ADF041EB93F4D797E11 /* WatchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC48D195290B46853C7B9B05 /* WatchModels.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 		9015B7A72BD981635B9EF773 /* RouteBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8557148FAC10EEF26AA785 /* RouteBadge.swift */; };
 		90C2131A4430DCB129BD7B1F /* WatchViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD490DA9A9C3FF40026A86 /* WatchViews.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -40,6 +41,8 @@
 		D54D384E35A70428CE51BB90 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E6D00FCE15668099898D41 /* Foundation.framework */; };
 		D78FF2C2C69C670D66A501CE /* OpenTransitLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D8006E67C636B503942B3CE3 /* WatchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDDB11305BF6EF97508B444 /* WatchModels.swift */; };
+		5DA284887DD3591622BF6EE2 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300DF4D096E2AA9138B28F5D /* ShareViewController.swift */; };
+		A08DAA86703DF90C3BABCA69 /* OpenTransitShare.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F5B9C09CA102435BA5FF5B1B /* OpenTransitShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +74,13 @@
 			remoteGlobalIDString = 988023F22B49DA182C96612C;
 			remoteInfo = OpenTransitWatchComplications;
 		};
+		D9E29A5958107D91991324D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 086F8C138521E610E703910F;
+			remoteInfo = OpenTransitShare;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -92,6 +102,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				D78FF2C2C69C670D66A501CE /* OpenTransitLiveActivity.appex in Embed App Extensions */,
+				A08DAA86703DF90C3BABCA69 /* OpenTransitShare.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,6 +151,7 @@
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75477E9EF546828FDCCE2CCF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7ABBD96DBB1798E5BD030438 /* WatchStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchStore.swift; path = OpenTransitWatch/WatchStore.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		81FCA7E163AF983686567112 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = OpenTransitWatch/Assets.xcassets; sourceTree = "<group>"; };
@@ -166,6 +178,9 @@
 		F1B8A3875749A1D3834B413F /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F68ED2BD9523F4B4C7F1FB27 /* OpenTransitLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitLiveActivity.swift; path = OpenTransitLiveActivity/OpenTransitLiveActivity.swift; sourceTree = "<group>"; };
 		F93906A0D6780DE20859156A /* OpenTransitLiveActivityBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitLiveActivityBundle.swift; path = OpenTransitLiveActivity/OpenTransitLiveActivityBundle.swift; sourceTree = "<group>"; };
+		300DF4D096E2AA9138B28F5D /* ShareViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = OpenTransitShare/ShareViewController.swift; sourceTree = "<group>"; };
+		4C73FFEB715698BFCC1B5B76 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = OpenTransitShare/Info.plist; sourceTree = "<group>"; };
+		F5B9C09CA102435BA5FF5B1B /* OpenTransitShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OpenTransitShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +212,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				4A2A12450E4509B0CCE05730 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -206,6 +222,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB1F70D9273ACA734C8EED15 /* Pods_RunnerTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ADC1599ECBE418A640D07ED2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +298,15 @@
 			name = OpenTransitWatchComplications;
 			sourceTree = SOURCE_ROOT;
 		};
+		6E23C623EEE0FABA7373B170 /* OpenTransitShare */ = {
+			isa = PBXGroup;
+			children = (
+				300DF4D096E2AA9138B28F5D /* ShareViewController.swift */,
+				4C73FFEB715698BFCC1B5B76 /* Info.plist */,
+			);
+			name = OpenTransitShare;
+			sourceTree = "<group>";
+		};
 		84A5CD1AAE30A656C4CF2045 /* OpenTransitLiveActivity */ = {
 			isa = PBXGroup;
 			children = (
@@ -289,6 +321,7 @@
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
+				78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */,
 				3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
@@ -307,6 +340,7 @@
 				4407D451A1A5930C4CAC5A24 /* Pods */,
 				0FC62CC683A8E3FAF11C3708 /* Frameworks */,
 				84A5CD1AAE30A656C4CF2045 /* OpenTransitLiveActivity */,
+				6E23C623EEE0FABA7373B170 /* OpenTransitShare */,
 				53B2E7496E120CCDC29A689A /* OpenTransitWatch */,
 				69CAAC79AEBFBDA06FB79D4F /* OpenTransitWatchComplications */,
 				35DA60EEC74B5AD3444754A9 /* Shared */,
@@ -319,6 +353,7 @@
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
 				9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */,
+				F5B9C09CA102435BA5FF5B1B /* OpenTransitShare.appex */,
 				8841BD1A8692F9B82A7C6231 /* opentransit Watch App.app */,
 				13939A8EA6303FAF6D05C6F2 /* OpenTransitWatchComplications.appex */,
 			);
@@ -432,15 +467,18 @@
 				0D70D2B7CC4CC66D62167330 /* Embed Watch Content */,
 				3554BEAA10CFD60D97D39499 /* Embed App Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				D3E84922D6609020555981EF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				7B79B17D23B78475DB43507A /* PBXTargetDependency */,
 				AF2BBC1FFADC37DFBABADA54 /* PBXTargetDependency */,
+				B659F5AAEA4C9A7BE5046361 /* PBXTargetDependency */,
 			);
 			name = Runner;
+			packageProductDependencies = (
+				78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */,
+			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
@@ -460,6 +498,23 @@
 			name = OpenTransitWatchComplications;
 			productName = OpenTransitWatchComplications;
 			productReference = 13939A8EA6303FAF6D05C6F2 /* OpenTransitWatchComplications.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		086F8C138521E610E703910F /* OpenTransitShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3E6503FDFAD5082A0897642 /* Build configuration list for PBXNativeTarget "OpenTransitShare" */;
+			buildPhases = (
+				ED3135ACB34712BA6876FA0F /* Sources */,
+				ADC1599ECBE418A640D07ED2 /* Frameworks */,
+				E006B0E649AFDA922B733B51 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenTransitShare;
+			productName = OpenTransitShare;
+			productReference = F5B9C09CA102435BA5FF5B1B /* OpenTransitShare.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -491,6 +546,9 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			packageReferences = (
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */,
+			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -500,6 +558,7 @@
 				211933ABA3D5BC7CCB217A7A /* OpenTransitLiveActivity */,
 				1E24DA40AC40AED1FE2C11D6 /* opentransit Watch App */,
 				988023F22B49DA182C96612C /* OpenTransitWatchComplications */,
+				086F8C138521E610E703910F /* OpenTransitShare */,
 			);
 		};
 /* End PBXProject section */
@@ -540,6 +599,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BC78CC4404CF4D979CADB928 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E006B0E649AFDA922B733B51 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -624,23 +690,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D3E84922D6609020555981EF /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -698,6 +747,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ED3135ACB34712BA6876FA0F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5DA284887DD3591622BF6EE2 /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -723,6 +780,11 @@
 			name = OpenTransitWatchComplications;
 			target = 988023F22B49DA182C96612C /* OpenTransitWatchComplications */;
 			targetProxy = DF15A366D9DCF92F98A78DD0 /* PBXContainerItemProxy */;
+		};
+		B659F5AAEA4C9A7BE5046361 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 086F8C138521E610E703910F /* OpenTransitShare */;
+			targetProxy = D9E29A5958107D91991324D9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1239,6 +1301,72 @@
 			};
 			name = Debug;
 		};
+		66D9962DA2AE4DCC62E222D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
+				PRODUCT_NAME = OpenTransitShare;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0E73501272531F9F51629BAE /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
+				PRODUCT_NAME = OpenTransitShare;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AAABE860A3945B51F4E54EC0 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 6DTDJCKC8X;
+				INFOPLIST_FILE = OpenTransitShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
+				PRODUCT_NAME = OpenTransitShare;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1302,7 +1430,31 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		F3E6503FDFAD5082A0897642 /* Build configuration list for PBXNativeTarget "OpenTransitShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0E73501272531F9F51629BAE /* Release */,
+				66D9962DA2AE4DCC62E222D1 /* Debug */,
+				AAABE860A3945B51F4E54EC0 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }
