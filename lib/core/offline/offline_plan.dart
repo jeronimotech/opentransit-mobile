@@ -86,6 +86,12 @@ PlanResponse offlinePlanResponse({
     );
   }
 
+  // The pattern index stores route *ids*; the board bundle's header stores what a route looks like.
+  // Both are already on the device, so the chip gets its real name, colour, component and mode by
+  // lookup rather than by shipping the same metadata twice. Without this the chips read "10074"
+  // in flat grey, which is the GTFS id and tells a rider nothing.
+  final routesById = {for (final r in header.routes) r.id: r};
+
   final itineraries = <Itinerary>[];
   for (final (i, j) in journeys.indexed) {
     final legs = <Leg>[];
@@ -99,8 +105,21 @@ PlanResponse offlinePlanResponse({
           : '';
       final fromPlace = placeFor(r.fromStop);
       final toPlace = placeFor(r.toStop);
+      final known = routesById[route];
+      final ref = known?.toRef(cityId) ??
+          RouteRef(
+            id: '$cityId:$route',
+            shortName: route,
+            longName: headsign.isEmpty ? route : headsign,
+            color: '#607D8B',
+            textColor: '#FFFFFF',
+            mode: TravelMode.bus,
+            agencyId: '',
+          );
       legs.add(Leg(
-        mode: TravelMode.bus,
+        // The route's own mode, not an assumed bus: a leg on Line 1 drawn with a bus icon is wrong
+        // in every city that has a metro.
+        mode: ref.mode,
         transit: true,
         startTime: at(r.departureMinute),
         endTime: at(r.arrivalMinute),
@@ -108,15 +127,7 @@ PlanResponse offlinePlanResponse({
         distanceMeters: haversineMeters(fromPlace.position, toPlace.position).round(),
         from: fromPlace,
         to: toPlace,
-        route: RouteRef(
-          id: '$cityId:$route',
-          shortName: route,
-          longName: headsign.isEmpty ? route : headsign,
-          color: '#607D8B',
-          textColor: '#FFFFFF',
-          mode: TravelMode.bus,
-          agencyId: '',
-        ),
+        route: ref,
         headsign: headsign.isEmpty ? null : headsign,
         // Never live, and not pretending to be.
         realtime: false,

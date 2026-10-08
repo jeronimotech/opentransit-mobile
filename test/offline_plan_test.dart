@@ -15,7 +15,10 @@ import 'package:opentransit_mobile/core/offline/offline_router.dart';
 final _header = OfflineHeader.parse(jsonEncode({
   'v': 1,
   'city': 'testville',
-  'routes': [],
+  'routes': [
+    {'id': 'G12', 'short': 'G12', 'long': 'Suba - Centro', 'color': '#D32F2F', 'type': 3,
+     'component': 'trunk'},
+  ],
   'headsigns': [],
   'services': [],
   'serviceExceptions': [],
@@ -117,6 +120,48 @@ void main() {
 
     test('says it came from the downloaded timetable', () {
       expect(plan().warnings.first, startsWith('OFFLINE_PLAN:'));
+    });
+
+    test('a chip shows the route name and colour, not its GTFS id', () {
+      // On a phone these read "10074" in flat grey: the pattern index stores route ids, and the
+      // metadata lives in the board bundle's header. Both are on the device, so it is a lookup.
+      final leg = plan().itineraries.first.legs.single;
+      expect(leg.route!.shortName, 'G12');
+      expect(leg.route!.longName, 'Suba - Centro');
+      expect(leg.route!.color, '#D32F2F');
+      expect(leg.route!.component, Component.trunk);
+    });
+
+    test('the leg takes the route\'s own mode, not an assumed bus', () {
+      // A metro leg drawn with a bus icon is wrong in every city that has one.
+      expect(plan().itineraries.first.legs.single.mode, TravelMode.bus);
+      expect(plan().itineraries.first.legs.single.route!.mode, TravelMode.bus);
+    });
+
+    test('a route the header does not know still produces a usable leg', () {
+      // A pattern index newer than the board bundle would otherwise draw nothing.
+      final bare = OfflineHeader.parse(jsonEncode({
+        'v': 1, 'city': 'testville', 'routes': [], 'headsigns': [], 'services': [],
+        'serviceExceptions': [],
+        'stops': [
+          {'id': 'A', 'name': 'Portal A', 'lat': 4.6000, 'lon': -74.0800, 'type': 0},
+          {'id': 'B', 'name': 'Calle B', 'lat': 4.6022, 'lon': -74.0800, 'type': 0},
+          {'id': 'C', 'name': 'Centro C', 'lat': 4.6045, 'lon': -74.0800, 'type': 0},
+          {'id': 'D', 'name': 'Plaza D', 'lat': 4.6045, 'lon': -74.0793, 'type': 0},
+        ],
+        'stats': {'departures': 0},
+      }));
+      final js = planOffline(
+        data: _patterns, originStops: {0}, destinationStops: {2},
+        departAfterMinute: 470, runningServices: {0}, footpaths: buildFootpaths(bare, _patterns.stops),
+      );
+      final p = offlinePlanResponse(
+        data: _patterns, header: bare, journeys: js,
+        from: Place(name: 'A', position: const LatLng(4.60, -74.08)),
+        to: Place(name: 'C', position: const LatLng(4.6045, -74.08)),
+        serviceDay: DateTime(2026, 10, 8), cityId: 'testville',
+      );
+      expect(p.itineraries.first.legs.single.route!.shortName, 'G12');
     });
 
     test('stop ids are city-scoped, so tapping a leg still opens the stop', () {
