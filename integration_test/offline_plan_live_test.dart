@@ -24,21 +24,26 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('download, install and plan a Bogotá journey with no network', (tester) async {
-    final api = HttpApiClient(AppConfig.apiUrl);
-    final city = await api.city(_city);
-    expect(city.offline, isNotNull, reason: 'no board bundle published');
-    expect(city.offlinePatterns, isNotNull, reason: 'no pattern index published');
-
+    // Use what is already installed when it is there. That keeps this runnable on a device in
+    // airplane mode — which is the state the feature exists for, and the one a download would need
+    // the test to break first.
     final store = OfflineStore();
-    await store.remove(_city);
-
-    final t0 = DateTime.now();
-    final meta = await store.install(_city,
-        url: city.offline!.url, expectedBytes: city.offline!.bytes);
-    final patternCount = await store.installPatterns(_city,
-        url: city.offlinePatterns!.url, expectedBytes: city.offlinePatterns!.bytes);
-    debugPrint('OFFLINE: installed in ${DateTime.now().difference(t0).inSeconds}s · '
-        '${meta.departures} departures · $patternCount patterns · ${meta.stops} stops');
+    if (await store.meta(_city) == null || !await store.hasPatterns(_city)) {
+      final api = HttpApiClient(AppConfig.apiUrl);
+      final city = await api.city(_city);
+      expect(city.offline, isNotNull, reason: 'no board bundle published');
+      expect(city.offlinePatterns, isNotNull, reason: 'no pattern index published');
+      final t0 = DateTime.now();
+      final meta = await store.install(_city,
+          url: city.offline!.url, expectedBytes: city.offline!.bytes);
+      final patternCount = await store.installPatterns(_city,
+          url: city.offlinePatterns!.url, expectedBytes: city.offlinePatterns!.bytes);
+      debugPrint('OFFLINE: installed in ${DateTime.now().difference(t0).inSeconds}s · '
+          '${meta.departures} departures · $patternCount patterns · ${meta.stops} stops');
+    } else {
+      final meta = (await store.meta(_city))!;
+      debugPrint('OFFLINE: already installed · ${meta.departures} departures · ${meta.stops} stops');
+    }
 
     final bundle = (await store.open(_city))!;
     final patterns = (await store.openPatterns(_city))!;
@@ -80,7 +85,7 @@ void main() {
       data: patterns,
       originStops: origins,
       destinationStops: destinations,
-      departAfterMinute: 8 * 60,
+      departAfterMinute: DateTime.now().hour * 60 + DateTime.now().minute,
       runningServices: services,
       footpaths: footpaths,
     );
