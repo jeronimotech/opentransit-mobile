@@ -1923,4 +1923,7 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get searchOfflineStopsOnly =>
       'Offline: solo le fermate scaricate, non gli indirizzi.';
+
+  @override
+  String get supportTitle => 'Assistenza e reclami';
 }

@@ -1926,4 +1926,7 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get searchOfflineStopsOnly =>
       'Sem ligação: apenas paradas descarregadas, não moradas.';
+
+  @override
+  String get supportTitle => 'Apoio e reclamações';
 }

@@ -549,5 +549,6 @@
   "warnOfflinePlan": "Calcolato dall'orario scaricato, senza tempo reale.",
   "offlinePlanTitle": "Percorsi offline",
   "offlinePlanExplain": "Permette di calcolare percorsi senza rete. Più pesante, e solo per questo.",
-  "searchOfflineStopsOnly": "Offline: solo le fermate scaricate, non gli indirizzi."
+  "searchOfflineStopsOnly": "Offline: solo le fermate scaricate, non gli indirizzi.",
+  "supportTitle": "Assistenza e reclami"
 }

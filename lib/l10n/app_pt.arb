@@ -549,5 +549,6 @@
   "warnOfflinePlan": "Planeado com o horário descarregado, sem tempo real.",
   "offlinePlanTitle": "Planear sem ligação",
   "offlinePlanExplain": "Permite planear viagens sem rede. Ocupa mais e serve só para isso.",
-  "searchOfflineStopsOnly": "Sem ligação: apenas paradas descarregadas, não moradas."
+  "searchOfflineStopsOnly": "Sem ligação: apenas paradas descarregadas, não moradas.",
+  "supportTitle": "Apoio e reclamações"
 }

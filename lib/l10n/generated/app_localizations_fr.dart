@@ -1930,4 +1930,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get searchOfflineStopsOnly =>
       'Hors ligne : seulement les arrêts téléchargés, pas les adresses.';
+
+  @override
+  String get supportTitle => 'Assistance et réclamations';
 }

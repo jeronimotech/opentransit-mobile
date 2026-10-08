@@ -1920,4 +1920,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get searchOfflineStopsOnly =>
       'Sin conexión: solo paradas descargadas, no direcciones.';
+
+  @override
+  String get supportTitle => 'Soporte y PQRS';
 }

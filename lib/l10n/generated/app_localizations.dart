@@ -3323,6 +3323,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sin conexión: solo paradas descargadas, no direcciones.'**
   String get searchOfflineStopsOnly;
+
+  /// No description provided for @supportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Soporte y PQRS'**
+  String get supportTitle;
 }
 
 class _AppLocalizationsDelegate

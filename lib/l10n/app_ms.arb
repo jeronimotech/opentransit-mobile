@@ -549,5 +549,6 @@
   "warnOfflinePlan": "Dirancang daripada jadual yang dimuat turun, tanpa masa nyata.",
   "offlinePlanTitle": "Perancangan luar talian",
   "offlinePlanExplain": "Membolehkan anda merancang perjalanan tanpa rangkaian. Lebih besar, dan hanya untuk itu.",
-  "searchOfflineStopsOnly": "Luar talian: hanya perhentian yang dimuat turun, bukan alamat."
+  "searchOfflineStopsOnly": "Luar talian: hanya perhentian yang dimuat turun, bukan alamat.",
+  "supportTitle": "Sokongan dan aduan"
 }

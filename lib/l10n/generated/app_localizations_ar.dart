@@ -1908,4 +1908,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get searchOfflineStopsOnly =>
       'بدون اتصال: المحطات المُنزَّلة فقط، وليس العناوين.';
+
+  @override
+  String get supportTitle => 'الدعم والشكاوى';
 }

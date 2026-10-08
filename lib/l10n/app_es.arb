@@ -1206,5 +1206,6 @@
   "warnOfflinePlan": "Planificado con el horario descargado, sin tiempo real.",
   "offlinePlanTitle": "Planificar sin conexión",
   "offlinePlanExplain": "Permite planear viajes sin red. Pesa más y solo sirve para eso.",
-  "searchOfflineStopsOnly": "Sin conexión: solo paradas descargadas, no direcciones."
+  "searchOfflineStopsOnly": "Sin conexión: solo paradas descargadas, no direcciones.",
+  "supportTitle": "Soporte y PQRS"
 }

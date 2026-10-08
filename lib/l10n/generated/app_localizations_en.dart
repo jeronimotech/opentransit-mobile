@@ -1913,4 +1913,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get searchOfflineStopsOnly =>
       'Offline: downloaded stops only, not addresses.';
+
+  @override
+  String get supportTitle => 'Support and complaints';
 }

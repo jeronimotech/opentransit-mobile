@@ -128,7 +128,9 @@ class SettingsScreen extends ConsumerWidget {
             if (city.links.pqrs != null)
               ListTile(leading: const Icon(Icons.report_outlined), title: Text(l10n.pqrs), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.pqrs!)),
             if (city.links.support != null)
-              ListTile(leading: const Icon(Icons.support_agent), title: Text(l10n.about), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.support!)),
+              // Was `l10n.about`, so the support link read "Acerca de" — the one row a rider looks
+              // for when something is wrong, labelled as the one that tells them the version.
+              ListTile(leading: const Icon(Icons.support_agent), title: Text(l10n.supportTitle), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.support!)),
           ],
           SectionTitle(l10n.privacyTitle),
           SwitchListTile(

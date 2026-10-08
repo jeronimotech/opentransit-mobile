@@ -1919,4 +1919,7 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get searchOfflineStopsOnly =>
       'Luar talian: hanya perhentian yang dimuat turun, bukan alamat.';
+
+  @override
+  String get supportTitle => 'Sokongan dan aduan';
 }
