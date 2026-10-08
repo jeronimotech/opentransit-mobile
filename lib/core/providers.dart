@@ -17,8 +17,12 @@ import 'api/mock_api_client.dart';
 import 'config.dart';
 import 'city_icon.dart';
 import 'connectivity.dart';
+import 'utils/geo.dart';
 import 'offline/city_cache.dart';
 import 'offline/offline_board.dart';
+import 'offline/offline_patterns.dart';
+import 'offline/offline_plan.dart';
+import 'offline/offline_router.dart';
 import 'offline/offline_store.dart';
 import 'models/models.dart';
 import 'storage/favorites.dart';
@@ -602,6 +606,66 @@ final departuresProvider =
   ref.onDispose(timer.cancel);
   return ref.watch(apiClientProvider).departures(k.cityId, k.id);
 });
+
+/// The installed pattern index, parsed once and held: a journey search jumps around it in an order
+/// nothing on disk can predict, and re-parsing per search would cost more than the search.
+final offlinePatternsProvider = FutureProvider.family<OfflinePatterns?, String>(
+    (ref, cityId) => ref.watch(offlineStoreProvider).openPatterns(cityId));
+
+/// Walking links between stops, built once per city. O(stops²) in the worst case and 8 311 stops
+/// squared is not something to do while someone waits for a plan.
+final offlineFootpathsProvider =
+    FutureProvider.family<List<List<({int stop, int minutes})>>, String>((ref, cityId) async {
+  final patterns = await ref.watch(offlinePatternsProvider(cityId).future);
+  final bundle = await ref.watch(offlineBundleProvider(cityId).future);
+  if (patterns == null || bundle == null) return const [];
+  return buildFootpaths(bundle.header, patterns.stops);
+});
+
+/// Plan a journey from the downloaded timetable. Null when this city has nothing installed, which
+/// the caller turns back into the original network error — one a rider can retry beats a blank
+/// result that reads as "no way to get there".
+Future<PlanResponse?> offlinePlan(Ref ref, String cityId, PlanRequest req) async {
+  final patterns = await ref.read(offlinePatternsProvider(cityId).future);
+  final bundle = await ref.read(offlineBundleProvider(cityId).future);
+  if (patterns == null || bundle == null) return null;
+
+  final at = req.time ?? DateTime.now();
+  final day = DateTime(at.year, at.month, at.day);
+  final services = bundle.header.activeServices(day);
+  if (services.isEmpty) return null;
+
+  // The scan works in stop indices; the planner works in coordinates. Anything within a short walk
+  // of either end is a candidate, because a rider stands on a street and not on a stop.
+  Set<int> near(LatLng p) {
+    final out = <int>{};
+    for (var i = 0; i < patterns.stops.length; i++) {
+      final hi = bundle.header.stopIndexById[patterns.stops[i]];
+      if (hi == null) continue;
+      if (haversineMeters(p, bundle.header.stops[hi].position) <= 600) out.add(i);
+    }
+    return out;
+  }
+
+  final journeys = planOffline(
+    data: patterns,
+    originStops: near(req.from.position),
+    destinationStops: near(req.to.position),
+    departAfterMinute: at.hour * 60 + at.minute,
+    runningServices: services,
+    footpaths: await ref.read(offlineFootpathsProvider(cityId).future),
+  );
+  if (journeys.isEmpty) return null;
+  return offlinePlanResponse(
+    data: patterns, header: bundle.header, journeys: journeys,
+    from: req.from, to: req.to, serviceDay: day, cityId: cityId,
+  );
+}
+
+/// Whether this city's pattern index is installed, for the settings row. A small file check, not
+/// the parse — showing a row should not cost megabytes of JSON.
+final offlinePatternsInstalledProvider = FutureProvider.family<bool, String>(
+    (ref, cityId) => ref.watch(offlineStoreProvider).hasPatterns(cityId));
 
 final cityIconProvider = Provider<CityIcon>((ref) => CityIcon());
 

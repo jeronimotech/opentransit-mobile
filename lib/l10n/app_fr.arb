@@ -545,5 +545,8 @@
   "appIconChanged": "Icône changée",
   "appIconFailed": "L'icône n'a pas pu être changée",
   "appIconAndroidNote": "Le changement ferme l'app, et le raccourci devra peut-être être réajouté.",
-  "appIconYourCity": "Votre ville"
+  "appIconYourCity": "Votre ville",
+  "warnOfflinePlan": "Calculé à partir de l'horaire téléchargé, sans temps réel.",
+  "offlinePlanTitle": "Itinéraires hors ligne",
+  "offlinePlanExplain": "Permet de calculer des trajets sans réseau. Plus lourd, et rien d'autre."
 }

@@ -26,6 +26,7 @@ class PlanWarnings extends StatelessWidget {
     final code = warning.split(':').first.trim();
     if (_hidden.contains(code)) return null;
     final text = switch (code) {
+      'OFFLINE_PLAN' => l10n.warnOfflinePlan,
       'ACCESSIBILITY_UNVERIFIED' => l10n.warnAccessibilityUnverified,
       'ACCESSIBILITY_NO_DATA' => l10n.warnAccessibilityNoData,
       'MODE_NO_VEHICLES' => l10n.warnNoSharedVehicles,

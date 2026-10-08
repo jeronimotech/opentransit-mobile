@@ -1904,4 +1904,15 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get appIconYourCity => 'Bandar anda';
+
+  @override
+  String get warnOfflinePlan =>
+      'Dirancang daripada jadual yang dimuat turun, tanpa masa nyata.';
+
+  @override
+  String get offlinePlanTitle => 'Perancangan luar talian';
+
+  @override
+  String get offlinePlanExplain =>
+      'Membolehkan anda merancang perjalanan tanpa rangkaian. Lebih besar, dan hanya untuk itu.';
 }

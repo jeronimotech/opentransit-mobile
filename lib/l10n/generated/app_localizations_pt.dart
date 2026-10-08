@@ -1911,4 +1911,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appIconYourCity => 'A tua cidade';
+
+  @override
+  String get warnOfflinePlan =>
+      'Planeado com o horário descarregado, sem tempo real.';
+
+  @override
+  String get offlinePlanTitle => 'Planear sem ligação';
+
+  @override
+  String get offlinePlanExplain =>
+      'Permite planear viagens sem rede. Ocupa mais e serve só para isso.';
 }

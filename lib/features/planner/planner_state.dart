@@ -141,7 +141,17 @@ class PlannerNotifier extends Notifier<PlannerState> {
     });
     final t0 = DateTime.now();
     try {
-      final res = await ref.read(apiClientProvider).plan(cityId, req);
+      PlanResponse res;
+      try {
+        res = await ref.read(apiClientProvider).plan(cityId, req);
+      } on Object {
+        // Underground a failed request is the normal case. If this city's pattern index is
+        // installed, plan from it; otherwise rethrow, because an error a rider can retry beats a
+        // blank result that reads as "there is no way to get there".
+        final offline = await offlinePlan(ref, cityId, req);
+        if (offline == null) rethrow;
+        res = offline;
+      }
       state = state.copyWith(result: AsyncValue.data(res));
       final best = res.itineraries.isEmpty ? null : res.itineraries.reduce((a, b) => a.durationSeconds <= b.durationSeconds ? a : b);
       analytics.track(Ev.planResult, {

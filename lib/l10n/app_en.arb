@@ -983,5 +983,8 @@
   "appIconChanged": "Icon changed",
   "appIconFailed": "The icon could not be changed",
   "appIconAndroidNote": "Changing it closes the app, and a home-screen shortcut may need to be added again.",
-  "appIconYourCity": "Your city"
+  "appIconYourCity": "Your city",
+  "warnOfflinePlan": "Planned from the downloaded timetable, with no realtime.",
+  "offlinePlanTitle": "Offline journey planning",
+  "offlinePlanExplain": "Lets you plan trips with no network. Larger, and only for that."
 }

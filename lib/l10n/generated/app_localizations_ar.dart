@@ -1893,4 +1893,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appIconYourCity => 'مدينتك';
+
+  @override
+  String get warnOfflinePlan =>
+      'خُطِّط من الجدول المُنزَّل، بدون بيانات مباشرة.';
+
+  @override
+  String get offlinePlanTitle => 'تخطيط الرحلات بدون اتصال';
+
+  @override
+  String get offlinePlanExplain =>
+      'يتيح تخطيط الرحلات بدون شبكة. أكبر حجمًا، ولهذا الغرض فقط.';
 }

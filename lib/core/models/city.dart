@@ -372,12 +372,18 @@ class City {
     this.mobility = const CityMobility(),
     this.openMobility = const CityOpenMobility(),
     this.offline,
+    this.offlinePatterns,
   });
 
   final String id;
 
   /// v1.6: the downloadable timetable, or null where none is published yet.
   final OfflineBundleInfo? offline;
+
+  /// The same timetable indexed by pattern, which is what planning needs. A second and optional
+  /// download: the board bundle makes departures work underground and every rider installs it,
+  /// this one costs more and only buys journey planning.
+  final OfflineBundleInfo? offlinePatterns;
   final String name;
   final String country;
   final String timezone;
@@ -464,6 +470,7 @@ class City {
         j['openMobility'] is Map ? Map<String, dynamic>.from(j['openMobility'] as Map) : null,
       ),
       offline: OfflineBundleInfo.fromJson(j['offline']),
+      offlinePatterns: OfflineBundleInfo.fromJson(j['offlinePatterns']),
     );
   }
 

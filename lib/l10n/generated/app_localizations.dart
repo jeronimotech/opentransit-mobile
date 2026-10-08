@@ -3299,6 +3299,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tu ciudad'**
   String get appIconYourCity;
+
+  /// No description provided for @warnOfflinePlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Planificado con el horario descargado, sin tiempo real.'**
+  String get warnOfflinePlan;
+
+  /// No description provided for @offlinePlanTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Planificar sin conexión'**
+  String get offlinePlanTitle;
+
+  /// No description provided for @offlinePlanExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'Permite planear viajes sin red. Pesa más y solo sirve para eso.'**
+  String get offlinePlanExplain;
 }
 
 class _AppLocalizationsDelegate

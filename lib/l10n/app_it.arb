@@ -545,5 +545,8 @@
   "appIconChanged": "Icona cambiata",
   "appIconFailed": "Non è stato possibile cambiare l'icona",
   "appIconAndroidNote": "Cambiandola Android chiude l'app, e il collegamento potrebbe dover essere riaggiunto.",
-  "appIconYourCity": "La tua città"
+  "appIconYourCity": "La tua città",
+  "warnOfflinePlan": "Calcolato dall'orario scaricato, senza tempo reale.",
+  "offlinePlanTitle": "Percorsi offline",
+  "offlinePlanExplain": "Permette di calcolare percorsi senza rete. Più pesante, e solo per questo."
 }

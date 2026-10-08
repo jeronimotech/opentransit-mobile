@@ -545,5 +545,8 @@
   "appIconChanged": "تم تغيير الأيقونة",
   "appIconFailed": "تعذّر تغيير الأيقونة",
   "appIconAndroidNote": "تغييرها يُغلق التطبيق، وقد تحتاج إلى إضافة الاختصار من جديد.",
-  "appIconYourCity": "مدينتك"
+  "appIconYourCity": "مدينتك",
+  "warnOfflinePlan": "خُطِّط من الجدول المُنزَّل، بدون بيانات مباشرة.",
+  "offlinePlanTitle": "تخطيط الرحلات بدون اتصال",
+  "offlinePlanExplain": "يتيح تخطيط الرحلات بدون شبكة. أكبر حجمًا، ولهذا الغرض فقط."
 }

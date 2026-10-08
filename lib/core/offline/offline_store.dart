@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../models/models.dart';
 import 'offline_bundle.dart';
+import 'offline_patterns.dart';
 
 /// What is on disk for one city, and how to get it there.
 ///
@@ -210,7 +211,71 @@ class OfflineStore {
     }
   }
 
+  /// Install the pattern-indexed timetable, the optional second download.
+  ///
+  /// Kept whole rather than indexed by offset: a journey search jumps between patterns and stops in
+  /// an order nothing on disk can predict, so paging it would cost more than the search. That is
+  /// also why it is a separate download — a rider who only wants departures should not pay for it.
+  Future<int> installPatterns(
+    String city, {
+    required String url,
+    required int expectedBytes,
+    void Function(double progress)? onProgress,
+    CancelToken? cancel,
+  }) async {
+    final root = await _root();
+    final gz = File('${root.path}/$city.patterns.json.gz.part');
+    final out = File('${root.path}/$city.patterns.json.part');
+    var promoted = false;
+    try {
+      await _dio.download(url, gz.path, cancelToken: cancel,
+          onReceiveProgress: (got, total) {
+        final denom = total > 0 ? total : expectedBytes;
+        if (denom > 0 && onProgress != null) onProgress((got / denom).clamp(0.0, 0.95));
+      });
+      final raw = gzip.decode(await gz.readAsBytes());
+      final text = utf8.decode(raw);
+      // Parsed once here to refuse a bad download before it replaces a good one, and thrown away:
+      // holding it now would double the peak for no gain.
+      final parsed = OfflinePatterns.parse(text);
+      if (parsed.city != city) {
+        throw OfflineInstallException("patterns are for '${parsed.city}', not '$city'");
+      }
+      if (parsed.patterns.isEmpty) {
+        throw const OfflineInstallException('patterns contain no trips');
+      }
+      await out.writeAsString(text);
+      await out.rename('${root.path}/$city.patterns.json');
+      promoted = true;
+      onProgress?.call(1.0);
+      return parsed.patterns.length;
+    } finally {
+      if (await gz.exists()) await gz.delete();
+      if (!promoted && await out.exists()) await out.delete();
+    }
+  }
+
+  /// The installed pattern index, or null. Parsing is the expensive part, so callers should hold
+  /// what they get rather than asking twice.
+  Future<OfflinePatterns?> openPatterns(String city) async {
+    final f = await _file(city, 'patterns.json');
+    if (!await f.exists()) return null;
+    try {
+      return OfflinePatterns.parse(await f.readAsString());
+    } on Object {
+      return null;
+    }
+  }
+
+  Future<bool> hasPatterns(String city) async => (await _file(city, 'patterns.json')).exists();
+
+  Future<void> removePatterns(String city) async {
+    final f = await _file(city, 'patterns.json');
+    if (await f.exists()) await f.delete();
+  }
+
   Future<void> remove(String city) async {
+    await removePatterns(city);
     for (final ext in ['ndjson', 'idx', 'meta']) {
       final f = await _file(city, ext);
       if (await f.exists()) await f.delete();
@@ -220,7 +285,7 @@ class OfflineStore {
   /// Total bytes this city occupies, for a settings screen that should not have to guess.
   Future<int> bytesOnDisk(String city) async {
     var total = 0;
-    for (final ext in ['ndjson', 'idx', 'meta']) {
+    for (final ext in ['ndjson', 'idx', 'meta', 'patterns.json']) {
       final f = await _file(city, ext);
       if (await f.exists()) total += await f.length();
     }

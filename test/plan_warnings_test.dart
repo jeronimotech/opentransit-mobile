@@ -68,7 +68,7 @@ void main() {
         'ACCESSIBILITY_UNVERIFIED', 'ACCESSIBILITY_NO_DATA', 'MODE_NO_VEHICLES',
         'PARK_RIDE_NO_PARKING', 'WALKING_BETTER_THAN_TRANSIT', 'NO_TRANSIT_CONNECTION',
         'NO_TRANSIT_CONNECTION_IN_SEARCH_WINDOW', 'OUTSIDE_SERVICE_PERIOD', 'OUTSIDE_BOUNDS',
-        'LOCATION_NOT_FOUND', 'NO_STOPS_IN_RANGE', 'SYSTEM_ERROR',
+        'LOCATION_NOT_FOUND', 'NO_STOPS_IN_RANGE', 'SYSTEM_ERROR', 'OFFLINE_PLAN',
       ];
       for (final code in known) {
         final line = PlanWarnings.line(l10n, '$code: some english sentence from the server');

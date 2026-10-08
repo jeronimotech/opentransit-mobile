@@ -1915,4 +1915,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get appIconYourCity => 'Votre ville';
+
+  @override
+  String get warnOfflinePlan =>
+      'Calculé à partir de l\'horaire téléchargé, sans temps réel.';
+
+  @override
+  String get offlinePlanTitle => 'Itinéraires hors ligne';
+
+  @override
+  String get offlinePlanExplain =>
+      'Permet de calculer des trajets sans réseau. Plus lourd, et rien d\'autre.';
 }

@@ -545,5 +545,8 @@
   "appIconChanged": "Ikon ditukar",
   "appIconFailed": "Ikon tidak dapat ditukar",
   "appIconAndroidNote": "Menukarnya akan menutup apl, dan pintasan skrin utama mungkin perlu ditambah semula.",
-  "appIconYourCity": "Bandar anda"
+  "appIconYourCity": "Bandar anda",
+  "warnOfflinePlan": "Dirancang daripada jadual yang dimuat turun, tanpa masa nyata.",
+  "offlinePlanTitle": "Perancangan luar talian",
+  "offlinePlanExplain": "Membolehkan anda merancang perjalanan tanpa rangkaian. Lebih besar, dan hanya untuk itu."
 }

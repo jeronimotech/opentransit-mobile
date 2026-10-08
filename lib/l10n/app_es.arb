@@ -1202,5 +1202,8 @@
   "appIconChanged": "Icono cambiado",
   "appIconFailed": "No se pudo cambiar el icono",
   "appIconAndroidNote": "Al cambiarlo, Android cierra la app y puede que tengas que volver a agregar el acceso directo.",
-  "appIconYourCity": "Tu ciudad"
+  "appIconYourCity": "Tu ciudad",
+  "warnOfflinePlan": "Planificado con el horario descargado, sin tiempo real.",
+  "offlinePlanTitle": "Planificar sin conexión",
+  "offlinePlanExplain": "Permite planear viajes sin red. Pesa más y solo sirve para eso."
 }

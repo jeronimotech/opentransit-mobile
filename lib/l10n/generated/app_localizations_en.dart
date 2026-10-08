@@ -1898,4 +1898,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appIconYourCity => 'Your city';
+
+  @override
+  String get warnOfflinePlan =>
+      'Planned from the downloaded timetable, with no realtime.';
+
+  @override
+  String get offlinePlanTitle => 'Offline journey planning';
+
+  @override
+  String get offlinePlanExplain =>
+      'Lets you plan trips with no network. Larger, and only for that.';
 }

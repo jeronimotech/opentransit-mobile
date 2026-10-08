@@ -1908,4 +1908,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get appIconYourCity => 'La tua città';
+
+  @override
+  String get warnOfflinePlan =>
+      'Calcolato dall\'orario scaricato, senza tempo reale.';
+
+  @override
+  String get offlinePlanTitle => 'Percorsi offline';
+
+  @override
+  String get offlinePlanExplain =>
+      'Permette di calcolare percorsi senza rete. Più pesante, e solo per questo.';
 }

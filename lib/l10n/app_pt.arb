@@ -545,5 +545,8 @@
   "appIconChanged": "Ícone alterado",
   "appIconFailed": "Não foi possível alterar o ícone",
   "appIconAndroidNote": "Ao alterá-lo o Android fecha a app, e pode ser preciso voltar a adicionar o atalho.",
-  "appIconYourCity": "A tua cidade"
+  "appIconYourCity": "A tua cidade",
+  "warnOfflinePlan": "Planeado com o horário descarregado, sem tempo real.",
+  "offlinePlanTitle": "Planear sem ligação",
+  "offlinePlanExplain": "Permite planear viagens sem rede. Ocupa mais e serve só para isso."
 }
