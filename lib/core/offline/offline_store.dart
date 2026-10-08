@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../models/models.dart';
 import 'offline_bundle.dart';
 
 /// What is on disk for one city, and how to get it there.
@@ -277,6 +278,38 @@ class InstalledBundle {
         .toList()
       ..sort((a, b) => a.time.compareTo(b.time));
     return upcoming.take(limit).toList(growable: false);
+  }
+
+  /// The stop itself and the routes that call there, for the stop page with no network.
+  ///
+  /// The routes come from the stop's own line — whatever appears in its board is, by definition,
+  /// what serves it — so this needs nothing the bundle does not already hold. Null when the bundle
+  /// has never heard of the stop, which is the honest answer rather than an empty page.
+  Future<StopDetail?> stopDetail(String stopId, String cityId) async {
+    final si = header.stopIndexById[stopId];
+    if (si == null) return null;
+    final stop = header.stops[si];
+
+    final span = lineIndex[si];
+    final seen = <String, OfflineRoute>{};
+    if (span != null) {
+      final line = await _readLine(span[0], span[1]);
+      if (line != null) {
+        // Every service, not only today's: a stop page lists the routes that serve it, and a route
+        // that happens not to run on a Sunday is still a route that serves this stop.
+        for (final d in decodeStopLine(line, header, serviceDay: DateTime.now())) {
+          seen.putIfAbsent(d.route.id, () => d.route);
+        }
+      }
+    }
+    return StopDetail(
+      stop: stop,
+      routes: [for (final r in seen.values) r.toRef(cityId)],
+      children: [
+        for (final s in header.stops)
+          if (s.parentStationId != null && s.parentStationId == stop.id) s,
+      ],
+    );
   }
 
   Future<String?> _readLine(int offset, int length) async {

@@ -23,6 +23,16 @@ class ApiException implements Exception {
 /// interface.
 abstract class ApiClient {
   Future<List<City>> cities();
+
+  /// The same list as [cities], as the maps the API actually sent.
+  ///
+  /// Only so the city list can be written to disk and read back when there is no network: every
+  /// screen needs its city's configuration, so without a cached copy the app cannot open at all
+  /// underground — spinner forever, and the downloaded timetable unreachable.
+  ///
+  /// Null means "this client cannot provide it", which is the honest answer for the fixture mock
+  /// and simply means nothing is cached.
+  Future<List<Map<String, dynamic>>?> citiesRaw() async => null;
   Future<City> city(String cityId);
   Future<CityHealth> health(String cityId);
 

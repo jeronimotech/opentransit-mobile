@@ -117,13 +117,28 @@ class OfflineHeader {
 }
 
 class OfflineRoute {
-  const OfflineRoute({required this.id, this.short, this.long, this.color, this.textColor, this.type = 3});
+  const OfflineRoute({
+    required this.id,
+    this.short,
+    this.long,
+    this.color,
+    this.textColor,
+    this.type = 3,
+    this.component,
+  });
   final String id;
   final String? short;
   final String? long;
   final String? color;
   final String? textColor;
   final int type;
+
+  /// trunk | feeder | dual | zonal | cable | …, as the city's own config defines it.
+  ///
+  /// The app colours and ices routes by component rather than by the GTFS colour, so without this
+  /// every offline chip fell back to a generic grey and a downloaded board looked like a different
+  /// app from the one online. Null for a bundle built before the builder carried it.
+  final Component? component;
 
   static OfflineRoute parse(Map<String, dynamic> j) => OfflineRoute(
         id: j['id'].toString(),
@@ -132,6 +147,7 @@ class OfflineRoute {
         color: j['color']?.toString(),
         textColor: j['text']?.toString(),
         type: (j['type'] as num?)?.toInt() ?? 3,
+        component: Component.parse(j['component']),
       );
 
   RouteRef toRef(String cityId) => RouteRef(
@@ -141,6 +157,7 @@ class OfflineRoute {
         color: color ?? '#607D8B',
         textColor: textColor ?? '#FFFFFF',
         mode: modeOf(type),
+        component: component,
         // The bundle carries no agency: a board shows the route, and the operator behind it is not
         // something a rider offline can be told anything useful about.
         agencyId: '',

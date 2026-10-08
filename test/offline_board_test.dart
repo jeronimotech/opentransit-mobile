@@ -7,6 +7,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:opentransit_mobile/core/offline/offline_board.dart';
+import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/offline/offline_bundle.dart';
 
 final _header = OfflineHeader.parse(jsonEncode({
@@ -121,5 +122,46 @@ void main() {
       departures: [_dep(355, 0, 0, day)],      // 05:55, five minutes ago
     );
     expect(board.rows.first.next.first.minutes, -5);
+  });
+
+  group('finding a stop with no network', () {
+    // Av Jiménez is at 4.6012,-74.0718 in the fixture header; Portal Sur is ~13 km away.
+    final header = OfflineHeader.parse(jsonEncode({
+      'v': 1,
+      'city': 'bogota',
+      'routes': [],
+      'headsigns': [],
+      'services': [],
+      'serviceExceptions': [],
+      'stops': [
+        {'id': 'S1', 'name': 'Av Jiménez', 'lat': 4.6012, 'lon': -74.0718, 'type': 0},
+        {'id': 'S2', 'name': 'Calle 19', 'lat': 4.6060, 'lon': -74.0720, 'type': 0},
+        {'id': 'S3', 'name': 'Portal Sur', 'lat': 4.5955, 'lon': -74.1711, 'type': 0},
+      ],
+      'stats': {'departures': 0},
+    }));
+    const here = LatLng(4.6012, -74.0718);
+
+    test('the nearest come back first, with their distance filled', () {
+      final near = offlineNearbyStops(header, here, radiusMeters: 1000);
+      expect(near.map((s) => s.id), ['S1', 'S2']);
+      expect(near.first.distanceMeters, 0);
+      expect(near[1].distanceMeters, greaterThan(400));
+      expect(near[1].distanceMeters, lessThan(600));
+    });
+
+    test('the radius is honoured, so a stop across town is not "nearby"', () {
+      // Without this the home map would pin the whole city at once.
+      expect(offlineNearbyStops(header, here, radiusMeters: 300).map((s) => s.id), ['S1']);
+      expect(offlineNearbyStops(header, here, radiusMeters: 20000).length, 3);
+    });
+
+    test('the limit caps it', () {
+      expect(offlineNearbyStops(header, here, radiusMeters: 20000, limit: 2).length, 2);
+    });
+
+    test('nowhere near anything is empty, not an error', () {
+      expect(offlineNearbyStops(header, const LatLng(43.65, -79.38), radiusMeters: 500), isEmpty);
+    });
   });
 }

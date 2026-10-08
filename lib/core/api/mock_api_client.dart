@@ -68,6 +68,10 @@ class MockApiClient implements ApiClient {
       asList((await _map('cities'))['cities'], City.fromJson);
 
   @override
+  // The fixtures are not the API's bytes, and caching them would put made-up cities on disk.
+  Future<List<Map<String, dynamic>>?> citiesRaw() async => null;
+
+  @override
   Future<City> city(String cityId) async {
     final all = await cities();
     return all.firstWhere((c) => c.id == cityId,

@@ -1,4 +1,5 @@
 import '../models/models.dart';
+import '../utils/geo.dart';
 import 'offline_bundle.dart';
 
 /// Turn offline departures into the same [BoardResponse] the API would have sent.
@@ -52,4 +53,30 @@ BoardResponse offlineBoard({
     freshness: const Freshness(realtime: false, offline: true),
     rows: rows,
   );
+}
+
+
+/// The stops near a point, from the downloaded bundle.
+///
+/// The header already carries every stop with its name and position — it has to, so a rider can
+/// search and see them on a map — so finding the nearest ones needs no network and no extra data.
+/// Without this the offline timetable is readable and unreachable: the board works, and there is no
+/// way to arrive at a board, because the home screen's list and map are both empty.
+///
+/// Returns them sorted by distance with `distanceMeters` filled, the same shape `/stops/nearby`
+/// returns, so the screens do not know which one answered.
+List<Stop> offlineNearbyStops(
+  OfflineHeader header,
+  LatLng at, {
+  int radiusMeters = 500,
+  int limit = 30,
+}) {
+  final found = <(double, Stop)>[];
+  for (final s in header.stops) {
+    final d = haversineMeters(at, s.position);
+    if (d > radiusMeters) continue;
+    found.add((d, s.copyWith(distanceMeters: d.round())));
+  }
+  found.sort((a, b) => a.$1.compareTo(b.$1));
+  return [for (final f in found.take(limit)) f.$2];
 }

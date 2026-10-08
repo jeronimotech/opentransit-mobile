@@ -87,6 +87,16 @@ class HttpApiClient implements ApiClient {
       asList((await _get('/v1/cities'))['cities'], City.fromJson);
 
   @override
+  Future<List<Map<String, dynamic>>?> citiesRaw() async {
+    final raw = (await _get('/v1/cities'))['cities'];
+    if (raw is! List) return null;
+    return [
+      for (final c in raw)
+        if (c is Map) Map<String, dynamic>.from(c),
+    ];
+  }
+
+  @override
   Future<City> city(String cityId) async => City.fromJson(await _get(_c(cityId)));
 
   @override

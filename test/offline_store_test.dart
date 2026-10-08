@@ -180,4 +180,32 @@ void main() {
     await store.installFromFile('testville', await _bundle(tmp), onProgress: seen.add);
     expect(seen.last, 1.0);
   });
+
+  test('the stop page works offline, routes and all', () async {
+    await store.installFromFile('testville', await _bundle(tmp));
+    final b = (await store.open('testville'))!;
+    final d = (await b.stopDetail('S1', 'testville'))!;
+
+    expect(d.stop.name, 'Portal Sur');
+    // Both routes that call at S1, from its own board — whatever appears there is what serves it.
+    expect(d.routes.map((r) => r.shortName).toSet(), {'G12', 'N7'});
+    expect(d.routes.first.id, startsWith('testville:'));
+  });
+
+  test('a stop the bundle never heard of is null, not an empty page', () async {
+    // Null lets the caller rethrow the original network error, which the rider can retry. An empty
+    // StopDetail would claim this stop exists and nothing stops there.
+    await store.installFromFile('testville', await _bundle(tmp));
+    final b = (await store.open('testville'))!;
+    expect(await b.stopDetail('NOPE', 'testville'), isNull);
+  });
+
+  test('a stop with no board still has a page', () async {
+    // S3 is in the header and has no departures. The page should open and simply list no routes.
+    await store.installFromFile('testville', await _bundle(tmp));
+    final b = (await store.open('testville'))!;
+    final d = (await b.stopDetail('S3', 'testville'))!;
+    expect(d.stop.name, 'Nunca');
+    expect(d.routes, isEmpty);
+  });
 }

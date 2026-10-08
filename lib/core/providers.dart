@@ -17,6 +17,7 @@ import 'api/mock_api_client.dart';
 import 'config.dart';
 import 'city_icon.dart';
 import 'connectivity.dart';
+import 'offline/city_cache.dart';
 import 'offline/offline_board.dart';
 import 'offline/offline_store.dart';
 import 'models/models.dart';
@@ -242,9 +243,31 @@ final settingsProvider =
 
 // ───────────────────────── cities ─────────────────────────
 
-final citiesProvider = FutureProvider<List<City>>(
-  (ref) => ref.watch(apiClientProvider).cities(),
-);
+final cityCacheProvider = Provider<CityCache>((ref) => CityCache());
+
+/// The city list, from the network when there is one and from disk when there is not.
+///
+/// The fallback is what makes everything else offline possible. Every screen needs its city's
+/// configuration, so with only a network source the app sat on a spinner forever underground and a
+/// rider could never reach the timetable they had downloaded on purpose. Found by pulling the
+/// network on a real phone, not by any test here.
+final citiesProvider = FutureProvider<List<City>>((ref) async {
+  final client = ref.watch(apiClientProvider);
+  final cache = ref.watch(cityCacheProvider);
+  try {
+    final raw = await client.citiesRaw();
+    if (raw == null) return await client.cities();
+    // Written only on success, so a failed fetch never replaces a good copy with nothing.
+    await cache.save(raw);
+    return [for (final c in raw) City.fromJson(c)];
+  } on Object {
+    final cached = await cache.load();
+    if (cached != null && cached.isNotEmpty) return cached;
+    // Nothing cached either: a first run with no network is genuinely an error, and an error the
+    // rider can retry beats a spinner that never resolves.
+    rethrow;
+  }
+});
 
 final cityProvider = FutureProvider.family<City, String>((ref, id) async {
   final cached = ref.watch(citiesProvider).asData?.value;
@@ -512,9 +535,20 @@ class NearbyQuery {
 }
 
 final nearbyStopsProvider =
-    FutureProvider.autoDispose.family<List<Stop>, NearbyQuery>((ref, q) =>
-        ref.watch(apiClientProvider).nearbyStops(q.cityId, LatLng(q.lat, q.lon),
-            radiusMeters: q.radius));
+    FutureProvider.autoDispose.family<List<Stop>, NearbyQuery>((ref, q) async {
+  try {
+    return await ref
+        .watch(apiClientProvider)
+        .nearbyStops(q.cityId, LatLng(q.lat, q.lon), radiusMeters: q.radius);
+  } on Object {
+    // Same fallback as the board, and for the same reason: without it the downloaded timetable is
+    // readable and unreachable. The board worked offline and the home screen's list and map were
+    // both empty, so there was no way to arrive at a board at all.
+    final bundle = await ref.read(offlineBundleProvider(q.cityId).future);
+    if (bundle == null) rethrow;
+    return offlineNearbyStops(bundle.header, LatLng(q.lat, q.lon), radiusMeters: q.radius);
+  }
+});
 
 class CityKey {
   const CityKey(this.cityId, this.id);
@@ -545,8 +579,22 @@ Duration _refreshFor(Ref ref, String cityId) {
   return Duration(seconds: (c?.config.departuresRefreshSeconds ?? 20).clamp(5, 300));
 }
 
-final stopDetailProvider = FutureProvider.autoDispose.family<StopDetail, CityKey>(
-    (ref, k) => ref.watch(apiClientProvider).stop(k.cityId, k.id));
+final stopDetailProvider =
+    FutureProvider.autoDispose.family<StopDetail, CityKey>((ref, k) async {
+  try {
+    return await ref.watch(apiClientProvider).stop(k.cityId, k.id);
+  } on Object {
+    // Third link in the same chain: the board read offline and the stops listed offline, and
+    // opening one still hung, because the page waits on the stop's own details before drawing
+    // anything. A downloaded timetable has to be reachable at every step or it is reachable at none.
+    final bundle = await ref.read(offlineBundleProvider(k.cityId).future);
+    if (bundle == null) rethrow;
+    final raw = k.id.contains(':') ? k.id.split(':').skip(1).join(':') : k.id;
+    final detail = await bundle.stopDetail(raw, k.cityId);
+    if (detail == null) rethrow;
+    return detail;
+  }
+});
 
 final departuresProvider =
     FutureProvider.autoDispose.family<DeparturesResponse, CityKey>((ref, k) {

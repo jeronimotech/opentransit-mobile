@@ -6,6 +6,7 @@ library;
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:opentransit_mobile/core/models/models.dart';
 import 'package:opentransit_mobile/core/offline/offline_bundle.dart';
 
 String _header({
@@ -47,6 +48,22 @@ void main() {
       expect(h.stopIndexById, {'S1': 0, 'S2': 1});
       expect(h.stops[1].locationType, 'station');
       expect(h.stops[0].code, 'PS');
+    });
+
+    test('the component travels, so an offline chip looks like an online one', () {
+      // The app colours and ices routes by component, not by the GTFS colour. Without it every
+      // offline chip fell back to generic grey and a downloaded board looked like a different app.
+      // Seen in a screenshot from a real phone.
+      final r = OfflineRoute.parse(
+          {'id': 'R1', 'short': 'GA541', 'color': '#0000ff', 'type': 3, 'component': 'dual'});
+      expect(r.component, Component.dual);
+      expect(r.toRef('bogota').component, Component.dual);
+    });
+
+    test('a bundle built before components stays usable', () {
+      final r = OfflineRoute.parse({'id': 'R1', 'short': 'G12', 'type': 3});
+      expect(r.component, isNull);
+      expect(r.toRef('bogota').shortName, 'G12');
     });
 
     test('a route becomes a RouteRef the existing widgets can draw', () {
