@@ -50,9 +50,19 @@ ASC_KEY_PATH="${ASC_KEY_PATH:-$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_
 export ASC_KEY_PATH APPLE_TEAM_ID
 
 SIGNING="${SIGNING:-manual}"
+# The app's own id is the SHORTEST in the project: every companion is it plus a suffix. This used
+# to take the first one in file order, which held only while Runner's configurations happened to
+# come first — adding the share extension put its block above Runner's, BUNDLE_ID became
+# com.jeronimotech.opentransit.Share, and every companion id was then derived from *that*. It
+# created four junk bundle ids and replaced three working profiles with ones bound to them.
 BUNDLE_ID="${BUNDLE_ID:-$(grep -oE 'PRODUCT_BUNDLE_IDENTIFIER = [^;]+' ios/Runner.xcodeproj/project.pbxproj \
-  | grep -v RunnerTests | head -n 1 | sed 's/.*= //')}"
+  | grep -v RunnerTests | sed 's/.*= //' | sort -u | awk '{ print length, $0 }' | sort -n \
+  | head -n 1 | cut -d' ' -f2-)}"
 export BUNDLE_ID
+# Refuse to go near App Store Connect with an id that is not the app's. Getting this wrong does not
+# fail — it quietly operates on the wrong bundle ids and deletes real profiles.
+tool/check_bundle_ids.sh > /dev/null || {
+  echo "bundle id derivation is wrong; run tool/check_bundle_ids.sh" >&2; exit 1; }
 PROFILE_NAME="${PROFILE_NAME:-opentransit App Store}"
 # Companion targets ship inside the app, so each needs its own bundle id and
 # App Store profile. Keep in step with tool/xcode_targets.rb.
