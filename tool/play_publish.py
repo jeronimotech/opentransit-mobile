@@ -4,6 +4,7 @@
     tool/play.sh                                    # build, sign and upload to internal testing
     tool/play_publish.py --aab path/to/app.aab      # upload one that already exists
     tool/play_publish.py --aab a.aab --track production --rollout 0.1
+    tool/play_publish.py --promote 29858273 --track production
     tool/play_publish.py --status                   # what each track is serving right now
 
 This is the Android twin of `tool/testflight.sh`. It talks to the Google Play Android Publisher API
@@ -197,6 +198,42 @@ def status(c: Client) -> int:
     return 0
 
 
+def promote(c: Client, code: int, track: str, rollout: float | None, notes: list[dict],
+            name: str | None, draft: bool) -> int:
+    """Put a versionCode that is already uploaded onto another track.
+
+    Promotion is the normal Play workflow and this had no way to do it: the only path to production
+    was building again, which produces a *different* versionCode for identical code. Then the build
+    testers approved is not the build users get, and nothing in either console says so.
+    """
+    log(f"opening an edit for {c.package}")
+    edit = c.request("POST", "/edits")["id"]
+    committed = False
+    try:
+        release: dict = {"versionCodes": [str(code)], "status": "draft" if draft else "completed"}
+        if name:
+            release["name"] = name
+        if notes:
+            release["releaseNotes"] = notes
+        if rollout is not None and not draft:
+            release["status"] = "inProgress"
+            release["userFraction"] = rollout
+        c.request("PUT", f"/edits/{edit}/tracks/{track}", body={"track": track, "releases": [release]})
+        log(f"assigned versionCode {code} to {track} as {release['status']}")
+        c.request("POST", f"/edits/{edit}:commit")
+        committed = True
+        log("committed")
+    finally:
+        if not committed:
+            try:
+                c.request("DELETE", f"/edits/{edit}")
+                log("edit discarded, nothing was changed")
+            except SystemExit:
+                pass
+    print(f"versionCode {code} is on {track}")
+    return 0
+
+
 def publish(c: Client, aab: Path, track: str, rollout: float | None, notes: list[dict],
             name: str | None, draft: bool) -> int:
     if not aab.is_file():
@@ -251,6 +288,8 @@ def main() -> int:
     ap.add_argument("--name", help="release name shown in Play Console (default: the versionName)")
     ap.add_argument("--draft", action="store_true", help="attach it without releasing")
     ap.add_argument("--status", action="store_true", help="print what each track is serving")
+    ap.add_argument("--promote", type=int, metavar="VERSIONCODE",
+                    help="put a versionCode that is already uploaded onto --track")
     ap.add_argument("--package", default=os.environ.get("PACKAGE_NAME", "com.jeronimotech.opentransit"))
     ap.add_argument("--key", type=Path,
                     default=Path(os.environ.get("GOOGLE_PLAY_SERVICE_ACCOUNT")
@@ -260,11 +299,15 @@ def main() -> int:
     c = Client(a.key, a.package)
     if a.status:
         return status(c)
-    if not a.aab:
-        ap.error("pass --aab, or --status")
+    if not a.aab and a.promote is None:
+        ap.error("pass --aab, --promote, or --status")
+    if a.aab and a.promote is not None:
+        ap.error("--aab uploads a new bundle and --promote moves one that exists; pick one")
     notes = read_notes(a.notes_from, a.notes_locale)
     if a.rollout is not None and not 0 < a.rollout <= 1:
         ap.error("--rollout is a fraction between 0 and 1")
+    if a.promote is not None:
+        return promote(c, a.promote, a.track, a.rollout, notes, a.name, a.draft)
     return publish(c, a.aab, a.track, a.rollout, notes, a.name, a.draft)
 
 
