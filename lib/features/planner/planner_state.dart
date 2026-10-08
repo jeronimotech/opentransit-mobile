@@ -71,6 +71,23 @@ class PlannerNotifier extends Notifier<PlannerState> {
       state = state.copyWith(from: p, clearFrom: p == null, clearResult: true);
   void setTo(Place? p) =>
       state = state.copyWith(to: p, clearTo: p == null, clearResult: true);
+  /// Plan the way back: the same endpoints reversed, with a time of its own.
+  ///
+  /// [swap] keeps the time because it exists to correct a pair someone entered the wrong way round.
+  /// A return is a different intention and kept the outbound hour, so asking for the way home at
+  /// 18:00 planned it for the 08:00 you left at. Null means now.
+  void planReturn({DateTime? at}) => state = PlannerState(
+        from: state.to,
+        to: state.from,
+        time: at,
+        // A return is a departure. Carrying "arrive by" over would silently ask for a trip that
+        // arrives home at the hour you wanted to arrive at work.
+        arriveBy: false,
+        modes: state.modes,
+        onDemand: state.onDemand,
+        parkAndRide: state.parkAndRide,
+      );
+
   void swap() => state = PlannerState(
         from: state.to,
         to: state.from,

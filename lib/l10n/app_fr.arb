@@ -550,5 +550,17 @@
   "offlinePlanTitle": "Itinéraires hors ligne",
   "offlinePlanExplain": "Permet de calculer des trajets sans réseau. Plus lourd, et rien d'autre.",
   "searchOfflineStopsOnly": "Hors ligne : seulement les arrêts téléchargés, pas les adresses.",
-  "supportTitle": "Assistance et réclamations"
+  "supportTitle": "Assistance et réclamations",
+  "returnTrip": "Planifier le retour",
+  "returnWhen": "Vous rentrez à quelle heure ?",
+  "returnNow": "Maintenant",
+  "returnInHours": "Dans {hours} h",
+  "@returnInHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "returnPick": "Choisir l'heure"
 }

@@ -1922,4 +1922,21 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get supportTitle => 'Sokongan dan aduan';
+
+  @override
+  String get returnTrip => 'Rancang perjalanan balik';
+
+  @override
+  String get returnWhen => 'Pukul berapa anda balik?';
+
+  @override
+  String get returnNow => 'Sekarang';
+
+  @override
+  String returnInHours(int hours) {
+    return 'Dalam $hours j';
+  }
+
+  @override
+  String get returnPick => 'Pilih masa';
 }

@@ -18,6 +18,7 @@ import '../trips/schedule_trip_sheet.dart';
 import 'widgets/forecast_sheet.dart';
 import 'widgets/itinerary_card.dart';
 import 'widgets/plan_warnings.dart';
+import 'widgets/return_sheet.dart';
 
 /// Flat sort orders offered in the "Ordenar" menu; `null` = grouped by
 /// scenario (the default, Lote 1).
@@ -105,10 +106,15 @@ class _ResultsScreenState extends ConsumerState<ResultsScreen> {
         title: Text(l10n.results),
         actions: [
           IconButton(
-            tooltip: l10n.reverseTrip,
+            key: const ValueKey('return-trip'),
+            tooltip: l10n.returnTrip,
             icon: const Icon(Icons.swap_vert),
             onPressed: () async {
-              ref.read(plannerProvider.notifier).swap();
+              // Reversing and replanning at the same hour asked for the way home at the time you
+              // left. A return gets its own departure, and dismissing the sheet changes nothing.
+              final choice = await ReturnSheet.show(context);
+              if (choice == null) return;
+              ref.read(plannerProvider.notifier).planReturn(at: choice.at);
               await _replan();
             },
           ),

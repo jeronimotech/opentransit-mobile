@@ -550,5 +550,17 @@
   "offlinePlanTitle": "تخطيط الرحلات بدون اتصال",
   "offlinePlanExplain": "يتيح تخطيط الرحلات بدون شبكة. أكبر حجمًا، ولهذا الغرض فقط.",
   "searchOfflineStopsOnly": "بدون اتصال: المحطات المُنزَّلة فقط، وليس العناوين.",
-  "supportTitle": "الدعم والشكاوى"
+  "supportTitle": "الدعم والشكاوى",
+  "returnTrip": "خطّط رحلة العودة",
+  "returnWhen": "متى ستعود؟",
+  "returnNow": "الآن",
+  "returnInHours": "بعد {hours} س",
+  "@returnInHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "returnPick": "اختر الوقت"
 }

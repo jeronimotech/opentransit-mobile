@@ -1911,4 +1911,21 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supportTitle => 'الدعم والشكاوى';
+
+  @override
+  String get returnTrip => 'خطّط رحلة العودة';
+
+  @override
+  String get returnWhen => 'متى ستعود؟';
+
+  @override
+  String get returnNow => 'الآن';
+
+  @override
+  String returnInHours(int hours) {
+    return 'بعد $hours س';
+  }
+
+  @override
+  String get returnPick => 'اختر الوقت';
 }

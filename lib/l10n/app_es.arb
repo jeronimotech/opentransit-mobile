@@ -1207,5 +1207,17 @@
   "offlinePlanTitle": "Planificar sin conexión",
   "offlinePlanExplain": "Permite planear viajes sin red. Pesa más y solo sirve para eso.",
   "searchOfflineStopsOnly": "Sin conexión: solo paradas descargadas, no direcciones.",
-  "supportTitle": "Soporte y PQRS"
+  "supportTitle": "Soporte y PQRS",
+  "returnTrip": "Planear el regreso",
+  "returnWhen": "¿A qué hora vuelves?",
+  "returnNow": "Ahora",
+  "returnInHours": "En {hours} h",
+  "@returnInHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "returnPick": "Elegir hora"
 }

@@ -988,5 +988,17 @@
   "offlinePlanTitle": "Offline journey planning",
   "offlinePlanExplain": "Lets you plan trips with no network. Larger, and only for that.",
   "searchOfflineStopsOnly": "Offline: downloaded stops only, not addresses.",
-  "supportTitle": "Support and complaints"
+  "supportTitle": "Support and complaints",
+  "returnTrip": "Plan the return",
+  "returnWhen": "When are you heading back?",
+  "returnNow": "Now",
+  "returnInHours": "In {hours} h",
+  "@returnInHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "returnPick": "Pick a time"
 }

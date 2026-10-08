@@ -1933,4 +1933,21 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supportTitle => 'Assistance et réclamations';
+
+  @override
+  String get returnTrip => 'Planifier le retour';
+
+  @override
+  String get returnWhen => 'Vous rentrez à quelle heure ?';
+
+  @override
+  String get returnNow => 'Maintenant';
+
+  @override
+  String returnInHours(int hours) {
+    return 'Dans $hours h';
+  }
+
+  @override
+  String get returnPick => 'Choisir l\'heure';
 }

@@ -3329,6 +3329,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Soporte y PQRS'**
   String get supportTitle;
+
+  /// No description provided for @returnTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Planear el regreso'**
+  String get returnTrip;
+
+  /// No description provided for @returnWhen.
+  ///
+  /// In es, this message translates to:
+  /// **'¿A qué hora vuelves?'**
+  String get returnWhen;
+
+  /// No description provided for @returnNow.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora'**
+  String get returnNow;
+
+  /// No description provided for @returnInHours.
+  ///
+  /// In es, this message translates to:
+  /// **'En {hours} h'**
+  String returnInHours(int hours);
+
+  /// No description provided for @returnPick.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir hora'**
+  String get returnPick;
 }
 
 class _AppLocalizationsDelegate

@@ -1923,4 +1923,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get supportTitle => 'Soporte y PQRS';
+
+  @override
+  String get returnTrip => 'Planear el regreso';
+
+  @override
+  String get returnWhen => '¿A qué hora vuelves?';
+
+  @override
+  String get returnNow => 'Ahora';
+
+  @override
+  String returnInHours(int hours) {
+    return 'En $hours h';
+  }
+
+  @override
+  String get returnPick => 'Elegir hora';
 }

@@ -550,5 +550,17 @@
   "offlinePlanTitle": "Percorsi offline",
   "offlinePlanExplain": "Permette di calcolare percorsi senza rete. Più pesante, e solo per questo.",
   "searchOfflineStopsOnly": "Offline: solo le fermate scaricate, non gli indirizzi.",
-  "supportTitle": "Assistenza e reclami"
+  "supportTitle": "Assistenza e reclami",
+  "returnTrip": "Pianifica il ritorno",
+  "returnWhen": "A che ora torni?",
+  "returnNow": "Adesso",
+  "returnInHours": "Tra {hours} h",
+  "@returnInHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "returnPick": "Scegli l'ora"
 }

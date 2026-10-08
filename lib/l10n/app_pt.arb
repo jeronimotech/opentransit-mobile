@@ -550,5 +550,17 @@
   "offlinePlanTitle": "Planear sem ligação",
   "offlinePlanExplain": "Permite planear viagens sem rede. Ocupa mais e serve só para isso.",
   "searchOfflineStopsOnly": "Sem ligação: apenas paradas descarregadas, não moradas.",
-  "supportTitle": "Apoio e reclamações"
+  "supportTitle": "Apoio e reclamações",
+  "returnTrip": "Planear o regresso",
+  "returnWhen": "A que horas voltas?",
+  "returnNow": "Agora",
+  "returnInHours": "Daqui a {hours} h",
+  "@returnInHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "returnPick": "Escolher hora"
 }

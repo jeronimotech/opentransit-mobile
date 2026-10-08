@@ -1926,4 +1926,21 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get supportTitle => 'Assistenza e reclami';
+
+  @override
+  String get returnTrip => 'Pianifica il ritorno';
+
+  @override
+  String get returnWhen => 'A che ora torni?';
+
+  @override
+  String get returnNow => 'Adesso';
+
+  @override
+  String returnInHours(int hours) {
+    return 'Tra $hours h';
+  }
+
+  @override
+  String get returnPick => 'Scegli l\'ora';
 }
