@@ -1,1 +1,5 @@
-opentransit ya funciona en nueve ciudades: Bogotá, Toronto, Boston, Santiago, Roma, Lisboa, Casablanca, Kuala Lumpur y Brisbane. Viajes programados, seguimiento del viaje y bicicleta compartida.
+Horarios sin conexión: descarga la ciudad y las salidas funcionan bajo tierra o sin datos. También puedes planear viajes sin red.
+La página de parada ahora es un mapa con los buses que se acercan.
+Decimos cuándo un dato es en vivo, estimado o por programación, y cuándo viene del horario guardado.
+Ocupación del vehículo donde la agencia la publica.
+Icono de la app en los colores de tu ciudad.

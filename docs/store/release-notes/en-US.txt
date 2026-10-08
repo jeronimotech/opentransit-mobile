@@ -1,1 +1,5 @@
-opentransit now runs in nine cities: Bogotá, Toronto, Boston, Santiago, Rome, Lisbon, Casablanca, Kuala Lumpur and Brisbane. Scheduled trips, follow-along and shared bikes.
+Offline timetables: download your city and departures work underground or with no data. You can plan trips without a network too.
+The stop page is now a map with the buses approaching it.
+We say when a time is live, estimated or from the timetable, and when it came from the saved one.
+Vehicle occupancy where the agency publishes it.
+An app icon in your city's colours.

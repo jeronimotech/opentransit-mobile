@@ -1,1 +1,5 @@
-opentransit fonctionne désormais dans neuf villes : Bogotá, Toronto, Boston, Santiago, Rome, Lisbonne, Casablanca, Kuala Lumpur et Brisbane. Trajets programmés, suivi du trajet et vélos en libre-service.
+Horaires hors ligne : téléchargez votre ville et les départs fonctionnent sous terre ou sans data. Vous pouvez aussi calculer des trajets sans réseau.
+La page d'arrêt est désormais une carte avec les bus qui approchent.
+Nous disons quand une heure est en direct, estimée ou théorique, et quand elle vient de l'horaire enregistré.
+Occupation du véhicule là où l'exploitant la publie.
+Une icône aux couleurs de votre ville.

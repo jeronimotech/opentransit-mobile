@@ -1,1 +1,5 @@
-opentransit chega a nove cidades: Bogotá, Toronto, Boston, Santiago, Roma, Lisboa, Casablanca, Kuala Lumpur e Brisbane. Viagens agendadas, seguimento da viagem e bicicletas partilhadas.
+Horários sem ligação: descarrega a tua cidade e as partidas funcionam no subterrâneo ou sem dados. Também podes planear viagens sem rede.
+A página de paragem é agora um mapa com os autocarros a aproximar-se.
+Dizemos quando um horário é em tempo real, estimado ou da tabela, e quando vem do horário guardado.
+Ocupação do veículo onde a operadora a publica.
+Ícone da app nas cores da tua cidade.

@@ -1,1 +1,5 @@
-opentransit ora funziona in nove città: Bogotá, Toronto, Boston, Santiago, Roma, Lisbona, Casablanca, Kuala Lumpur e Brisbane. Viaggi programmati, segui il viaggio e bike sharing.
+Orari offline: scarica la tua città e le partenze funzionano sottoterra o senza dati. Puoi anche calcolare percorsi senza rete.
+La pagina della fermata è ora una mappa con i bus in avvicinamento.
+Diciamo quando un orario è in tempo reale, stimato o da orario, e quando viene da quello salvato.
+Occupazione del mezzo dove l'azienda la pubblica.
+Un'icona nei colori della tua città.

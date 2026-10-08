@@ -1,1 +1,5 @@
-opentransit kini di sembilan bandar: Bogotá, Toronto, Boston, Santiago, Rom, Lisbon, Casablanca, Kuala Lumpur dan Brisbane. Perjalanan berjadual, ikuti perjalanan dan basikal kongsi.
+Jadual luar talian: muat turun bandar anda dan perjalanan berfungsi di bawah tanah atau tanpa data. Anda juga boleh merancang perjalanan tanpa rangkaian.
+Halaman perhentian kini peta dengan bas yang menghampiri.
+Kami nyatakan bila masa itu langsung, anggaran atau mengikut jadual, dan bila ia daripada jadual tersimpan.
+Keadaan penuh kenderaan di mana agensi menerbitkannya.
+Ikon apl dalam warna bandar anda.
