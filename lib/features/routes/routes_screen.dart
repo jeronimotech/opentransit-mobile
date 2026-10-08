@@ -26,14 +26,14 @@ class _RoutesScreenState extends ConsumerState<RoutesScreen> {
     super.dispose();
   }
 
-  static String _norm(String s) => s.toLowerCase().replaceAll(RegExp(r'[\s\-]'), '');
+
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final routes = ref.watch(routesProvider(widget.cityId));
     final city = ref.watch(currentCityProvider);
-    final q = _norm(_q.text.trim());
+    final q = _q.text.trim();
     // The city's own components, falling back to the ones its agencies use. Never a fixed list:
     // it used to fall back to Bogotá's five, which is not what Toronto runs.
     final components = city?.componentIds ?? const <Component>[];
@@ -76,14 +76,7 @@ class _RoutesScreenState extends ConsumerState<RoutesScreen> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => ErrorView(error: e, onRetry: () => ref.invalidate(routesProvider(widget.cityId))),
         data: (all) {
-          final seen = <String>{};
-          final list = [
-            for (final r in all)
-              if ((_component == null || r.component == _component) &&
-                  (q.isEmpty || _norm(r.shortName).contains(q) || _norm(r.longName).contains(q)) &&
-                  seen.add('${r.shortName}|${r.component?.name}'))
-                r,
-          ];
+          final list = visibleRoutes(all, component: _component, query: q);
           if (list.isEmpty) return EmptyView(icon: Icons.route, message: l10n.noRoutes);
           return ListView.builder(
             itemCount: list.length,
@@ -107,3 +100,33 @@ class _RoutesScreenState extends ConsumerState<RoutesScreen> {
     );
   }
 }
+
+/// The routes to show, filtered by component and search text.
+///
+/// Deliberately does **not** de-duplicate. It used to filter on short name + component, which is
+/// the one merge that destroys information: Boston has thirty-eight "Red Line Shuttle" routes going
+/// to thirty-eight different places — Broadway to JFK, Ashmont to JFK, Quincy Center to Broadway —
+/// and that filter showed exactly one of them.
+///
+/// The API now collapses only rows identical in short name, long name, component and mode, which is
+/// Brisbane's thirteen copies of "BRBD · Brisbane City - Airport" and nothing of Boston's. What
+/// arrives here is already the list to show.
+List<RouteRef> visibleRoutes(
+  List<RouteRef> all, {
+  Component? component,
+  String query = '',
+}) {
+  final q = normaliseForSearch(query);
+  return [
+    for (final r in all)
+      if ((component == null || r.component == component) &&
+          (q.isEmpty ||
+              normaliseForSearch(r.shortName).contains(q) ||
+              normaliseForSearch(r.longName).contains(q)))
+        r,
+  ];
+}
+
+/// Lower-cased with spaces and hyphens dropped, so "9-3" matches "93" and "Red Line" matches
+/// "redline". A rider typing a route number rarely types its punctuation.
+String normaliseForSearch(String s) => s.toLowerCase().replaceAll(RegExp(r'[\s\-]'), '');
