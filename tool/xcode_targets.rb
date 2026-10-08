@@ -6,6 +6,7 @@
 #   OpenTransitLiveActivity        WidgetKit extension, ActivityKit, iOS 16.2+
 #   opentransit Watch App          watchOS 10+ SwiftUI app
 #   OpenTransitWatchComplications  WidgetKit extension inside the watch app
+#   OpenTransitShare               Share extension: hands a shared place to the app
 #
 # Run it instead of editing the pbxproj by hand:
 #
@@ -58,7 +59,21 @@ WATCH_COMPLICATIONS = {
   shared: ['../OpenTransitWatch/WatchModels.swift']
 }.freeze
 
-TARGETS = [LIVE_ACTIVITY, WATCH_APP, WATCH_COMPLICATIONS].freeze
+SHARE_EXTENSION = {
+  name: 'OpenTransitShare',
+  dir: 'OpenTransitShare',
+  bundle_id: "#{APP_ID}.Share",
+  type: :app_extension,
+  platform: :ios,
+  # Lower than the Live Activity's 16.2 on purpose: this needs nothing newer than the host app,
+  # and an extension that refuses to install on an iOS 15 phone is a share sheet entry that is
+  # simply absent there.
+  deployment: '15.0',
+  sources: ['ShareViewController.swift'],
+  shared: []
+}.freeze
+
+TARGETS = [LIVE_ACTIVITY, WATCH_APP, WATCH_COMPLICATIONS, SHARE_EXTENSION].freeze
 
 def swift_files(spec)
   dir = File.join(ROOT, 'ios', spec[:dir])
@@ -203,6 +218,7 @@ end
 embed(project, 'opentransit Watch App', 'OpenTransitWatchComplications', 'Embed Watch Complications', :plug_ins)
 embed(project, 'Runner', 'opentransit Watch App', 'Embed Watch Content', :wrapper, 'Watch')
 embed(project, 'Runner', 'OpenTransitLiveActivity', 'Embed App Extensions', :plug_ins)
+embed(project, 'Runner', 'OpenTransitShare', 'Embed App Extensions', :plug_ins)
 
 # Flutter's "Thin Binary" script declares the whole app bundle as its output,
 # so an embed phase scheduled after it produces "Cycle inside Runner". Both

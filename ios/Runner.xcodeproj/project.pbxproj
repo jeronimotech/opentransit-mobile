@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01106523EE6AFF01EF995062 /* OpenTransitShare.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 722F18A66AEA87DDEF03944F /* OpenTransitShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		06DD7F46FCF7024956605193 /* OpenTransitWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3FB0CEB94663929AD9FA27A /* OpenTransitWatchApp.swift */; };
 		0866FA2495820B9B84B9959D /* OpenTransitLiveActivityBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93906A0D6780DE20859156A /* OpenTransitLiveActivityBundle.swift */; };
 		13AC6D31ABE67D1E20EF0FC5 /* OpenTransitActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3175CAD8E8A0BC797B87984 /* OpenTransitActivityAttributes.swift */; };
@@ -16,6 +17,7 @@
 		2F70767619A8A25B1D3ADF28 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81FCA7E163AF983686567112 /* Assets.xcassets */; };
 		327AE267008FE54EE82CBA4C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75477E9EF546828FDCCE2CCF /* Foundation.framework */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
+		352ADC1E9175C8B86A9CADF0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E6D00FCE15668099898D41 /* Foundation.framework */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		4A2A12450E4509B0CCE05730 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB0C52EE85CEFBCFFB9BAAC5 /* Pods_Runner.framework */; };
 		56343B99D3880039728F251D /* WatchStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ABBD96DBB1798E5BD030438 /* WatchStore.swift */; };
@@ -27,6 +29,7 @@
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		7E69991A997D2789FC7763D3 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6429E2D201C192B150B3261 /* ShareViewController.swift */; };
 		9015B7A72BD981635B9EF773 /* RouteBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8557148FAC10EEF26AA785 /* RouteBadge.swift */; };
 		90C2131A4430DCB129BD7B1F /* WatchViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62CD490DA9A9C3FF40026A86 /* WatchViews.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -41,8 +44,6 @@
 		D54D384E35A70428CE51BB90 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E6D00FCE15668099898D41 /* Foundation.framework */; };
 		D78FF2C2C69C670D66A501CE /* OpenTransitLiveActivity.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D8006E67C636B503942B3CE3 /* WatchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDDB11305BF6EF97508B444 /* WatchModels.swift */; };
-		5DA284887DD3591622BF6EE2 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300DF4D096E2AA9138B28F5D /* ShareViewController.swift */; };
-		A08DAA86703DF90C3BABCA69 /* OpenTransitShare.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F5B9C09CA102435BA5FF5B1B /* OpenTransitShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,11 +75,11 @@
 			remoteGlobalIDString = 988023F22B49DA182C96612C;
 			remoteInfo = OpenTransitWatchComplications;
 		};
-		D9E29A5958107D91991324D9 /* PBXContainerItemProxy */ = {
+		F4E1ED1326F21D79F93D9521 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 086F8C138521E610E703910F;
+			remoteGlobalIDString = 18A8A74706A3397CF34FBD74;
 			remoteInfo = OpenTransitShare;
 		};
 /* End PBXContainerItemProxy section */
@@ -102,7 +103,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				D78FF2C2C69C670D66A501CE /* OpenTransitLiveActivity.appex in Embed App Extensions */,
-				A08DAA86703DF90C3BABCA69 /* OpenTransitShare.appex in Embed App Extensions */,
+				01106523EE6AFF01EF995062 /* OpenTransitShare.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -147,6 +148,7 @@
 		57E8F128A24E161FE160F6B4 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		62CD490DA9A9C3FF40026A86 /* WatchViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WatchViews.swift; path = OpenTransitWatch/WatchViews.swift; sourceTree = "<group>"; };
 		653E0D11A2495683E0F36BEF /* LiveActivityBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityBridge.swift; sourceTree = "<group>"; };
+		722F18A66AEA87DDEF03944F /* OpenTransitShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OpenTransitShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75477E9EF546828FDCCE2CCF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -172,15 +174,13 @@
 		BB0C52EE85CEFBCFFB9BAAC5 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4D5E6F708192A3B4C5D6E7F /* PushBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PushBridge.swift; sourceTree = "<group>"; };
 		C620802AF81C1761070E54FB /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
+		C6429E2D201C192B150B3261 /* ShareViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = OpenTransitShare/ShareViewController.swift; sourceTree = "<group>"; };
 		D0DB935EA01C6C5F2829428A /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		E3175CAD8E8A0BC797B87984 /* OpenTransitActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitActivityAttributes.swift; path = Shared/OpenTransitActivityAttributes.swift; sourceTree = "<group>"; };
 		E3FB0CEB94663929AD9FA27A /* OpenTransitWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitWatchApp.swift; path = OpenTransitWatch/OpenTransitWatchApp.swift; sourceTree = "<group>"; };
 		F1B8A3875749A1D3834B413F /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F68ED2BD9523F4B4C7F1FB27 /* OpenTransitLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitLiveActivity.swift; path = OpenTransitLiveActivity/OpenTransitLiveActivity.swift; sourceTree = "<group>"; };
 		F93906A0D6780DE20859156A /* OpenTransitLiveActivityBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OpenTransitLiveActivityBundle.swift; path = OpenTransitLiveActivity/OpenTransitLiveActivityBundle.swift; sourceTree = "<group>"; };
-		300DF4D096E2AA9138B28F5D /* ShareViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = OpenTransitShare/ShareViewController.swift; sourceTree = "<group>"; };
-		4C73FFEB715698BFCC1B5B76 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = OpenTransitShare/Info.plist; sourceTree = "<group>"; };
-		F5B9C09CA102435BA5FF5B1B /* OpenTransitShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OpenTransitShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,18 +217,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C31B579B6C42D3D30DC3776F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				352ADC1E9175C8B86A9CADF0 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D5686ACCD21AAF115BF7B4BA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CB1F70D9273ACA734C8EED15 /* Pods_RunnerTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		ADC1599ECBE418A640D07ED2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +290,14 @@
 			name = OpenTransitWatch;
 			sourceTree = SOURCE_ROOT;
 		};
+		633C092D73C5A86A544D50B0 /* OpenTransitShare */ = {
+			isa = PBXGroup;
+			children = (
+				C6429E2D201C192B150B3261 /* ShareViewController.swift */,
+			);
+			name = OpenTransitShare;
+			sourceTree = SOURCE_ROOT;
+		};
 		69CAAC79AEBFBDA06FB79D4F /* OpenTransitWatchComplications */ = {
 			isa = PBXGroup;
 			children = (
@@ -297,15 +306,6 @@
 			);
 			name = OpenTransitWatchComplications;
 			sourceTree = SOURCE_ROOT;
-		};
-		6E23C623EEE0FABA7373B170 /* OpenTransitShare */ = {
-			isa = PBXGroup;
-			children = (
-				300DF4D096E2AA9138B28F5D /* ShareViewController.swift */,
-				4C73FFEB715698BFCC1B5B76 /* Info.plist */,
-			);
-			name = OpenTransitShare;
-			sourceTree = "<group>";
 		};
 		84A5CD1AAE30A656C4CF2045 /* OpenTransitLiveActivity */ = {
 			isa = PBXGroup;
@@ -340,10 +340,10 @@
 				4407D451A1A5930C4CAC5A24 /* Pods */,
 				0FC62CC683A8E3FAF11C3708 /* Frameworks */,
 				84A5CD1AAE30A656C4CF2045 /* OpenTransitLiveActivity */,
-				6E23C623EEE0FABA7373B170 /* OpenTransitShare */,
 				53B2E7496E120CCDC29A689A /* OpenTransitWatch */,
 				69CAAC79AEBFBDA06FB79D4F /* OpenTransitWatchComplications */,
 				35DA60EEC74B5AD3444754A9 /* Shared */,
+				633C092D73C5A86A544D50B0 /* OpenTransitShare */,
 			);
 			sourceTree = "<group>";
 		};
@@ -353,9 +353,9 @@
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
 				9F9A8E3781EDB925E95DE86A /* OpenTransitLiveActivity.appex */,
-				F5B9C09CA102435BA5FF5B1B /* OpenTransitShare.appex */,
 				8841BD1A8692F9B82A7C6231 /* opentransit Watch App.app */,
 				13939A8EA6303FAF6D05C6F2 /* OpenTransitWatchComplications.appex */,
+				722F18A66AEA87DDEF03944F /* OpenTransitShare.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -399,6 +399,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		18A8A74706A3397CF34FBD74 /* OpenTransitShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5284A970E9F75B037EDC7793 /* Build configuration list for PBXNativeTarget "OpenTransitShare" */;
+			buildPhases = (
+				7DA0AC43AA3C4719FF70D35C /* Sources */,
+				C31B579B6C42D3D30DC3776F /* Frameworks */,
+				C49C646DD97B7522E9BAFEE9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenTransitShare;
+			productName = OpenTransitShare;
+			productReference = 722F18A66AEA87DDEF03944F /* OpenTransitShare.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		1E24DA40AC40AED1FE2C11D6 /* opentransit Watch App */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EACEF0E4EAC48102FC818E34 /* Build configuration list for PBXNativeTarget "opentransit Watch App" */;
@@ -473,7 +490,7 @@
 			dependencies = (
 				7B79B17D23B78475DB43507A /* PBXTargetDependency */,
 				AF2BBC1FFADC37DFBABADA54 /* PBXTargetDependency */,
-				B659F5AAEA4C9A7BE5046361 /* PBXTargetDependency */,
+				56AD99C7503B59E7E9BD154F /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -498,23 +515,6 @@
 			name = OpenTransitWatchComplications;
 			productName = OpenTransitWatchComplications;
 			productReference = 13939A8EA6303FAF6D05C6F2 /* OpenTransitWatchComplications.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		086F8C138521E610E703910F /* OpenTransitShare */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F3E6503FDFAD5082A0897642 /* Build configuration list for PBXNativeTarget "OpenTransitShare" */;
-			buildPhases = (
-				ED3135ACB34712BA6876FA0F /* Sources */,
-				ADC1599ECBE418A640D07ED2 /* Frameworks */,
-				E006B0E649AFDA922B733B51 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = OpenTransitShare;
-			productName = OpenTransitShare;
-			productReference = F5B9C09CA102435BA5FF5B1B /* OpenTransitShare.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -558,7 +558,7 @@
 				211933ABA3D5BC7CCB217A7A /* OpenTransitLiveActivity */,
 				1E24DA40AC40AED1FE2C11D6 /* opentransit Watch App */,
 				988023F22B49DA182C96612C /* OpenTransitWatchComplications */,
-				086F8C138521E610E703910F /* OpenTransitShare */,
+				18A8A74706A3397CF34FBD74 /* OpenTransitShare */,
 			);
 		};
 /* End PBXProject section */
@@ -605,7 +605,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E006B0E649AFDA922B733B51 /* Resources */ = {
+		C49C646DD97B7522E9BAFEE9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -710,6 +710,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7DA0AC43AA3C4719FF70D35C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E69991A997D2789FC7763D3 /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EA1CF9000F007C117D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -747,14 +755,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		ED3135ACB34712BA6876FA0F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5DA284887DD3591622BF6EE2 /* ShareViewController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -762,6 +762,12 @@
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
+		};
+		56AD99C7503B59E7E9BD154F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OpenTransitShare;
+			target = 18A8A74706A3397CF34FBD74 /* OpenTransitShare */;
+			targetProxy = F4E1ED1326F21D79F93D9521 /* PBXContainerItemProxy */;
 		};
 		7B79B17D23B78475DB43507A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -780,11 +786,6 @@
 			name = OpenTransitWatchComplications;
 			target = 988023F22B49DA182C96612C /* OpenTransitWatchComplications */;
 			targetProxy = DF15A366D9DCF92F98A78DD0 /* PBXContainerItemProxy */;
-		};
-		B659F5AAEA4C9A7BE5046361 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 086F8C138521E610E703910F /* OpenTransitShare */;
-			targetProxy = D9E29A5958107D91991324D9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -808,6 +809,49 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		0FA860A03840D566A9D3CA96 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				INFOPLIST_FILE = OpenTransitShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
+				PRODUCT_NAME = OpenTransitShare;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1F6585F12385C048384389A1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				INFOPLIST_FILE = OpenTransitShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
+				PRODUCT_NAME = OpenTransitShare;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		249021D3217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1252,6 +1296,28 @@
 			};
 			name = Release;
 		};
+		E9BC8D0B8D648CF8EAD500F0 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				INFOPLIST_FILE = OpenTransitShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
+				PRODUCT_NAME = OpenTransitShare;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
 		EA2880FCF9C00DC6301CC2A5 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
@@ -1301,72 +1367,6 @@
 			};
 			name = Debug;
 		};
-		66D9962DA2AE4DCC62E222D1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitShare/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
-				PRODUCT_NAME = OpenTransitShare;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		0E73501272531F9F51629BAE /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitShare/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
-				PRODUCT_NAME = OpenTransitShare;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		AAABE860A3945B51F4E54EC0 /* Profile */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 6DTDJCKC8X;
-				INFOPLIST_FILE = OpenTransitShare/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jeronimotech.opentransit.Share;
-				PRODUCT_NAME = OpenTransitShare;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Profile;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1386,6 +1386,16 @@
 				331C8088294A63A400263BE5 /* Debug */,
 				331C8089294A63A400263BE5 /* Release */,
 				331C808A294A63A400263BE5 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5284A970E9F75B037EDC7793 /* Build configuration list for PBXNativeTarget "OpenTransitShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FA860A03840D566A9D3CA96 /* Release */,
+				1F6585F12385C048384389A1 /* Debug */,
+				E9BC8D0B8D648CF8EAD500F0 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1426,16 +1436,6 @@
 				D605E4F8D9EC5B5CDC7F28F1 /* Release */,
 				F003FB82DBAB43B3D9AAF10E /* Debug */,
 				B5160A074CDA3ED5735B3C38 /* Profile */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F3E6503FDFAD5082A0897642 /* Build configuration list for PBXNativeTarget "OpenTransitShare" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0E73501272531F9F51629BAE /* Release */,
-				66D9962DA2AE4DCC62E222D1 /* Debug */,
-				AAABE860A3945B51F4E54EC0 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
