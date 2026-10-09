@@ -3437,6 +3437,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'NUEVA'**
   String get alertNew;
+
+  /// No description provided for @everyMinutes.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada {minutes} min'**
+  String everyMinutes(Object minutes);
+
+  /// No description provided for @tripsPerDay.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 salida} other{{count} salidas}}'**
+  String tripsPerDay(num count);
+
+  /// No description provided for @scheduleComputed.
+  ///
+  /// In es, this message translates to:
+  /// **'Intervalos calculados del horario publicado'**
+  String get scheduleComputed;
+
+  /// No description provided for @byHour.
+  ///
+  /// In es, this message translates to:
+  /// **'Por hora'**
+  String get byHour;
+
+  /// No description provided for @allDepartures.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas las salidas'**
+  String get allDepartures;
+
+  /// No description provided for @schedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Horarios'**
+  String get schedule;
+
+  /// No description provided for @connections.
+  ///
+  /// In es, this message translates to:
+  /// **'Conexiones'**
+  String get connections;
 }
 
 class _AppLocalizationsDelegate

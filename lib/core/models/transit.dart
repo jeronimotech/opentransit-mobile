@@ -479,3 +479,115 @@ class SegmentServices {
 
   bool get isEmpty => services.isEmpty;
 }
+
+/// Interval between departures within one hour of service.
+class Headway {
+  const Headway({required this.min, required this.typical, required this.max});
+  final int min;
+  final int typical;
+  final int max;
+
+  factory Headway.fromJson(Map<String, dynamic> j) => Headway(
+        min: (j['min'] as num).toInt(),
+        typical: (j['typical'] as num).toInt(),
+        max: (j['max'] as num).toInt(),
+      );
+}
+
+/// One hour of the published schedule.
+class ScheduleBand {
+  const ScheduleBand({required this.hour, required this.from, required this.to, required this.trips, this.headway});
+  final int hour;
+  final String from;
+  final String to;
+  final int trips;
+
+  /// Null when this hour holds the last departure of the day: one bus and nothing after it is a
+  /// count, not a wait.
+  final Headway? headway;
+
+  factory ScheduleBand.fromJson(Map<String, dynamic> j) => ScheduleBand(
+        hour: (j['hour'] as num).toInt(),
+        from: j['from']?.toString() ?? '',
+        to: j['to']?.toString() ?? '',
+        trips: (j['trips'] as num?)?.toInt() ?? 0,
+        headway: j['headwayMinutes'] is Map
+            ? Headway.fromJson(Map<String, dynamic>.from(j['headwayMinutes'] as Map))
+            : null,
+      );
+}
+
+/// What a rider can change to at one stop of a pattern.
+class StopConnections {
+  const StopConnections({required this.stopId, this.name, this.code, required this.routes});
+  final String stopId;
+  final String? name;
+  final String? code;
+  final List<RouteRef> routes;
+
+  factory StopConnections.fromJson(Map<String, dynamic> j) => StopConnections(
+        stopId: j['stopId'].toString(),
+        name: j['name']?.toString(),
+        code: j['code']?.toString(),
+        routes: asList(j['routes'], RouteRef.fromJson),
+      );
+}
+
+/// What one direction of a route runs on one day, and what connects along it.
+class PatternSchedule {
+  const PatternSchedule({
+    required this.routeId,
+    this.patternId,
+    this.headsign,
+    required this.date,
+    required this.trips,
+    this.first,
+    this.last,
+    this.typicalHeadwayMinutes,
+    required this.frequent,
+    required this.bands,
+    required this.departures,
+    required this.connections,
+  });
+
+  final String routeId;
+  final String? patternId;
+  final String? headsign;
+  final String date;
+  final int trips;
+  final String? first;
+  final String? last;
+
+  /// The median gap over the day — what a rider turning up at an unknown time most often waits.
+  final int? typicalHeadwayMinutes;
+
+  /// Turn up and go, rather than read a timetable.
+  final bool frequent;
+
+  final List<ScheduleBand> bands;
+
+  /// Every departure of the day as `HH:mm`.
+  final List<String> departures;
+  final List<StopConnections> connections;
+
+  factory PatternSchedule.fromJson(Map<String, dynamic> j) => PatternSchedule(
+        routeId: j['routeId'].toString(),
+        patternId: j['patternId']?.toString(),
+        headsign: j['headsign']?.toString(),
+        date: j['date']?.toString() ?? '',
+        trips: (j['trips'] as num?)?.toInt() ?? 0,
+        first: j['first']?.toString(),
+        last: j['last']?.toString(),
+        typicalHeadwayMinutes: (j['typicalHeadwayMinutes'] as num?)?.toInt(),
+        frequent: j['frequent'] == true,
+        bands: asList(j['bands'], ScheduleBand.fromJson),
+        departures: asStrings(j['departures']),
+        connections: asList(j['connections'], StopConnections.fromJson),
+      );
+
+  /// Connections keyed by stop, for a stop list that shows them inline.
+  Map<String, List<RouteRef>> get routesByStop =>
+      {for (final c in connections) c.stopId: c.routes};
+
+  bool get isEmpty => trips == 0;
+}

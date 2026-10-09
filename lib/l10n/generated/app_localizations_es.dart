@@ -1991,4 +1991,35 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get alertNew => 'NUEVA';
+
+  @override
+  String everyMinutes(Object minutes) {
+    return 'Cada $minutes min';
+  }
+
+  @override
+  String tripsPerDay(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count salidas',
+      one: '1 salida',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get scheduleComputed => 'Intervalos calculados del horario publicado';
+
+  @override
+  String get byHour => 'Por hora';
+
+  @override
+  String get allDepartures => 'Todas las salidas';
+
+  @override
+  String get schedule => 'Horarios';
+
+  @override
+  String get connections => 'Conexiones';
 }

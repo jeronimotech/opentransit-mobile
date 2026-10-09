@@ -18,6 +18,7 @@ import '../../core/theme/semantic_colors.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/transit_map.dart';
 import '../../l10n/generated/app_localizations.dart';
+import 'widgets/schedule_sheet.dart';
 
 class RouteDetailScreen extends ConsumerStatefulWidget {
   const RouteDetailScreen({super.key, required this.cityId, required this.routeId});
@@ -67,6 +68,10 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
         final patterns = d.patterns;
         final dir = patterns.isEmpty ? null : patterns[_dir.clamp(0, patterns.length - 1)];
         final trackView = TrackView(type: Ev.routeView, id: r.id, props: {'routeId': r.id, 'component': r.component?.name});
+        // The published schedule of the direction on screen: what it runs today, and what a rider
+        // can change to at each of its stops.
+        final sched = ref.watch(routeScheduleProvider(PatternKey(widget.cityId, r.id, dir?.id))).asData?.value;
+        final connections = sched?.routesByStop ?? const <String, List<RouteRef>>{};
         if (dir != null) _build(dir, color);
         final onRoute = live == null
             ? const <Vehicle>[]
@@ -153,6 +158,36 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                           ],
                         ),
                       ),
+                    if (sched != null && !sched.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 8, 0),
+                        child: Row(
+                          children: [
+                            Icon(sched.frequent ? Icons.all_inclusive : Icons.list_alt,
+                                size: 16, color: scheme.onSurfaceVariant),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                [
+                                  if (sched.typicalHeadwayMinutes != null)
+                                    l10n.everyMinutes(sched.typicalHeadwayMinutes!),
+                                  l10n.tripsPerDay(sched.trips),
+                                ].join(' · '),
+                                key: const ValueKey('route-frequency'),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                              ),
+                            ),
+                            TextButton(
+                              key: const ValueKey('route-schedule'),
+                              onPressed: () => ScheduleSheet.show(context, schedule: sched, routeName: r.displayName),
+                              style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+                              child: Text(l10n.schedule),
+                            ),
+                          ],
+                        ),
+                      ),
                     if (d.alerts.isNotEmpty)
                       for (final a in d.alerts)
                         ListTile(
@@ -190,10 +225,11 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                                 // A bus is "here" when it is closer to this stop
                                 // than to any other on the pattern.
                                 final busHere = nearestStopIndexes.contains(i);
+                                final conns = connections[s.id] ?? const <RouteRef>[];
                                 return InkWell(
                                   onTap: () => context.push('/${widget.cityId}/stops/${Uri.encodeComponent(s.id)}'),
                                   child: SizedBox(
-                                    height: 48,
+                                    height: conns.isEmpty ? 48 : 70,
                                     child: Row(
                                       children: [
                                         const SizedBox(width: 24),
@@ -218,7 +254,35 @@ class _RouteDetailScreenState extends ConsumerState<RouteDetailScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 14),
-                                        Expanded(child: Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: first || last || busHere ? FontWeight.w700 : FontWeight.w500))),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: first || last || busHere ? FontWeight.w700 : FontWeight.w500)),
+                                              // What else a rider can take from here: the reason to
+                                              // get off at this stop rather than the next one.
+                                              if (conns.isNotEmpty)
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 4),
+                                                  child: ClipRect(
+                                                    child: Row(
+                                                      children: [
+                                                        for (final c in conns.take(4)) ...[
+                                                          RouteChip(c, dense: true),
+                                                          const SizedBox(width: 4),
+                                                        ],
+                                                        if (conns.length > 4)
+                                                          Text('+${conns.length - 4}',
+                                                              style: Theme.of(context).textTheme.labelSmall
+                                                                  ?.copyWith(color: scheme.onSurfaceVariant)),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ),
                                         TextButton(
                                           key: ValueKey('quick-go-$i'),
                                           style: TextButton.styleFrom(visualDensity: VisualDensity.compact, minimumSize: const Size(0, 40)),

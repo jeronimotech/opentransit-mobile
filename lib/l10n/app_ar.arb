@@ -575,5 +575,12 @@
   "boardingWaitAt": "انتظر في",
   "boardingGetOffAt": "انزل في",
   "alertsOnYourTrip": "{count, plural, =1{تنبيه واحد في رحلتك} other{{count} تنبيهات في رحلتك}}",
-  "alertNew": "جديد"
+  "alertNew": "جديد",
+  "everyMinutes": "كل {minutes} دقيقة",
+  "tripsPerDay": "{count, plural, =1{رحلة واحدة} other{{count} رحلة}}",
+  "scheduleComputed": "الفواصل محسوبة من الجدول المنشور",
+  "byHour": "بحسب الساعة",
+  "allDepartures": "كل الرحلات",
+  "schedule": "الجدول",
+  "connections": "التحويلات"
 }

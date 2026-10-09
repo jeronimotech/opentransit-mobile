@@ -575,5 +575,12 @@
   "boardingWaitAt": "Attendi a",
   "boardingGetOffAt": "Scendi a",
   "alertsOnYourTrip": "{count, plural, =1{1 avviso sul tuo percorso} other{{count} avvisi sul tuo percorso}}",
-  "alertNew": "NUOVO"
+  "alertNew": "NUOVO",
+  "everyMinutes": "Ogni {minutes} min",
+  "tripsPerDay": "{count, plural, =1{1 partenza} other{{count} partenze}}",
+  "scheduleComputed": "Intervalli calcolati dall'orario pubblicato",
+  "byHour": "Per ora",
+  "allDepartures": "Tutte le partenze",
+  "schedule": "Orari",
+  "connections": "Coincidenze"
 }

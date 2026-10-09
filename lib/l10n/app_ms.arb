@@ -575,5 +575,12 @@
   "boardingWaitAt": "Tunggu di",
   "boardingGetOffAt": "Turun di",
   "alertsOnYourTrip": "{count, plural, =1{1 makluman pada perjalanan anda} other{{count} makluman pada perjalanan anda}}",
-  "alertNew": "BARU"
+  "alertNew": "BARU",
+  "everyMinutes": "Setiap {minutes} min",
+  "tripsPerDay": "{count, plural, other{{count} perjalanan}}",
+  "scheduleComputed": "Selang dikira daripada jadual yang diterbitkan",
+  "byHour": "Setiap jam",
+  "allDepartures": "Semua perjalanan",
+  "schedule": "Jadual",
+  "connections": "Sambungan"
 }

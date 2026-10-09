@@ -1979,4 +1979,35 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get alertNew => 'جديد';
+
+  @override
+  String everyMinutes(Object minutes) {
+    return 'كل $minutes دقيقة';
+  }
+
+  @override
+  String tripsPerDay(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count رحلة',
+      one: 'رحلة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get scheduleComputed => 'الفواصل محسوبة من الجدول المنشور';
+
+  @override
+  String get byHour => 'بحسب الساعة';
+
+  @override
+  String get allDepartures => 'كل الرحلات';
+
+  @override
+  String get schedule => 'الجدول';
+
+  @override
+  String get connections => 'التحويلات';
 }

@@ -350,6 +350,83 @@ class MockApiClient implements ApiClient {
   }
 
   @override
+  Future<PatternSchedule> routeSchedule(String cityId, String routeId,
+      {String? pattern, DateTime? date}) async {
+    final all = await _map('route_detail');
+    final raw = all[routeId];
+    if (raw is! Map) throw ApiException('ROUTE_NOT_FOUND', 'No route $routeId', status: 404);
+    final r = Map<String, dynamic>.from(raw);
+    final patterns = [for (final p in (r['patterns'] as List? ?? const [])) Map<String, dynamic>.from(p as Map)];
+    final chosen = patterns.firstWhere((p) => pattern == null || p['id'] == pattern,
+        orElse: () => patterns.isEmpty ? <String, dynamic>{} : patterns.first);
+    final stops = [for (final s in (chosen['stops'] as List? ?? const [])) Map<String, dynamic>.from(s as Map)];
+
+    // The fixtures carry no timetable, so the departures are generated from the route's own service
+    // window at an interval typical of its component. Flagged here rather than dressed up: the demo
+    // shows the shape of the answer, not a real schedule.
+    final window = r['serviceWindow'] is Map ? Map<String, dynamic>.from(r['serviceWindow'] as Map) : null;
+    final startHour = int.tryParse((window?['start'] ?? '05:00').toString().split(':').first) ?? 5;
+    final endHour = int.tryParse((window?['end'] ?? '23:00').toString().split(':').first) ?? 23;
+    final every = switch (r['component']?.toString()) {
+      'trunk' || 'dual' => 6,
+      'feeder' => 20,
+      'cable' => 4,
+      _ => 12,
+    };
+    final departures = <String>[];
+    for (var m = startHour * 60; m <= endHour * 60; m += every) {
+      departures.add('${(m ~/ 60).toString().padLeft(2, '0')}:${(m % 60).toString().padLeft(2, '0')}');
+    }
+    final bands = <ScheduleBand>[];
+    for (var h = startHour; h <= endHour; h++) {
+      final n = departures.where((d) => d.startsWith('${h.toString().padLeft(2, '0')}:')).length;
+      if (n == 0) continue;
+      bands.add(ScheduleBand(
+        hour: h,
+        from: '${h.toString().padLeft(2, '0')}:00',
+        to: '${((h + 1) % 24).toString().padLeft(2, '0')}:00',
+        trips: n,
+        headway: n < 2 ? null : Headway(min: every, typical: every, max: every),
+      ));
+    }
+
+    // Connections: the other routes in the fixture network whose patterns call at this stop.
+    final connections = <StopConnections>[];
+    for (final st in stops) {
+      final id = st['id'].toString();
+      final others = <RouteRef>[];
+      for (final e in all.entries) {
+        if (e.key == routeId) continue;
+        final other = Map<String, dynamic>.from(e.value as Map);
+        final calls = (other['patterns'] as List? ?? const []).any((p) =>
+            ((p as Map)['stops'] as List? ?? const []).any((s) => (s as Map)['id'].toString() == id));
+        if (calls) others.add(RouteRef.fromJson(other));
+      }
+      connections.add(StopConnections(
+        stopId: id,
+        name: st['name']?.toString(),
+        code: st['code']?.toString(),
+        routes: others,
+      ));
+    }
+
+    return PatternSchedule(
+      routeId: routeId,
+      patternId: chosen['id']?.toString(),
+      headsign: chosen['headsign']?.toString(),
+      date: (date ?? now).toIso8601String().split('T').first,
+      trips: departures.length,
+      first: departures.firstOrNull,
+      last: departures.lastOrNull,
+      typicalHeadwayMinutes: every,
+      frequent: every <= 12,
+      bands: bands,
+      departures: departures,
+      connections: connections,
+    );
+  }
+
+  @override
   Future<List<NetworkShape>> network(String cityId) async =>
       asList((await _map('network'))['shapes'], NetworkShape.fromJson);
 

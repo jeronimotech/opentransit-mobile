@@ -85,6 +85,10 @@ abstract class ApiClient {
   /// v2.7 — other services running the segment [from] -> [to], so a rider can take whichever
   /// comes first. [exclude] is the route the itinerary already shows.
   Future<SegmentServices> segmentServices(String cityId, String from, String to, {String? exclude});
+
+  /// v2.7 — what one direction of a route runs on [date] (today where omitted) and what a rider
+  /// can change to at each of its stops.
+  Future<PatternSchedule> routeSchedule(String cityId, String routeId, {String? pattern, DateTime? date});
   Future<List<NetworkShape>> network(String cityId);
 
   /// v1.1 — points of interest inside [bbox] (`minLon,minLat,maxLon,maxLat`).

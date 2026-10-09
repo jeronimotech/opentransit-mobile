@@ -1021,5 +1021,20 @@
       }
     }
   },
-  "alertNew": "NEW"
+  "alertNew": "NEW",
+  "everyMinutes": "Every {minutes} min",
+  "tripsPerDay": "{count, plural, =1{1 departure} other{{count} departures}}",
+  "@tripsPerDay": {
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "scheduleComputed": "Intervals calculated from the published timetable",
+  "byHour": "By hour",
+  "allDepartures": "All departures",
+  "schedule": "Timetable",
+  "connections": "Connections"
 }

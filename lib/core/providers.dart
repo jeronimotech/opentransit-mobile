@@ -585,6 +585,21 @@ class SegmentKey {
   int get hashCode => Object.hash(cityId, from, to, routeId);
 }
 
+class PatternKey {
+  const PatternKey(this.cityId, this.routeId, this.patternId);
+  final String cityId;
+  final String routeId;
+  final String? patternId;
+  @override
+  bool operator ==(Object other) =>
+      other is PatternKey &&
+      other.cityId == cityId &&
+      other.routeId == routeId &&
+      other.patternId == patternId;
+  @override
+  int get hashCode => Object.hash(cityId, routeId, patternId);
+}
+
 class StopRouteKey {
   const StopRouteKey(this.cityId, this.stopId, this.routeId);
   final String cityId;
@@ -778,6 +793,12 @@ Future<SegmentServices?> _offlineSegments(Ref ref, SegmentKey k) async {
     excludeRouteId: k.routeId,
   );
 }
+
+/// What one direction of a route runs today, and what connects along it. Cached for the screen's
+/// lifetime: it is a day's timetable, not a live value.
+final routeScheduleProvider =
+    FutureProvider.autoDispose.family<PatternSchedule, PatternKey>((ref, k) =>
+        ref.watch(apiClientProvider).routeSchedule(k.cityId, k.routeId, pattern: k.patternId));
 
 /// Simplified route shapes for the home map "Red" layer (cached per city).
 final networkProvider = FutureProvider.family<List<NetworkShape>, String>(

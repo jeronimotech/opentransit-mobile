@@ -2001,4 +2001,36 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get alertNew => 'NOUVEAU';
+
+  @override
+  String everyMinutes(Object minutes) {
+    return 'Toutes les $minutes min';
+  }
+
+  @override
+  String tripsPerDay(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count départs',
+      one: '1 départ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get scheduleComputed =>
+      'Intervalles calculés à partir de l\'horaire publié';
+
+  @override
+  String get byHour => 'Par heure';
+
+  @override
+  String get allDepartures => 'Tous les départs';
+
+  @override
+  String get schedule => 'Horaires';
+
+  @override
+  String get connections => 'Correspondances';
 }

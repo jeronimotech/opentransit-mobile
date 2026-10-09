@@ -247,6 +247,15 @@ class HttpApiClient implements ApiClient {
       }));
 
   @override
+  Future<PatternSchedule> routeSchedule(String cityId, String routeId,
+          {String? pattern, DateTime? date}) async =>
+      PatternSchedule.fromJson(
+          await _get('${_c(cityId)}/routes/${Uri.encodeComponent(routeId)}/schedule', query: {
+        if (pattern != null && pattern.isNotEmpty) 'pattern': pattern,
+        if (date != null) 'date': date.toIso8601String().split('T').first,
+      }));
+
+  @override
   Future<List<NetworkShape>> network(String cityId) async =>
       asList((await _get('${_c(cityId)}/network'))['shapes'],
           NetworkShape.fromJson);
