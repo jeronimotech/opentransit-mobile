@@ -1221,5 +1221,9 @@
   },
   "returnPick": "Elegir hora",
   "nextStep": "Luego: {step}",
-  "nextStepArrive": "Luego: llegas a tu destino"
+  "nextStepArrive": "Luego: llegas a tu destino",
+  "alsoServes": "También sirven este tramo",
+  "alsoCallsAtBoth": "También pasan por las dos paradas",
+  "alsoServesAsk": "Otros servicios en este tramo",
+  "alsoServesFrom": "Desde {place}"
 }

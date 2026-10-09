@@ -310,6 +310,46 @@ class MockApiClient implements ApiClient {
   }
 
   @override
+  Future<SegmentServices> segmentServices(String cityId, String from, String to, {String? exclude}) async {
+    // Same rule the server applies, over the fixture network: a pattern qualifies when it calls at
+    // the boarding stop and then, later in the same run, at the alighting one.
+    final all = await _map('route_detail');
+    final services = <SegmentService>[];
+    SegmentStopRef? fromRef, toRef;
+    for (final e in all.entries) {
+      if (e.key == exclude) continue;
+      final r = Map<String, dynamic>.from(e.value as Map);
+      for (final raw in (r['patterns'] as List? ?? const [])) {
+        final stops = [for (final s in (raw as Map)['stops'] as List) Map<String, dynamic>.from(s as Map)];
+        final ids = [for (final s in stops) s['id'].toString()];
+        final i = ids.indexOf(from);
+        if (i < 0) continue;
+        final j = ids.indexOf(to, i + 1);
+        if (j < 0) continue;
+        SegmentStopRef ref(Map<String, dynamic> s) =>
+            SegmentStopRef(id: s['id'].toString(), name: s['name']?.toString(), code: s['code']?.toString());
+        fromRef ??= ref(stops[i]);
+        toRef ??= ref(stops[j]);
+        services.add(SegmentService(
+          route: RouteRef.fromJson(r),
+          headsign: raw['headsign']?.toString(),
+          boardAt: ref(stops[i]),
+          getOffAt: ref(stops[j]),
+          stops: j - i,
+        ));
+        break;
+      }
+    }
+    services.sort((a, b) => a.route.shortName.compareTo(b.route.shortName));
+    return SegmentServices(
+      from: fromRef ?? SegmentStopRef(id: from),
+      to: toRef ?? SegmentStopRef(id: to),
+      match: SegmentMatch.pattern,
+      services: services,
+    );
+  }
+
+  @override
   Future<List<NetworkShape>> network(String cityId) async =>
       asList((await _map('network'))['shapes'], NetworkShape.fromJson);
 

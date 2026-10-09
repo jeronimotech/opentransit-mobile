@@ -1951,4 +1951,18 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get nextStepArrive => 'Poi: arrivi a destinazione';
+
+  @override
+  String get alsoServes => 'Servono anche questa tratta';
+
+  @override
+  String get alsoCallsAtBoth => 'Fermano anche alle due fermate';
+
+  @override
+  String get alsoServesAsk => 'Altri servizi su questa tratta';
+
+  @override
+  String alsoServesFrom(Object place) {
+    return 'Da $place';
+  }
 }

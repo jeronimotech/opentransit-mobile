@@ -22,6 +22,7 @@ import 'offline/city_cache.dart';
 import 'offline/offline_board.dart';
 import 'offline/offline_patterns.dart';
 import 'offline/offline_plan.dart';
+import 'offline/offline_segments.dart';
 import 'offline/offline_router.dart';
 import 'offline/offline_store.dart';
 import 'models/models.dart';
@@ -565,6 +566,25 @@ class CityKey {
   int get hashCode => Object.hash(cityId, id);
 }
 
+class SegmentKey {
+  const SegmentKey(this.cityId, this.from, this.to, {this.routeId});
+  final String cityId;
+  final String from;
+  final String to;
+
+  /// The route the itinerary already shows, left out of the answer.
+  final String? routeId;
+  @override
+  bool operator ==(Object other) =>
+      other is SegmentKey &&
+      other.cityId == cityId &&
+      other.from == from &&
+      other.to == to &&
+      other.routeId == routeId;
+  @override
+  int get hashCode => Object.hash(cityId, from, to, routeId);
+}
+
 class StopRouteKey {
   const StopRouteKey(this.cityId, this.stopId, this.routeId);
   final String cityId;
@@ -728,6 +748,36 @@ final nextBusesProvider =
 
 final routeDetailProvider = FutureProvider.autoDispose.family<RouteDetail, CityKey>(
     (ref, k) => ref.watch(apiClientProvider).route(k.cityId, k.id));
+
+/// Other services running one leg's segment, so a rider can board whichever comes first. Falls back
+/// to the downloaded pattern index, which answers the same question with the same rule.
+final segmentServicesProvider =
+    FutureProvider.autoDispose.family<SegmentServices, SegmentKey>((ref, k) async {
+  try {
+    return await ref
+        .watch(apiClientProvider)
+        .segmentServices(k.cityId, k.from, k.to, exclude: k.routeId);
+  } on Object {
+    final offline = await _offlineSegments(ref, k);
+    if (offline == null) rethrow;
+    return offline;
+  }
+});
+
+Future<SegmentServices?> _offlineSegments(Ref ref, SegmentKey k) async {
+  final bundle = await ref.read(offlineBundleProvider(k.cityId).future);
+  final patterns = await ref.read(offlinePatternsProvider(k.cityId).future);
+  if (bundle == null || patterns == null) return null;
+  String raw(String id) => id.contains(':') ? id.split(':').skip(1).join(':') : id;
+  return offlineSegmentServices(
+    cityId: k.cityId,
+    header: bundle.header,
+    patterns: patterns,
+    fromId: raw(k.from),
+    toId: raw(k.to),
+    excludeRouteId: k.routeId,
+  );
+}
 
 /// Simplified route shapes for the home map "Red" layer (cached per city).
 final networkProvider = FutureProvider.family<List<NetworkShape>, String>(

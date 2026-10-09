@@ -401,3 +401,81 @@ class NetworkShape {
             Geometry.fromJson(Map<String, dynamic>.from(j['geometry'] as Map)),
       );
 }
+
+/// One stop as the segment answer names it — enough to tell a rider where to stand.
+class SegmentStopRef {
+  const SegmentStopRef({required this.id, this.name, this.code});
+  final String id;
+  final String? name;
+  final String? code;
+
+  factory SegmentStopRef.fromJson(Map<String, dynamic> j) => SegmentStopRef(
+        id: j['id'].toString(),
+        name: j['name']?.toString(),
+        code: j['code']?.toString(),
+      );
+
+  String get label => (name?.isNotEmpty ?? false) ? name! : id;
+}
+
+/// A route that serves the same segment as the leg being shown, so a rider can board whichever
+/// comes first. [boardAt] matters: at a station with several platforms the equivalent service
+/// commonly leaves from a different one.
+class SegmentService {
+  const SegmentService({
+    required this.route,
+    this.headsign,
+    this.boardAt,
+    this.getOffAt,
+    this.stops,
+  });
+  final RouteRef route;
+  final String? headsign;
+  final SegmentStopRef? boardAt;
+  final SegmentStopRef? getOffAt;
+  final int? stops;
+
+  factory SegmentService.fromJson(Map<String, dynamic> j) => SegmentService(
+        route: RouteRef.fromJson(j),
+        headsign: j['headsign']?.toString(),
+        boardAt: j['boardAt'] is Map
+            ? SegmentStopRef.fromJson(Map<String, dynamic>.from(j['boardAt'] as Map))
+            : null,
+        getOffAt: j['getOffAt'] is Map
+            ? SegmentStopRef.fromJson(Map<String, dynamic>.from(j['getOffAt'] as Map))
+            : null,
+        stops: j['stops'] is num ? (j['stops'] as num).toInt() : null,
+      );
+}
+
+/// How well the server could answer. `pattern` means these services run the segment in this
+/// direction; `stop` means only that they call at both stops — the app has to say so.
+enum SegmentMatch {
+  pattern,
+  stop;
+
+  static SegmentMatch parse(Object? v) =>
+      v?.toString() == 'stop' ? SegmentMatch.stop : SegmentMatch.pattern;
+}
+
+class SegmentServices {
+  const SegmentServices({
+    required this.from,
+    required this.to,
+    required this.match,
+    required this.services,
+  });
+  final SegmentStopRef from;
+  final SegmentStopRef to;
+  final SegmentMatch match;
+  final List<SegmentService> services;
+
+  factory SegmentServices.fromJson(Map<String, dynamic> j) => SegmentServices(
+        from: SegmentStopRef.fromJson(Map<String, dynamic>.from(j['from'] as Map)),
+        to: SegmentStopRef.fromJson(Map<String, dynamic>.from(j['to'] as Map)),
+        match: SegmentMatch.parse(j['match']),
+        services: asList(j['services'], SegmentService.fromJson),
+      );
+
+  bool get isEmpty => services.isEmpty;
+}

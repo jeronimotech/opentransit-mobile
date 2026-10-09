@@ -238,6 +238,15 @@ class HttpApiClient implements ApiClient {
           await _get('${_c(cityId)}/routes/${Uri.encodeComponent(routeId)}'));
 
   @override
+  Future<SegmentServices> segmentServices(String cityId, String from, String to,
+          {String? exclude}) async =>
+      SegmentServices.fromJson(await _get('${_c(cityId)}/segments', query: {
+        'from': from,
+        'to': to,
+        if (exclude != null && exclude.isNotEmpty) 'exclude': exclude,
+      }));
+
+  @override
   Future<List<NetworkShape>> network(String cityId) async =>
       asList((await _get('${_c(cityId)}/network'))['shapes'],
           NetworkShape.fromJson);

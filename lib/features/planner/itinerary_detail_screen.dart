@@ -25,6 +25,7 @@ import '../../l10n/generated/app_localizations.dart';
 import 'planner_actions.dart';
 import 'planner_state.dart';
 import '../trips/schedule_trip_sheet.dart';
+import 'widgets/equivalent_services.dart';
 
 class ItineraryDetailScreen extends ConsumerStatefulWidget {
   const ItineraryDetailScreen({super.key, required this.cityId, required this.index});
@@ -613,6 +614,18 @@ class _LegTileState extends ConsumerState<_LegTile> {
                         chosen: widget.chosenStart,
                         color: color,
                         onPick: widget.onRetime!,
+                      ),
+                    // What else would have done: the itinerary names one route, and at a trunk
+                    // station three others may run the same segment. Eager only for the leg about
+                    // to be boarded; for later ones it waits for a tap.
+                    if (leg.from.stopId != null && leg.to.stopId != null)
+                      EquivalentServices(
+                        cityId: widget.cityId,
+                        fromStopId: leg.from.stopId!,
+                        toStopId: leg.to.stopId!,
+                        routeId: leg.route?.id,
+                        boardingStopName: leg.from.name,
+                        eager: widget.showDepartures,
                       ),
                     if (leg.intermediateStops.isNotEmpty)
                       InkWell(

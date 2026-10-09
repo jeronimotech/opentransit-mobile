@@ -564,5 +564,9 @@
   },
   "returnPick": "Scegli l'ora",
   "nextStep": "Poi: {step}",
-  "nextStepArrive": "Poi: arrivi a destinazione"
+  "nextStepArrive": "Poi: arrivi a destinazione",
+  "alsoServes": "Servono anche questa tratta",
+  "alsoCallsAtBoth": "Fermano anche alle due fermate",
+  "alsoServesAsk": "Altri servizi su questa tratta",
+  "alsoServesFrom": "Da {place}"
 }

@@ -564,5 +564,9 @@
   },
   "returnPick": "Pilih masa",
   "nextStep": "Seterusnya: {step}",
-  "nextStepArrive": "Seterusnya: anda tiba di destinasi"
+  "nextStepArrive": "Seterusnya: anda tiba di destinasi",
+  "alsoServes": "Juga melalui laluan ini",
+  "alsoCallsAtBoth": "Juga berhenti di kedua-dua perhentian",
+  "alsoServesAsk": "Perkhidmatan lain di laluan ini",
+  "alsoServesFrom": "Dari {place}"
 }

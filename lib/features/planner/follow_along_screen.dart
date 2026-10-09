@@ -32,6 +32,7 @@ import '../../core/utils/ondemand.dart';
 import '../ondemand/provider_picker.dart';
 import 'planner_state.dart';
 import 'widgets/trip_receipt_sheet.dart';
+import 'widgets/equivalent_services.dart';
 
 /// Pure logic behind "Iniciar viaje": which leg the user is on and how far
 /// they are from the current leg's alighting point. Foreground location only.
@@ -647,6 +648,17 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                             ? l10n.followAlongLocationNeeded
                             : (_toEnd == null ? l10n.followAlongHint : l10n.distanceToStop(formatDistance(_toEnd!.round()))),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _denied ? scheme.error : scheme.onSurfaceVariant),
+                      ),
+                    // While waiting to board, what else would do: at a trunk station the first
+                    // bus to arrive is often another route that runs the same segment.
+                    if (leg.transit && !_boarded && leg.from.stopId != null && leg.to.stopId != null)
+                      EquivalentServices(
+                        cityId: widget.cityId,
+                        fromStopId: leg.from.stopId!,
+                        toStopId: leg.to.stopId!,
+                        routeId: leg.route?.id,
+                        boardingStopName: leg.from.name,
+                        eager: true,
                       ),
                     // What comes after the current action. Riders asked for it because a card that
                     // only says "get off at X" gives no warning that the transfer is a 400 m walk.

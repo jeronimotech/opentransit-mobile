@@ -1002,5 +1002,9 @@
   },
   "returnPick": "Pick a time",
   "nextStep": "Next: {step}",
-  "nextStepArrive": "Next: you arrive at your destination"
+  "nextStepArrive": "Next: you arrive at your destination",
+  "alsoServes": "Also serve this segment",
+  "alsoCallsAtBoth": "Also call at both stops",
+  "alsoServesAsk": "Other services on this segment",
+  "alsoServesFrom": "From {place}"
 }

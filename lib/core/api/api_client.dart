@@ -81,6 +81,10 @@ abstract class ApiClient {
 
   Future<List<RouteRef>> routes(String cityId, {Component? component, String? query});
   Future<RouteDetail> route(String cityId, String routeId);
+
+  /// v2.7 — other services running the segment [from] -> [to], so a rider can take whichever
+  /// comes first. [exclude] is the route the itinerary already shows.
+  Future<SegmentServices> segmentServices(String cityId, String from, String to, {String? exclude});
   Future<List<NetworkShape>> network(String cityId);
 
   /// v1.1 — points of interest inside [bbox] (`minLon,minLat,maxLon,maxLat`).

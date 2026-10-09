@@ -3371,6 +3371,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Luego: llegas a tu destino'**
   String get nextStepArrive;
+
+  /// No description provided for @alsoServes.
+  ///
+  /// In es, this message translates to:
+  /// **'También sirven este tramo'**
+  String get alsoServes;
+
+  /// No description provided for @alsoCallsAtBoth.
+  ///
+  /// In es, this message translates to:
+  /// **'También pasan por las dos paradas'**
+  String get alsoCallsAtBoth;
+
+  /// No description provided for @alsoServesAsk.
+  ///
+  /// In es, this message translates to:
+  /// **'Otros servicios en este tramo'**
+  String get alsoServesAsk;
+
+  /// No description provided for @alsoServesFrom.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde {place}'**
+  String alsoServesFrom(Object place);
 }
 
 class _AppLocalizationsDelegate
