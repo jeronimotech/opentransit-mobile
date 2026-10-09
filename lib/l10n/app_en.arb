@@ -1084,5 +1084,6 @@
   "liveLinkExpiresAt": "Expires at {time}",
   "liveLinkNoExpiry": "No expiry time",
   "stopSharing": "Stop",
-  "shareExpiresAt": "The link expires at {time}."
+  "shareExpiresAt": "The link expires at {time}.",
+  "showMoreCount": "Show {count} more"
 }

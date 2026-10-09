@@ -46,7 +46,12 @@ class EquivalentServices extends ConsumerStatefulWidget {
 }
 
 class _EquivalentServicesState extends ConsumerState<EquivalentServices> {
+  /// How many services are worth reading before the list becomes a wall; a trunk station pair can
+  /// be served by thirty.
+  static const _collapsed = 5;
+
   bool _asked = false;
+  bool _all = false;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +75,9 @@ class _EquivalentServicesState extends ConsumerState<EquivalentServices> {
         .asData
         ?.value;
     if (answer == null || answer.isEmpty) return const SizedBox.shrink();
+    // A trunk station answers with thirty: the first few are the decision, the rest is a wall.
+    final shown = _all ? answer.services : answer.services.take(_collapsed).toList();
+    final hidden = answer.services.length - shown.length;
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: Column(
@@ -89,7 +97,19 @@ class _EquivalentServicesState extends ConsumerState<EquivalentServices> {
             ],
           ),
           const SizedBox(height: 6),
-          for (final s in answer.services) _ServiceRow(cityId: widget.cityId, service: s, boardingStopName: widget.boardingStopName),
+          for (final s in shown)
+            _ServiceRow(cityId: widget.cityId, service: s, boardingStopName: widget.boardingStopName),
+          if (hidden > 0)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                key: const ValueKey('equivalents-more'),
+                onPressed: () => setState(() => _all = true),
+                style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 4), visualDensity: VisualDensity.compact),
+                child: Text(l10n.showMoreCount(hidden)),
+              ),
+            ),
         ],
       ),
     );

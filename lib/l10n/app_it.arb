@@ -630,5 +630,6 @@
   "liveLinkExpiresAt": "Scade alle {time}",
   "liveLinkNoExpiry": "Senza ora di scadenza",
   "stopSharing": "Ferma",
-  "shareExpiresAt": "Il link scade alle {time}."
+  "shareExpiresAt": "Il link scade alle {time}.",
+  "showMoreCount": "Mostra altri {count}"
 }

@@ -1287,5 +1287,6 @@
   "liveLinkExpiresAt": "Vence a las {time}",
   "liveLinkNoExpiry": "Sin hora de vencimiento",
   "stopSharing": "Detener",
-  "shareExpiresAt": "El enlace vence a las {time}."
+  "shareExpiresAt": "El enlace vence a las {time}.",
+  "showMoreCount": "Ver {count} más"
 }

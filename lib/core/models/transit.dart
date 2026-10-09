@@ -538,6 +538,7 @@ class PatternSchedule {
   const PatternSchedule({
     required this.routeId,
     this.patternId,
+    this.patternIds = const [],
     this.headsign,
     required this.date,
     required this.trips,
@@ -551,7 +552,13 @@ class PatternSchedule {
   });
 
   final String routeId;
+
+  /// The longest variant of the direction — where the stop list and the connections come from.
   final String? patternId;
+
+  /// Every shape variant of the direction whose departures were counted. A feed's "pattern" is a
+  /// shape, not a direction, and only some variants run on any given day.
+  final List<String> patternIds;
   final String? headsign;
   final String date;
   final int trips;
@@ -573,6 +580,7 @@ class PatternSchedule {
   factory PatternSchedule.fromJson(Map<String, dynamic> j) => PatternSchedule(
         routeId: j['routeId'].toString(),
         patternId: j['patternId']?.toString(),
+        patternIds: asStrings(j['patternIds']),
         headsign: j['headsign']?.toString(),
         date: j['date']?.toString() ?? '',
         trips: (j['trips'] as num?)?.toInt() ?? 0,

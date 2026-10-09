@@ -3767,6 +3767,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El enlace vence a las {time}.'**
   String shareExpiresAt(Object time);
+
+  /// No description provided for @showMoreCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver {count} más'**
+  String showMoreCount(Object count);
 }
 
 class _AppLocalizationsDelegate

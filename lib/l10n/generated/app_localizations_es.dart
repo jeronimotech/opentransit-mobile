@@ -2190,4 +2190,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String shareExpiresAt(Object time) {
     return 'El enlace vence a las $time.';
   }
+
+  @override
+  String showMoreCount(Object count) {
+    return 'Ver $count más';
+  }
 }

@@ -2189,4 +2189,9 @@ class AppLocalizationsMs extends AppLocalizations {
   String shareExpiresAt(Object time) {
     return 'Pautan tamat pada $time.';
   }
+
+  @override
+  String showMoreCount(Object count) {
+    return 'Tunjuk $count lagi';
+  }
 }

@@ -2197,4 +2197,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String shareExpiresAt(Object time) {
     return 'O link expira às $time.';
   }
+
+  @override
+  String showMoreCount(Object count) {
+    return 'Ver $count mais';
+  }
 }

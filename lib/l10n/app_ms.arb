@@ -630,5 +630,6 @@
   "liveLinkExpiresAt": "Tamat pada {time}",
   "liveLinkNoExpiry": "Tiada masa tamat",
   "stopSharing": "Henti",
-  "shareExpiresAt": "Pautan tamat pada {time}."
+  "shareExpiresAt": "Pautan tamat pada {time}.",
+  "showMoreCount": "Tunjuk {count} lagi"
 }

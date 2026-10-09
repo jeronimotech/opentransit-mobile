@@ -2176,4 +2176,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String shareExpiresAt(Object time) {
     return 'ينتهي الرابط الساعة $time.';
   }
+
+  @override
+  String showMoreCount(Object count) {
+    return 'عرض $count أخرى';
+  }
 }

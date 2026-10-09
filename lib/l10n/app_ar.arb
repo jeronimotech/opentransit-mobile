@@ -630,5 +630,6 @@
   "liveLinkExpiresAt": "ينتهي الساعة {time}",
   "liveLinkNoExpiry": "بدون وقت انتهاء",
   "stopSharing": "إيقاف",
-  "shareExpiresAt": "ينتهي الرابط الساعة {time}."
+  "shareExpiresAt": "ينتهي الرابط الساعة {time}.",
+  "showMoreCount": "عرض {count} أخرى"
 }
