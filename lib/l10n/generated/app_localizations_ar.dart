@@ -2052,4 +2052,74 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reportFailed => 'لم يتم الإرسال. تحقق من الاتصال وحاول مرة أخرى.';
+
+  @override
+  String get guideTitle => 'كيف يعمل';
+
+  @override
+  String guideIntro(Object city) {
+    return 'كل ما يفعله التطبيق في $city — بدون تسجيل وبدون حساب.';
+  }
+
+  @override
+  String get guidePlanTitle => 'تخطيط رحلة';
+
+  @override
+  String get guidePlanBody =>
+      'اكتب نقطة الانطلاق والوصول، أو اضغط على الخريطة. اطلب وقت المغادرة أو الوصول، وشاهد التكلفة ومسافة السير لكل خيار.';
+
+  @override
+  String get guideLiveTitle => 'الحافلات مباشرة';
+
+  @override
+  String get guideLiveBody =>
+      'حين ينشر النظام مواقع المركبات تراها على الخريطة، وكل وصول يذكر مصدر الرقم: مباشر، تقديري أو من الجدول.';
+
+  @override
+  String get guideGoTitle => 'رحلة موجَّهة';
+
+  @override
+  String get guideGoBody =>
+      'ابدأ الرحلة فيرافقك التطبيق: ما تفعله الآن، وما يليه، وتنبيه عند اقتراب موقفك. يستخدم موقعك فقط أثناء الرحلة.';
+
+  @override
+  String get guideOfflineTitle => 'بدون اتصال';
+
+  @override
+  String get guideOfflineBody =>
+      'نزّل جدول المدينة فتستمر المواعيد والمواقف والمسارات في العمل بدون شبكة، ويعمل المخطِّط أيضًا من التنزيل.';
+
+  @override
+  String get guideAccessTitle => 'إمكانية الوصول';
+
+  @override
+  String get guideAccessBody =>
+      'يمكنك تفضيل المسارات الميسَّرة وتحديد حد للسير. وحين تكون بيانات الوصول غير موثَّقة يقول التطبيق ذلك بدل افتراضه.';
+
+  @override
+  String get guideFareTitle => 'التكلفة';
+
+  @override
+  String get guideFareBody =>
+      'الأجرة المعروضة تقدير وفق قواعد التحويل السارية؛ القيمة النهائية يحددها نظام التحصيل.';
+
+  @override
+  String get guidePrivacyTitle => 'بياناتك';
+
+  @override
+  String get guidePrivacyBody =>
+      'لا يوجد حساب. المفضلات والرحلات المجدولة تبقى على هاتفك. التحليلات مجهولة ويمكن إيقافها من الإعدادات.';
+
+  @override
+  String get guideReportTitle => 'إذا كان هناك خطأ';
+
+  @override
+  String get guideReportBody =>
+      'أبلغ من التطبيق: موقف في المكان الخطأ أو منحدر مسدود يصل إلى من يستطيع تصحيح البيانات.';
+
+  @override
+  String get guideFirstOpen => 'أول مرة هنا؟ اطّلع على ما يفعله التطبيق.';
+
+  @override
+  String get guideOpen => 'فتح';
 }

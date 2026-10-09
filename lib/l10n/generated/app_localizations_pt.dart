@@ -2072,4 +2072,74 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get reportFailed =>
       'Não foi possível enviar. Verifique a conexão e tente de novo.';
+
+  @override
+  String get guideTitle => 'Como funciona';
+
+  @override
+  String guideIntro(Object city) {
+    return 'Tudo o que o app faz em $city — sem cadastro e sem conta.';
+  }
+
+  @override
+  String get guidePlanTitle => 'Planejar uma viagem';
+
+  @override
+  String get guidePlanBody =>
+      'Digite de onde sai e para onde vai, ou toque no mapa. Peça o horário de saída ou de chegada e veja quanto custa e quanto caminha cada opção.';
+
+  @override
+  String get guideLiveTitle => 'Ônibus ao vivo';
+
+  @override
+  String get guideLiveBody =>
+      'Quando o sistema publica a posição dos veículos, você os vê no mapa, e cada chegada diz de onde veio o dado: ao vivo, estimado ou do horário.';
+
+  @override
+  String get guideGoTitle => 'Viagem guiada';
+
+  @override
+  String get guideGoBody =>
+      'Ao começar uma viagem o app acompanha: o que fazer agora, o que vem depois e um aviso quando a sua parada está perto. Usa a sua localização só enquanto a viagem está aberta.';
+
+  @override
+  String get guideOfflineTitle => 'Sem conexão';
+
+  @override
+  String get guideOfflineBody =>
+      'Baixe o horário da cidade e as chegadas, paradas e linhas continuam funcionando sem rede. O planejador também funciona com o que foi baixado.';
+
+  @override
+  String get guideAccessTitle => 'Acessibilidade';
+
+  @override
+  String get guideAccessBody =>
+      'Você pode preferir rotas acessíveis e definir um limite de caminhada. Quando o dado de acessibilidade não está verificado, o app avisa em vez de supor.';
+
+  @override
+  String get guideFareTitle => 'Quanto custa';
+
+  @override
+  String get guideFareBody =>
+      'A tarifa exibida é uma estimativa com as regras de transferência vigentes; o valor final é definido pelo sistema de arrecadação.';
+
+  @override
+  String get guidePrivacyTitle => 'Seus dados';
+
+  @override
+  String get guidePrivacyBody =>
+      'Não há conta. Favoritos e viagens programadas ficam no seu telefone. A análise é anônima e pode ser desligada em Ajustes.';
+
+  @override
+  String get guideReportTitle => 'Se algo estiver errado';
+
+  @override
+  String get guideReportBody =>
+      'Relate pelo app: uma parada no lugar errado ou uma rampa bloqueada chega a quem pode corrigir o dado.';
+
+  @override
+  String get guideFirstOpen => 'Primeira vez aqui? Veja o que o app faz.';
+
+  @override
+  String get guideOpen => 'Abrir';
 }

@@ -3557,6 +3557,126 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.'**
   String get reportFailed;
+
+  /// No description provided for @guideTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo funciona'**
+  String get guideTitle;
+
+  /// No description provided for @guideIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo lo que hace la app en {city}, sin registro y sin cuenta.'**
+  String guideIntro(Object city);
+
+  /// No description provided for @guidePlanTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Planear un viaje'**
+  String get guidePlanTitle;
+
+  /// No description provided for @guidePlanBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe de dónde sales y a dónde vas, o toca el mapa. Puedes pedir la hora de salida o de llegada, y ver cuánto cuesta y cuánto camina cada opción.'**
+  String get guidePlanBody;
+
+  /// No description provided for @guideLiveTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Buses en vivo'**
+  String get guideLiveTitle;
+
+  /// No description provided for @guideLiveBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando el sistema publica la posición de los buses, los ves moverse en el mapa y las llegadas dicen de dónde salió el dato: en vivo, estimado u horario.'**
+  String get guideLiveBody;
+
+  /// No description provided for @guideGoTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Viaje guiado'**
+  String get guideGoTitle;
+
+  /// No description provided for @guideGoBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Al empezar un viaje, la app te acompaña: qué hacer ahora, qué sigue, y un aviso cuando falta poco para bajarte. Solo usa tu ubicación mientras el viaje está abierto.'**
+  String get guideGoBody;
+
+  /// No description provided for @guideOfflineTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión'**
+  String get guideOfflineTitle;
+
+  /// No description provided for @guideOfflineBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes descargar el horario de la ciudad y seguir viendo llegadas, paradas y rutas bajo tierra o sin datos. El planificador también funciona con lo descargado.'**
+  String get guideOfflineBody;
+
+  /// No description provided for @guideAccessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Accesibilidad'**
+  String get guideAccessTitle;
+
+  /// No description provided for @guideAccessBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes preferir rutas accesibles y poner un límite de caminata. Cuando el dato de accesibilidad del sistema no está verificado, la app te lo dice en vez de suponerlo.'**
+  String get guideAccessBody;
+
+  /// No description provided for @guideFareTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuánto cuesta'**
+  String get guideFareTitle;
+
+  /// No description provided for @guideFareBody.
+  ///
+  /// In es, this message translates to:
+  /// **'La tarifa que ves es una estimación con las reglas de transbordo vigentes; el valor definitivo lo define el sistema de recaudo.'**
+  String get guideFareBody;
+
+  /// No description provided for @guidePrivacyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus datos'**
+  String get guidePrivacyTitle;
+
+  /// No description provided for @guidePrivacyBody.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay cuenta ni registro. Los favoritos y los viajes programados viven en tu teléfono. La analítica es anónima y la puedes apagar en Ajustes.'**
+  String get guidePrivacyBody;
+
+  /// No description provided for @guideReportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Si algo está mal'**
+  String get guideReportTitle;
+
+  /// No description provided for @guideReportBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Repórtalo desde la app: una parada en el lugar equivocado o una rampa bloqueada llegan al equipo que puede corregir el dato.'**
+  String get guideReportBody;
+
+  /// No description provided for @guideFirstOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Primera vez por aquí? Mira qué hace la app.'**
+  String get guideFirstOpen;
+
+  /// No description provided for @guideOpen.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get guideOpen;
 }
 
 class _AppLocalizationsDelegate

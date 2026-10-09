@@ -2069,4 +2069,74 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportFailed =>
       'Could not send it. Check your connection and try again.';
+
+  @override
+  String get guideTitle => 'How it works';
+
+  @override
+  String guideIntro(Object city) {
+    return 'Everything the app does in $city — no sign-up, no account.';
+  }
+
+  @override
+  String get guidePlanTitle => 'Plan a trip';
+
+  @override
+  String get guidePlanBody =>
+      'Type where you are leaving from and where you are going, or tap the map. Ask for a departure or an arrival time, and see what each option costs and how far it walks.';
+
+  @override
+  String get guideLiveTitle => 'Live buses';
+
+  @override
+  String get guideLiveBody =>
+      'Where the system publishes vehicle positions you see them move on the map, and each arrival says where the number came from: live, estimated or timetable.';
+
+  @override
+  String get guideGoTitle => 'Guided trip';
+
+  @override
+  String get guideGoBody =>
+      'Start a trip and the app follows along: what to do now, what comes next, and an alert when your stop is close. It uses your location only while the trip is open.';
+
+  @override
+  String get guideOfflineTitle => 'Offline';
+
+  @override
+  String get guideOfflineBody =>
+      'Download the city\'s timetable and arrivals, stops and routes keep working underground or without data. The planner works from the download too.';
+
+  @override
+  String get guideAccessTitle => 'Accessibility';
+
+  @override
+  String get guideAccessBody =>
+      'You can prefer step-free routes and set a walking limit. Where the operator\'s accessibility data is unverified, the app says so instead of assuming.';
+
+  @override
+  String get guideFareTitle => 'What it costs';
+
+  @override
+  String get guideFareBody =>
+      'The fare shown is an estimate using the current transfer rules; the final amount is set by the fare system.';
+
+  @override
+  String get guidePrivacyTitle => 'Your data';
+
+  @override
+  String get guidePrivacyBody =>
+      'There is no account. Favourites and scheduled trips live on your phone. Analytics are anonymous and you can switch them off in Settings.';
+
+  @override
+  String get guideReportTitle => 'If something is wrong';
+
+  @override
+  String get guideReportBody =>
+      'Report it from the app: a stop in the wrong place or a blocked ramp reaches the people who can fix the data.';
+
+  @override
+  String get guideFirstOpen => 'New here? See what the app can do.';
+
+  @override
+  String get guideOpen => 'Open';
 }

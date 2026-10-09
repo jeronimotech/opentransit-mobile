@@ -20,6 +20,11 @@ class PreferencesRepository {
   static const _kParking = 'parkingLayer';
   static const _kNearRadius = 'nearMeRadius';
   static const _kNearComponents = 'nearMeComponents';
+  static const _kGuideSeen = 'guideSeen';
+  static const _kDataSaver = 'dataSaver';
+  static const _kBackgroundGetOff = 'backgroundGetOff';
+  static const _kAvoidStairs = 'avoidStairs';
+  static const _kStrictWalkLimit = 'strictWalkLimit';
 
   String? get cityId => _prefs.getString(_kCity);
   Future<void> setCityId(String? id) =>
@@ -75,4 +80,28 @@ class PreferencesRepository {
   /// Shared-bike stations on the home map (default on, drawn from zoom 14).
   bool get rentalLayer => _prefs.getBool(_kRental) ?? true;
   Future<void> setRentalLayer(bool v) => _prefs.setBool(_kRental, v);
+
+  /// Whether the first-open introduction has been shown (v2.7).
+  bool get guideSeen => _prefs.getBool(_kGuideSeen) ?? false;
+  Future<void> setGuideSeen(bool v) => _prefs.setBool(_kGuideSeen, v);
+
+  /// Saver mode: fewer requests, no live vehicle stream, no map tiles beyond what is on screen.
+  /// Off by default — the app is worth less without live data, so the rider opts in.
+  bool get dataSaver => _prefs.getBool(_kDataSaver) ?? false;
+  Future<void> setDataSaver(bool v) => _prefs.setBool(_kDataSaver, v);
+
+  /// Whether the get-off alert may keep tracking with the screen locked. Off by default and only
+  /// ever turned on by the rider: continuous location costs battery, and nobody should pay that
+  /// without having asked for it.
+  bool get backgroundGetOff => _prefs.getBool(_kBackgroundGetOff) ?? false;
+  Future<void> setBackgroundGetOff(bool v) => _prefs.setBool(_kBackgroundGetOff, v);
+
+  /// Avoid stairs when planning (v2.7).
+  bool get avoidStairs => _prefs.getBool(_kAvoidStairs) ?? false;
+  Future<void> setAvoidStairs(bool v) => _prefs.setBool(_kAvoidStairs, v);
+
+  /// Treat the walking limit as a limit rather than a preference: a rider who cannot walk 800 m
+  /// is not helped by an itinerary that asks for 900.
+  bool get strictWalkLimit => _prefs.getBool(_kStrictWalkLimit) ?? false;
+  Future<void> setStrictWalkLimit(bool v) => _prefs.setBool(_kStrictWalkLimit, v);
 }

@@ -2076,4 +2076,74 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get reportFailed =>
       'Envoi impossible. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get guideTitle => 'Comment ça marche';
+
+  @override
+  String guideIntro(Object city) {
+    return 'Tout ce que l\'app fait à $city — sans inscription ni compte.';
+  }
+
+  @override
+  String get guidePlanTitle => 'Planifier un trajet';
+
+  @override
+  String get guidePlanBody =>
+      'Indiquez votre départ et votre destination, ou touchez la carte. Demandez une heure de départ ou d\'arrivée, et voyez le coût et la marche de chaque option.';
+
+  @override
+  String get guideLiveTitle => 'Bus en direct';
+
+  @override
+  String get guideLiveBody =>
+      'Là où le réseau publie la position des véhicules, vous les voyez sur la carte, et chaque passage indique l\'origine de l\'information : direct, estimé ou horaire.';
+
+  @override
+  String get guideGoTitle => 'Trajet guidé';
+
+  @override
+  String get guideGoBody =>
+      'Lancez un trajet et l\'app vous accompagne : quoi faire maintenant, ce qui suit, et une alerte quand votre arrêt approche. Votre position n\'est utilisée que pendant le trajet.';
+
+  @override
+  String get guideOfflineTitle => 'Hors connexion';
+
+  @override
+  String get guideOfflineBody =>
+      'Téléchargez les horaires de la ville : passages, arrêts et lignes continuent de fonctionner sans réseau. Le planificateur aussi.';
+
+  @override
+  String get guideAccessTitle => 'Accessibilité';
+
+  @override
+  String get guideAccessBody =>
+      'Vous pouvez préférer les itinéraires accessibles et fixer une limite de marche. Quand la donnée d\'accessibilité n\'est pas vérifiée, l\'app le dit au lieu de supposer.';
+
+  @override
+  String get guideFareTitle => 'Le prix';
+
+  @override
+  String get guideFareBody =>
+      'Le tarif affiché est une estimation selon les règles de correspondance en vigueur ; le montant final est fixé par le système de perception.';
+
+  @override
+  String get guidePrivacyTitle => 'Vos données';
+
+  @override
+  String get guidePrivacyBody =>
+      'Il n\'y a pas de compte. Favoris et trajets programmés restent sur votre téléphone. Les statistiques sont anonymes et désactivables dans Réglages.';
+
+  @override
+  String get guideReportTitle => 'Si quelque chose est faux';
+
+  @override
+  String get guideReportBody =>
+      'Signalez-le depuis l\'app : un arrêt mal placé ou une rampe bloquée arrive à ceux qui peuvent corriger la donnée.';
+
+  @override
+  String get guideFirstOpen => 'Nouveau ici ? Découvrez ce que fait l\'app.';
+
+  @override
+  String get guideOpen => 'Ouvrir';
 }

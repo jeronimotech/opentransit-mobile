@@ -2063,4 +2063,75 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get reportFailed => 'Gagal dihantar. Periksa sambungan dan cuba lagi.';
+
+  @override
+  String get guideTitle => 'Cara ia berfungsi';
+
+  @override
+  String guideIntro(Object city) {
+    return 'Semua yang app ini buat di $city — tanpa pendaftaran, tanpa akaun.';
+  }
+
+  @override
+  String get guidePlanTitle => 'Rancang perjalanan';
+
+  @override
+  String get guidePlanBody =>
+      'Taip dari mana dan ke mana, atau ketik pada peta. Minta waktu bertolak atau waktu tiba, dan lihat kos serta jarak berjalan setiap pilihan.';
+
+  @override
+  String get guideLiveTitle => 'Bas secara langsung';
+
+  @override
+  String get guideLiveBody =>
+      'Di mana sistem menerbitkan kedudukan bas, anda melihatnya di peta, dan setiap ketibaan menyatakan sumber data: langsung, anggaran atau jadual.';
+
+  @override
+  String get guideGoTitle => 'Perjalanan berpandu';
+
+  @override
+  String get guideGoBody =>
+      'Mulakan perjalanan dan app menemani anda: apa yang perlu dibuat sekarang, apa seterusnya, dan makluman apabila perhentian anda dekat. Lokasi digunakan hanya semasa perjalanan dibuka.';
+
+  @override
+  String get guideOfflineTitle => 'Luar talian';
+
+  @override
+  String get guideOfflineBody =>
+      'Muat turun jadual bandar dan ketibaan, perhentian dan laluan terus berfungsi tanpa data. Perancang juga berfungsi dengan muat turun itu.';
+
+  @override
+  String get guideAccessTitle => 'Kebolehcapaian';
+
+  @override
+  String get guideAccessBody =>
+      'Anda boleh utamakan laluan bebas tangga dan tetapkan had berjalan. Apabila data kebolehcapaian tidak disahkan, app memberitahu dan tidak mengandaikan.';
+
+  @override
+  String get guideFareTitle => 'Kosnya';
+
+  @override
+  String get guideFareBody =>
+      'Tambang yang ditunjukkan ialah anggaran mengikut peraturan pertukaran semasa; jumlah akhir ditetapkan oleh sistem tambang.';
+
+  @override
+  String get guidePrivacyTitle => 'Data anda';
+
+  @override
+  String get guidePrivacyBody =>
+      'Tiada akaun. Kegemaran dan perjalanan berjadual kekal pada telefon anda. Analitik adalah anonim dan boleh dimatikan dalam Tetapan.';
+
+  @override
+  String get guideReportTitle => 'Jika ada yang salah';
+
+  @override
+  String get guideReportBody =>
+      'Laporkan dari app: perhentian di tempat yang salah atau tanjakan tersekat sampai kepada orang yang boleh membetulkan data.';
+
+  @override
+  String get guideFirstOpen =>
+      'Baru di sini? Lihat apa yang app ini boleh buat.';
+
+  @override
+  String get guideOpen => 'Buka';
 }

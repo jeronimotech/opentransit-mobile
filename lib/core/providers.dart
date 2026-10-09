@@ -107,6 +107,11 @@ class AppSettings {
     this.zonalLayer = false,
     this.rentalLayer = true,
     this.parkingLayer = true,
+    this.guideSeen = false,
+    this.dataSaver = false,
+    this.backgroundGetOff = false,
+    this.avoidStairs = false,
+    this.strictWalkLimit = false,
   });
   final String? cityId;
 
@@ -123,6 +128,20 @@ class AppSettings {
   final bool rentalLayer;
   final bool parkingLayer;
 
+  /// The first-open introduction has been shown.
+  final bool guideSeen;
+
+  /// Saver mode: fewer requests and no live vehicle stream. Opt-in.
+  final bool dataSaver;
+
+  /// The get-off alert may keep tracking with the screen locked. Opt-in, always.
+  final bool backgroundGetOff;
+
+  final bool avoidStairs;
+
+  /// The walking limit is a limit, not a preference.
+  final bool strictWalkLimit;
+
   AppSettings copyWith({
     String? cityId,
     bool clearCity = false,
@@ -138,6 +157,11 @@ class AppSettings {
     bool? zonalLayer,
     bool? rentalLayer,
     bool? parkingLayer,
+    bool? guideSeen,
+    bool? dataSaver,
+    bool? backgroundGetOff,
+    bool? avoidStairs,
+    bool? strictWalkLimit,
   }) =>
       AppSettings(
         cityId: clearCity ? null : (cityId ?? this.cityId),
@@ -152,6 +176,11 @@ class AppSettings {
         zonalLayer: zonalLayer ?? this.zonalLayer,
         rentalLayer: rentalLayer ?? this.rentalLayer,
         parkingLayer: parkingLayer ?? this.parkingLayer,
+        guideSeen: guideSeen ?? this.guideSeen,
+        dataSaver: dataSaver ?? this.dataSaver,
+        backgroundGetOff: backgroundGetOff ?? this.backgroundGetOff,
+        avoidStairs: avoidStairs ?? this.avoidStairs,
+        strictWalkLimit: strictWalkLimit ?? this.strictWalkLimit,
       );
 }
 
@@ -173,6 +202,11 @@ class SettingsNotifier extends Notifier<AppSettings> {
       zonalLayer: p.zonalLayer,
       rentalLayer: p.rentalLayer,
       parkingLayer: p.parkingLayer,
+      guideSeen: p.guideSeen,
+      dataSaver: p.dataSaver,
+      backgroundGetOff: p.backgroundGetOff,
+      avoidStairs: p.avoidStairs,
+      strictWalkLimit: p.strictWalkLimit,
     );
   }
 
@@ -236,6 +270,31 @@ class SettingsNotifier extends Notifier<AppSettings> {
     ref.read(analyticsProvider).track(Ev.layerToggle, {'layer': 'rental', 'on': v});
     state = state.copyWith(rentalLayer: v);
     await _p.setRentalLayer(v);
+  }
+
+  Future<void> setGuideSeen(bool v) async {
+    state = state.copyWith(guideSeen: v);
+    await _p.setGuideSeen(v);
+  }
+
+  Future<void> setDataSaver(bool v) async {
+    state = state.copyWith(dataSaver: v);
+    await _p.setDataSaver(v);
+  }
+
+  Future<void> setBackgroundGetOff(bool v) async {
+    state = state.copyWith(backgroundGetOff: v);
+    await _p.setBackgroundGetOff(v);
+  }
+
+  Future<void> setAvoidStairs(bool v) async {
+    state = state.copyWith(avoidStairs: v);
+    await _p.setAvoidStairs(v);
+  }
+
+  Future<void> setStrictWalkLimit(bool v) async {
+    state = state.copyWith(strictWalkLimit: v);
+    await _p.setStrictWalkLimit(v);
   }
 
   Future<void> setParkingLayer(bool v) async {

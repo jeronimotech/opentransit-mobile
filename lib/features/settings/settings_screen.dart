@@ -121,7 +121,9 @@ class SettingsScreen extends ConsumerWidget {
             value: s.networkLayer,
             onChanged: n.setNetworkLayer,
           ),
-          if (city != null && (city.links.pqrs != null || city.links.recharge != null || city.links.support != null)) ...[
+          // The guide and the report form belong to the app, not to the operator, so this section
+          // is here whether or not the city publishes any links of its own.
+          if (city != null) ...[
             SectionTitle(l10n.services),
             if (city.links.recharge != null)
               ListTile(leading: const Icon(Icons.credit_card), title: Text(l10n.rechargeCard), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.recharge!)),
@@ -131,6 +133,13 @@ class SettingsScreen extends ConsumerWidget {
               // Was `l10n.about`, so the support link read "Acerca de" — the one row a rider looks
               // for when something is wrong, labelled as the one that tells them the version.
               ListTile(leading: const Icon(Icons.support_agent), title: Text(l10n.supportTitle), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.support!)),
+            ListTile(
+              key: const ValueKey('settings-guide'),
+              leading: const Icon(Icons.menu_book_outlined),
+              title: Text(l10n.guideTitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/${city.id}/guide'),
+            ),
             // What each channel answers, the emergency line, and the one channel that reaches the
             // people who can fix the app's own data.
             ListTile(

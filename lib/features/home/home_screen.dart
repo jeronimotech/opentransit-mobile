@@ -830,6 +830,47 @@ class _HomeSheet extends ConsumerWidget {
                   ],
                 ),
               ),
+            // The whole of our "onboarding": one card, the first time, pointing at the guide.
+            // There is no account and nothing to set up, so a welcome carousel would ask a rider
+            // to read before letting them travel (TransMilenio, 1.7).
+            if (!ref.watch(settingsProvider).guideSeen)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                child: Material(
+                  key: const ValueKey('home-guide-card'),
+                  color: scheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(14),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+                    child: Row(
+                      children: [
+                        Icon(Icons.menu_book_outlined, size: 18, color: scheme.onSecondaryContainer),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(l10n.guideFirstOpen,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(color: scheme.onSecondaryContainer)),
+                        ),
+                        TextButton(
+                          key: const ValueKey('home-guide-open'),
+                          onPressed: () {
+                            ref.read(settingsProvider.notifier).setGuideSeen(true);
+                            context.push('/$cityId/guide');
+                          },
+                          child: Text(l10n.guideOpen),
+                        ),
+                        IconButton(
+                          key: const ValueKey('home-guide-dismiss'),
+                          tooltip: l10n.dismiss,
+                          visualDensity: VisualDensity.compact,
+                          icon: const Icon(Icons.close, size: 18),
+                          onPressed: () => ref.read(settingsProvider.notifier).setGuideSeen(true),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             if (city.features.alerts)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
