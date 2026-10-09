@@ -31,6 +31,7 @@ class PlanWarnings extends StatelessWidget {
       'ACCESSIBILITY_NO_DATA' => l10n.warnAccessibilityNoData,
       'MODE_NO_VEHICLES' => l10n.warnNoSharedVehicles,
       'PARK_RIDE_NO_PARKING' => l10n.warnNoParkRide,
+      'WALK_LIMIT_FILTERED' => l10n.warnWalkLimit,
       // OTP's own RoutingErrorCode values. `plan_from_otp` forwards them verbatim with OTP's
       // English description, so before these existed a Spanish rider was shown English — and these
       // are the warnings most often seen, because they are the reason a search found nothing.

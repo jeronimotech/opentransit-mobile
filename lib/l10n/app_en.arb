@@ -1075,5 +1075,8 @@
   "saverExplain": "Fewer requests and no live buses on the home map. Arrivals refresh every minute instead of every twenty seconds; everything else keeps working.",
   "backgroundGetOff": "Alert me with the screen locked",
   "backgroundGetOffExplain": "Keeps following the trip while the phone is locked, so the get-off alert still arrives. Only during a guided trip, and it uses noticeably more battery.",
-  "backgroundGetOffOngoing": "Following your trip to alert you when to get off."
+  "backgroundGetOffOngoing": "Following your trip to alert you when to get off.",
+  "strictWalkLimit": "Never walk more than that",
+  "strictWalkLimitExplain": "Options that walk further than {limit} are left out, and the app says how many.",
+  "warnWalkLimit": "Some options were left out because they walked further than your limit."
 }

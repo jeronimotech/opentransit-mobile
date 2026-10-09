@@ -2167,4 +2167,16 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get backgroundGetOffOngoing =>
       'Suivi de votre trajet pour vous prévenir quand descendre.';
+
+  @override
+  String get strictWalkLimit => 'Ne jamais marcher plus';
+
+  @override
+  String strictWalkLimitExplain(Object limit) {
+    return 'Les options qui marchent plus de $limit sont écartées, et l\'app indique combien.';
+  }
+
+  @override
+  String get warnWalkLimit =>
+      'Des options ont été écartées parce qu\'elles dépassaient votre limite de marche.';
 }

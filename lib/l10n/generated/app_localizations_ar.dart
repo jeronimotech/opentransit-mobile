@@ -2142,4 +2142,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backgroundGetOffOngoing => 'نتابع رحلتك لتنبيهك عند النزول.';
+
+  @override
+  String get strictWalkLimit => 'لا تمشِ أكثر من ذلك';
+
+  @override
+  String strictWalkLimitExplain(Object limit) {
+    return 'تُستثنى الخيارات التي تمشي أكثر من $limit، ويخبرك التطبيق بعددها.';
+  }
+
+  @override
+  String get warnWalkLimit =>
+      'استُثنيت بعض الخيارات لأنها تمشي أكثر من الحد الذي حددته.';
 }

@@ -486,6 +486,7 @@ class PlanRequest {
     this.wheelchair = false,
     this.numItineraries = 5,
     this.maxWalkDistance = 1500,
+    this.strictWalk = false,
     this.locale = 'es',
     this.onDemand = false,
     this.parkAndRide = false,
@@ -498,6 +499,11 @@ class PlanRequest {
   final bool wheelchair;
   final int numItineraries;
   final int maxWalkDistance;
+
+  /// Treat [maxWalkDistance] as a cap rather than a preference: options that walk further are
+  /// dropped, and the response says how many. For a rider who cannot walk the difference.
+  final bool strictWalk;
+
   final String locale;
 
   /// Ask the router for taxi / ride-hailing options too (v1.4 `onDemand=true`).
@@ -517,6 +523,7 @@ class PlanRequest {
         'wheelchair': wheelchair.toString(),
         'numItineraries': numItineraries.toString(),
         'maxWalkDistance': maxWalkDistance.toString(),
+        if (strictWalk) 'strictWalk': 'true',
         'locale': locale,
         if (onDemand) 'onDemand': 'true',
         if (parkAndRide) 'parkAndRide': 'true',

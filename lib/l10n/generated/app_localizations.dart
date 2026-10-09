@@ -3713,6 +3713,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Siguiendo tu viaje para avisarte cuándo bajar.'**
   String get backgroundGetOffOngoing;
+
+  /// No description provided for @strictWalkLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Nunca caminar más que eso'**
+  String get strictWalkLimit;
+
+  /// No description provided for @strictWalkLimitExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'Se dejan fuera las opciones que caminan más de {limit}, y la app te dice cuántas.'**
+  String strictWalkLimitExplain(Object limit);
+
+  /// No description provided for @warnWalkLimit.
+  ///
+  /// In es, this message translates to:
+  /// **'Dejamos fuera algunas opciones porque caminaban más de tu límite.'**
+  String get warnWalkLimit;
 }
 
 class _AppLocalizationsDelegate

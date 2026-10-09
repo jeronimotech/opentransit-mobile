@@ -621,5 +621,8 @@
   "saverExplain": "Moins de requêtes et pas de bus en direct sur la carte d'accueil. Les passages se rafraîchissent chaque minute au lieu de toutes les vingt secondes ; le reste fonctionne.",
   "backgroundGetOff": "M'alerter écran verrouillé",
   "backgroundGetOffExplain": "Continue de suivre le trajet téléphone verrouillé, pour que l'alerte de descente arrive quand même. Uniquement pendant un trajet guidé, et cela consomme nettement plus de batterie.",
-  "backgroundGetOffOngoing": "Suivi de votre trajet pour vous prévenir quand descendre."
+  "backgroundGetOffOngoing": "Suivi de votre trajet pour vous prévenir quand descendre.",
+  "strictWalkLimit": "Ne jamais marcher plus",
+  "strictWalkLimitExplain": "Les options qui marchent plus de {limit} sont écartées, et l'app indique combien.",
+  "warnWalkLimit": "Des options ont été écartées parce qu'elles dépassaient votre limite de marche."
 }

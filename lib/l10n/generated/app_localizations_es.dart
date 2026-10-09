@@ -2156,4 +2156,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get backgroundGetOffOngoing =>
       'Siguiendo tu viaje para avisarte cuándo bajar.';
+
+  @override
+  String get strictWalkLimit => 'Nunca caminar más que eso';
+
+  @override
+  String strictWalkLimitExplain(Object limit) {
+    return 'Se dejan fuera las opciones que caminan más de $limit, y la app te dice cuántas.';
+  }
+
+  @override
+  String get warnWalkLimit =>
+      'Dejamos fuera algunas opciones porque caminaban más de tu límite.';
 }

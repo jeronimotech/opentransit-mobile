@@ -138,6 +138,7 @@ class PlannerNotifier extends Notifier<PlannerState> {
       modes: s.modes.toList(),
       wheelchair: settings.wheelchair,
       maxWalkDistance: settings.maxWalkDistance,
+      strictWalk: settings.strictWalkLimit,
       locale: settings.locale?.languageCode ?? 'es',
       onDemand: s.onDemand,
       parkAndRide: s.parkAndRide,

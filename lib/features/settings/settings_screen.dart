@@ -103,6 +103,16 @@ class SettingsScreen extends ConsumerWidget {
             ),
             trailing: Text('${s.maxWalkDistance} m'),
           ),
+          // The slider alone only made walking less attractive to the router, so a rider who set
+          // 500 m still got options with a kilometre of walking (TransMilenio, 1.11).
+          SwitchListTile(
+            key: const ValueKey('strict-walk-toggle'),
+            secondary: const Icon(Icons.do_not_step_outlined),
+            title: Text(l10n.strictWalkLimit),
+            subtitle: Text(l10n.strictWalkLimitExplain('${s.maxWalkDistance} m')),
+            value: s.strictWalkLimit,
+            onChanged: n.setStrictWalkLimit,
+          ),
           SwitchListTile(
             secondary: const Icon(Icons.directions_bus),
             title: Text(l10n.liveVehicles),

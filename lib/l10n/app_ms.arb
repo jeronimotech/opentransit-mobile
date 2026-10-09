@@ -621,5 +621,8 @@
   "saverExplain": "Lebih sedikit permintaan dan tiada bas secara langsung pada peta utama. Ketibaan dikemas kini setiap minit, bukan setiap dua puluh detik; yang lain terus berfungsi.",
   "backgroundGetOff": "Beritahu saya semasa skrin berkunci",
   "backgroundGetOffExplain": "Terus mengikuti perjalanan semasa telefon berkunci, supaya makluman turun tetap tiba. Hanya semasa perjalanan berpandu, dan menggunakan jauh lebih banyak bateri.",
-  "backgroundGetOffOngoing": "Mengikuti perjalanan anda untuk memberitahu bila perlu turun."
+  "backgroundGetOffOngoing": "Mengikuti perjalanan anda untuk memberitahu bila perlu turun.",
+  "strictWalkLimit": "Jangan berjalan lebih daripada itu",
+  "strictWalkLimitExplain": "Pilihan yang berjalan lebih daripada {limit} ditinggalkan, dan app memberitahu berapa banyak.",
+  "warnWalkLimit": "Beberapa pilihan ditinggalkan kerana melebihi had berjalan anda."
 }

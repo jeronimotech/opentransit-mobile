@@ -621,5 +621,8 @@
   "saverExplain": "Meno richieste e nessun mezzo in tempo reale sulla mappa iniziale. Gli arrivi si aggiornano ogni minuto invece di ogni venti secondi; il resto continua a funzionare.",
   "backgroundGetOff": "Avvisami a schermo bloccato",
   "backgroundGetOffExplain": "Continua a seguire il viaggio con il telefono bloccato, così l'avviso di discesa arriva comunque. Solo durante un viaggio guidato, e consuma molta più batteria.",
-  "backgroundGetOffOngoing": "Sto seguendo il tuo viaggio per avvisarti quando scendere."
+  "backgroundGetOffOngoing": "Sto seguendo il tuo viaggio per avvisarti quando scendere.",
+  "strictWalkLimit": "Mai camminare più di così",
+  "strictWalkLimitExplain": "Le opzioni che camminano più di {limit} vengono escluse, e l'app dice quante.",
+  "warnWalkLimit": "Alcune opzioni sono state escluse perché superavano il tuo limite di cammino."
 }

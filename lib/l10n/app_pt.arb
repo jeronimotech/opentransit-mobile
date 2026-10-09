@@ -621,5 +621,8 @@
   "saverExplain": "Menos consultas e sem ônibus ao vivo no mapa inicial. As chegadas atualizam a cada minuto em vez de cada vinte segundos; o resto continua funcionando.",
   "backgroundGetOff": "Avisar com a tela bloqueada",
   "backgroundGetOffExplain": "Continua acompanhando a viagem com o telefone bloqueado, para que o aviso de desembarque chegue. Só durante uma viagem guiada, e consome bem mais bateria.",
-  "backgroundGetOffOngoing": "Acompanhando a sua viagem para avisar quando descer."
+  "backgroundGetOffOngoing": "Acompanhando a sua viagem para avisar quando descer.",
+  "strictWalkLimit": "Nunca caminhar mais que isso",
+  "strictWalkLimitExplain": "Ficam de fora as opções que caminham mais de {limit}, e o app diz quantas.",
+  "warnWalkLimit": "Algumas opções ficaram de fora porque caminhavam mais que o seu limite."
 }
