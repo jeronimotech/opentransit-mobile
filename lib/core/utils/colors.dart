@@ -99,6 +99,10 @@ IconData iconByName(String? name, {IconData fallback = Icons.star}) => switch (n
       'bike' => Icons.pedal_bike_rounded,
       'ticket' => Icons.confirmation_number_rounded,
       'star' => Icons.star_rounded,
+      'report' => Icons.report_outlined,
+      'emergency' => Icons.emergency_outlined,
+      'info' => Icons.info_outline_rounded,
+      'map' => Icons.map_outlined,
       _ => fallback,
     };
 

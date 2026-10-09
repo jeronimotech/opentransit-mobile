@@ -11,7 +11,7 @@ import 'sse.dart';
 
 /// Dio-backed implementation of the opentransit-api v1 contract.
 class HttpApiClient implements ApiClient {
-  HttpApiClient(String baseUrl, {Dio? dio, this.onStatus})
+  HttpApiClient(String baseUrl, {Dio? dio, this.onStatus, this.appVersion})
       : _dio = dio ??
             Dio(BaseOptions(
               baseUrl: baseUrl,
@@ -26,6 +26,10 @@ class HttpApiClient implements ApiClient {
   /// answered (any status), `false` on network-level failures. Drives the
   /// offline bar.
   final void Function(bool online)? onStatus;
+
+  /// Sent with a rider's report so a bug can be tied to a build. Injected rather than read from
+  /// AppConfig here, so the data layer keeps no opinion about the app shell.
+  final String? appVersion;
 
   String get baseUrl => _dio.options.baseUrl;
 
@@ -254,6 +258,35 @@ class HttpApiClient implements ApiClient {
         if (pattern != null && pattern.isNotEmpty) 'pattern': pattern,
         if (date != null) 'date': date.toIso8601String().split('T').first,
       }));
+
+  @override
+  Future<void> createReport(String cityId,
+      {required String kind,
+      required String message,
+      String? stopId,
+      String? routeId,
+      String? contact}) async {
+    await _post('${_c(cityId)}/reports', {
+      'kind': kind,
+      'message': message,
+      'stopId': ?stopId,
+      'routeId': ?routeId,
+      if (contact != null && contact.isNotEmpty) 'contact': contact,
+      'appVersion': appVersion,
+    });
+  }
+
+  /// A POST whose body is the whole answer we need: the call either succeeds or throws.
+  Future<void> _post(String path, Map<String, dynamic> body) async {
+    try {
+      await _dio.post<dynamic>(path, data: body);
+      onStatus?.call(true);
+    } on DioException catch (e) {
+      final ex = _toApiException(e);
+      onStatus?.call(!ex.isNetwork);
+      throw ex;
+    }
+  }
 
   @override
   Future<List<NetworkShape>> network(String cityId) async =>

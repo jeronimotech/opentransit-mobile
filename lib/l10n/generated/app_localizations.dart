@@ -3479,6 +3479,84 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Conexiones'**
   String get connections;
+
+  /// No description provided for @helpAndReports.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayuda y reportes'**
+  String get helpAndReports;
+
+  /// No description provided for @reportExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuéntanos qué está mal en esta app. Llega al equipo de opentransit, sin tu nombre ni tu ubicación.'**
+  String get reportExplain;
+
+  /// No description provided for @reportWrongInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Información incorrecta'**
+  String get reportWrongInfo;
+
+  /// No description provided for @reportBarrier.
+  ///
+  /// In es, this message translates to:
+  /// **'Barrera de accesibilidad'**
+  String get reportBarrier;
+
+  /// No description provided for @reportOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otra cosa'**
+  String get reportOther;
+
+  /// No description provided for @reportWhatHappened.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué encontraste?'**
+  String get reportWhatHappened;
+
+  /// No description provided for @reportContactOptional.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo (opcional, para responderte)'**
+  String get reportContactOptional;
+
+  /// No description provided for @reportSend.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get reportSend;
+
+  /// No description provided for @reportThanks.
+  ///
+  /// In es, this message translates to:
+  /// **'Gracias. Leemos todos los reportes.'**
+  String get reportThanks;
+
+  /// No description provided for @reportAttached.
+  ///
+  /// In es, this message translates to:
+  /// **'Adjunto: {id}'**
+  String reportAttached(Object id);
+
+  /// No description provided for @supportChannels.
+  ///
+  /// In es, this message translates to:
+  /// **'Canales de atención'**
+  String get supportChannels;
+
+  /// No description provided for @emergency.
+  ///
+  /// In es, this message translates to:
+  /// **'Emergencias'**
+  String get emergency;
+
+  /// No description provided for @reportFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.'**
+  String get reportFailed;
 }
 
 class _AppLocalizationsDelegate

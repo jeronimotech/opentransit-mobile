@@ -131,6 +131,15 @@ class SettingsScreen extends ConsumerWidget {
               // Was `l10n.about`, so the support link read "Acerca de" — the one row a rider looks
               // for when something is wrong, labelled as the one that tells them the version.
               ListTile(leading: const Icon(Icons.support_agent), title: Text(l10n.supportTitle), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.support!)),
+            // What each channel answers, the emergency line, and the one channel that reaches the
+            // people who can fix the app's own data.
+            ListTile(
+              key: const ValueKey('settings-help'),
+              leading: const Icon(Icons.feedback_outlined),
+              title: Text(l10n.helpAndReports),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/${city.id}/help'),
+            ),
           ],
           SectionTitle(l10n.privacyTitle),
           SwitchListTile(

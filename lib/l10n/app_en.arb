@@ -1036,5 +1036,18 @@
   "byHour": "By hour",
   "allDepartures": "All departures",
   "schedule": "Timetable",
-  "connections": "Connections"
+  "connections": "Connections",
+  "helpAndReports": "Help and reports",
+  "reportExplain": "Tell us what this app got wrong. It goes to the opentransit team, without your name or your location.",
+  "reportWrongInfo": "Wrong information",
+  "reportBarrier": "Accessibility barrier",
+  "reportOther": "Something else",
+  "reportWhatHappened": "What did you find?",
+  "reportContactOptional": "Email (optional, to reply to you)",
+  "reportSend": "Send",
+  "reportThanks": "Thank you. We read every report.",
+  "reportAttached": "Attached: {id}",
+  "supportChannels": "Support channels",
+  "emergency": "Emergency",
+  "reportFailed": "Could not send it. Check your connection and try again."
 }

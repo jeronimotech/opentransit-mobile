@@ -426,6 +426,20 @@ class MockApiClient implements ApiClient {
     );
   }
 
+  /// Reports the demo received, in order. Nothing leaves the device in mock mode.
+  final List<Map<String, String?>> reports = [];
+
+  @override
+  Future<void> createReport(String cityId,
+      {required String kind,
+      required String message,
+      String? stopId,
+      String? routeId,
+      String? contact}) async {
+    await _beat(ms: 120);
+    reports.add({'kind': kind, 'message': message, 'stopId': stopId, 'routeId': routeId, 'contact': contact});
+  }
+
   @override
   Future<List<NetworkShape>> network(String cityId) async =>
       asList((await _map('network'))['shapes'], NetworkShape.fromJson);

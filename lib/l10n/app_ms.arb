@@ -582,5 +582,18 @@
   "byHour": "Setiap jam",
   "allDepartures": "Semua perjalanan",
   "schedule": "Jadual",
-  "connections": "Sambungan"
+  "connections": "Sambungan",
+  "helpAndReports": "Bantuan dan laporan",
+  "reportExplain": "Beritahu kami apa yang salah dalam app ini. Ia sampai kepada pasukan opentransit, tanpa nama atau lokasi anda.",
+  "reportWrongInfo": "Maklumat salah",
+  "reportBarrier": "Halangan kebolehcapaian",
+  "reportOther": "Lain-lain",
+  "reportWhatHappened": "Apa yang anda temui?",
+  "reportContactOptional": "E-mel (pilihan, untuk membalas)",
+  "reportSend": "Hantar",
+  "reportThanks": "Terima kasih. Kami membaca setiap laporan.",
+  "reportAttached": "Dilampirkan: {id}",
+  "supportChannels": "Saluran bantuan",
+  "emergency": "Kecemasan",
+  "reportFailed": "Gagal dihantar. Periksa sambungan dan cuba lagi."
 }

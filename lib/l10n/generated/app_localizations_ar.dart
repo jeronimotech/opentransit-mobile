@@ -2010,4 +2010,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get connections => 'التحويلات';
+
+  @override
+  String get helpAndReports => 'المساعدة والتقارير';
+
+  @override
+  String get reportExplain =>
+      'أخبرنا بما هو خطأ في هذا التطبيق. يصل إلى فريق opentransit، بدون اسمك أو موقعك.';
+
+  @override
+  String get reportWrongInfo => 'معلومات خاطئة';
+
+  @override
+  String get reportBarrier => 'عائق وصول';
+
+  @override
+  String get reportOther => 'شيء آخر';
+
+  @override
+  String get reportWhatHappened => 'ما الذي وجدته؟';
+
+  @override
+  String get reportContactOptional => 'البريد الإلكتروني (اختياري، للرد عليك)';
+
+  @override
+  String get reportSend => 'إرسال';
+
+  @override
+  String get reportThanks => 'شكرًا. نقرأ كل تقرير.';
+
+  @override
+  String reportAttached(Object id) {
+    return 'مرفق: $id';
+  }
+
+  @override
+  String get supportChannels => 'قنوات الدعم';
+
+  @override
+  String get emergency => 'الطوارئ';
+
+  @override
+  String get reportFailed => 'لم يتم الإرسال. تحقق من الاتصال وحاول مرة أخرى.';
 }

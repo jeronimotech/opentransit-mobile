@@ -2022,4 +2022,47 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get connections => 'Conexiones';
+
+  @override
+  String get helpAndReports => 'Ayuda y reportes';
+
+  @override
+  String get reportExplain =>
+      'Cuéntanos qué está mal en esta app. Llega al equipo de opentransit, sin tu nombre ni tu ubicación.';
+
+  @override
+  String get reportWrongInfo => 'Información incorrecta';
+
+  @override
+  String get reportBarrier => 'Barrera de accesibilidad';
+
+  @override
+  String get reportOther => 'Otra cosa';
+
+  @override
+  String get reportWhatHappened => '¿Qué encontraste?';
+
+  @override
+  String get reportContactOptional => 'Correo (opcional, para responderte)';
+
+  @override
+  String get reportSend => 'Enviar';
+
+  @override
+  String get reportThanks => 'Gracias. Leemos todos los reportes.';
+
+  @override
+  String reportAttached(Object id) {
+    return 'Adjunto: $id';
+  }
+
+  @override
+  String get supportChannels => 'Canales de atención';
+
+  @override
+  String get emergency => 'Emergencias';
+
+  @override
+  String get reportFailed =>
+      'No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.';
 }

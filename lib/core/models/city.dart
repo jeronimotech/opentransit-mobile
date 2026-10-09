@@ -275,19 +275,37 @@ class CityService {
     required this.label,
     this.icon,
     required this.url,
+    this.phone,
+    this.description,
+    this.emergency = false,
     this.kind = 'external',
   });
   final String id;
   final String label;
   final String? icon;
   final String url;
+
+  /// Set when [kind] is `call`: the channel dials instead of opening a page.
+  final String? phone;
+
+  /// What this channel actually answers. A list of official links with no explanation leaves a
+  /// rider guessing which one to use, which is what TransMilenio asked us to fix (1.16).
+  final String? description;
+
+  /// Shown apart from the rest, and never behind more taps than necessary.
+  final bool emergency;
   final String kind;
+
+  bool get isCall => kind == 'call' && (phone?.isNotEmpty ?? false);
 
   factory CityService.fromJson(Map<String, dynamic> j) => CityService(
         id: j['id'].toString(),
         label: j['label']?.toString() ?? '',
         icon: j['icon']?.toString(),
         url: j['url']?.toString() ?? '',
+        phone: j['phone']?.toString(),
+        description: j['description']?.toString(),
+        emergency: j['emergency'] == true,
         kind: j['kind']?.toString() ?? 'external',
       );
 }

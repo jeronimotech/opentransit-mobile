@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/models/models.dart';
 import '../../core/providers.dart';
@@ -100,13 +99,11 @@ class StopDetailScreen extends ConsumerWidget {
                       await showSaveFavoriteSheet(context, ref, cityId, place);
                     case 'share':
                       await SharePlus.instance.share(ShareParams(uri: CanonicalLinks.stop(cityId, stop.id)));
-                    case 'pqrs':
-                      final url = city?.links.pqrs;
-                      if (url != null) {
-                        try {
-                          await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-                        } catch (_) {}
-                      }
+                    case 'report':
+                      // Used to open the operator's PQRS page, which cannot fix a stop that is in
+                      // the wrong place in *our* data. It now opens our own report form with this
+                      // stop attached; the operator's channels are listed there, described.
+                      context.push('/$cityId/help?stop=${Uri.encodeComponent(stop.id)}');
                   }
                 },
                 itemBuilder: (_) => [
@@ -116,8 +113,7 @@ class StopDetailScreen extends ConsumerWidget {
                   PopupMenuItem(value: 'share', child: ListTile(leading: const Icon(Icons.share_outlined), title: Text(l10n.share))),
                   if (city?.onDemandEnabled ?? false)
                     PopupMenuItem(value: 'ondemand', child: ListTile(leading: const Icon(Icons.local_taxi_outlined), title: Text(l10n.onDemandToHere))),
-                  if (city?.links.pqrs != null)
-                    PopupMenuItem(value: 'pqrs', child: ListTile(leading: const Icon(Icons.report_outlined), title: Text(l10n.reportProblem))),
+                  PopupMenuItem(value: 'report', child: ListTile(leading: const Icon(Icons.report_outlined), title: Text(l10n.reportProblem))),
                 ],
               ),
             ],

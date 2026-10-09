@@ -582,5 +582,18 @@
   "byHour": "بحسب الساعة",
   "allDepartures": "كل الرحلات",
   "schedule": "الجدول",
-  "connections": "التحويلات"
+  "connections": "التحويلات",
+  "helpAndReports": "المساعدة والتقارير",
+  "reportExplain": "أخبرنا بما هو خطأ في هذا التطبيق. يصل إلى فريق opentransit، بدون اسمك أو موقعك.",
+  "reportWrongInfo": "معلومات خاطئة",
+  "reportBarrier": "عائق وصول",
+  "reportOther": "شيء آخر",
+  "reportWhatHappened": "ما الذي وجدته؟",
+  "reportContactOptional": "البريد الإلكتروني (اختياري، للرد عليك)",
+  "reportSend": "إرسال",
+  "reportThanks": "شكرًا. نقرأ كل تقرير.",
+  "reportAttached": "مرفق: {id}",
+  "supportChannels": "قنوات الدعم",
+  "emergency": "الطوارئ",
+  "reportFailed": "لم يتم الإرسال. تحقق من الاتصال وحاول مرة أخرى."
 }

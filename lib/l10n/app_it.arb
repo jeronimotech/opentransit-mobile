@@ -582,5 +582,18 @@
   "byHour": "Per ora",
   "allDepartures": "Tutte le partenze",
   "schedule": "Orari",
-  "connections": "Coincidenze"
+  "connections": "Coincidenze",
+  "helpAndReports": "Aiuto e segnalazioni",
+  "reportExplain": "Dicci cosa sbaglia questa app. Arriva al team opentransit, senza il tuo nome né la tua posizione.",
+  "reportWrongInfo": "Informazione sbagliata",
+  "reportBarrier": "Barriera di accessibilità",
+  "reportOther": "Altro",
+  "reportWhatHappened": "Che cosa hai trovato?",
+  "reportContactOptional": "Email (facoltativa, per risponderti)",
+  "reportSend": "Invia",
+  "reportThanks": "Grazie. Leggiamo ogni segnalazione.",
+  "reportAttached": "Allegato: {id}",
+  "supportChannels": "Canali di assistenza",
+  "emergency": "Emergenze",
+  "reportFailed": "Invio non riuscito. Controlla la connessione e riprova."
 }

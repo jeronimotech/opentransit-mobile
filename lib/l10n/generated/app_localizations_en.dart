@@ -2026,4 +2026,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connections => 'Connections';
+
+  @override
+  String get helpAndReports => 'Help and reports';
+
+  @override
+  String get reportExplain =>
+      'Tell us what this app got wrong. It goes to the opentransit team, without your name or your location.';
+
+  @override
+  String get reportWrongInfo => 'Wrong information';
+
+  @override
+  String get reportBarrier => 'Accessibility barrier';
+
+  @override
+  String get reportOther => 'Something else';
+
+  @override
+  String get reportWhatHappened => 'What did you find?';
+
+  @override
+  String get reportContactOptional => 'Email (optional, to reply to you)';
+
+  @override
+  String get reportSend => 'Send';
+
+  @override
+  String get reportThanks => 'Thank you. We read every report.';
+
+  @override
+  String reportAttached(Object id) {
+    return 'Attached: $id';
+  }
+
+  @override
+  String get supportChannels => 'Support channels';
+
+  @override
+  String get emergency => 'Emergency';
+
+  @override
+  String get reportFailed =>
+      'Could not send it. Check your connection and try again.';
 }

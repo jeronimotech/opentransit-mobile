@@ -2021,4 +2021,46 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get connections => 'Sambungan';
+
+  @override
+  String get helpAndReports => 'Bantuan dan laporan';
+
+  @override
+  String get reportExplain =>
+      'Beritahu kami apa yang salah dalam app ini. Ia sampai kepada pasukan opentransit, tanpa nama atau lokasi anda.';
+
+  @override
+  String get reportWrongInfo => 'Maklumat salah';
+
+  @override
+  String get reportBarrier => 'Halangan kebolehcapaian';
+
+  @override
+  String get reportOther => 'Lain-lain';
+
+  @override
+  String get reportWhatHappened => 'Apa yang anda temui?';
+
+  @override
+  String get reportContactOptional => 'E-mel (pilihan, untuk membalas)';
+
+  @override
+  String get reportSend => 'Hantar';
+
+  @override
+  String get reportThanks => 'Terima kasih. Kami membaca setiap laporan.';
+
+  @override
+  String reportAttached(Object id) {
+    return 'Dilampirkan: $id';
+  }
+
+  @override
+  String get supportChannels => 'Saluran bantuan';
+
+  @override
+  String get emergency => 'Kecemasan';
+
+  @override
+  String get reportFailed => 'Gagal dihantar. Periksa sambungan dan cuba lagi.';
 }

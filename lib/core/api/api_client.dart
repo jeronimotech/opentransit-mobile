@@ -89,6 +89,17 @@ abstract class ApiClient {
   /// v2.7 — what one direction of a route runs on [date] (today where omitted) and what a rider
   /// can change to at each of its stops.
   Future<PatternSchedule> routeSchedule(String cityId, String routeId, {String? pattern, DateTime? date});
+
+  /// v2.7 — report wrong data or a physical barrier. Anonymous: only what the rider typed goes,
+  /// and the server has nowhere to put anything else.
+  Future<void> createReport(
+    String cityId, {
+    required String kind,
+    required String message,
+    String? stopId,
+    String? routeId,
+    String? contact,
+  });
   Future<List<NetworkShape>> network(String cityId);
 
   /// v1.1 — points of interest inside [bbox] (`minLon,minLat,maxLon,maxLat`).

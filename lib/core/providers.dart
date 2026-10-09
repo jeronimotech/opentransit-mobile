@@ -45,7 +45,9 @@ final sharedPrefsProvider = Provider<SharedPreferences>(
 final apiClientProvider = Provider<ApiClient>(
   (ref) => AppConfig.mock
       ? MockApiClient()
-      : HttpApiClient(AppConfig.apiUrl, onStatus: (ok) => ref.read(connectionProvider.notifier).report(ok)),
+      : HttpApiClient(AppConfig.apiUrl,
+          appVersion: AppConfig.appVersion,
+          onStatus: (ok) => ref.read(connectionProvider.notifier).report(ok)),
 );
 
 // ───────────────────────── analytics (v1.5) ─────────────────────────

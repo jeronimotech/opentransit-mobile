@@ -26,6 +26,7 @@ import 'features/routes/routes_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'features/trips/trips_screen.dart';
 import 'features/stops/stop_detail_screen.dart';
+import 'features/help/help_screen.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
 
@@ -176,6 +177,16 @@ final routerProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   path: 'routes',
                   builder: (_, s) => RoutesScreen(cityId: s.pathParameters['city']!),
+                ),
+                // Help and reports. `stop` / `route` prefill the report with what the rider was
+                // looking at, which is almost always the thing that is wrong.
+                GoRoute(
+                  path: 'help',
+                  builder: (_, s) => HelpScreen(
+                    cityId: s.pathParameters['city']!,
+                    stopId: s.uri.queryParameters['stop'],
+                    routeId: s.uri.queryParameters['route'],
+                  ),
                 ),
                 GoRoute(
                   path: 'stops/:stopId',
