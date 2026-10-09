@@ -562,5 +562,7 @@
       }
     }
   },
-  "returnPick": "Pilih masa"
+  "returnPick": "Pilih masa",
+  "nextStep": "Seterusnya: {step}",
+  "nextStepArrive": "Seterusnya: anda tiba di destinasi"
 }

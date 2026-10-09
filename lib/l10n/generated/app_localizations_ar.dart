@@ -1928,4 +1928,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get returnPick => 'اختر الوقت';
+
+  @override
+  String nextStep(Object step) {
+    return 'بعد ذلك: $step';
+  }
+
+  @override
+  String get nextStepArrive => 'بعد ذلك: تصل إلى وجهتك';
 }

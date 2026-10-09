@@ -3359,6 +3359,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Elegir hora'**
   String get returnPick;
+
+  /// No description provided for @nextStep.
+  ///
+  /// In es, this message translates to:
+  /// **'Luego: {step}'**
+  String nextStep(Object step);
+
+  /// No description provided for @nextStepArrive.
+  ///
+  /// In es, this message translates to:
+  /// **'Luego: llegas a tu destino'**
+  String get nextStepArrive;
 }
 
 class _AppLocalizationsDelegate

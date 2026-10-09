@@ -16,6 +16,7 @@ import '../../core/utils/colors.dart';
 import '../../core/utils/eta.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/geo.dart';
+import '../../core/utils/leg_steps.dart';
 import '../../core/utils/location.dart';
 import '../../core/live_activity/live_activity.dart';
 import '../../core/watch/watch_sync.dart';
@@ -620,15 +621,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            leg.transit
-                                ? (_boarded ? l10n.getOffAt(leg.to.name) : l10n.boardAt(leg.from.name))
-                                : leg.parkRide
-                                    ? l10n.parkingLeaveCarAt(leg.to.name)
-                                    : leg.isRental
-                                    ? l10n.rentalDropoff(leg.rental?.dropoff?.name ?? leg.to.name)
-                                    : leg.isOnDemand
-                                        ? l10n.requestVehicleTo(leg.to.name)
-                                        : l10n.walkTo(leg.to.name),
+                            legInstruction(l10n, leg, boarded: _boarded),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
@@ -655,6 +648,27 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                             : (_toEnd == null ? l10n.followAlongHint : l10n.distanceToStop(formatDistance(_toEnd!.round()))),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: _denied ? scheme.error : scheme.onSurfaceVariant),
                       ),
+                    // What comes after the current action. Riders asked for it because a card that
+                    // only says "get off at X" gives no warning that the transfer is a 400 m walk.
+                    if (nextStepLabel(l10n, it.legs, _legIndex) case final next?) ...[
+                      const SizedBox(height: 10),
+                      Row(
+                        key: const ValueKey('go-next-step'),
+                        children: [
+                          Icon(_legIndex + 1 < it.legs.length ? modeIcon(it.legs[_legIndex + 1].mode) : Icons.flag_outlined,
+                              size: 16, color: scheme.onSurfaceVariant),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              next,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     // "Pide tu vehículo": the provider picker inline (top 3).
                     if (leg.isOnDemand)
                       Builder(builder: (context) {

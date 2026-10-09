@@ -1939,4 +1939,12 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get returnPick => 'Pilih masa';
+
+  @override
+  String nextStep(Object step) {
+    return 'Seterusnya: $step';
+  }
+
+  @override
+  String get nextStepArrive => 'Seterusnya: anda tiba di destinasi';
 }

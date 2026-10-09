@@ -562,5 +562,7 @@
       }
     }
   },
-  "returnPick": "اختر الوقت"
+  "returnPick": "اختر الوقت",
+  "nextStep": "بعد ذلك: {step}",
+  "nextStepArrive": "بعد ذلك: تصل إلى وجهتك"
 }

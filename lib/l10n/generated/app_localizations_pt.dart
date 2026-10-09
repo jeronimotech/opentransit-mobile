@@ -1946,4 +1946,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get returnPick => 'Escolher hora';
+
+  @override
+  String nextStep(Object step) {
+    return 'Depois: $step';
+  }
+
+  @override
+  String get nextStepArrive => 'Depois: você chega ao destino';
 }

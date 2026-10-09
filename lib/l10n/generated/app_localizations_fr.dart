@@ -1950,4 +1950,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get returnPick => 'Choisir l\'heure';
+
+  @override
+  String nextStep(Object step) {
+    return 'Ensuite : $step';
+  }
+
+  @override
+  String get nextStepArrive => 'Ensuite : vous arrivez à destination';
 }

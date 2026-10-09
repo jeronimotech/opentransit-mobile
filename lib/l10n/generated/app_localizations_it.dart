@@ -1943,4 +1943,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get returnPick => 'Scegli l\'ora';
+
+  @override
+  String nextStep(Object step) {
+    return 'Poi: $step';
+  }
+
+  @override
+  String get nextStepArrive => 'Poi: arrivi a destinazione';
 }

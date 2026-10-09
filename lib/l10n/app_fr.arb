@@ -562,5 +562,7 @@
       }
     }
   },
-  "returnPick": "Choisir l'heure"
+  "returnPick": "Choisir l'heure",
+  "nextStep": "Ensuite : {step}",
+  "nextStepArrive": "Ensuite : vous arrivez à destination"
 }

@@ -1000,5 +1000,7 @@
       }
     }
   },
-  "returnPick": "Pick a time"
+  "returnPick": "Pick a time",
+  "nextStep": "Next: {step}",
+  "nextStepArrive": "Next: you arrive at your destination"
 }
