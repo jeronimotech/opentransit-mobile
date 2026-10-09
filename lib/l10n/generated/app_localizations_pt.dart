@@ -1983,4 +1983,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get boardingGetOffAt => 'Desça em';
+
+  @override
+  String alertsOnYourTrip(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count alertas no seu percurso',
+      one: '1 alerta no seu percurso',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get alertNew => 'NOVO';
 }

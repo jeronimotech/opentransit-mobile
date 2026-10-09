@@ -3425,6 +3425,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Bájate en'**
   String get boardingGetOffAt;
+
+  /// No description provided for @alertsOnYourTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 alerta en tu recorrido} other{{count} alertas en tu recorrido}}'**
+  String alertsOnYourTrip(num count);
+
+  /// No description provided for @alertNew.
+  ///
+  /// In es, this message translates to:
+  /// **'NUEVA'**
+  String get alertNew;
 }
 
 class _AppLocalizationsDelegate

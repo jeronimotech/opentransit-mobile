@@ -1976,4 +1976,18 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get boardingGetOffAt => 'Turun di';
+
+  @override
+  String alertsOnYourTrip(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count makluman pada perjalanan anda',
+      one: '1 makluman pada perjalanan anda',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get alertNew => 'BARU';
 }

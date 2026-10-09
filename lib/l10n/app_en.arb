@@ -1011,5 +1011,15 @@
   "boardingDestination": "Destination shown on the vehicle",
   "boardingLine": "Line",
   "boardingWaitAt": "Wait at",
-  "boardingGetOffAt": "Get off at"
+  "boardingGetOffAt": "Get off at",
+  "alertsOnYourTrip": "{count, plural, =1{1 alert on your trip} other{{count} alerts on your trip}}",
+  "@alertsOnYourTrip": {
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
+  "alertNew": "NEW"
 }

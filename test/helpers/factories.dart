@@ -29,6 +29,7 @@ Leg leg({
   String? toCode,
   String? headsign,
   List<Place> intermediateStops = const [],
+  List<TransitAlert> alerts = const [],
   int distanceMeters = 800,
   Geometry geometry = const Geometry(encoded: ''),
 }) {
@@ -48,6 +49,7 @@ Leg leg({
     realtime: false,
     geometry: geometry,
     intermediateStops: intermediateStops,
+    alerts: alerts,
   );
 }
 

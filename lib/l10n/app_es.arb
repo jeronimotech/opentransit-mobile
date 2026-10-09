@@ -1230,5 +1230,7 @@
   "boardingDestination": "Destino que se lee en el bus",
   "boardingLine": "Recorrido",
   "boardingWaitAt": "Espera en",
-  "boardingGetOffAt": "Bájate en"
+  "boardingGetOffAt": "Bájate en",
+  "alertsOnYourTrip": "{count, plural, =1{1 alerta en tu recorrido} other{{count} alertas en tu recorrido}}",
+  "alertNew": "NUEVA"
 }

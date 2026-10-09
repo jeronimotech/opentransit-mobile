@@ -573,5 +573,7 @@
   "boardingDestination": "الوجهة المكتوبة على المركبة",
   "boardingLine": "المسار",
   "boardingWaitAt": "انتظر في",
-  "boardingGetOffAt": "انزل في"
+  "boardingGetOffAt": "انزل في",
+  "alertsOnYourTrip": "{count, plural, =1{تنبيه واحد في رحلتك} other{{count} تنبيهات في رحلتك}}",
+  "alertNew": "جديد"
 }

@@ -34,6 +34,8 @@ import 'planner_state.dart';
 import 'widgets/trip_receipt_sheet.dart';
 import 'widgets/equivalent_services.dart';
 import 'widgets/boarding_pass.dart';
+import '../../core/utils/trip_alerts.dart';
+import 'widgets/trip_alerts_card.dart';
 
 /// Pure logic behind "Iniciar viaje": which leg the user is on and how far
 /// they are from the current leg's alighting point. Foreground location only.
@@ -124,6 +126,10 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
   Analytics? _analytics;
   Itinerary? _lastItinerary;
 
+  /// Alerts are re-read while the trip runs, not only when it was planned.
+  Timer? _alertPoll;
+  final _alertedIds = <String>{};
+
   final _offRoute = OffRouteDetector();
   bool _offRoutePrompt = false;
   bool _replanning = false;
@@ -147,6 +153,11 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
       _startCompanions(it);
     }
     _start();
+    // Every two minutes: often enough that a closure published mid-trip reaches the rider before
+    // the transfer, rare enough to be invisible on the battery next to the location stream.
+    _alertPoll = Timer.periodic(const Duration(minutes: 2), (_) {
+      if (mounted) ref.invalidate(alertsProvider(widget.cityId));
+    });
   }
 
   Future<void> _start() async {
@@ -244,6 +255,31 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     );
     await LiveActivity.instance.start(_liveTrip!, _liveUpdate(it, it.legs.first));
     await _syncWatch(it, it.legs.first);
+  }
+
+  /// Alerts touching what is left of the trip. Anything published after the rider set off is
+  /// badged and raises one notification: the phone is usually in a pocket at that moment.
+  Widget _tripAlerts(Itinerary it) {
+    final all = ref.watch(alertsProvider(widget.cityId)).asData?.value ?? const <TransitAlert>[];
+    final ahead = alertsAhead(it, _legIndex, all);
+    if (ahead.isEmpty) return const SizedBox.shrink();
+    final fresh = alertsSincePlanning(it, ahead);
+    final unseen = [for (final a in fresh) if (!_alertedIds.contains(a.id)) a];
+    if (unseen.isNotEmpty) {
+      final l10n = AppLocalizations.of(context);
+      // After the frame, not during it: raising a notification while building is a side effect in
+      // the wrong place, and the ids are claimed here so a rebuild cannot notify twice.
+      for (final a in unseen) {
+        _alertedIds.add(a.id);
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        HapticFeedback.mediumImpact();
+        for (final (i, a) in unseen.indexed) {
+          LocalNotifications.instance.show(10 + i, l10n.alertsOnYourTrip(1), a.header);
+        }
+      });
+    }
+    return TripAlertsCard(alerts: ahead, fresh: {for (final a in fresh) a.id});
   }
 
   DateTime _eta(Itinerary it) =>
@@ -425,6 +461,7 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
       });
     }
     _sub?.cancel();
+    _alertPoll?.cancel();
     _share?.dispose();
     LocalNotifications.instance.cancelAll();
     // Fire-and-forget: `dispose` cannot await, and a leftover activity on the
@@ -584,6 +621,9 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Alerts, re-read while the trip runs and narrowed to what is still ahead. Above
+                  // the action because a closure on the leg being ridden changes what to do next.
+                  if (!_arrived) _tripAlerts(it),
                   Row(
                     children: [
                       Text(l10n.progressLabel(_legIndex + 1, it.legs.length),

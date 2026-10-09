@@ -1970,4 +1970,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get boardingGetOffAt => 'Get off at';
+
+  @override
+  String alertsOnYourTrip(num count) {
+    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
+      locale: localeName,
+    );
+    final String countString = countNumberFormat.format(count);
+
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$countString alerts on your trip',
+      one: '1 alert on your trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get alertNew => 'NEW';
 }

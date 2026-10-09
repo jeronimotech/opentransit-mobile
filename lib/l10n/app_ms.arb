@@ -573,5 +573,7 @@
   "boardingDestination": "Destinasi pada papan tanda bas",
   "boardingLine": "Laluan",
   "boardingWaitAt": "Tunggu di",
-  "boardingGetOffAt": "Turun di"
+  "boardingGetOffAt": "Turun di",
+  "alertsOnYourTrip": "{count, plural, =1{1 makluman pada perjalanan anda} other{{count} makluman pada perjalanan anda}}",
+  "alertNew": "BARU"
 }

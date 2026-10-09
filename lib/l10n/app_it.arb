@@ -573,5 +573,7 @@
   "boardingDestination": "Destinazione indicata sul mezzo",
   "boardingLine": "Percorso",
   "boardingWaitAt": "Attendi a",
-  "boardingGetOffAt": "Scendi a"
+  "boardingGetOffAt": "Scendi a",
+  "alertsOnYourTrip": "{count, plural, =1{1 avviso sul tuo percorso} other{{count} avvisi sul tuo percorso}}",
+  "alertNew": "NUOVO"
 }
