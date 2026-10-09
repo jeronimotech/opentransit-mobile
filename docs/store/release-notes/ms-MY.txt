@@ -1,5 +1,6 @@
-Jadual luar talian: muat turun bandar anda dan perjalanan berfungsi di bawah tanah atau tanpa data. Anda juga boleh merancang perjalanan tanpa rangkaian.
-Halaman perhentian kini peta dengan bas yang menghampiri.
-Kami nyatakan bila masa itu langsung, anggaran atau mengikut jadual, dan bila ia daripada jadual tersimpan.
-Keadaan penuh kenderaan di mana agensi menerbitkannya.
-Ikon apl dalam warna bandar anda.
+Perkhidmatan lain di laluan sama: naiki yang tiba dahulu, dan kami beritahu platformnya.
+Perjalanan berpandu menunjukkan langkah seterusnya, membawa kad menaiki dengan destinasi pada papan tanda, dan memberi amaran apabila makluman menjejaskan baki perjalanan.
+Jadual dan sambungan pada halaman laluan.
+Makluman turun semasa skrin berkunci, jika anda hidupkan.
+Mod penjimatan, talian kecemasan, lapor data salah.
+Kongsi perjalanan sebagai teks dan hentikan pautan.

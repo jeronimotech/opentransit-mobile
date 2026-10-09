@@ -1,5 +1,6 @@
-Horarios sin conexión: descarga la ciudad y las salidas funcionan bajo tierra o sin datos. También puedes planear viajes sin red.
-La página de parada ahora es un mapa con los buses que se acercan.
-Decimos cuándo un dato es en vivo, estimado o por programación, y cuándo viene del horario guardado.
-Ocupación del vehículo donde la agencia la publica.
-Icono de la app en los colores de tu ciudad.
+Qué otras rutas sirven el mismo tramo: toma la primera que llegue, y te decimos de qué vagón sale.
+El viaje guiado dice qué sigue, trae la ficha de abordaje con el destino que se lee en el bus, y avisa si una alerta afecta lo que falta.
+Horarios y conexiones en la página de ruta.
+Aviso de bajada con la pantalla bloqueada, si tú lo activas.
+Modo de ahorro, líneas de emergencia, y reportar un dato equivocado.
+Compartir el viaje en texto y detener el enlace.

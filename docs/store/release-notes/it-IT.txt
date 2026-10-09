@@ -1,5 +1,6 @@
-Orari offline: scarica la tua città e le partenze funzionano sottoterra o senza dati. Puoi anche calcolare percorsi senza rete.
-La pagina della fermata è ora una mappa con i bus in avvicinamento.
-Diciamo quando un orario è in tempo reale, stimato o da orario, e quando viene da quello salvato.
-Occupazione del mezzo dove l'azienda la pubblica.
-Un'icona nei colori della tua città.
+Quali altre linee servono la stessa tratta: sali sulla prima che arriva, e ti diciamo la banchina.
+Il viaggio guidato mostra il passo successivo, porta una scheda di salita con la destinazione indicata sul mezzo e avvisa quando un avviso riguarda il resto.
+Orari e coincidenze nella pagina della linea.
+Avviso di discesa a schermo bloccato, se lo attivi.
+Modalità risparmio, numeri di emergenza, segnalazione di errori.
+Condivisione del viaggio in testo e stop al link.

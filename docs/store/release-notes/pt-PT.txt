@@ -1,5 +1,6 @@
-Horários sem ligação: descarrega a tua cidade e as partidas funcionam no subterrâneo ou sem dados. Também podes planear viagens sem rede.
-A página de paragem é agora um mapa com os autocarros a aproximar-se.
-Dizemos quando um horário é em tempo real, estimado ou da tabela, e quando vem do horário guardado.
-Ocupação do veículo onde a operadora a publica.
-Ícone da app nas cores da tua cidade.
+Que outras linhas servem o mesmo trecho: entre na primeira que chegar, e dizemos a plataforma.
+A viagem guiada mostra o que vem a seguir, traz uma ficha de embarque com o destino exibido no veículo e avisa quando um alerta afeta o resto do percurso.
+Horários e ligações na página da linha.
+Aviso de desembarque com o ecrã bloqueado, se o ativar.
+Modo de economia, linhas de emergência e relatar dados errados.
+Partilhar a viagem em texto e parar o link.

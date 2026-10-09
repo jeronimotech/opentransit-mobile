@@ -1,5 +1,6 @@
-Horaires hors ligne : téléchargez votre ville et les départs fonctionnent sous terre ou sans data. Vous pouvez aussi calculer des trajets sans réseau.
-La page d'arrêt est désormais une carte avec les bus qui approchent.
-Nous disons quand une heure est en direct, estimée ou théorique, et quand elle vient de l'horaire enregistré.
-Occupation du véhicule là où l'exploitant la publie.
-Une icône aux couleurs de votre ville.
+Quelles autres lignes desservent le même trajet : montez dans la première qui arrive, avec le quai.
+Le trajet guidé affiche l'étape suivante, fournit une fiche d'embarquement avec la destination affichée sur le véhicule, et prévient quand une alerte touche la suite.
+Horaires et correspondances sur la page de ligne.
+Alerte de descente écran verrouillé, si vous l'activez.
+Mode économie, numéros d'urgence, signalement d'erreurs.
+Partage du trajet en texte, et arrêt du lien.
