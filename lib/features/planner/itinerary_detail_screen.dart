@@ -26,6 +26,7 @@ import 'planner_actions.dart';
 import 'planner_state.dart';
 import '../trips/schedule_trip_sheet.dart';
 import 'widgets/equivalent_services.dart';
+import 'widgets/boarding_pass.dart';
 
 class ItineraryDetailScreen extends ConsumerStatefulWidget {
   const ItineraryDetailScreen({super.key, required this.cityId, required this.index});
@@ -614,6 +615,21 @@ class _LegTileState extends ConsumerState<_LegTile> {
                         chosen: widget.chosenStart,
                         color: color,
                         onPick: widget.onRetime!,
+                      ),
+                    // Code, destination on the bus, where to wait and where to get off, in one
+                    // place — the four things a rider checks against the vehicle in front of them.
+                    if (leg.route != null)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          key: const ValueKey('leg-boarding-pass'),
+                          onPressed: () => BoardingPass.show(context, cityId: widget.cityId, leg: leg),
+                          icon: const Icon(Icons.badge_outlined, size: 18),
+                          label: Text(l10n.boardingPass),
+                          style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              visualDensity: VisualDensity.compact),
+                        ),
                       ),
                     // What else would have done: the itinerary names one route, and at a trunk
                     // station three others may run the same segment. Eager only for the leg about

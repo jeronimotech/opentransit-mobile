@@ -1965,4 +1965,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String alsoServesFrom(Object place) {
     return 'Da $place';
   }
+
+  @override
+  String get boardingPass => 'Scheda di salita';
+
+  @override
+  String get boardingDestination => 'Destinazione indicata sul mezzo';
+
+  @override
+  String get boardingLine => 'Percorso';
+
+  @override
+  String get boardingWaitAt => 'Attendi a';
+
+  @override
+  String get boardingGetOffAt => 'Scendi a';
 }

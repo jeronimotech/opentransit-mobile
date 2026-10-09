@@ -568,5 +568,10 @@
   "alsoServes": "Também servem este trecho",
   "alsoCallsAtBoth": "Também param nas duas paradas",
   "alsoServesAsk": "Outros serviços neste trecho",
-  "alsoServesFrom": "De {place}"
+  "alsoServesFrom": "De {place}",
+  "boardingPass": "Ficha de embarque",
+  "boardingDestination": "Destino exibido no veículo",
+  "boardingLine": "Percurso",
+  "boardingWaitAt": "Espere em",
+  "boardingGetOffAt": "Desça em"
 }

@@ -3395,6 +3395,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Desde {place}'**
   String alsoServesFrom(Object place);
+
+  /// No description provided for @boardingPass.
+  ///
+  /// In es, this message translates to:
+  /// **'Ficha de abordaje'**
+  String get boardingPass;
+
+  /// No description provided for @boardingDestination.
+  ///
+  /// In es, this message translates to:
+  /// **'Destino que se lee en el bus'**
+  String get boardingDestination;
+
+  /// No description provided for @boardingLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Recorrido'**
+  String get boardingLine;
+
+  /// No description provided for @boardingWaitAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Espera en'**
+  String get boardingWaitAt;
+
+  /// No description provided for @boardingGetOffAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Bájate en'**
+  String get boardingGetOffAt;
 }
 
 class _AppLocalizationsDelegate

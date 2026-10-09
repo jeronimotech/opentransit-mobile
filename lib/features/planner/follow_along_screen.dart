@@ -33,6 +33,7 @@ import '../ondemand/provider_picker.dart';
 import 'planner_state.dart';
 import 'widgets/trip_receipt_sheet.dart';
 import 'widgets/equivalent_services.dart';
+import 'widgets/boarding_pass.dart';
 
 /// Pure logic behind "Iniciar viaje": which leg the user is on and how far
 /// they are from the current leg's alighting point. Foreground location only.
@@ -628,6 +629,16 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                           ),
                         ),
+                        // The destination written on the bus is what a rider checks before stepping
+                        // on, and the guided trip never showed it.
+                        if (leg.transit && leg.route != null)
+                          IconButton(
+                            key: const ValueKey('go-boarding-pass'),
+                            tooltip: l10n.boardingPass,
+                            visualDensity: VisualDensity.compact,
+                            icon: const Icon(Icons.badge_outlined),
+                            onPressed: () => BoardingPass.show(context, cityId: widget.cityId, leg: leg),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 6),

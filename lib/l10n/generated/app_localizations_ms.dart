@@ -1961,4 +1961,19 @@ class AppLocalizationsMs extends AppLocalizations {
   String alsoServesFrom(Object place) {
     return 'Dari $place';
   }
+
+  @override
+  String get boardingPass => 'Kad menaiki';
+
+  @override
+  String get boardingDestination => 'Destinasi pada papan tanda bas';
+
+  @override
+  String get boardingLine => 'Laluan';
+
+  @override
+  String get boardingWaitAt => 'Tunggu di';
+
+  @override
+  String get boardingGetOffAt => 'Turun di';
 }

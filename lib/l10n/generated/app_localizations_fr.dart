@@ -1972,4 +1972,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String alsoServesFrom(Object place) {
     return 'Depuis $place';
   }
+
+  @override
+  String get boardingPass => 'Fiche d\'embarquement';
+
+  @override
+  String get boardingDestination => 'Destination affichée sur le véhicule';
+
+  @override
+  String get boardingLine => 'Ligne';
+
+  @override
+  String get boardingWaitAt => 'Attendez à';
+
+  @override
+  String get boardingGetOffAt => 'Descendez à';
 }

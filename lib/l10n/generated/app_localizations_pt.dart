@@ -1968,4 +1968,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String alsoServesFrom(Object place) {
     return 'De $place';
   }
+
+  @override
+  String get boardingPass => 'Ficha de embarque';
+
+  @override
+  String get boardingDestination => 'Destino exibido no veículo';
+
+  @override
+  String get boardingLine => 'Percurso';
+
+  @override
+  String get boardingWaitAt => 'Espere em';
+
+  @override
+  String get boardingGetOffAt => 'Desça em';
 }

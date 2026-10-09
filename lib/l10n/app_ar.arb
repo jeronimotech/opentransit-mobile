@@ -568,5 +568,10 @@
   "alsoServes": "تخدم هذا المقطع أيضًا",
   "alsoCallsAtBoth": "تتوقف أيضًا في الموقفين",
   "alsoServesAsk": "خدمات أخرى في هذا المقطع",
-  "alsoServesFrom": "من {place}"
+  "alsoServesFrom": "من {place}",
+  "boardingPass": "بطاقة الصعود",
+  "boardingDestination": "الوجهة المكتوبة على المركبة",
+  "boardingLine": "المسار",
+  "boardingWaitAt": "انتظر في",
+  "boardingGetOffAt": "انزل في"
 }

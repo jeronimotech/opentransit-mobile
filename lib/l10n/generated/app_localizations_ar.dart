@@ -1950,4 +1950,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String alsoServesFrom(Object place) {
     return 'من $place';
   }
+
+  @override
+  String get boardingPass => 'بطاقة الصعود';
+
+  @override
+  String get boardingDestination => 'الوجهة المكتوبة على المركبة';
+
+  @override
+  String get boardingLine => 'المسار';
+
+  @override
+  String get boardingWaitAt => 'انتظر في';
+
+  @override
+  String get boardingGetOffAt => 'انزل في';
 }

@@ -568,5 +568,10 @@
   "alsoServes": "Juga melalui laluan ini",
   "alsoCallsAtBoth": "Juga berhenti di kedua-dua perhentian",
   "alsoServesAsk": "Perkhidmatan lain di laluan ini",
-  "alsoServesFrom": "Dari {place}"
+  "alsoServesFrom": "Dari {place}",
+  "boardingPass": "Kad menaiki",
+  "boardingDestination": "Destinasi pada papan tanda bas",
+  "boardingLine": "Laluan",
+  "boardingWaitAt": "Tunggu di",
+  "boardingGetOffAt": "Turun di"
 }

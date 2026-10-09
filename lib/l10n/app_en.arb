@@ -1006,5 +1006,10 @@
   "alsoServes": "Also serve this segment",
   "alsoCallsAtBoth": "Also call at both stops",
   "alsoServesAsk": "Other services on this segment",
-  "alsoServesFrom": "From {place}"
+  "alsoServesFrom": "From {place}",
+  "boardingPass": "Boarding card",
+  "boardingDestination": "Destination shown on the vehicle",
+  "boardingLine": "Line",
+  "boardingWaitAt": "Wait at",
+  "boardingGetOffAt": "Get off at"
 }

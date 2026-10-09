@@ -25,6 +25,10 @@ Leg leg({
   LatLng to = const LatLng(4.61, -74.11),
   String fromName = 'A',
   String toName = 'B',
+  String? fromCode,
+  String? toCode,
+  String? headsign,
+  List<Place> intermediateStops = const [],
   int distanceMeters = 800,
   Geometry geometry = const Geometry(encoded: ''),
 }) {
@@ -37,12 +41,13 @@ Leg leg({
     endTime: e,
     durationSeconds: minutes * 60,
     distanceMeters: distanceMeters,
-    from: Place(name: fromName, position: from, stopId: fromStopId, departure: s),
-    to: Place(name: toName, position: to, stopId: toStopId, arrival: e),
+    from: Place(name: fromName, position: from, stopId: fromStopId, stopCode: fromCode, departure: s),
+    to: Place(name: toName, position: to, stopId: toStopId, stopCode: toCode, arrival: e),
+    headsign: headsign,
     route: route,
     realtime: false,
     geometry: geometry,
-    intermediateStops: const [],
+    intermediateStops: intermediateStops,
   );
 }
 

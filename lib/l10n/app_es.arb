@@ -1225,5 +1225,10 @@
   "alsoServes": "También sirven este tramo",
   "alsoCallsAtBoth": "También pasan por las dos paradas",
   "alsoServesAsk": "Otros servicios en este tramo",
-  "alsoServesFrom": "Desde {place}"
+  "alsoServesFrom": "Desde {place}",
+  "boardingPass": "Ficha de abordaje",
+  "boardingDestination": "Destino que se lee en el bus",
+  "boardingLine": "Recorrido",
+  "boardingWaitAt": "Espera en",
+  "boardingGetOffAt": "Bájate en"
 }
