@@ -2138,4 +2138,25 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get guideOpen => 'Apri';
+
+  @override
+  String get saverMode => 'Modalità risparmio';
+
+  @override
+  String get saverOnShort => 'Risparmio';
+
+  @override
+  String get saverExplain =>
+      'Meno richieste e nessun mezzo in tempo reale sulla mappa iniziale. Gli arrivi si aggiornano ogni minuto invece di ogni venti secondi; il resto continua a funzionare.';
+
+  @override
+  String get backgroundGetOff => 'Avvisami a schermo bloccato';
+
+  @override
+  String get backgroundGetOffExplain =>
+      'Continua a seguire il viaggio con il telefono bloccato, così l\'avviso di discesa arriva comunque. Solo durante un viaggio guidato, e consuma molta più batteria.';
+
+  @override
+  String get backgroundGetOffOngoing =>
+      'Sto seguendo il tuo viaggio per avvisarti quando scendere.';
 }

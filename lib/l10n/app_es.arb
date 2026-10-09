@@ -1272,5 +1272,11 @@
   "guideReportTitle": "Si algo está mal",
   "guideReportBody": "Repórtalo desde la app: una parada en el lugar equivocado o una rampa bloqueada llegan al equipo que puede corregir el dato.",
   "guideFirstOpen": "¿Primera vez por aquí? Mira qué hace la app.",
-  "guideOpen": "Ver"
+  "guideOpen": "Ver",
+  "saverMode": "Modo de ahorro",
+  "saverOnShort": "Modo de ahorro",
+  "saverExplain": "Menos consultas y sin buses en vivo en el mapa de inicio. Las llegadas se actualizan cada minuto en vez de cada veinte segundos; lo demás sigue funcionando.",
+  "backgroundGetOff": "Avisarme con la pantalla bloqueada",
+  "backgroundGetOffExplain": "Sigue el viaje con el teléfono bloqueado para que el aviso de bajada llegue igual. Solo durante un viaje guiado, y gasta bastante más batería.",
+  "backgroundGetOffOngoing": "Siguiendo tu viaje para avisarte cuándo bajar."
 }

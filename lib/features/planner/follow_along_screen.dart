@@ -36,6 +36,7 @@ import 'widgets/equivalent_services.dart';
 import 'widgets/boarding_pass.dart';
 import '../../core/utils/trip_alerts.dart';
 import 'widgets/trip_alerts_card.dart';
+import '../../core/utils/tracking_settings.dart';
 
 /// Pure logic behind "Iniciar viaje": which leg the user is on and how far
 /// they are from the current leg's alighting point. Foreground location only.
@@ -186,8 +187,16 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
         if (mounted) setState(() => _denied = true);
         return;
       }
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
       _sub = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 10),
+        locationSettings: trackingSettings(
+          // Opt-in, always: tracking past the lock screen is the most expensive thing this app can
+          // do to a battery, so nobody pays for it without having asked.
+          background: ref.read(settingsProvider).backgroundGetOff,
+          notificationTitle: l10n.goNotificationTitle,
+          notificationText: l10n.backgroundGetOffOngoing,
+        ),
       ).listen(_onPosition, onError: (_) {});
     } catch (_) {
       if (mounted) setState(() => _denied = true);

@@ -615,5 +615,11 @@
   "guideReportTitle": "Si quelque chose est faux",
   "guideReportBody": "Signalez-le depuis l'app : un arrêt mal placé ou une rampe bloquée arrive à ceux qui peuvent corriger la donnée.",
   "guideFirstOpen": "Nouveau ici ? Découvrez ce que fait l'app.",
-  "guideOpen": "Ouvrir"
+  "guideOpen": "Ouvrir",
+  "saverMode": "Mode économie",
+  "saverOnShort": "Mode économie",
+  "saverExplain": "Moins de requêtes et pas de bus en direct sur la carte d'accueil. Les passages se rafraîchissent chaque minute au lieu de toutes les vingt secondes ; le reste fonctionne.",
+  "backgroundGetOff": "M'alerter écran verrouillé",
+  "backgroundGetOffExplain": "Continue de suivre le trajet téléphone verrouillé, pour que l'alerte de descente arrive quand même. Uniquement pendant un trajet guidé, et cela consomme nettement plus de batterie.",
+  "backgroundGetOffOngoing": "Suivi de votre trajet pour vous prévenir quand descendre."
 }

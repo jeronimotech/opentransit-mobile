@@ -3677,6 +3677,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver'**
   String get guideOpen;
+
+  /// No description provided for @saverMode.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo de ahorro'**
+  String get saverMode;
+
+  /// No description provided for @saverOnShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo de ahorro'**
+  String get saverOnShort;
+
+  /// No description provided for @saverExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'Menos consultas y sin buses en vivo en el mapa de inicio. Las llegadas se actualizan cada minuto en vez de cada veinte segundos; lo demás sigue funcionando.'**
+  String get saverExplain;
+
+  /// No description provided for @backgroundGetOff.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisarme con la pantalla bloqueada'**
+  String get backgroundGetOff;
+
+  /// No description provided for @backgroundGetOffExplain.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue el viaje con el teléfono bloqueado para que el aviso de bajada llegue igual. Solo durante un viaje guiado, y gasta bastante más batería.'**
+  String get backgroundGetOffExplain;
+
+  /// No description provided for @backgroundGetOffOngoing.
+  ///
+  /// In es, this message translates to:
+  /// **'Siguiendo tu viaje para avisarte cuándo bajar.'**
+  String get backgroundGetOffOngoing;
 }
 
 class _AppLocalizationsDelegate

@@ -2142,4 +2142,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get guideOpen => 'Abrir';
+
+  @override
+  String get saverMode => 'Modo economia';
+
+  @override
+  String get saverOnShort => 'Modo economia';
+
+  @override
+  String get saverExplain =>
+      'Menos consultas e sem ônibus ao vivo no mapa inicial. As chegadas atualizam a cada minuto em vez de cada vinte segundos; o resto continua funcionando.';
+
+  @override
+  String get backgroundGetOff => 'Avisar com a tela bloqueada';
+
+  @override
+  String get backgroundGetOffExplain =>
+      'Continua acompanhando a viagem com o telefone bloqueado, para que o aviso de desembarque chegue. Só durante uma viagem guiada, e consome bem mais bateria.';
+
+  @override
+  String get backgroundGetOffOngoing =>
+      'Acompanhando a sua viagem para avisar quando descer.';
 }

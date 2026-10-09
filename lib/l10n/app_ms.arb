@@ -615,5 +615,11 @@
   "guideReportTitle": "Jika ada yang salah",
   "guideReportBody": "Laporkan dari app: perhentian di tempat yang salah atau tanjakan tersekat sampai kepada orang yang boleh membetulkan data.",
   "guideFirstOpen": "Baru di sini? Lihat apa yang app ini boleh buat.",
-  "guideOpen": "Buka"
+  "guideOpen": "Buka",
+  "saverMode": "Mod penjimatan",
+  "saverOnShort": "Mod penjimatan",
+  "saverExplain": "Lebih sedikit permintaan dan tiada bas secara langsung pada peta utama. Ketibaan dikemas kini setiap minit, bukan setiap dua puluh detik; yang lain terus berfungsi.",
+  "backgroundGetOff": "Beritahu saya semasa skrin berkunci",
+  "backgroundGetOffExplain": "Terus mengikuti perjalanan semasa telefon berkunci, supaya makluman turun tetap tiba. Hanya semasa perjalanan berpandu, dan menggunakan jauh lebih banyak bateri.",
+  "backgroundGetOffOngoing": "Mengikuti perjalanan anda untuk memberitahu bila perlu turun."
 }

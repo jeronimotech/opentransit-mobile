@@ -121,6 +121,26 @@ class SettingsScreen extends ConsumerWidget {
             value: s.networkLayer,
             onChanged: n.setNetworkLayer,
           ),
+          // Opt-in, never a default: following the trip past the lock screen is the most
+          // expensive thing this app can do to a battery (TransMilenio, 1.6).
+          SwitchListTile(
+            key: const ValueKey('background-getoff-toggle'),
+            secondary: const Icon(Icons.notifications_active_outlined),
+            title: Text(l10n.backgroundGetOff),
+            subtitle: Text(l10n.backgroundGetOffExplain),
+            value: s.backgroundGetOff,
+            onChanged: n.setBackgroundGetOff,
+          ),
+          // Saver mode says exactly what it gives up: a mode whose effect a rider cannot name is
+          // one they cannot decide about (TransMilenio, 1.15).
+          SwitchListTile(
+            key: const ValueKey('saver-toggle'),
+            secondary: const Icon(Icons.battery_saver_rounded),
+            title: Text(l10n.saverMode),
+            subtitle: Text(l10n.saverExplain),
+            value: s.dataSaver,
+            onChanged: n.setDataSaver,
+          ),
           // The guide and the report form belong to the app, not to the operator, so this section
           // is here whether or not the city publishes any links of its own.
           if (city != null) ...[

@@ -1069,5 +1069,11 @@
   "guideReportTitle": "If something is wrong",
   "guideReportBody": "Report it from the app: a stop in the wrong place or a blocked ramp reaches the people who can fix the data.",
   "guideFirstOpen": "New here? See what the app can do.",
-  "guideOpen": "Open"
+  "guideOpen": "Open",
+  "saverMode": "Saver mode",
+  "saverOnShort": "Saver mode",
+  "saverExplain": "Fewer requests and no live buses on the home map. Arrivals refresh every minute instead of every twenty seconds; everything else keeps working.",
+  "backgroundGetOff": "Alert me with the screen locked",
+  "backgroundGetOffExplain": "Keeps following the trip while the phone is locked, so the get-off alert still arrives. Only during a guided trip, and it uses noticeably more battery.",
+  "backgroundGetOffOngoing": "Following your trip to alert you when to get off."
 }

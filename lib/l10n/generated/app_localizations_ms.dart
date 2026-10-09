@@ -2134,4 +2134,25 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get guideOpen => 'Buka';
+
+  @override
+  String get saverMode => 'Mod penjimatan';
+
+  @override
+  String get saverOnShort => 'Mod penjimatan';
+
+  @override
+  String get saverExplain =>
+      'Lebih sedikit permintaan dan tiada bas secara langsung pada peta utama. Ketibaan dikemas kini setiap minit, bukan setiap dua puluh detik; yang lain terus berfungsi.';
+
+  @override
+  String get backgroundGetOff => 'Beritahu saya semasa skrin berkunci';
+
+  @override
+  String get backgroundGetOffExplain =>
+      'Terus mengikuti perjalanan semasa telefon berkunci, supaya makluman turun tetap tiba. Hanya semasa perjalanan berpandu, dan menggunakan jauh lebih banyak bateri.';
+
+  @override
+  String get backgroundGetOffOngoing =>
+      'Mengikuti perjalanan anda untuk memberitahu bila perlu turun.';
 }

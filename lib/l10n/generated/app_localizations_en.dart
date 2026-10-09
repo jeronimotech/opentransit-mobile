@@ -2139,4 +2139,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guideOpen => 'Open';
+
+  @override
+  String get saverMode => 'Saver mode';
+
+  @override
+  String get saverOnShort => 'Saver mode';
+
+  @override
+  String get saverExplain =>
+      'Fewer requests and no live buses on the home map. Arrivals refresh every minute instead of every twenty seconds; everything else keeps working.';
+
+  @override
+  String get backgroundGetOff => 'Alert me with the screen locked';
+
+  @override
+  String get backgroundGetOffExplain =>
+      'Keeps following the trip while the phone is locked, so the get-off alert still arrives. Only during a guided trip, and it uses noticeably more battery.';
+
+  @override
+  String get backgroundGetOffOngoing =>
+      'Following your trip to alert you when to get off.';
 }

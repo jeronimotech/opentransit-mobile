@@ -2146,4 +2146,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get guideOpen => 'Ouvrir';
+
+  @override
+  String get saverMode => 'Mode économie';
+
+  @override
+  String get saverOnShort => 'Mode économie';
+
+  @override
+  String get saverExplain =>
+      'Moins de requêtes et pas de bus en direct sur la carte d\'accueil. Les passages se rafraîchissent chaque minute au lieu de toutes les vingt secondes ; le reste fonctionne.';
+
+  @override
+  String get backgroundGetOff => 'M\'alerter écran verrouillé';
+
+  @override
+  String get backgroundGetOffExplain =>
+      'Continue de suivre le trajet téléphone verrouillé, pour que l\'alerte de descente arrive quand même. Uniquement pendant un trajet guidé, et cela consomme nettement plus de batterie.';
+
+  @override
+  String get backgroundGetOffOngoing =>
+      'Suivi de votre trajet pour vous prévenir quand descendre.';
 }

@@ -2135,4 +2135,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get guideOpen => 'Ver';
+
+  @override
+  String get saverMode => 'Modo de ahorro';
+
+  @override
+  String get saverOnShort => 'Modo de ahorro';
+
+  @override
+  String get saverExplain =>
+      'Menos consultas y sin buses en vivo en el mapa de inicio. Las llegadas se actualizan cada minuto en vez de cada veinte segundos; lo demás sigue funcionando.';
+
+  @override
+  String get backgroundGetOff => 'Avisarme con la pantalla bloqueada';
+
+  @override
+  String get backgroundGetOffExplain =>
+      'Sigue el viaje con el teléfono bloqueado para que el aviso de bajada llegue igual. Solo durante un viaje guiado, y gasta bastante más batería.';
+
+  @override
+  String get backgroundGetOffOngoing =>
+      'Siguiendo tu viaje para avisarte cuándo bajar.';
 }

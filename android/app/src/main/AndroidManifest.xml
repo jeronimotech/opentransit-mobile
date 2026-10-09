@@ -7,6 +7,13 @@
     <!-- scheduled-trip reminders: exact "time to leave" alarms, and re-arming them after a reboot -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- v2.7 "avísame al bajar con la pantalla bloqueada", off unless the rider turns it on.
+         A foreground service with an ongoing notification, started while the trip is open and
+         stopped when it ends — deliberately NOT ACCESS_BACKGROUND_LOCATION, which would mean
+         location without the rider watching, a Play background-location declaration, and a
+         permission we would then hold for every other purpose too. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
     <application
         android:label="opentransit"
         android:name="${applicationName}"

@@ -23,6 +23,7 @@ import 'offline/offline_board.dart';
 import 'offline/offline_patterns.dart';
 import 'offline/offline_plan.dart';
 import 'offline/offline_segments.dart';
+import 'utils/refresh.dart';
 import 'offline/offline_router.dart';
 import 'offline/offline_store.dart';
 import 'models/models.dart';
@@ -674,10 +675,10 @@ class StopRouteKey {
 }
 
 /// Refresh cadence for departures/boards, from the city's remote config.
-Duration _refreshFor(Ref ref, String cityId) {
-  final c = ref.read(cityProvider(cityId)).asData?.value;
-  return Duration(seconds: (c?.config.departuresRefreshSeconds ?? 20).clamp(5, 300));
-}
+Duration _refreshFor(Ref ref, String cityId) => refreshInterval(
+      ref.read(cityProvider(cityId)).asData?.value.config.departuresRefreshSeconds,
+      saver: ref.read(settingsProvider).dataSaver,
+    );
 
 final stopDetailProvider =
     FutureProvider.autoDispose.family<StopDetail, CityKey>((ref, k) async {

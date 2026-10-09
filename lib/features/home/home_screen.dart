@@ -469,8 +469,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
         final stops = nearby.asData?.value ?? const <Stop>[];
         final liveAllowed = city.features.realtimeVehicles && city.config.isEnabled('liveVehicles');
         final style = vehicleMarkerStyle(_zoom);
-        // Subscribe to the stream only while buses can actually be drawn.
-        final showLive = settings.liveVehicles && liveAllowed && style.visible;
+        // Subscribe to the stream only while buses can actually be drawn — and never in saver
+        // mode, where the open SSE connection is the single biggest cost on the battery.
+        final showLive = settings.liveVehicles && liveAllowed && style.visible && !settings.dataSaver;
         final live = showLive ? ref.watch(liveVehiclesProvider(widget.cityId)) : null;
         final frame = live?.asData?.value;
         if (frame != null) {
@@ -501,7 +502,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
             : const <NetworkShape>[];
         final layers = MapLayers(live: settings.liveVehicles, pois: settings.poiLayer, network: settings.networkLayer,
             zonal: settings.zonalLayer, rental: settings.rentalLayer, parking: settings.parkingLayer);
-        final liveHint = settings.liveVehicles && liveAllowed && !style.visible;
+        // Why there are no buses: zoomed out, or saving battery. An empty map with no explanation
+        // reads as "no service".
+        final saverHint = settings.dataSaver && settings.liveVehicles && liveAllowed;
+        final liveHint = settings.liveVehicles && liveAllowed && !style.visible && !settings.dataSaver;
         // The commute card only exists when both ends are saved; when it does,
         // the peek grows so it and "Cerca de ti" both fit.
         final favs = ref.watch(favoritesProvider.notifier);
@@ -571,7 +575,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                 ),
               ),
               // Live status / zoom hint (not interactive)
-              if (frame != null || liveHint)
+              if (frame != null || liveHint || saverHint)
                 Positioned(
                   left: 16,
                   top: topInset + 74,
@@ -595,9 +599,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                         : Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.zoom_in_rounded, size: 14, color: scheme.onSurfaceVariant),
+                              Icon(saverHint ? Icons.battery_saver_rounded : Icons.zoom_in_rounded,
+                                  size: 14, color: scheme.onSurfaceVariant),
                               const SizedBox(width: 4),
-                              Text(l10n.zoomInForBuses,
+                              Text(saverHint ? l10n.saverOnShort : l10n.zoomInForBuses,
+                                  key: saverHint ? const ValueKey('home-saver-hint') : null,
                                   style: Theme.of(context).textTheme.labelMedium?.copyWith(color: scheme.onSurfaceVariant)),
                             ],
                           ),
@@ -611,7 +617,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with SingleTickerProvid
                   children: [
                     LayersButton(
                       layers: layers,
-                      liveAvailable: liveAllowed,
+                      liveAvailable: liveAllowed && !settings.dataSaver,
                       poisAvailable: poisAllowed,
                       rentalAvailable: city.bikeShareEnabled,
                       rentalLabel: city.mobility.bikeShare.map((n) => n.name).join(' · '),

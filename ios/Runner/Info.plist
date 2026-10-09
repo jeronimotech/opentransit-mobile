@@ -53,6 +53,11 @@
 	<array>
 		<string>fetch</string>
 		<string>remote-notification</string>
+		<!-- v2.7 "avísame al bajar con la pantalla bloqueada". Only ever started while a guided
+		     trip is open and only when the rider turned it on; "when in use" authorisation plus
+		     this mode is enough for that, with the blue indicator visible the whole time, so we
+		     never ask for "always". -->
+		<string>location</string>
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>

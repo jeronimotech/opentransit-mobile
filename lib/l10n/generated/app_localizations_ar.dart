@@ -2122,4 +2122,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get guideOpen => 'فتح';
+
+  @override
+  String get saverMode => 'وضع التوفير';
+
+  @override
+  String get saverOnShort => 'وضع التوفير';
+
+  @override
+  String get saverExplain =>
+      'طلبات أقل وبدون حافلات مباشرة على خريطة البداية. تتحدّث المواعيد كل دقيقة بدل كل عشرين ثانية؛ وبقية المزايا تعمل كما هي.';
+
+  @override
+  String get backgroundGetOff => 'نبّهني والشاشة مقفلة';
+
+  @override
+  String get backgroundGetOffExplain =>
+      'يواصل متابعة الرحلة والهاتف مقفل، ليصلك تنبيه النزول. فقط خلال رحلة موجَّهة، ويستهلك بطارية أكثر بكثير.';
+
+  @override
+  String get backgroundGetOffOngoing => 'نتابع رحلتك لتنبيهك عند النزول.';
 }
