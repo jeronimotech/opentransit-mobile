@@ -33,6 +33,7 @@ import 'storage/scheduled_trips.dart';
 import 'scheduling/trip_scheduler.dart';
 import 'watch/watch_sync.dart';
 import 'scheduling/push_registrar.dart';
+import 'storage/live_shares.dart';
 import 'storage/preferences.dart';
 import 'storage/route_alerts_store.dart';
 import 'utils/commute.dart';
@@ -311,6 +312,10 @@ final settingsProvider =
 // ───────────────────────── cities ─────────────────────────
 
 final cityCacheProvider = Provider<CityCache>((ref) => CityCache());
+
+/// Live links this phone published and can still take down (v2.7).
+final liveSharesProvider = Provider<LiveSharesRepository>(
+    (ref) => LiveSharesRepository(ref.watch(sharedPrefsProvider)));
 
 /// The city list, from the network when there is one and from disk when there is not.
 ///

@@ -1281,5 +1281,11 @@
   "backgroundGetOffOngoing": "Siguiendo tu viaje para avisarte cuándo bajar.",
   "strictWalkLimit": "Nunca caminar más que eso",
   "strictWalkLimitExplain": "Se dejan fuera las opciones que caminan más de {limit}, y la app te dice cuántas.",
-  "warnWalkLimit": "Dejamos fuera algunas opciones porque caminaban más de tu límite."
+  "warnWalkLimit": "Dejamos fuera algunas opciones porque caminaban más de tu límite.",
+  "liveLinks": "Enlaces en vivo",
+  "liveLinksEmpty": "No tienes enlaces en vivo abiertos.",
+  "liveLinkExpiresAt": "Vence a las {time}",
+  "liveLinkNoExpiry": "Sin hora de vencimiento",
+  "stopSharing": "Detener",
+  "shareExpiresAt": "El enlace vence a las {time}."
 }

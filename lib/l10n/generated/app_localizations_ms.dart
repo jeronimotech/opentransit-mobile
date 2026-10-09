@@ -2167,4 +2167,26 @@ class AppLocalizationsMs extends AppLocalizations {
   @override
   String get warnWalkLimit =>
       'Beberapa pilihan ditinggalkan kerana melebihi had berjalan anda.';
+
+  @override
+  String get liveLinks => 'Pautan langsung';
+
+  @override
+  String get liveLinksEmpty => 'Anda tiada pautan langsung yang terbuka.';
+
+  @override
+  String liveLinkExpiresAt(Object time) {
+    return 'Tamat pada $time';
+  }
+
+  @override
+  String get liveLinkNoExpiry => 'Tiada masa tamat';
+
+  @override
+  String get stopSharing => 'Henti';
+
+  @override
+  String shareExpiresAt(Object time) {
+    return 'Pautan tamat pada $time.';
+  }
 }

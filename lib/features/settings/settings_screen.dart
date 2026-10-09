@@ -12,6 +12,7 @@ import '../../core/utils/links.dart';
 import '../../l10n/generated/app_localizations.dart';
 import 'widgets/app_icon_tile.dart';
 import 'widgets/offline_tile.dart';
+import '../planner/widgets/live_shares_sheet.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key, required this.cityId});
@@ -163,6 +164,15 @@ class SettingsScreen extends ConsumerWidget {
               // Was `l10n.about`, so the support link read "Acerca de" — the one row a rider looks
               // for when something is wrong, labelled as the one that tells them the version.
               ListTile(leading: const Icon(Icons.support_agent), title: Text(l10n.supportTitle), trailing: const Icon(Icons.open_in_new, size: 18), onTap: () => _open(city.links.support!)),
+            // Any live link, stoppable from here: the button used to live only inside the trip
+            // that created it (TransMilenio, 1.10).
+            ListTile(
+              key: const ValueKey('settings-live-links'),
+              leading: const Icon(Icons.share_location_rounded),
+              title: Text(l10n.liveLinks),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => LiveSharesSheet.show(context),
+            ),
             ListTile(
               key: const ValueKey('settings-guide'),
               leading: const Icon(Icons.menu_book_outlined),

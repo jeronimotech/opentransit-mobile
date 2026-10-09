@@ -2175,4 +2175,26 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get warnWalkLimit =>
       'Algumas opções ficaram de fora porque caminhavam mais que o seu limite.';
+
+  @override
+  String get liveLinks => 'Links ao vivo';
+
+  @override
+  String get liveLinksEmpty => 'Você não tem links ao vivo abertos.';
+
+  @override
+  String liveLinkExpiresAt(Object time) {
+    return 'Expira às $time';
+  }
+
+  @override
+  String get liveLinkNoExpiry => 'Sem hora de expiração';
+
+  @override
+  String get stopSharing => 'Parar';
+
+  @override
+  String shareExpiresAt(Object time) {
+    return 'O link expira às $time.';
+  }
 }

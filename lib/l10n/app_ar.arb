@@ -624,5 +624,11 @@
   "backgroundGetOffOngoing": "نتابع رحلتك لتنبيهك عند النزول.",
   "strictWalkLimit": "لا تمشِ أكثر من ذلك",
   "strictWalkLimitExplain": "تُستثنى الخيارات التي تمشي أكثر من {limit}، ويخبرك التطبيق بعددها.",
-  "warnWalkLimit": "استُثنيت بعض الخيارات لأنها تمشي أكثر من الحد الذي حددته."
+  "warnWalkLimit": "استُثنيت بعض الخيارات لأنها تمشي أكثر من الحد الذي حددته.",
+  "liveLinks": "روابط مباشرة",
+  "liveLinksEmpty": "لا توجد روابط مباشرة مفتوحة.",
+  "liveLinkExpiresAt": "ينتهي الساعة {time}",
+  "liveLinkNoExpiry": "بدون وقت انتهاء",
+  "stopSharing": "إيقاف",
+  "shareExpiresAt": "ينتهي الرابط الساعة {time}."
 }

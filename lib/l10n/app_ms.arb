@@ -624,5 +624,11 @@
   "backgroundGetOffOngoing": "Mengikuti perjalanan anda untuk memberitahu bila perlu turun.",
   "strictWalkLimit": "Jangan berjalan lebih daripada itu",
   "strictWalkLimitExplain": "Pilihan yang berjalan lebih daripada {limit} ditinggalkan, dan app memberitahu berapa banyak.",
-  "warnWalkLimit": "Beberapa pilihan ditinggalkan kerana melebihi had berjalan anda."
+  "warnWalkLimit": "Beberapa pilihan ditinggalkan kerana melebihi had berjalan anda.",
+  "liveLinks": "Pautan langsung",
+  "liveLinksEmpty": "Anda tiada pautan langsung yang terbuka.",
+  "liveLinkExpiresAt": "Tamat pada {time}",
+  "liveLinkNoExpiry": "Tiada masa tamat",
+  "stopSharing": "Henti",
+  "shareExpiresAt": "Pautan tamat pada {time}."
 }

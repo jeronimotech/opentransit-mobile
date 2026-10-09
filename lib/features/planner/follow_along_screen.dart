@@ -37,6 +37,8 @@ import 'widgets/boarding_pass.dart';
 import '../../core/utils/trip_alerts.dart';
 import 'widgets/trip_alerts_card.dart';
 import '../../core/utils/tracking_settings.dart';
+import '../../core/utils/itinerary_text.dart';
+import '../../core/storage/live_shares.dart';
 
 /// Pure logic behind "Iniciar viaje": which leg the user is on and how far
 /// they are from the current leg's alighting point. Foreground location only.
@@ -399,7 +401,9 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
     setState(() => _shareBusy = true);
     try {
       if (_sharing) {
+        final token = _share?.trip?.token;
         await _share?.revoke();
+        if (token != null) await ref.read(liveSharesProvider).remove(token);
         if (!mounted) return;
         setState(() => _sharing = false);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.shareTripStopped)));
@@ -413,7 +417,29 @@ class _FollowAlongScreenState extends ConsumerState<FollowAlongScreen> {
         return;
       }
       setState(() => _sharing = true);
-      await SharePlus.instance.share(ShareParams(uri: Uri.parse(trip.url)));
+      // Remembered so it can be stopped later from anywhere, and shared as text so whoever gets
+      // the message can follow the trip without opening the page (TransMilenio, 1.10).
+      await ref.read(liveSharesProvider).add(LiveShare(
+            cityId: widget.cityId,
+            token: trip.token,
+            writeKey: trip.writeKey,
+            url: trip.url,
+            label: it.legs.last.to.name,
+            expiresAt: trip.expiresAt,
+            createdAt: DateTime.now(),
+          ));
+      if (!mounted) return;
+      final locale = Localizations.localeOf(context).toString();
+      await SharePlus.instance.share(ShareParams(
+        text: itineraryAsText(it, l10n, locale, link: trip.url),
+        subject: l10n.shareTripActive,
+      ));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(trip.expiresAt == null
+            ? l10n.liveLinkNoExpiry
+            : l10n.shareExpiresAt(formatClock(trip.expiresAt!, locale))),
+      ));
     } finally {
       if (mounted) setState(() => _shareBusy = false);
     }

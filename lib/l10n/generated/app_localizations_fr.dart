@@ -2179,4 +2179,26 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get warnWalkLimit =>
       'Des options ont été écartées parce qu\'elles dépassaient votre limite de marche.';
+
+  @override
+  String get liveLinks => 'Liens en direct';
+
+  @override
+  String get liveLinksEmpty => 'Vous n\'avez aucun lien en direct ouvert.';
+
+  @override
+  String liveLinkExpiresAt(Object time) {
+    return 'Expire à $time';
+  }
+
+  @override
+  String get liveLinkNoExpiry => 'Pas d\'heure d\'expiration';
+
+  @override
+  String get stopSharing => 'Arrêter';
+
+  @override
+  String shareExpiresAt(Object time) {
+    return 'Le lien expire à $time.';
+  }
 }

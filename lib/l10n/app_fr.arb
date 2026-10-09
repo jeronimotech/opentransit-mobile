@@ -624,5 +624,11 @@
   "backgroundGetOffOngoing": "Suivi de votre trajet pour vous prévenir quand descendre.",
   "strictWalkLimit": "Ne jamais marcher plus",
   "strictWalkLimitExplain": "Les options qui marchent plus de {limit} sont écartées, et l'app indique combien.",
-  "warnWalkLimit": "Des options ont été écartées parce qu'elles dépassaient votre limite de marche."
+  "warnWalkLimit": "Des options ont été écartées parce qu'elles dépassaient votre limite de marche.",
+  "liveLinks": "Liens en direct",
+  "liveLinksEmpty": "Vous n'avez aucun lien en direct ouvert.",
+  "liveLinkExpiresAt": "Expire à {time}",
+  "liveLinkNoExpiry": "Pas d'heure d'expiration",
+  "stopSharing": "Arrêter",
+  "shareExpiresAt": "Le lien expire à {time}."
 }

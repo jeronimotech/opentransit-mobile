@@ -3731,6 +3731,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Dejamos fuera algunas opciones porque caminaban más de tu límite.'**
   String get warnWalkLimit;
+
+  /// No description provided for @liveLinks.
+  ///
+  /// In es, this message translates to:
+  /// **'Enlaces en vivo'**
+  String get liveLinks;
+
+  /// No description provided for @liveLinksEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes enlaces en vivo abiertos.'**
+  String get liveLinksEmpty;
+
+  /// No description provided for @liveLinkExpiresAt.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence a las {time}'**
+  String liveLinkExpiresAt(Object time);
+
+  /// No description provided for @liveLinkNoExpiry.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin hora de vencimiento'**
+  String get liveLinkNoExpiry;
+
+  /// No description provided for @stopSharing.
+  ///
+  /// In es, this message translates to:
+  /// **'Detener'**
+  String get stopSharing;
+
+  /// No description provided for @shareExpiresAt.
+  ///
+  /// In es, this message translates to:
+  /// **'El enlace vence a las {time}.'**
+  String shareExpiresAt(Object time);
 }
 
 class _AppLocalizationsDelegate

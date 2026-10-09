@@ -624,5 +624,11 @@
   "backgroundGetOffOngoing": "Sto seguendo il tuo viaggio per avvisarti quando scendere.",
   "strictWalkLimit": "Mai camminare più di così",
   "strictWalkLimitExplain": "Le opzioni che camminano più di {limit} vengono escluse, e l'app dice quante.",
-  "warnWalkLimit": "Alcune opzioni sono state escluse perché superavano il tuo limite di cammino."
+  "warnWalkLimit": "Alcune opzioni sono state escluse perché superavano il tuo limite di cammino.",
+  "liveLinks": "Link in diretta",
+  "liveLinksEmpty": "Non hai link in diretta aperti.",
+  "liveLinkExpiresAt": "Scade alle {time}",
+  "liveLinkNoExpiry": "Senza ora di scadenza",
+  "stopSharing": "Ferma",
+  "shareExpiresAt": "Il link scade alle {time}."
 }

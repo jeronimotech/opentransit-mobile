@@ -27,6 +27,9 @@ import 'planner_state.dart';
 import '../trips/schedule_trip_sheet.dart';
 import 'widgets/equivalent_services.dart';
 import 'widgets/boarding_pass.dart';
+import 'widgets/live_shares_sheet.dart';
+import '../../core/utils/itinerary_text.dart';
+import '../../core/storage/live_shares.dart';
 
 class ItineraryDetailScreen extends ConsumerStatefulWidget {
   const ItineraryDetailScreen({super.key, required this.cityId, required this.index});
@@ -264,7 +267,13 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
               onSharePlan: () async {
                 final req = s.request;
                 if (req == null) return;
-                await SharePlus.instance.share(ShareParams(uri: _shareLink(req), subject: l10n.shareTrip));
+                // The instructions travel in the message: a bare link is useless to whoever reads
+                // it on a phone with no data, or who simply does not tap links (TransMilenio, 1.10).
+                await SharePlus.instance.share(ShareParams(
+                  text: itineraryAsText(it, l10n, locale,
+                      fromName: s.from?.name, toName: s.to?.name, link: _shareLink(req).toString()),
+                  subject: l10n.shareTrip,
+                ));
               },
             ),
           ),
@@ -1170,7 +1179,29 @@ class _ShareButtonState extends ConsumerState<_ShareButton> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.shareTripFailed)));
         return;
       }
-      await SharePlus.instance.share(ShareParams(uri: Uri.parse(trip.url)));
+      await ref.read(liveSharesProvider).add(LiveShare(
+            cityId: widget.cityId,
+            token: trip.token,
+            writeKey: trip.writeKey,
+            url: trip.url,
+            label: widget.itinerary.legs.last.to.name,
+            expiresAt: trip.expiresAt,
+            createdAt: DateTime.now(),
+          ));
+      if (!mounted) return;
+      final locale = Localizations.localeOf(context).toString();
+      await SharePlus.instance.share(ShareParams(
+        text: itineraryAsText(widget.itinerary, l10n, locale, link: trip.url),
+        subject: l10n.shareTripActive,
+      ));
+      if (!mounted) return;
+      // When it dies, and how to kill it sooner. Neither was ever shown.
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(trip.expiresAt == null
+            ? l10n.liveLinkNoExpiry
+            : l10n.shareExpiresAt(formatClock(trip.expiresAt!, locale))),
+        action: SnackBarAction(label: l10n.stopSharing, onPressed: () => LiveSharesSheet.show(context)),
+      ));
     } finally {
       if (mounted) setState(() => _busy = false);
     }

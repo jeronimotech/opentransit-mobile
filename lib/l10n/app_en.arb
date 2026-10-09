@@ -1078,5 +1078,11 @@
   "backgroundGetOffOngoing": "Following your trip to alert you when to get off.",
   "strictWalkLimit": "Never walk more than that",
   "strictWalkLimitExplain": "Options that walk further than {limit} are left out, and the app says how many.",
-  "warnWalkLimit": "Some options were left out because they walked further than your limit."
+  "warnWalkLimit": "Some options were left out because they walked further than your limit.",
+  "liveLinks": "Live links",
+  "liveLinksEmpty": "You have no live links open.",
+  "liveLinkExpiresAt": "Expires at {time}",
+  "liveLinkNoExpiry": "No expiry time",
+  "stopSharing": "Stop",
+  "shareExpiresAt": "The link expires at {time}."
 }
