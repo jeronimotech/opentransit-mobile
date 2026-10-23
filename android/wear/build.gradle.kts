@@ -71,7 +71,7 @@ dependencies {
     implementation("androidx.wear.protolayout:protolayout:1.2.1")
     implementation("androidx.wear.protolayout:protolayout-material:1.2.1")
     implementation("androidx.wear.protolayout:protolayout-expression:1.2.1")
-    implementation("com.google.guava:guava:33.3.1-android")
+    implementation("com.google.guava:guava:33.7.1-android")
 
     // Ongoing activity: the trip chip on the watch face.
     implementation("androidx.wear:wear-ongoing:1.0.0")
