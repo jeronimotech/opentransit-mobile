@@ -703,6 +703,18 @@ class AppLocalizationsMs extends AppLocalizations {
   String get poiLibrary => 'Perpustakaan';
 
   @override
+  String get poiPharmacy => 'Farmasi';
+
+  @override
+  String get poiPolice => 'Polis';
+
+  @override
+  String get servicesAtStation => 'Di stesen';
+
+  @override
+  String get servicesNearby => 'Berhampiran';
+
+  @override
   String get poiOther => 'Kemudahan';
 
   @override

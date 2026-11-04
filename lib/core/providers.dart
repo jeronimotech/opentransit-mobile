@@ -622,6 +622,23 @@ final nearbyStopsProvider =
   }
 });
 
+class StationServicesKey {
+  const StationServicesKey(this.cityId, this.lat, this.lon, {this.radius = 400});
+  final String cityId;
+  final double lat;
+  final double lon;
+  final int radius;
+  @override
+  bool operator ==(Object other) =>
+      other is StationServicesKey &&
+      other.cityId == cityId &&
+      other.lat == lat &&
+      other.lon == lon &&
+      other.radius == radius;
+  @override
+  int get hashCode => Object.hash(cityId, lat, lon, radius);
+}
+
 class CityKey {
   const CityKey(this.cityId, this.id);
   final String cityId;
@@ -833,6 +850,19 @@ final routeDetailProvider = FutureProvider.autoDispose.family<RouteDetail, CityK
 
 /// Other services running one leg's segment, so a rider can board whichever comes first. Falls back
 /// to the downloaded pattern index, which answers the same question with the same rule.
+/// Station services for a stop page. A nicety, not load-bearing: on any failure it yields an
+/// empty split so the section simply does not render, never an error on the stop screen.
+final stationServicesProvider =
+    FutureProvider.autoDispose.family<StationServices, StationServicesKey>((ref, k) async {
+  try {
+    return await ref
+        .watch(apiClientProvider)
+        .stationServices(k.cityId, LatLng(k.lat, k.lon), radius: k.radius);
+  } on Object {
+    return StationServices.empty;
+  }
+});
+
 final segmentServicesProvider =
     FutureProvider.autoDispose.family<SegmentServices, SegmentKey>((ref, k) async {
   try {

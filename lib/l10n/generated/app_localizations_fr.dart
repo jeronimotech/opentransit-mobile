@@ -703,6 +703,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get poiLibrary => 'Bibliothèque';
 
   @override
+  String get poiPharmacy => 'Pharmacie';
+
+  @override
+  String get poiPolice => 'Police';
+
+  @override
+  String get servicesAtStation => 'À la station';
+
+  @override
+  String get servicesNearby => 'À proximité';
+
+  @override
   String get poiOther => 'Service';
 
   @override

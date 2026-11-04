@@ -227,6 +227,16 @@ class HttpApiClient implements ApiClient {
       }));
 
   @override
+  Future<StationServices> stationServices(String cityId, LatLng position,
+          {int radius = 400, List<String>? types}) async =>
+      StationServices.fromJson(await _get('${_c(cityId)}/pois/near', query: {
+        'lat': position.lat,
+        'lon': position.lon,
+        'radius': radius,
+        if (types != null && types.isNotEmpty) 'type': types.join(','),
+      }));
+
+  @override
   Future<List<RouteRef>> routes(String cityId,
       {Component? component, String? query}) async {
     final j = await _get('${_c(cityId)}/routes', query: {

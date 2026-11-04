@@ -695,6 +695,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get poiLibrary => 'مكتبة';
 
   @override
+  String get poiPharmacy => 'صيدلية';
+
+  @override
+  String get poiPolice => 'شرطة';
+
+  @override
+  String get servicesAtStation => 'في المحطة';
+
+  @override
+  String get servicesNearby => 'قريب';
+
+  @override
   String get poiOther => 'خدمة';
 
   @override

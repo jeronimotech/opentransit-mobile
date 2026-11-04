@@ -1326,6 +1326,30 @@ abstract class AppLocalizations {
   /// **'Biblioteca'**
   String get poiLibrary;
 
+  /// No description provided for @poiPharmacy.
+  ///
+  /// In es, this message translates to:
+  /// **'Droguería'**
+  String get poiPharmacy;
+
+  /// No description provided for @poiPolice.
+  ///
+  /// In es, this message translates to:
+  /// **'Policía'**
+  String get poiPolice;
+
+  /// No description provided for @servicesAtStation.
+  ///
+  /// In es, this message translates to:
+  /// **'En la estación'**
+  String get servicesAtStation;
+
+  /// No description provided for @servicesNearby.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerca'**
+  String get servicesNearby;
+
   /// No description provided for @poiOther.
   ///
   /// In es, this message translates to:

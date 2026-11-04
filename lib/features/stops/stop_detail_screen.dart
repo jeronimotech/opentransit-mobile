@@ -200,6 +200,9 @@ class StopDetailScreen extends ConsumerWidget {
                     ),
                   ),
                 _StopAlerts(cityId: cityId, stopId: stopId, routeIds: d.routes.map((r) => r.id).toSet()),
+                // 2b. Services at/around this station (OSM), split honestly: facilities that are
+                // part of the station vs. everything walkable nearby.
+                _StationServices(cityId: cityId, position: stop.position),
                 // 3. Accessibility: one muted line.
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -236,6 +239,78 @@ class StopDetailScreen extends ConsumerWidget {
   static List<RouteRef> _dedupe(List<RouteRef> routes) {
     final seen = <String>{};
     return [for (final r in routes) if (seen.add(r.shortName)) r];
+  }
+}
+
+class _StationServices extends ConsumerWidget {
+  const _StationServices({required this.cityId, required this.position});
+  final String cityId;
+  final LatLng position;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final key = StationServicesKey(cityId, position.lat, position.lon);
+    final svc = ref.watch(stationServicesProvider(key)).asData?.value;
+    if (svc == null || svc.isEmpty) return const SizedBox.shrink();
+    final count = svc.atStation.length + svc.nearby.length;
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        key: const ValueKey('services-section'),
+        title: Text(l10n.services,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+        subtitle: Text('$count', style: Theme.of(context).textTheme.labelSmall),
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+        childrenPadding: const EdgeInsets.only(bottom: 8),
+        children: [
+          if (svc.atStation.isNotEmpty) ...[
+            _groupHeader(context, l10n.servicesAtStation),
+            for (final p in svc.atStation) _ServiceRow(poi: p),
+          ],
+          if (svc.nearby.isNotEmpty) ...[
+            _groupHeader(context, l10n.servicesNearby),
+            for (final p in svc.nearby) _ServiceRow(poi: p),
+          ],
+        ],
+      ),
+    );
+  }
+
+  static Widget _groupHeader(BuildContext context, String text) => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+        child: Text(text.toUpperCase(),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.6,
+                color: Theme.of(context).colorScheme.outline)),
+      );
+}
+
+class _ServiceRow extends StatelessWidget {
+  const _ServiceRow({required this.poi});
+  final Poi poi;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final mins = poi.walkMinutes;
+    return ListTile(
+      dense: true,
+      visualDensity: VisualDensity.compact,
+      minLeadingWidth: 0,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      leading: Icon(poiIcon(poi.type), color: poiColor(poi.type), size: 22),
+      title: Text(poi.name ?? poiLabel(poi.type, l10n),
+          maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: poi.name == null ? null : Text(poiLabel(poi.type, l10n),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
+      trailing: mins == null
+          ? null
+          : Text(l10n.minutesShort(mins),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: scheme.outline)),
+    );
   }
 }
 

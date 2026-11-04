@@ -610,6 +610,8 @@ String poiLabel(String type, AppLocalizations l10n) => switch (type) {
       'atm' => l10n.poiAtm,
       'health' => l10n.poiHealth,
       'library' => l10n.poiLibrary,
+      'pharmacy' => l10n.poiPharmacy,
+      'police' => l10n.poiPolice,
       _ => l10n.poiOther,
     };
 
@@ -619,6 +621,8 @@ IconData poiIcon(String type) => switch (type) {
       'atm' => Icons.local_atm_rounded,
       'health' => Icons.medical_services_rounded,
       'library' => Icons.local_library_rounded,
+      'pharmacy' => Icons.local_pharmacy_rounded,
+      'police' => Icons.local_police_rounded,
       _ => Icons.place_rounded,
     };
 
@@ -628,6 +632,8 @@ Color poiColor(String type) => switch (type) {
       'atm' => const Color(0xFF3949AB),
       'health' => const Color(0xFFE53935),
       'library' => const Color(0xFF6D4C41),
+      'pharmacy' => const Color(0xFF2E7D32),
+      'police' => const Color(0xFF1565C0),
       _ => const Color(0xFF757575),
     };
 
@@ -638,6 +644,8 @@ String poiGlyph(String type) => switch (type) {
       'atm' => r'$',
       'health' => '+',
       'library' => 'L',
+      'pharmacy' => '+Rx',
+      'police' => 'P',
       _ => '•',
     };
 

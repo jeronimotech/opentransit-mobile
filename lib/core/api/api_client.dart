@@ -105,6 +105,11 @@ abstract class ApiClient {
   /// v1.1 — points of interest inside [bbox] (`minLon,minLat,maxLon,maxLat`).
   Future<List<Poi>> pois(String cityId, List<double> bbox, {List<String>? types});
 
+  /// Station services split into `atStation` (facilities that are part of the station) and
+  /// `nearby` (everything else within [radius] metres, nearest first). See `/pois/near`.
+  Future<StationServices> stationServices(String cityId, LatLng position,
+      {int radius = 400, List<String>? types});
+
   Future<VehicleFrame> vehicles(String cityId, {String? routeId, List<double>? bbox});
 
   /// Raw SSE events (`{"type": "full" | "delta", ...}`); fold them with

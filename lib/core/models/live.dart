@@ -258,6 +258,8 @@ class Poi {
     required this.position,
     this.source = 'osm',
     this.wheelchair,
+    this.distanceMeters,
+    this.walkMinutes,
   });
   final String id;
 
@@ -267,6 +269,10 @@ class Poi {
   final LatLng position;
   final String source;
   final String? wheelchair;
+
+  /// Set by the station-services endpoint (`/pois/near`); null on the bbox layer.
+  final int? distanceMeters;
+  final int? walkMinutes;
 
   /// Parses one GeoJSON `Feature` with a `Point` geometry.
   static Poi? fromFeature(Map<String, dynamic> f) {
@@ -286,11 +292,37 @@ class Poi {
       position: LatLng(asDouble(coords[1]) ?? 0, asDouble(coords[0]) ?? 0),
       source: props['source']?.toString() ?? 'osm',
       wheelchair: props['wheelchair']?.toString(),
+      distanceMeters: asInt(props['distanceMeters']),
+      walkMinutes: asInt(props['walkMinutes']),
     );
   }
 
   static List<Poi> fromCollection(Map<String, dynamic> fc) => [
         for (final f in (fc['features'] as List? ?? const []))
+          if (f is Map) ?Poi.fromFeature(Map<String, dynamic>.from(f)),
+      ];
+}
+
+/// Services split for a station page: facilities that are part of the station itself
+/// (`atStation`, identified by tag server-side, e.g. its bike parking) and everything
+/// else within walking distance (`nearby`, nearest first). The server never puts a
+/// street-corner POI in `atStation`, so the UI can label the two groups honestly.
+class StationServices {
+  const StationServices({required this.atStation, required this.nearby});
+  final List<Poi> atStation;
+  final List<Poi> nearby;
+
+  bool get isEmpty => atStation.isEmpty && nearby.isEmpty;
+
+  factory StationServices.fromJson(Map<String, dynamic> j) => StationServices(
+        atStation: _poiList(j['atStation']),
+        nearby: _poiList(j['nearby']),
+      );
+
+  static const empty = StationServices(atStation: [], nearby: []);
+
+  static List<Poi> _poiList(dynamic v) => [
+        for (final f in (v as List? ?? const []))
           if (f is Map) ?Poi.fromFeature(Map<String, dynamic>.from(f)),
       ];
 }

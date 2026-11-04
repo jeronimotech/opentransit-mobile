@@ -292,6 +292,32 @@ class MockApiClient implements ApiClient {
   }
 
   @override
+  Future<StationServices> stationServices(String cityId, LatLng position,
+      {int radius = 400, List<String>? types}) async {
+    final all = Poi.fromCollection(await _map('pois'));
+    final at = <Poi>[];
+    final near = <Poi>[];
+    for (final p in all) {
+      if (types != null && types.isNotEmpty && !types.contains(p.type)) continue;
+      final d = haversineMeters(position, p.position).round();
+      final deco = Poi(
+        id: p.id, type: p.type, name: p.name, position: p.position,
+        source: p.source, wheelchair: p.wheelchair,
+        distanceMeters: d, walkMinutes: (d / 80).ceil().clamp(1, 999),
+      );
+      final facility = (p.name ?? '').toLowerCase().contains('transmilenio');
+      if (facility && d <= 150) {
+        at.add(deco);
+      } else if (d <= radius) {
+        near.add(deco);
+      }
+    }
+    at.sort((a, b) => a.distanceMeters!.compareTo(b.distanceMeters!));
+    near.sort((a, b) => a.distanceMeters!.compareTo(b.distanceMeters!));
+    return StationServices(atStation: at, nearby: near.take(40).toList());
+  }
+
+  @override
   Future<List<RouteRef>> routes(String cityId, {Component? component, String? query}) async {
     var all = asList((await _map('routes'))['routes'], RouteRef.fromJson);
     if (component != null) all = all.where((r) => r.component == component).toList();
