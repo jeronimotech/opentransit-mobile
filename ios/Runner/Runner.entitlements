@@ -21,5 +21,12 @@
 		<string>applinks:kualalumpur.opentransit.tech</string>
 		<string>applinks:brisbane.opentransit.tech</string>
 	</array>
+	<!-- v1.18 Mi tullave: read the fare card over NFC (Core NFC, ISO 7816 / NFCTagReaderSession).
+	     The AID list is in Info.plist (…iso7816.select-identifiers); the App ID carries the
+	     NFC_TAG_READING capability (tool/asc_signing.py bundle-id). -->
+	<key>com.apple.developer.nfc.readersession.formats</key>
+	<array>
+		<string>TAG</string>
+	</array>
 </dict>
 </plist>

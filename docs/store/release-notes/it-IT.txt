@@ -1,3 +1,3 @@
-La tua tullave nell'app: avvicina la carta per vedere saldo, numero e ultimi movimenti. Tutto sul telefono, nulla viene inviato. (Android, per ora.)
+La tua tullave nell'app: avvicina la carta per vedere saldo, numero e ultimi movimenti. Tutto sul telefono, nulla viene inviato.
 Servizi della stazione: cosa c'è in stazione e nei dintorni, con il tempo a piedi.
 Inoltre: quali altre linee servono la stessa tratta, viaggio guidato con carta d'imbarco, avviso di discesa, orari e coincidenze, e condivisione del viaggio.

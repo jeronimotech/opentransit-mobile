@@ -125,5 +125,9 @@
 	</array>
 	<key>NFCReaderUsageDescription</key>
 	<string>Leer el saldo y los movimientos de tu tarjeta de transporte, en el teléfono.</string>
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>D4100000030001</string>
+	</array>
 </dict>
 </plist>

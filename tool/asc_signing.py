@@ -178,13 +178,17 @@ def cmd_bundle_id(c: Client, args: argparse.Namespace) -> None:
         log(f"bundle id created: {rec['id']} ({ident})")
     caps = c.request("GET", f"/bundleIds/{rec['id']}/bundleIdCapabilities").get("data", [])
     types = sorted({x["attributes"]["capabilityType"] for x in caps})
-    if "ASSOCIATED_DOMAINS" not in types:
-        body = {"data": {"type": "bundleIdCapabilities",
-                         "attributes": {"capabilityType": "ASSOCIATED_DOMAINS"},
-                         "relationships": {"bundleId": {"data": {"type": "bundleIds", "id": rec["id"]}}}}}
-        c.request("POST", "/bundleIdCapabilities", body)
-        types.append("ASSOCIATED_DOMAINS")
-        log("enabled ASSOCIATED_DOMAINS")
+    # ASSOCIATED_DOMAINS: Universal Links. NFC_TAG_READING: reading the tullave fare card
+    # (Core NFC, ISO 7816). Enabling a new capability here invalidates existing profiles, so
+    # `profile` must regenerate afterwards (it deletes a non-ACTIVE profile and recreates it).
+    for cap in ("ASSOCIATED_DOMAINS", "NFC_TAG_READING"):
+        if cap not in types:
+            body = {"data": {"type": "bundleIdCapabilities",
+                             "attributes": {"capabilityType": cap},
+                             "relationships": {"bundleId": {"data": {"type": "bundleIds", "id": rec["id"]}}}}}
+            c.request("POST", "/bundleIdCapabilities", body)
+            types.append(cap)
+            log(f"enabled {cap}")
     emit({"id": rec["id"], "identifier": ident, "name": rec["attributes"].get("name"),
           "capabilities": sorted(types)})
 
