@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/farecard/fare_card_reader.dart';
 import '../../core/farecard/tullave.dart';
 import '../../core/providers.dart';
 import '../../core/utils/fare.dart';
-import '../../core/utils/format.dart';
 import '../../l10n/generated/app_localizations.dart';
 
 /// "Mi tullave": read the card's balance, number and last movements by NFC, on-device.
@@ -193,7 +193,7 @@ class _MovementRow extends StatelessWidget {
       title: Text(label),
       subtitle: m.at == null
           ? null
-          : Text('${formatDateShort(m.at!, locale)} · ${formatClock(m.at!, locale)}',
+          : Text(DateFormat.yMMMd(locale).add_Hm().format(m.at!.toLocal()),
               style: Theme.of(context).textTheme.labelSmall?.copyWith(color: scheme.outline)),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
