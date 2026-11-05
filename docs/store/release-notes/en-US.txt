@@ -1,6 +1,3 @@
-What else runs the same segment: board whichever comes first, and we tell you which platform.
-The guided trip shows what comes next, carries a boarding card with the destination written on the bus, and warns you when an alert affects the rest of your trip.
-Timetables and connections on the route page.
-Get-off alert with the screen locked, if you switch it on.
-Saver mode, emergency lines, and reporting wrong data.
-Share a trip as text, and stop the link.
+Your tullave in the app: tap the card to see your balance, number and last movements. All on the phone — nothing is sent. (Android for now.)
+Station services: what's at the station and what's nearby, with the walking time.
+Plus: which other routes serve the same leg, a guided trip with a boarding card, the get-off alert, timetables and connections, and sharing a trip.

@@ -1,6 +1,3 @@
-Perkhidmatan lain di laluan sama: naiki yang tiba dahulu, dan kami beritahu platformnya.
-Perjalanan berpandu menunjukkan langkah seterusnya, membawa kad menaiki dengan destinasi pada papan tanda, dan memberi amaran apabila makluman menjejaskan baki perjalanan.
-Jadual dan sambungan pada halaman laluan.
-Makluman turun semasa skrin berkunci, jika anda hidupkan.
-Mod penjimatan, talian kecemasan, lapor data salah.
-Kongsi perjalanan sebagai teks dan hentikan pautan.
+tullave anda dalam app: dekatkan kad untuk lihat baki, nombor dan transaksi terakhir. Semua pada telefon — tiada apa dihantar. (Android buat masa ini.)
+Perkhidmatan stesen: apa yang ada di stesen dan berdekatan, dengan masa berjalan kaki.
+Juga: laluan lain pada segmen yang sama, perjalanan berpandu dengan pas menaiki, amaran turun, jadual dan sambungan, dan berkongsi perjalanan.

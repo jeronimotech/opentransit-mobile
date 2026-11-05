@@ -1,6 +1,3 @@
-Quali altre linee servono la stessa tratta: sali sulla prima che arriva, e ti diciamo la banchina.
-Il viaggio guidato mostra il passo successivo, porta una scheda di salita con la destinazione indicata sul mezzo e avvisa quando un avviso riguarda il resto.
-Orari e coincidenze nella pagina della linea.
-Avviso di discesa a schermo bloccato, se lo attivi.
-Modalità risparmio, numeri di emergenza, segnalazione di errori.
-Condivisione del viaggio in testo e stop al link.
+La tua tullave nell'app: avvicina la carta per vedere saldo, numero e ultimi movimenti. Tutto sul telefono, nulla viene inviato. (Android, per ora.)
+Servizi della stazione: cosa c'è in stazione e nei dintorni, con il tempo a piedi.
+Inoltre: quali altre linee servono la stessa tratta, viaggio guidato con carta d'imbarco, avviso di discesa, orari e coincidenze, e condivisione del viaggio.

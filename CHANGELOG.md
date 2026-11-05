@@ -2,6 +2,13 @@
 
 All notable changes to opentransit-mobile. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## 1.18.0
+
+### Added
+- **Mi tullave.** Read your tullave card over NFC — balance, card number and the last ten movements — entirely on the phone. No account, no backend, nothing sent anywhere: the app talks to the card directly and is strictly more private than the operator's own app. Validated on real hardware; the card answers plain ISO 7816 with no authentication. Android only this release — iOS needs Apple's Core NFC entitlement, next. Bogotá.
+- **Servicios en la estación.** The stop page now lists what is *at* the station (its own bike parking, identified by tag) and what is *nearby* (nearest first, with the walking time), split honestly so a street-corner pharmacy is never labelled "in the station". From the same OpenStreetMap data we already carry — no image maps to maintain. Bogotá.
+- Pharmacies and police posts get their own icon on the services layer instead of a generic marker.
+
 ## 1.15.0
 
 ### Added

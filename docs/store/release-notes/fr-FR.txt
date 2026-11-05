@@ -1,6 +1,3 @@
-Quelles autres lignes desservent le même trajet : montez dans la première qui arrive, avec le quai.
-Le trajet guidé affiche l'étape suivante, fournit une fiche d'embarquement avec la destination affichée sur le véhicule, et prévient quand une alerte touche la suite.
-Horaires et correspondances sur la page de ligne.
-Alerte de descente écran verrouillé, si vous l'activez.
-Mode économie, numéros d'urgence, signalement d'erreurs.
-Partage du trajet en texte, et arrêt du lien.
+Votre tullave dans l'app : approchez la carte pour voir le solde, le numéro et les derniers mouvements. Tout sur le téléphone, rien n'est envoyé. (Android pour l'instant.)
+Services de la station : ce qui est à la station et à proximité, avec le temps à pied.
+Et aussi : les autres lignes du même tronçon, le trajet guidé avec carte d'embarquement, l'alerte de descente, horaires et correspondances, et le partage du trajet.

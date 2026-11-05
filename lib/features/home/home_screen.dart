@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -793,7 +794,7 @@ class _HomeSheet extends ConsumerWidget {
           // Only once the sheet is dragged up.
           if (expanded) ...[
             const SizedBox(height: 14),
-            if (fareCardFor(cityId) != null)
+            if (fareCardFor(cityId) != null && defaultTargetPlatform == TargetPlatform.android)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 2),
                 child: Align(

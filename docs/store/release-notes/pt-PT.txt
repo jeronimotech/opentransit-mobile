@@ -1,6 +1,3 @@
-Que outras linhas servem o mesmo trecho: entre na primeira que chegar, e dizemos a plataforma.
-A viagem guiada mostra o que vem a seguir, traz uma ficha de embarque com o destino exibido no veículo e avisa quando um alerta afeta o resto do percurso.
-Horários e ligações na página da linha.
-Aviso de desembarque com o ecrã bloqueado, se o ativar.
-Modo de economia, linhas de emergência e relatar dados errados.
-Partilhar a viagem em texto e parar o link.
+O seu tullave na app: aproxime o cartão para ver o saldo, o número e os últimos movimentos. Tudo no telemóvel — nada é enviado. (Android, para já.)
+Serviços da estação: o que há na estação e por perto, com o tempo a pé.
+E ainda: que outras linhas servem o mesmo troço, viagem guiada com cartão de embarque, aviso de saída, horários e ligações, e partilhar a viagem.
