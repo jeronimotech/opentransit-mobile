@@ -123,5 +123,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NFCReaderUsageDescription</key>
+	<string>Leer el saldo y los movimientos de tu tarjeta de transporte, en el teléfono.</string>
 </dict>
 </plist>

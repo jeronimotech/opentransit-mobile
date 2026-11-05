@@ -2218,4 +2218,62 @@ class AppLocalizationsFr extends AppLocalizations {
   String showMoreCount(Object count) {
     return 'Voir $count de plus';
   }
+
+  @override
+  String get tullaveTitle => 'Ma tullave';
+
+  @override
+  String get tullaveScan => 'Lire la carte';
+
+  @override
+  String get tullaveRescan => 'Relire';
+
+  @override
+  String get tullaveScanning => 'Approchez la carte…';
+
+  @override
+  String get tullaveHold => 'Placez votre tullave au dos du téléphone';
+
+  @override
+  String get tullaveBalance => 'Solde';
+
+  @override
+  String get tullaveNumber => 'Carte';
+
+  @override
+  String get tullaveMovements => 'Activité récente';
+
+  @override
+  String get tullaveEmptyMovements => 'Aucune activité récente.';
+
+  @override
+  String get tullaveLocalRead =>
+      'La lecture est locale : votre numéro de carte et votre solde ne quittent pas le téléphone.';
+
+  @override
+  String get tullaveTrip => 'Trajet';
+
+  @override
+  String get tullaveTopUp => 'Recharge';
+
+  @override
+  String get tullaveTopUpReversal => 'Annulation de recharge';
+
+  @override
+  String get tullaveMovementOther => 'Opération';
+
+  @override
+  String get tullaveErrUnavailable => 'Ce téléphone n’a pas de NFC.';
+
+  @override
+  String get tullaveErrDisabled => 'Activez le NFC pour lire votre carte.';
+
+  @override
+  String get tullaveErrTimeout => 'Carte non détectée. Réessayez.';
+
+  @override
+  String get tullaveErrNotTullave => 'Cela ne ressemble pas à une tullave.';
+
+  @override
+  String get tullaveErrFailed => 'Impossible de lire la carte. Réessayez.';
 }

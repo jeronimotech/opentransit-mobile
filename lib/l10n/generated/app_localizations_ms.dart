@@ -2206,4 +2206,62 @@ class AppLocalizationsMs extends AppLocalizations {
   String showMoreCount(Object count) {
     return 'Tunjuk $count lagi';
   }
+
+  @override
+  String get tullaveTitle => 'tullave saya';
+
+  @override
+  String get tullaveScan => 'Baca kad';
+
+  @override
+  String get tullaveRescan => 'Baca semula';
+
+  @override
+  String get tullaveScanning => 'Dekatkan kad…';
+
+  @override
+  String get tullaveHold => 'Letakkan tullave anda pada belakang telefon';
+
+  @override
+  String get tullaveBalance => 'Baki';
+
+  @override
+  String get tullaveNumber => 'Kad';
+
+  @override
+  String get tullaveMovements => 'Aktiviti terkini';
+
+  @override
+  String get tullaveEmptyMovements => 'Tiada aktiviti terkini.';
+
+  @override
+  String get tullaveLocalRead =>
+      'Bacaan dibuat pada peranti: nombor kad dan baki anda tidak keluar dari telefon.';
+
+  @override
+  String get tullaveTrip => 'Perjalanan';
+
+  @override
+  String get tullaveTopUp => 'Tambah nilai';
+
+  @override
+  String get tullaveTopUpReversal => 'Pembatalan tambah nilai';
+
+  @override
+  String get tullaveMovementOther => 'Transaksi';
+
+  @override
+  String get tullaveErrUnavailable => 'Telefon ini tiada NFC.';
+
+  @override
+  String get tullaveErrDisabled => 'Hidupkan NFC untuk membaca kad.';
+
+  @override
+  String get tullaveErrTimeout => 'Kad tidak dikesan. Cuba lagi.';
+
+  @override
+  String get tullaveErrNotTullave => 'Itu tidak kelihatan seperti tullave.';
+
+  @override
+  String get tullaveErrFailed => 'Tidak dapat membaca kad. Cuba lagi.';
 }

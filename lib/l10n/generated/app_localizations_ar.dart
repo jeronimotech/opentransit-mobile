@@ -2193,4 +2193,62 @@ class AppLocalizationsAr extends AppLocalizations {
   String showMoreCount(Object count) {
     return 'عرض $count أخرى';
   }
+
+  @override
+  String get tullaveTitle => 'بطاقتي tullave';
+
+  @override
+  String get tullaveScan => 'قراءة البطاقة';
+
+  @override
+  String get tullaveRescan => 'إعادة القراءة';
+
+  @override
+  String get tullaveScanning => 'قرّب البطاقة…';
+
+  @override
+  String get tullaveHold => 'ضع بطاقة tullave خلف الهاتف';
+
+  @override
+  String get tullaveBalance => 'الرصيد';
+
+  @override
+  String get tullaveNumber => 'البطاقة';
+
+  @override
+  String get tullaveMovements => 'النشاط الأخير';
+
+  @override
+  String get tullaveEmptyMovements => 'لا يوجد نشاط حديث.';
+
+  @override
+  String get tullaveLocalRead =>
+      'القراءة تتم على الجهاز: رقم بطاقتك ورصيدك لا يغادران الهاتف.';
+
+  @override
+  String get tullaveTrip => 'رحلة';
+
+  @override
+  String get tullaveTopUp => 'شحن';
+
+  @override
+  String get tullaveTopUpReversal => 'إلغاء الشحن';
+
+  @override
+  String get tullaveMovementOther => 'حركة';
+
+  @override
+  String get tullaveErrUnavailable => 'هذا الهاتف لا يدعم NFC.';
+
+  @override
+  String get tullaveErrDisabled => 'فعّل NFC لقراءة بطاقتك.';
+
+  @override
+  String get tullaveErrTimeout => 'لم يتم اكتشاف البطاقة. حاول مرة أخرى.';
+
+  @override
+  String get tullaveErrNotTullave => 'لا تبدو هذه بطاقة tullave.';
+
+  @override
+  String get tullaveErrFailed => 'تعذّرت قراءة البطاقة. حاول مرة أخرى.';
 }

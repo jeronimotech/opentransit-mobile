@@ -3797,6 +3797,120 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver {count} más'**
   String showMoreCount(Object count);
+
+  /// No description provided for @tullaveTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi tullave'**
+  String get tullaveTitle;
+
+  /// No description provided for @tullaveScan.
+  ///
+  /// In es, this message translates to:
+  /// **'Leer tarjeta'**
+  String get tullaveScan;
+
+  /// No description provided for @tullaveRescan.
+  ///
+  /// In es, this message translates to:
+  /// **'Leer otra vez'**
+  String get tullaveRescan;
+
+  /// No description provided for @tullaveScanning.
+  ///
+  /// In es, this message translates to:
+  /// **'Acerca la tarjeta…'**
+  String get tullaveScanning;
+
+  /// No description provided for @tullaveHold.
+  ///
+  /// In es, this message translates to:
+  /// **'Apoya tu tullave en la parte de atrás del teléfono'**
+  String get tullaveHold;
+
+  /// No description provided for @tullaveBalance.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldo'**
+  String get tullaveBalance;
+
+  /// No description provided for @tullaveNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Tarjeta'**
+  String get tullaveNumber;
+
+  /// No description provided for @tullaveMovements.
+  ///
+  /// In es, this message translates to:
+  /// **'Movimientos recientes'**
+  String get tullaveMovements;
+
+  /// No description provided for @tullaveEmptyMovements.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin movimientos recientes.'**
+  String get tullaveEmptyMovements;
+
+  /// No description provided for @tullaveLocalRead.
+  ///
+  /// In es, this message translates to:
+  /// **'La lectura es local: tu número de tarjeta y tu saldo no salen del teléfono.'**
+  String get tullaveLocalRead;
+
+  /// No description provided for @tullaveTrip.
+  ///
+  /// In es, this message translates to:
+  /// **'Viaje'**
+  String get tullaveTrip;
+
+  /// No description provided for @tullaveTopUp.
+  ///
+  /// In es, this message translates to:
+  /// **'Recarga'**
+  String get tullaveTopUp;
+
+  /// No description provided for @tullaveTopUpReversal.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelación de recarga'**
+  String get tullaveTopUpReversal;
+
+  /// No description provided for @tullaveMovementOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Movimiento'**
+  String get tullaveMovementOther;
+
+  /// No description provided for @tullaveErrUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Este teléfono no tiene NFC.'**
+  String get tullaveErrUnavailable;
+
+  /// No description provided for @tullaveErrDisabled.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa el NFC para leer tu tarjeta.'**
+  String get tullaveErrDisabled;
+
+  /// No description provided for @tullaveErrTimeout.
+  ///
+  /// In es, this message translates to:
+  /// **'No se detectó la tarjeta. Inténtalo de nuevo.'**
+  String get tullaveErrTimeout;
+
+  /// No description provided for @tullaveErrNotTullave.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa no parece una tullave.'**
+  String get tullaveErrNotTullave;
+
+  /// No description provided for @tullaveErrFailed.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo leer la tarjeta. Inténtalo de nuevo.'**
+  String get tullaveErrFailed;
 }
 
 class _AppLocalizationsDelegate

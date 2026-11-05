@@ -12,6 +12,7 @@ import 'dart:io' show Platform;
 import 'analytics/analytics.dart';
 import 'analytics/analytics_event.dart';
 import 'api/api_client.dart';
+import 'farecard/fare_card_reader.dart';
 import 'api/http_api_client.dart';
 import 'api/mock_api_client.dart';
 import 'config.dart';
@@ -850,6 +851,9 @@ final routeDetailProvider = FutureProvider.autoDispose.family<RouteDetail, CityK
 
 /// Other services running one leg's segment, so a rider can board whichever comes first. Falls back
 /// to the downloaded pattern index, which answers the same question with the same rule.
+/// The on-device NFC fare-card reader (tullave). Swappable for tests/mocks.
+final fareCardReaderProvider = Provider<FareCardReader>((ref) => const NfcFareCardReader());
+
 /// Station services for a stop page. A nicety, not load-bearing: on any failure it yields an
 /// empty split so the section simply does not render, never an error on the stop screen.
 final stationServicesProvider =

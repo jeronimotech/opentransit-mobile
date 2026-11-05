@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/live/interpolation.dart';
+import '../../core/farecard/tullave.dart';
 import '../../core/live/marker_style.dart';
 import '../../core/connectivity.dart';
 import '../../core/models/models.dart';
@@ -792,6 +793,19 @@ class _HomeSheet extends ConsumerWidget {
           // Only once the sheet is dragged up.
           if (expanded) ...[
             const SizedBox(height: 14),
+            if (fareCardFor(cityId) != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 2),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: ActionChip(
+                    key: const ValueKey('home-chip-tullave'),
+                    avatar: const Icon(Icons.contactless_rounded, size: 16),
+                    label: Text(l10n.tullaveTitle),
+                    onPressed: () => context.push('/$cityId/tullave'),
+                  ),
+                ),
+              ),
             if (home != null || work != null || recents.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -13,9 +13,9 @@ Map<String, dynamic> _feat(String type, double lon, double lat,
       'properties': {
         'id': 'osm:$type:$lon',
         'type': type,
-        if (name != null) 'name': name,
-        if (dist != null) 'distanceMeters': dist,
-        if (walk != null) 'walkMinutes': walk,
+        'name': ?name,
+        'distanceMeters': ?dist,
+        'walkMinutes': ?walk,
       },
     };
 
