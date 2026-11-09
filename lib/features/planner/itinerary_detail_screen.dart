@@ -183,6 +183,33 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toString();
 
+    // Live buses of this itinerary's transit routes, drawn on the same map so a
+    // rider can see where the bus is coming (reuses the route page's layer). It
+    // is gated exactly like the home map — the user's toggle, the city feature
+    // flag and data-saver — and the stream is only subscribed to when shown.
+    final settings = ref.watch(settingsProvider);
+    final liveAllowed = city != null &&
+        city.features.realtimeVehicles &&
+        city.config.isEnabled('liveVehicles');
+    final showLive = settings.liveVehicles && liveAllowed && !settings.dataSaver;
+    final live = showLive ? ref.watch(liveVehiclesProvider(widget.cityId)).asData?.value : null;
+    // Colour each bus like its leg's line, and show only the routes in this trip.
+    final routeColors = <String, Color>{};
+    for (final leg in it.legs) {
+      final rid = leg.route?.id;
+      if (leg.transit && rid != null) {
+        routeColors[rid] = colorFromHex(leg.route?.color,
+            fallback: componentColor(leg.route?.component, city: city));
+      }
+    }
+    final liveVehicles = <MapPoint>[
+      if (live != null)
+        for (final v in live.vehicles.values)
+          if (routeColors.containsKey(v.routeId))
+            MapPoint(id: v.id, position: v.position, color: routeColors[v.routeId]!,
+                radius: 9, strokeWidth: 2, label: v.routeShortName ?? ''),
+    ];
+
     return Scaffold(
       body: Stack(
         children: [
@@ -192,11 +219,13 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
               initialZoom: 12,
               lines: _lines!,
               stops: _stops!,
+              vehicles: liveVehicles,
               markers: _markers!,
               draggableMarkers: _pins!,
               onMarkerDragEnd: _onPinDropped,
               fitTo: _fit,
               fitPadding: const EdgeInsets.fromLTRB(40, 120, 40, 360),
+              onVehicleTap: (id) => context.push('/${widget.cityId}/vehicles/${Uri.encodeComponent(id)}'),
               onStopTap: (id) {
                 final leg = it.legs.where((l) => l.transit).toList();
                 for (final l in leg) {
