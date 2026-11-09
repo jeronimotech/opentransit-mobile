@@ -2212,7 +2212,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get tullaveTitle => 'La mia tullave';
+  String get tullaveTitle => 'Tessera tullave';
 
   @override
   String get tullaveScan => 'Leggi carta';

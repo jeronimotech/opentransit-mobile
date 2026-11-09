@@ -2216,7 +2216,7 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get tullaveTitle => 'Meu tullave';
+  String get tullaveTitle => 'Cartão tullave';
 
   @override
   String get tullaveScan => 'Ler cartão';

@@ -2195,7 +2195,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get tullaveTitle => 'بطاقتي tullave';
+  String get tullaveTitle => 'بطاقة tullave';
 
   @override
   String get tullaveScan => 'قراءة البطاقة';

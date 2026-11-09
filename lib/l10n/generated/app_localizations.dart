@@ -3801,7 +3801,7 @@ abstract class AppLocalizations {
   /// No description provided for @tullaveTitle.
   ///
   /// In es, this message translates to:
-  /// **'Mi tullave'**
+  /// **'Tarjeta tullave'**
   String get tullaveTitle;
 
   /// No description provided for @tullaveScan.

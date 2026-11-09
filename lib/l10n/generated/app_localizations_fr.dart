@@ -2220,7 +2220,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get tullaveTitle => 'Ma tullave';
+  String get tullaveTitle => 'Carte tullave';
 
   @override
   String get tullaveScan => 'Lire la carte';

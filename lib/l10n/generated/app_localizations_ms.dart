@@ -2208,7 +2208,7 @@ class AppLocalizationsMs extends AppLocalizations {
   }
 
   @override
-  String get tullaveTitle => 'tullave saya';
+  String get tullaveTitle => 'Kad tullave';
 
   @override
   String get tullaveScan => 'Baca kad';

@@ -1125,3 +1125,16 @@ final nearbyRentalProvider =
   return ref.watch(apiClientProvider).nearbyRentalStations(q.cityId, LatLng(q.lat, q.lon),
       radiusMeters: q.radius, limit: 3);
 });
+
+/// NFC availability for the fare-card reader, resolved once per app run.
+final fareCardNfcStateProvider = FutureProvider<CardNfcState>(
+  (ref) => ref.read(fareCardReaderProvider).state(),
+);
+
+/// Whether to surface the fare-card (tullave) entry at all. True unless we've
+/// *confirmed* the phone has no NFC hardware — while the check is in flight, and
+/// when NFC is merely turned off (`disabled`, which the user can enable), we keep
+/// showing it so normal phones never see the chip flicker in.
+final fareCardSupportedProvider = Provider<bool>(
+  (ref) => ref.watch(fareCardNfcStateProvider).asData?.value != CardNfcState.unsupported,
+);
