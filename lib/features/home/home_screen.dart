@@ -793,15 +793,20 @@ class _HomeSheet extends ConsumerWidget {
           // Only once the sheet is dragged up.
           if (expanded) ...[
             const SizedBox(height: 14),
-            if (fareCardFor(cityId) != null)
+            if (fareCardFor(cityId) != null && ref.watch(fareCardSupportedProvider))
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 2),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: ActionChip(
+                  child: FilledButton.tonalIcon(
                     key: const ValueKey('home-chip-tullave'),
-                    avatar: const Icon(Icons.contactless_rounded, size: 16),
+                    icon: const Icon(Icons.contactless_rounded, size: 18),
                     label: Text(l10n.tullaveTitle),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: scheme.primaryContainer,
+                      foregroundColor: scheme.onPrimaryContainer,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    ),
                     onPressed: () => context.push('/$cityId/tullave'),
                   ),
                 ),
@@ -816,8 +821,11 @@ class _HomeSheet extends ConsumerWidget {
                     if (home != null)
                       ActionChip(
                         key: const ValueKey('home-chip-home'),
-                        avatar: const Icon(Icons.home_rounded, size: 16),
+                        avatar: Icon(Icons.home_rounded, size: 16, color: scheme.onSecondaryContainer),
                         label: Text(l10n.favHome),
+                        backgroundColor: scheme.secondaryContainer,
+                        side: BorderSide.none,
+                        labelStyle: TextStyle(color: scheme.onSecondaryContainer, fontWeight: FontWeight.w600),
                         onPressed: () {
                           ref.read(plannerProvider.notifier).setTo(home.toPlace());
                           context.go('/$cityId/plan');
@@ -826,8 +834,11 @@ class _HomeSheet extends ConsumerWidget {
                     if (work != null)
                       ActionChip(
                         key: const ValueKey('home-chip-work'),
-                        avatar: const Icon(Icons.work_rounded, size: 16),
+                        avatar: Icon(Icons.work_rounded, size: 16, color: scheme.onSecondaryContainer),
                         label: Text(l10n.favWork),
+                        backgroundColor: scheme.secondaryContainer,
+                        side: BorderSide.none,
+                        labelStyle: TextStyle(color: scheme.onSecondaryContainer, fontWeight: FontWeight.w600),
                         onPressed: () {
                           ref.read(plannerProvider.notifier).setTo(work.toPlace());
                           context.go('/$cityId/plan');
@@ -835,7 +846,10 @@ class _HomeSheet extends ConsumerWidget {
                       ),
                     for (final t in recents)
                       ActionChip(
-                        avatar: const Icon(Icons.history, size: 16),
+                        avatar: Icon(Icons.history, size: 16, color: scheme.onSecondaryContainer),
+                        backgroundColor: scheme.secondaryContainer,
+                        side: BorderSide.none,
+                        labelStyle: TextStyle(color: scheme.onSecondaryContainer, fontWeight: FontWeight.w600),
                         label: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 220),
                           child: Text('${t.from.name} → ${t.to.name}', maxLines: 1, overflow: TextOverflow.ellipsis),
