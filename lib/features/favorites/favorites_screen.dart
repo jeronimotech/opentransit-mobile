@@ -21,6 +21,7 @@ class FavoritesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final all = ref.watch(favoritesProvider).where((f) => f.cityId == cityId).toList();
     final places = all.where((f) => f.type == FavoriteType.place).toList()
       ..sort((a, b) => a.kind.index.compareTo(b.kind.index));
@@ -30,11 +31,18 @@ class FavoritesScreen extends ConsumerWidget {
     final home = places.where((f) => f.kind == FavoriteKind.home).firstOrNull;
     final work = places.where((f) => f.kind == FavoriteKind.work).firstOrNull;
 
+    // Everything besides the two Casa/Trabajo cards. Those cards are the primary way to
+    // *set* home and work, so they must always be on screen — gating the whole list behind
+    // "has any favorite or recent" hid them from exactly the new users who need them, which
+    // read as "the app won't let me save Casa/Trabajo".
+    final hasOther = places.any((f) => f.kind == FavoriteKind.custom) ||
+        stops.isNotEmpty ||
+        routes.isNotEmpty ||
+        recents.isNotEmpty;
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.favorites)),
-      body: all.isEmpty && recents.isEmpty
-          ? EmptyView(icon: Icons.star_outline, message: l10n.noFavorites)
-          : ListView(
+      body: ListView(
               padding: const EdgeInsets.only(bottom: 32),
               children: [
                 Padding(
@@ -47,6 +55,19 @@ class FavoritesScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+                if (!hasOther)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 36, 24, 0),
+                    child: Column(
+                      children: [
+                        Icon(Icons.star_outline, size: 40, color: scheme.outline),
+                        const SizedBox(height: 10),
+                        Text(l10n.noFavorites,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: scheme.onSurfaceVariant)),
+                      ],
+                    ),
+                  ),
                 if (places.any((f) => f.kind == FavoriteKind.custom)) ...[
                   SectionTitle(l10n.places),
                   for (final f in places.where((f) => f.kind == FavoriteKind.custom)) _FavTile(fav: f, cityId: cityId),

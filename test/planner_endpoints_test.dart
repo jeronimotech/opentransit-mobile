@@ -562,13 +562,10 @@ void main() {
       );
     });
 
-    test('the itinerary map is only built once it has pins to draw', () {
-      final screen = read('lib/features/planner/itinerary_detail_screen.dart');
-      // `_draggable` is decided on first build, so an early build with no pins
-      // would disable dragging for the life of the screen.
-      expect(screen.indexOf('_pins = ['), lessThan(screen.indexOf('draggableMarkers: _pins!')));
-      expect(screen, contains('onMarkerDragEnd: _onPinDropped'));
-    });
+    // The itinerary screen no longer drags pins to move the origin/destination —
+    // that was removed in favour of explicit "editar" buttons and a per-leg
+    // "follow bus" action, because the drag was undiscoverable and often dead.
+    // The map-widget drag capability above is still guarded for any future caller.
   });
 }
 

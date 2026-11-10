@@ -75,9 +75,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
     expect(find.text('Próximos buses'), findsOneWidget);
-    expect(find.text('B10'), findsOneWidget);
-    expect(find.text('K43'), findsOneWidget);
-    expect(find.text('B74'), findsOneWidget);
+    // With 2+ routes the board now carries a route-filter bar, so each route's
+    // short name appears twice: once as a filter chip and once on its row.
+    expect(find.byKey(const ValueKey('board-route-filter')), findsOneWidget);
+    expect(find.text('Todas las rutas'), findsOneWidget);
+    expect(find.text('B10'), findsNWidgets(2));
+    expect(find.text('K43'), findsNWidgets(2));
+    expect(find.text('B74'), findsNWidgets(2));
     // Line 1: headsign + big first ETA on the right; line 2: "y en 13, 23 min".
     expect(find.text('Hacia Portal Sur'), findsOneWidget);
     expect(find.text('5 min'), findsOneWidget);
