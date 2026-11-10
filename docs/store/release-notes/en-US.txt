@@ -1,3 +1,4 @@
-Your tullave in the app: tap the card to see your balance, number and last movements. All on the phone — nothing is sent.
-Station services: what's at the station and what's nearby, with the walking time.
-Plus: which other routes serve the same leg, a guided trip with a boarding card, the get-off alert, timetables and connections, and sharing a trip.
+Live buses on your trip: open an itinerary and watch the buses on those routes approaching on the map, in real time.
+Refreshed dark mode: now a clean neutral grey, easier on the eyes at night.
+Clearer home shortcuts with more visible buttons.
+Plus assorted polish.

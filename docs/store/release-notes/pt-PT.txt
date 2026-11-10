@@ -1,3 +1,4 @@
-O seu tullave na app: aproxime o cartão para ver o saldo, o número e os últimos movimentos. Tudo no telemóvel — nada é enviado.
-Serviços da estação: o que há na estação e por perto, com o tempo a pé.
-E ainda: que outras linhas servem o mesmo troço, viagem guiada com cartão de embarque, aviso de saída, horários e ligações, e partilhar a viagem.
+Autocarros em direto na tua viagem: abre um itinerário e vê no mapa, em tempo real, os autocarros dessas rotas a aproximarem-se.
+Modo escuro renovado: agora num cinzento neutro, mais suave à noite.
+Atalhos do início mais claros, com botões mais visíveis.
+E vários acertos.

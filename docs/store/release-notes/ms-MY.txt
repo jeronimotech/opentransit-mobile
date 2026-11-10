@@ -1,3 +1,4 @@
-tullave anda dalam app: dekatkan kad untuk lihat baki, nombor dan transaksi terakhir. Semua pada telefon — tiada apa dihantar.
-Perkhidmatan stesen: apa yang ada di stesen dan berdekatan, dengan masa berjalan kaki.
-Juga: laluan lain pada segmen yang sama, perjalanan berpandu dengan pas menaiki, amaran turun, jadual dan sambungan, dan berkongsi perjalanan.
+Bas secara langsung dalam perjalanan anda: buka itinerari dan lihat bas laluan tersebut menghampiri pada peta, dalam masa nyata.
+Mod gelap diperbaharui: kini kelabu neutral, lebih selesa pada waktu malam.
+Pintasan laman utama lebih jelas, dengan butang lebih ketara.
+Dan pelbagai penambahbaikan.

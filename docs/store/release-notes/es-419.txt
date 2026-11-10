@@ -1,3 +1,4 @@
-Tu tullave en la app: acerca la tarjeta y mira tu saldo, tu número y los últimos movimientos. Todo en el teléfono —nada se envía.
-Servicios de cada estación: lo que hay en la estación y lo que queda cerca, a X minutos a pie.
-Y lo de antes: qué otras rutas sirven el mismo tramo, viaje guiado con ficha de abordaje, aviso de bajada, horarios y conexiones, y compartir el viaje.
+Buses en vivo en tu viaje: abre un itinerario y mira en el mapa, en tiempo real, los buses de esas rutas acercándose.
+Modo oscuro renovado: ahora en gris neutro, más fácil para la vista de noche.
+Accesos rápidos del inicio más claros, con botones más visibles.
+Y varios ajustes finos.

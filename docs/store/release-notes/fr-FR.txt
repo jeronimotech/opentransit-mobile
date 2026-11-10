@@ -1,3 +1,4 @@
-Votre tullave dans l'app : approchez la carte pour voir le solde, le numéro et les derniers mouvements. Tout sur le téléphone, rien n'est envoyé.
-Services de la station : ce qui est à la station et à proximité, avec le temps à pied.
-Et aussi : les autres lignes du même tronçon, le trajet guidé avec carte d'embarquement, l'alerte de descente, horaires et correspondances, et le partage du trajet.
+Bus en direct sur ton trajet : ouvre un itinéraire et vois sur la carte, en temps réel, les bus de ces lignes qui approchent.
+Mode sombre revu : désormais dans un gris neutre, plus reposant la nuit.
+Raccourcis de l'accueil plus clairs, avec des boutons plus visibles.
+Et divers ajustements.
