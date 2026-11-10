@@ -411,13 +411,21 @@ class _StopMap extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final board = ref.watch(boardProvider(CityKey(cityId, stop.id)));
+    final key = CityKey(cityId, stop.id);
+    final board = ref.watch(boardProvider(key));
+    // Share the board's route filter: tapping "330" on the list should leave only 330's
+    // buses on the map too. A stale id (route gone from the board) falls back to all.
+    final filter = ref.watch(boardRouteFilterProvider(key));
     final vehicles = board.maybeWhen(
-      data: (b) => <Vehicle>[
-        for (final row in b.rows)
-          for (final t in row.next)
-            if (t.vehicle != null) t.vehicle!,
-      ],
+      data: (b) {
+        final active = b.rows.any((row) => row.route.id == filter) ? filter : null;
+        return <Vehicle>[
+          for (final row in b.rows)
+            if (active == null || row.route.id == active)
+              for (final t in row.next)
+                if (t.vehicle != null) t.vehicle!,
+        ];
+      },
       orElse: () => const <Vehicle>[],
     );
     // One bus can serve two rows of the same board; drawing it twice stacks markers.

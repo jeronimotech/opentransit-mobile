@@ -92,23 +92,148 @@ class _BoardViewState extends ConsumerState<BoardView> {
           error: (e, _) => compact
               ? Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text(l10n.errorOffline, style: TextStyle(color: scheme.outline)))
               : ErrorView(error: e, onRetry: () => ref.invalidate(boardProvider(key))),
-          data: (b) => b.rows.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(children: [
-                    Icon(Icons.departure_board_outlined, size: 18, color: scheme.outline),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(l10n.noBoardContext, style: TextStyle(color: scheme.onSurfaceVariant))),
-                  ]),
-                )
-              : Column(
-                  children: [
-                    for (final row in (compact ? b.rows.take(3) : b.rows))
-                      BoardRowTile(cityId: cityId, row: row, compact: compact),
-                  ],
-                ),
+          data: (b) {
+            if (b.rows.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(children: [
+                  Icon(Icons.departure_board_outlined, size: 18, color: scheme.outline),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(l10n.noBoardContext, style: TextStyle(color: scheme.onSurfaceVariant))),
+                ]),
+              );
+            }
+            // The routes present on this board, in board order, deduped by id. A route with
+            // two directions is one chip but keeps both of its rows when selected.
+            final routes = <RouteRef>[];
+            final seen = <String>{};
+            for (final row in b.rows) {
+              if (seen.add(row.route.id)) routes.add(row.route);
+            }
+            // Only worth a filter bar when there is a choice to make, and never on the
+            // condensed favourites rows. A stale selection (route gone from the board) reads
+            // as "all" so the list never goes mysteriously empty.
+            final showFilter = !compact && routes.length >= 2;
+            final selected = ref.watch(boardRouteFilterProvider(key));
+            final active = showFilter && routes.any((r) => r.id == selected) ? selected : null;
+            final rows = active == null ? b.rows : b.rows.where((row) => row.route.id == active).toList();
+            final shown = compact ? rows.take(3) : rows;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (showFilter) _RouteFilterBar(stopKey: key, routes: routes, selected: active),
+                for (final row in shown) BoardRowTile(cityId: cityId, row: row, compact: compact),
+              ],
+            );
+          },
         ),
       ],
+    );
+  }
+}
+
+/// Horizontal "Todas las rutas · 330 · B401 …" filter above the board. Selecting a route
+/// narrows the arrival list and, through [boardRouteFilterProvider], the buses on the map;
+/// tapping the active route again clears it. Our own pills, not a ChoiceChip, so each route
+/// keeps its [RouteChip] identity (colour + icon) and the unselected ones simply dim.
+class _RouteFilterBar extends ConsumerWidget {
+  const _RouteFilterBar({required this.stopKey, required this.routes, required this.selected});
+  final CityKey stopKey;
+  final List<RouteRef> routes;
+  final String? selected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    void setFilter(String? id) => ref.read(boardRouteFilterProvider(stopKey).notifier).state = id;
+    return SizedBox(
+      height: 44,
+      child: ListView(
+        key: const ValueKey('board-route-filter'),
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
+        children: [
+          _TextFilterPill(label: l10n.allRoutes, selected: selected == null, onTap: () => setFilter(null)),
+          for (final r in routes) ...[
+            const SizedBox(width: 8),
+            _RouteFilterPill(
+              route: r,
+              selected: selected == r.id,
+              dimmed: selected != null && selected != r.id,
+              onTap: () => setFilter(selected == r.id ? null : r.id),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _TextFilterPill extends StatelessWidget {
+  const _TextFilterPill({required this.label, required this.selected, required this.onTap});
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            color: selected ? scheme.onSurface : scheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: selected ? scheme.surface : scheme.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
+              fontSize: 13,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RouteFilterPill extends StatelessWidget {
+  const _RouteFilterPill({required this.route, required this.selected, required this.dimmed, required this.onTap});
+  final RouteRef route;
+  final bool selected;
+  final bool dimmed;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 150),
+          opacity: dimmed ? 0.5 : 1,
+          child: Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: selected ? scheme.onSurface : Colors.transparent, width: 2),
+            ),
+            child: Center(child: RouteChip(route, dense: true)),
+          ),
+        ),
+      ),
     );
   }
 }

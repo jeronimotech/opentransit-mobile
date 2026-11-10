@@ -4,6 +4,9 @@ import 'dart:ui' show Locale;
 
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// StateProvider lives in the legacy surface in Riverpod 3; it is still fully supported and is
+// the right tool for a plain selectable value (the stop board's route filter).
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:io' show Platform;
@@ -1138,3 +1141,10 @@ final fareCardNfcStateProvider = FutureProvider<CardNfcState>(
 final fareCardSupportedProvider = Provider<bool>(
   (ref) => ref.watch(fareCardNfcStateProvider).asData?.value != CardNfcState.unsupported,
 );
+
+/// Which route the stop board is filtered to, or null for "all routes". Shared so the
+/// board's filter chips and the stop map agree on which buses to show — tapping a route
+/// narrows both the arrival list and the vehicles drawn on the map. Keyed by the stop
+/// (not auto-disposed) so the choice survives a sheet drag or a board refresh; a stale
+/// id (a route no longer on the board) is treated as "all" by the readers, not reset here.
+final boardRouteFilterProvider = StateProvider.family<String?, CityKey>((ref, key) => null);
