@@ -1982,6 +1982,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get boardingPass => 'Scheda di salita';
 
   @override
+  String get followBus => 'Segui in diretta';
+
+  @override
   String get boardingDestination => 'Destinazione indicata sul mezzo';
 
   @override

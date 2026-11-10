@@ -44,9 +44,7 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
   List<MapLine>? _lines;
   List<MapPoint>? _stops;
   List<MapPoint>? _markers;
-  List<MapPoint>? _pins;
   List<LatLng>? _fit;
-  bool _replanning = false;
   Itinerary? _built;
 
   /// Client-side re-timed copy after the user picked another live departure.
@@ -110,48 +108,21 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
     _stops = stops;
     // The two endpoints are draggable annotations, not part of the plain
     // marker source: dropping one re-plans from the new point (contract v2.1).
-    _markers = const [];
-    // A drag must *begin* on the circle, so these are touch targets, not just
-    // dots: r=14 plus the stroke is ~34 pt across. Still under Apple's 44 pt
-    // guideline, which a larger circle would meet at the cost of hiding the
-    // route under it -- worth revisiting on a device.
-    _pins = [
-      MapPoint(id: 'origin', position: first, color: const Color(0xFF2E7D32), radius: 14, strokeWidth: 3),
-      MapPoint(id: 'dest', position: last, color: const Color(0xFFC62828), radius: 14, strokeWidth: 3),
+    // The two trip endpoints are plain markers now. Dragging them to re-plan was
+    // unreliable — a ~34 pt target that lost the gesture to the map pan — so the
+    // sheet carries explicit "change origin / destination" buttons instead.
+    _markers = [
+      MapPoint(id: 'origin', position: first, color: const Color(0xFF2E7D32), radius: 11, strokeWidth: 3),
+      MapPoint(id: 'dest', position: last, color: const Color(0xFFC62828), radius: 11, strokeWidth: 3),
     ];
     _fit = all.isEmpty ? [first, last] : all;
   }
 
-  /// A pin was dropped: label the new point by reverse geocoding, write it into
-  /// the planner and re-plan from there. The label falls back to the
-  /// coordinates so a nameless drop still produces a usable itinerary.
-  Future<void> _onPinDropped(String id, LatLng at) async {
-    if (_replanning) return;
-    final field = id == 'origin' ? PlaceField.from : PlaceField.to;
-    setState(() => _replanning = true);
-    final api = ref.read(apiClientProvider);
-    String name;
-    try {
-      final p = await api.reverse(widget.cityId, at);
-      name = p.name.trim().isEmpty ? at.toString() : p.name.trim();
-    } catch (_) {
-      name = at.toString();
-    }
-    if (!mounted) return;
-    assignPlace(ref, field, Place(name: name, position: at));
-    // A re-plan invalidates any live-departure re-timing of the old itinerary.
-    // `_built` is deliberately kept: it is what the screen shows while the new
-    // plan is in flight, so the map and sheet do not blink to "sin rutas".
-    _chosen.clear();
-    _retimed = null;
-    final res = await ref.read(plannerProvider.notifier).plan(widget.cityId);
-    if (!mounted) return;
-    setState(() => _replanning = false);
-    if (res == null || res.itineraries.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).replanFailed)));
-    }
-  }
+  /// Open the search sheet to change an endpoint. Picking a place there writes
+  /// it into the planner, re-plans and returns a fresh itinerary — the normal
+  /// planner flow, which replaced the unreliable drag-to-move-pin gesture.
+  void _editPlace(PlaceField field) => context.push(
+      '/${widget.cityId}/search?field=${field == PlaceField.from ? 'from' : 'to'}');
 
   /// Canonical https URL (App Link / Universal Link) shared via the OS sheet.
   Uri _shareLink(PlanRequest r) => CanonicalLinks.plan(widget.cityId, r);
@@ -169,7 +140,7 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
     // While a dropped pin is being re-planned the result is `loading`, which
     // carries no data: keep showing the itinerary already on screen instead of
     // tearing the map down and flashing the empty view.
-    final base = count == 0 ? (_replanning ? _built : null) : plan!.itineraries[index];
+    final base = count == 0 ? null : plan!.itineraries[index];
     final fare = planFare(s, index, city);
     final it = base != null && _retimed != null && _retimed!.id == base.id ? _retimed! : base;
     if (it == null || base == null) {
@@ -183,16 +154,16 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toString();
 
-    // Live buses of this itinerary's transit routes, drawn on the same map so a
-    // rider can see where the bus is coming (reuses the route page's layer). It
-    // is gated exactly like the home map — the user's toggle, the city feature
-    // flag and data-saver — and the stream is only subscribed to when shown.
-    final settings = ref.watch(settingsProvider);
+    // Live buses of this trip's routes, drawn on the same map so a rider can see
+    // where the bus is coming (reuses the route page's layer). Shown whenever the
+    // city has realtime, exactly like the route page — this is a focused,
+    // user-opened view of a handful of buses, so unlike the city-wide home map it
+    // is NOT gated on the live-vehicles toggle or data-saver: a rider who dialled
+    // those down should not silently lose the buses they opened this trip to watch.
     final liveAllowed = city != null &&
         city.features.realtimeVehicles &&
         city.config.isEnabled('liveVehicles');
-    final showLive = settings.liveVehicles && liveAllowed && !settings.dataSaver;
-    final live = showLive ? ref.watch(liveVehiclesProvider(widget.cityId)).asData?.value : null;
+    final live = liveAllowed ? ref.watch(liveVehiclesProvider(widget.cityId)).asData?.value : null;
     // Colour each bus like its leg's line, and show only the routes in this trip.
     final routeColors = <String, Color>{};
     for (final leg in it.legs) {
@@ -221,8 +192,6 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
               stops: _stops!,
               vehicles: liveVehicles,
               markers: _markers!,
-              draggableMarkers: _pins!,
-              onMarkerDragEnd: _onPinDropped,
               fitTo: _fit,
               fitPadding: const EdgeInsets.fromLTRB(40, 120, 40, 360),
               onVehicleTap: (id) => context.push('/${widget.cityId}/vehicles/${Uri.encodeComponent(id)}'),
@@ -243,47 +212,6 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
             top: MediaQuery.paddingOf(context).top + 8,
             left: 8,
             child: _CircleButton(icon: Icons.arrow_back, onTap: () => context.pop()),
-          ),
-          // Tells the user the pins move, and what is happening when one does.
-          Positioned(
-            top: MediaQuery.paddingOf(context).top + 60,
-            left: 16,
-            right: 16,
-            child: IgnorePointer(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  key: const ValueKey('drag-pins-hint'),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: scheme.surface.withValues(alpha: 0.92),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (_replanning)
-                        const SizedBox(
-                            width: 14,
-                            height: 14,
-                            child: CircularProgressIndicator(strokeWidth: 2))
-                      else
-                        Icon(Icons.open_with, size: 14, color: scheme.onSurfaceVariant),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          _replanning ? l10n.replanning : l10n.dragPinsHint,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           ),
           Positioned(
             top: MediaQuery.paddingOf(context).top + 8,
@@ -329,6 +257,37 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
+                  // Change where the trip starts or ends — tap to search. This
+                  // replaced the drag-to-move-pin gesture, which lost the touch
+                  // to the map pan and rarely worked.
+                  Container(
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        _EndpointButton(
+                          key: const ValueKey('edit-origin'),
+                          icon: Icons.trip_origin,
+                          color: const Color(0xFF2E7D32),
+                          caption: l10n.fromLabel,
+                          value: s.from?.name,
+                          onTap: () => _editPlace(PlaceField.from),
+                        ),
+                        Divider(height: 1, indent: 38, color: scheme.outlineVariant),
+                        _EndpointButton(
+                          key: const ValueKey('edit-destination'),
+                          icon: Icons.place,
+                          color: const Color(0xFFC62828),
+                          caption: l10n.toLabel,
+                          value: s.to?.name,
+                          onTap: () => _editPlace(PlaceField.to),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -512,6 +471,61 @@ class _CircleButton extends StatelessWidget {
       );
 }
 
+/// A tappable origin/destination row in the itinerary sheet: an endpoint dot, a
+/// caption ("Origen"/"Destino"), the current place name and an edit affordance.
+/// Opens the search to change that endpoint, which re-plans — the replacement
+/// for the old drag-the-pin gesture.
+class _EndpointButton extends StatelessWidget {
+  const _EndpointButton({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.caption,
+    required this.value,
+    required this.onTap,
+  });
+  final IconData icon;
+  final Color color;
+  final String caption;
+  final String? value;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: color),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(caption,
+                      style: text.labelSmall?.copyWith(color: scheme.onSurfaceVariant)),
+                  Text(
+                    (value != null && value!.trim().isNotEmpty) ? value! : caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: text.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.edit_outlined, size: 16, color: scheme.onSurfaceVariant),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 typedef _Retime = void Function(DateTime start, {bool? realtime, String? tripId});
 
 class _LegTile extends ConsumerStatefulWidget {
@@ -664,6 +678,22 @@ class _LegTileState extends ConsumerState<_LegTile> {
                           onPressed: () => BoardingPass.show(context, cityId: widget.cityId, leg: leg),
                           icon: const Icon(Icons.badge_outlined, size: 18),
                           label: Text(l10n.boardingPass),
+                          style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              visualDensity: VisualDensity.compact),
+                        ),
+                      ),
+                    // Follow the next bus of this route live: opens "locate your bus"
+                    // at the boarding stop, so the rider sees where it is coming from.
+                    if (leg.from.stopId != null && leg.route != null)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          key: const ValueKey('leg-follow-bus'),
+                          onPressed: () => context.push(
+                              '/${widget.cityId}/locate?stop=${Uri.encodeComponent(leg.from.stopId!)}&route=${Uri.encodeComponent(leg.route!.id)}'),
+                          icon: const Icon(Icons.radar, size: 18),
+                          label: Text(l10n.followBus),
                           style: TextButton.styleFrom(
                               padding: const EdgeInsets.symmetric(horizontal: 4),
                               visualDensity: VisualDensity.compact),

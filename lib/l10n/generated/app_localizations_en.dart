@@ -1972,6 +1972,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get boardingPass => 'Boarding card';
 
   @override
+  String get followBus => 'Follow live';
+
+  @override
   String get boardingDestination => 'Destination shown on the vehicle';
 
   @override

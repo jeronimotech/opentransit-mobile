@@ -1231,6 +1231,7 @@
   "alsoServesAsk": "Otros servicios en este tramo",
   "alsoServesFrom": "Desde {place}",
   "boardingPass": "Ficha de abordaje",
+  "followBus": "Seguir en vivo",
   "boardingDestination": "Destino que se lee en el bus",
   "boardingLine": "Recorrido",
   "boardingWaitAt": "Espera en",

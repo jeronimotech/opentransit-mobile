@@ -3426,6 +3426,12 @@ abstract class AppLocalizations {
   /// **'Ficha de abordaje'**
   String get boardingPass;
 
+  /// No description provided for @followBus.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguir en vivo'**
+  String get followBus;
+
   /// No description provided for @boardingDestination.
   ///
   /// In es, this message translates to:

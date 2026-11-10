@@ -1978,6 +1978,9 @@ class AppLocalizationsMs extends AppLocalizations {
   String get boardingPass => 'Kad menaiki';
 
   @override
+  String get followBus => 'Ikut secara langsung';
+
+  @override
   String get boardingDestination => 'Destinasi pada papan tanda bas';
 
   @override

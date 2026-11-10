@@ -1012,6 +1012,7 @@
   "alsoServesAsk": "Other services on this segment",
   "alsoServesFrom": "From {place}",
   "boardingPass": "Boarding card",
+  "followBus": "Follow live",
   "boardingDestination": "Destination shown on the vehicle",
   "boardingLine": "Line",
   "boardingWaitAt": "Wait at",

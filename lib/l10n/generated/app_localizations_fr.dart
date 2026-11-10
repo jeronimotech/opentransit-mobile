@@ -1989,6 +1989,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get boardingPass => 'Fiche d\'embarquement';
 
   @override
+  String get followBus => 'Suivre en direct';
+
+  @override
   String get boardingDestination => 'Destination affichée sur le véhicule';
 
   @override

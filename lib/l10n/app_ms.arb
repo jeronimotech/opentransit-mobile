@@ -574,6 +574,7 @@
   "alsoServesAsk": "Perkhidmatan lain di laluan ini",
   "alsoServesFrom": "Dari {place}",
   "boardingPass": "Kad menaiki",
+  "followBus": "Ikut secara langsung",
   "boardingDestination": "Destinasi pada papan tanda bas",
   "boardingLine": "Laluan",
   "boardingWaitAt": "Tunggu di",

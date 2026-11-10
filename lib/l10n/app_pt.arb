@@ -574,6 +574,7 @@
   "alsoServesAsk": "Outros serviços neste trecho",
   "alsoServesFrom": "De {place}",
   "boardingPass": "Ficha de embarque",
+  "followBus": "Seguir ao vivo",
   "boardingDestination": "Destino exibido no veículo",
   "boardingLine": "Percurso",
   "boardingWaitAt": "Espere em",

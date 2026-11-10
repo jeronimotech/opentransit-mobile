@@ -1967,6 +1967,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get boardingPass => 'بطاقة الصعود';
 
   @override
+  String get followBus => 'تتبع مباشر';
+
+  @override
   String get boardingDestination => 'الوجهة المكتوبة على المركبة';
 
   @override

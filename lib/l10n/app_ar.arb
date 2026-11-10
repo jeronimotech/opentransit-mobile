@@ -574,6 +574,7 @@
   "alsoServesAsk": "خدمات أخرى في هذا المقطع",
   "alsoServesFrom": "من {place}",
   "boardingPass": "بطاقة الصعود",
+  "followBus": "تتبع مباشر",
   "boardingDestination": "الوجهة المكتوبة على المركبة",
   "boardingLine": "المسار",
   "boardingWaitAt": "انتظر في",

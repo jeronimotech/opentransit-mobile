@@ -1985,6 +1985,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get boardingPass => 'Ficha de embarque';
 
   @override
+  String get followBus => 'Seguir ao vivo';
+
+  @override
   String get boardingDestination => 'Destino exibido no veículo';
 
   @override
