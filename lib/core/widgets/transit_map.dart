@@ -17,12 +17,18 @@ class MapLine {
     required this.color,
     this.width = 5,
     this.dashed = false,
+    this.faint = false,
   });
   final String id;
   final List<LatLng> points;
   final Color color;
   final double width;
   final bool dashed;
+
+  /// A de-emphasised line (e.g. the parts of a route you do not ride): drawn
+  /// thin and without the white casing, so it helps you place the bus on its
+  /// route without competing with the leg you actually board.
+  final bool faint;
 }
 
 /// A point feature (stop, vehicle, marker).
@@ -72,6 +78,7 @@ Map<String, dynamic> _lineFc(List<MapLine> lines) => {
                 'color': _hex(l.color),
                 'width': l.width,
                 'dashed': l.dashed,
+                'faint': l.faint,
               },
               'geometry': {
                 'type': 'LineString',
@@ -325,7 +332,9 @@ class TransitMapState extends State<TransitMap> {
         lineCap: 'round',
         lineJoin: 'round',
       ),
-      filter: ['!', ['get', 'dashed']],
+      // No casing under a faint line: the white halo is what makes a line pop,
+      // the opposite of what a de-emphasised route wants.
+      filter: ['all', ['!', ['get', 'dashed']], ['!', ['get', 'faint']]],
     );
     await c.addLineLayer(
       _srcLines,
@@ -391,6 +400,23 @@ class TransitMapState extends State<TransitMap> {
         circleOpacity: ['get', 'opacity'],
         circleStrokeOpacity: ['get', 'opacity'],
       ),
+    );
+    // A little white bus sitting inside the route-coloured disc, instead of a
+    // bare dot — it reads as "a bus" at a glance and keeps the route colour as
+    // the ring around it.
+    await _addBusIcon(c);
+    await c.addSymbolLayer(
+      _srcVehicles,
+      'ot-vehicles-icon',
+      const ml.SymbolLayerProperties(
+        iconImage: _busIcon,
+        iconSize: 0.34,
+        iconRotationAlignment: 'viewport',
+        iconAllowOverlap: true,
+        iconIgnorePlacement: true,
+        iconOpacity: ['get', 'opacity'],
+      ),
+      enableInteraction: false,
     );
     // Bearing tick: a small white chevron rotated with the map, only for
     // vehicles that report a heading (UX audit §B, street zoom).
@@ -528,6 +554,43 @@ class TransitMapState extends State<TransitMap> {
       ),
       enableInteraction: false,
     );
+  }
+
+  static const _busIcon = 'ot-bus';
+
+  /// Draws a 48×48 side-view bus (white body, dark windows and wheels) and
+  /// registers it as a style image. White-on-transparent so it reads on any
+  /// route colour behind it; a dark outline keeps it legible on pale discs.
+  Future<void> _addBusIcon(ml.MapLibreMapController c) async {
+    final rec = ui.PictureRecorder();
+    final canvas = Canvas(rec);
+    const dark = Color(0xFF263238);
+    final body = RRect.fromRectAndRadius(
+        const Rect.fromLTWH(9, 13, 30, 23), const Radius.circular(6));
+    // Dark outline, then the white body on top.
+    canvas.drawRRect(
+        body, Paint()..color = dark..style = PaintingStyle.stroke..strokeWidth = 5..strokeJoin = StrokeJoin.round);
+    canvas.drawRRect(body, Paint()..color = Colors.white);
+    // Window band and a lower trim line.
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(const Rect.fromLTWH(13, 17, 22, 8), const Radius.circular(2)),
+        Paint()..color = dark);
+    canvas.drawRRect(
+        RRect.fromRectAndRadius(const Rect.fromLTWH(13, 29, 22, 2.5), const Radius.circular(1.25)),
+        Paint()..color = dark.withValues(alpha: 0.45));
+    // Wheels peeking below the body.
+    for (final cx in const [17.0, 31.0]) {
+      canvas.drawCircle(Offset(cx, 37), 4, Paint()..color = dark);
+      canvas.drawCircle(Offset(cx, 37), 1.8, Paint()..color = Colors.white);
+    }
+    final img = await rec.endRecording().toImage(48, 48);
+    final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
+    if (bytes == null) return;
+    try {
+      await c.addImage(_busIcon, bytes.buffer.asUint8List());
+    } on PlatformException {
+      // style gone
+    }
   }
 
   static const _bearingIcon = 'ot-bearing';

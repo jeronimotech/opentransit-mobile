@@ -178,8 +178,27 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
         for (final v in live.vehicles.values)
           if (routeColors.containsKey(v.routeId))
             MapPoint(id: v.id, position: v.position, color: routeColors[v.routeId]!,
-                radius: 9, strokeWidth: 2, label: v.routeShortName ?? ''),
+                radius: 9, strokeWidth: 2, label: v.routeShortName ?? '', bearing: v.bearing),
     ];
+
+    // The full shape of each route this trip rides, drawn faint beneath the
+    // bold leg line, so you can see where the bus travels before you board and
+    // after you get off — "where it's going", not just the stretch you ride.
+    final routeLines = <MapLine>[];
+    for (var i = 0; i < it.legs.length; i++) {
+      final leg = it.legs[i];
+      final rid = leg.route?.id;
+      if (!leg.transit || rid == null) continue;
+      final detail = ref.watch(routeDetailProvider(CityKey(widget.cityId, rid))).asData?.value;
+      if (detail == null) continue;
+      final pat = _matchPattern(detail.patterns, leg);
+      if (pat == null) continue;
+      final pts = decodeGeometry(pat.geometry);
+      if (pts.length < 2) continue;
+      // A pale tint of the route colour, thin and without casing.
+      final faint = Color.alphaBlend(routeColors[rid]!.withValues(alpha: 0.30), Colors.white);
+      routeLines.add(MapLine(id: 'route-$i', points: pts, color: faint, width: 3, faint: true));
+    }
 
     return Scaffold(
       body: Stack(
@@ -188,7 +207,7 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
             child: TransitMap(
               initialCenter: city?.center ?? it.legs.first.from.position,
               initialZoom: 12,
-              lines: _lines!,
+              lines: [...routeLines, ..._lines!],
               stops: _stops!,
               vehicles: liveVehicles,
               markers: _markers!,
@@ -361,6 +380,30 @@ class _ItineraryDetailScreenState extends ConsumerState<ItineraryDetailScreen> {
       ),
     );
   }
+}
+
+/// The pattern a transit leg rides, so its full shape can be drawn faint.
+/// Prefers a pattern that calls at both the boarding and alighting stops in
+/// order; then one whose headsign matches; else the pattern with the most
+/// stops (usually the main shape of that direction).
+RoutePattern? _matchPattern(List<RoutePattern> patterns, Leg leg) {
+  if (patterns.isEmpty) return null;
+  final from = leg.from.stopId;
+  final to = leg.to.stopId;
+  if (from != null && to != null) {
+    for (final p in patterns) {
+      final ids = [for (final s in p.stops) s.id];
+      final fi = ids.indexOf(from);
+      final ti = ids.indexOf(to);
+      if (fi >= 0 && ti > fi) return p;
+    }
+  }
+  if (leg.headsign != null) {
+    for (final p in patterns) {
+      if (p.headsign == leg.headsign) return p;
+    }
+  }
+  return patterns.reduce((a, b) => b.stops.length > a.stops.length ? b : a);
 }
 
 /// Live departure chips belong to the leg the user is about to board: the
